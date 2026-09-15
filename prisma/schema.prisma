@@ -1,0 +1,95 @@
+// Pixelco clone — data model
+// Conventions follow the scandihaven architecture: snake_case columns via
+// @map, camelCase TS properties, UTC timestamps, explicit enums as strings
+// (SQLite has no native enums), and append-only event ledger.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// Account owner. Authentication is NextAuth v4 (credentials, JWT sessions),
+/// so no OAuth account/session tables are required.
+model User {
+  id                   String    @id @default(cuid())
+  email                String    @unique
+  passwordHash         String
+  name                 String?
+  company              String?
+  website              String?
+  plan                 String    @default("free") // free | starter | growth | scale
+  billingCycle         String    @default("monthly") // monthly | annual
+  identificationsUsed  Int       @default(0)
+  usagePeriodStart     DateTime  @default(now())
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  sites                Site[]
+
+  @@map("users")
+}
+
+/// A registered website (domain) that carries the tracking pixel.
+model Site {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  domain      String
+  siteKey     String    @unique
+  status      String    @default("pending") // pending | verified
+  lastEventAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  visitors    Visitor[]
+  events      Event[]
+
+  @@unique([userId, domain])
+  @@index([userId])
+  @@map("sites")
+}
+
+/// A unique browser (anonymous cookie id) seen on a site. Rows become
+/// "identified" when the identity-resolution engine resolves an email.
+model Visitor {
+  id          String    @id @default(cuid())
+  siteId      String
+  site        Site      @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  anonymousId String
+  email       String?
+  type        String? // individual | company
+  companyName String?
+  source      String    @default("direct") // direct | search | social | referral | campaign
+  confidence  Int?
+  status      String    @default("active")
+  pageviews   Int       @default(0)
+  firstSeen   DateTime  @default(now())
+  lastSeen    DateTime  @default(now())
+  events      Event[]
+
+  @@unique([siteId, anonymousId])
+  @@index([siteId, lastSeen])
+  @@map("visitors")
+}
+
+/// Append-only event ledger. Every pageview and identification is recorded
+/// exactly once; analytics are derived reads over this table.
+model Event {
+  id        String   @id @default(cuid())
+  siteId    String
+  site      Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  visitorId String
+  visitor   Visitor  @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  name      String // pageview | identification
+  path      String   @default("/")
+  pageUrl   String?
+  referrer  String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([siteId, createdAt])
+  @@index([siteId, name, createdAt])
+  @@map("events")
+}
