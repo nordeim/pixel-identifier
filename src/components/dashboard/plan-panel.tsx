@@ -9,7 +9,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import {
   PLANS,
   PLAN_ORDER,
-  annualDiscountLabel,
   annualTotalCents,
   effectiveMonthlyPrice,
   formatPrice,
@@ -83,9 +82,6 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
         >
           Annual
         </span>
-        <span className="text-xs font-semibold text-teal-600">
-          {annualDiscountLabel(PLANS.starter)}
-        </span>
       </div>
 
       {/* Plan cards — current plan keeps a plain border; the popular plan
@@ -124,14 +120,14 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
                 </p>
               )}
 
-              <p className="mt-4 text-sm font-bold text-foreground">
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{plan.description}</p>
+              <p className="mt-2 text-sm font-semibold text-foreground">
                 {plan.limitPeriod === 'lifetime'
                   ? `${plan.identificationLimit} lifetime identifications`
                   : `${plan.identificationLimit.toLocaleString()} identifications / mo`}
                 {plan.overagePrice > 0 &&
                   ` then ${formatPrice(plan.overagePrice)} per extra identification`}
               </p>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{plan.description}</p>
 
               <form action={formAction} className="mt-5">
                 <input type="hidden" name="plan" value={plan.id} />
@@ -183,7 +179,7 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
 
       {/* FAQ */}
       <section aria-labelledby="plan-faq-heading" className="rounded-xl border border-border bg-card p-6 shadow-sm">
-        <h2 id="plan-faq-heading" className="text-base font-bold text-foreground">
+        <h2 id="plan-faq-heading" className="text-center text-base font-bold text-foreground">
           Frequently Asked Questions
         </h2>
         <Accordion type="single" collapsible className="mt-3">

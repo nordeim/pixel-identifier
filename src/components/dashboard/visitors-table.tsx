@@ -268,6 +268,7 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
               <tr className="border-b border-border bg-muted/40 text-left text-[11px] uppercase tracking-wide text-muted-foreground">
                 <th scope="col" className="w-10 px-4 py-3">
                   <Checkbox
+                    className="rounded-full"
                     aria-label="Select all visitors on this page"
                     checked={pageSelected ? true : someSelected ? 'indeterminate' : false}
                     onCheckedChange={(checked) => toggleAll(checked === true)}
@@ -308,6 +309,7 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                   >
                     <td className="px-4 py-3" onClick={(event) => event.stopPropagation()}>
                       <Checkbox
+                        className="rounded-full"
                         aria-label={`Select ${visitor.email ?? 'visitor'}`}
                         checked={selectedIds.has(visitor.id)}
                         onCheckedChange={(checked) => toggleRow(visitor.id, checked === true)}
@@ -317,7 +319,7 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                       <span className="flex items-center gap-2.5">
                         {visitor.email ? (
                           <span
-                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-extrabold text-primary-foreground"
+                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-extrabold text-white"
                             aria-hidden="true"
                           >
                             {initialsForEmail(visitor.email)}

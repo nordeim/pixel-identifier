@@ -1,5 +1,6 @@
 'use client'
 
+import { Code, FileText, Globe, ShoppingBag } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const WORDPRESS_STEPS = [
@@ -75,10 +76,11 @@ const HTML_STEPS = [
 ]
 
 const PLATFORMS = [
-  { id: 'html', label: 'HTML / Custom', steps: HTML_STEPS },
-  { id: 'wordpress', label: 'WordPress', steps: WORDPRESS_STEPS },
-  { id: 'shopify', label: 'Shopify', steps: SHOPIFY_STEPS },
-  { id: 'gtm', label: 'Google Tag Manager', steps: GTM_STEPS },
+  // Icon set mirrors the live app: code / globe / shopping-bag / code.
+  { id: 'html', label: 'HTML / Custom', icon: Code, steps: HTML_STEPS },
+  { id: 'wordpress', label: 'WordPress', icon: Globe, steps: WORDPRESS_STEPS },
+  { id: 'shopify', label: 'Shopify', icon: ShoppingBag, steps: SHOPIFY_STEPS },
+  { id: 'gtm', label: 'Google Tag Manager', icon: Code, steps: GTM_STEPS },
 ]
 
 export function PlatformInstructions() {
@@ -86,8 +88,8 @@ export function PlatformInstructions() {
     <section className="rounded-xl border border-border bg-card shadow-sm" aria-labelledby="platform-heading">
       <div className="border-b border-border p-5">
         <h2 id="platform-heading" className="flex items-center gap-2 text-base font-bold text-foreground">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15 text-sm" aria-hidden="true">
-            🖥️
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15" aria-hidden="true">
+            <FileText className="h-5 w-5 text-amber-600" />
           </span>
           Platform Instructions
         </h2>
@@ -102,6 +104,7 @@ export function PlatformInstructions() {
               value={platform.id}
               className="data-[state=active]:bg-card data-[state=active]:text-foreground"
             >
+              <platform.icon className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
               {platform.label}
             </TabsTrigger>
           ))}

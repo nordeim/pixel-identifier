@@ -133,17 +133,19 @@ export default async function OverviewPage() {
       </div>
 
       <Card className="shadow-sm">
-        <CardHeader className="flex-row items-center justify-between pb-2">
+        <CardHeader className="pb-2">
           <CardTitle className="text-base font-bold text-foreground">
             Recent Identifications
           </CardTitle>
-          <Link
-            href="/dashboard/visitors"
-            className="flex items-center gap-0.5 text-xs font-semibold text-amber-600 hover:text-amber-700 focus-brand"
-          >
-            View all
-            <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
-          </Link>
+          <div data-slot="card-action" className="self-center">
+            <Link
+              href="/dashboard/visitors"
+              className="flex items-center gap-0.5 text-xs font-semibold text-amber-600 hover:text-amber-700 focus-brand"
+            >
+              View all
+              <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
+            </Link>
+          </div>
         </CardHeader>
         <CardContent>
           {recent.length === 0 ? (

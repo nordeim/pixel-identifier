@@ -48,6 +48,10 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
               boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
               fontSize: '12px',
             }}
+            formatter={(value: number | string, name: string) => [
+              value,
+              name === 'pageviews' ? 'Pageviews' : 'Identified',
+            ]}
           />
           <Area
             type="monotone"

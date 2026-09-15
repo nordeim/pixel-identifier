@@ -47,9 +47,9 @@ describe('relativeTime', () => {
   it('covers the documented boundaries', () => {
     expect(relativeTime(new Date(Date.now() - 46_000))).toBe('1 min ago')
     expect(relativeTime(new Date(Date.now() - 5 * MIN))).toBe('5 min ago')
-    expect(relativeTime(new Date(Date.now() - 3 * HOUR))).toBe('3h ago')
-    expect(relativeTime(new Date(Date.now() - 3 * DAY))).toBe('3d ago')
-    expect(relativeTime(new Date(Date.now() - 21 * DAY))).toBe('3w ago')
+    expect(relativeTime(new Date(Date.now() - 3 * HOUR))).toBe('3 hr ago')
+    expect(relativeTime(new Date(Date.now() - 3 * DAY))).toBe('3 d ago')
+    expect(relativeTime(new Date(Date.now() - 21 * DAY))).toBe('3 w ago')
     expect(relativeTime(new Date(Date.now() - 200 * DAY))).toMatch(/^[A-Z][a-z]{2} \d{1,2}, \d{4}$/)
   })
 

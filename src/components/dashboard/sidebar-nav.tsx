@@ -92,15 +92,16 @@ export function SidebarNav({
                       aria-current={active ? 'page' : undefined}
                       title={collapsed ? item.label : undefined}
                       className={cn(
-                        'flex items-center rounded-lg text-sm font-medium transition-colors focus-brand',
+                        'flex items-center rounded-[10px] text-sm font-medium transition-colors focus-brand',
                         collapsed ? 'justify-center px-2 py-2' : 'gap-3 px-3 py-2',
                         active
-                          ? 'bg-primary/10 text-foreground'
+                          ? // Live tokens: warm off-white pill + golden text/icon (#CC9900).
+                            'bg-[#F8F6F2] text-[#CC9900]'
                           : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                       )}
                     >
                       <Icon
-                        className={cn('h-4 w-4 shrink-0', active && 'text-amber-700')}
+                        className={cn('h-4 w-4 shrink-0', active && 'text-[#CC9900]')}
                         aria-hidden="true"
                       />
                       {!collapsed && item.label}

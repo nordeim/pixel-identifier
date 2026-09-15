@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState, useEffect, useRef } from 'react'
-import { Check, Clock, Globe, Loader2, Plus, Trash2 } from 'lucide-react'
+import { CheckCircle2, Clock, Globe, Loader2, Plus, Trash2 } from 'lucide-react'
 import { addDomainAction, deleteDomainAction, type DomainDto } from '@/actions/domains'
 import type { ActionResult } from '@/lib/validation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -84,7 +84,7 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
                 required
               />
             </div>
-            <Button type="submit" disabled={pending} className="font-semibold">
+            <Button type="submit" disabled={pending} variant="outline" className="font-semibold">
               {pending ? (
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
               ) : (
@@ -132,7 +132,7 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
                         <span className="truncate text-sm font-bold text-foreground">{domain.domain}</span>
                         {domain.status === 'verified' ? (
                           <Badge variant="secondary" className="gap-1 bg-primary/20 text-amber-900 hover:bg-primary/20">
-                            <Check className="h-3 w-3" aria-hidden="true" />
+                            <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
                             Verified
                           </Badge>
                         ) : (
@@ -150,7 +150,7 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
 
                   <div className="flex shrink-0 items-center gap-5">
                     <div className="text-right">
-                      <p className="text-2xl font-bold tabular-nums leading-none text-foreground">
+                      <p className="text-sm font-semibold tabular-nums leading-none text-foreground">
                         {domain.visitorCount}
                       </p>
                       <p className="mt-0.5 text-xs text-muted-foreground">

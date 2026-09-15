@@ -87,7 +87,7 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-card p-5 shadow-sm">
+      <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
         <p className="text-base font-bold text-foreground">Live Feed</p>
         <p className="mt-0.5 text-xs text-muted-foreground">All events across your domains</p>
       </div>

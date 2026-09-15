@@ -2,17 +2,17 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { headers } from 'next/headers'
 import { getServerSession } from 'next-auth'
-import { CheckCircle2, Globe, Timer } from 'lucide-react'
+import { CheckCircle2, Globe, Timer, Zap } from 'lucide-react'
 import { authOptions } from '@/lib/auth'
 import { requireUser } from '@/lib/analytics'
 import { db } from '@/lib/db'
 import { buildSnippet, collectorUrlFromHeaders } from '@/lib/snippet'
 import { pickSelectedSite } from '@/lib/sites'
 import { CopyButton } from '@/components/dashboard/copy-button'
+import { DomainSwitcher } from '@/components/dashboard/domain-switcher'
 import { PlatformInstructions } from '@/components/dashboard/platform-instructions'
 import { Button } from '@/components/ui/button'
 import { relativeTime } from '@/lib/format'
-import { cn } from '@/lib/utils'
 
 export const metadata: Metadata = {
   title: 'Install Your Pixel',
@@ -66,38 +66,24 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      {/* Domain switcher: every registered domain has its own snippet. */}
-      {sites.length > 1 && (
-        <nav aria-label="Domain" className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-            Domain
-          </span>
-          {sites.map((option) => {
-            const active = option.siteKey === site.siteKey
-            return (
-              <Link
-                key={option.siteKey}
-                href={`/dashboard/install?site=${option.siteKey}`}
-                aria-current={active ? 'page' : undefined}
-                className={cn(
-                  'rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors focus-brand',
-                  active
-                    ? 'border-primary bg-primary/15 text-amber-800'
-                    : 'border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground',
-                )}
-              >
-                {option.domain}
-              </Link>
-            )
-          })}
-        </nav>
-      )}
+      {/* Page header + domain switcher, mirroring the live install page. */}
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Install Your Pixel</h1>
+          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+            One snippet in your <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">&lt;head&gt;</code> tag — works on every page automatically.
+          </p>
+        </div>
+        {sites.length > 1 && (
+          <DomainSwitcher domains={sites} activeSiteKey={site.siteKey} />
+        )}
+      </div>
 
       <section className="rounded-xl border border-border bg-card shadow-sm" aria-labelledby="quickstart-heading">
         <div className="border-b border-border p-5">
           <h2 id="quickstart-heading" className="flex items-center gap-2 text-base font-bold text-foreground">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15 text-sm" aria-hidden="true">
-              ⚡
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15" aria-hidden="true">
+              <Zap className="h-5 w-5 text-amber-600" />
             </span>
             Quick Start
           </h2>
