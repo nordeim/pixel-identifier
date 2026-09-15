@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getServerSession } from 'next-auth'
-import { ArrowRight, Eye, Globe, Mail, UserPlus } from 'lucide-react'
+import { ArrowUpRight, Eye, Globe, Mail, UserPlus } from 'lucide-react'
 import { authOptions } from '@/lib/auth'
 import {
   requireUser,
@@ -91,7 +91,6 @@ export default async function OverviewPage() {
             <CardTitle className="text-base font-bold text-foreground">
               Visitor Identification Trend
             </CardTitle>
-            <p className="text-xs text-muted-foreground">Last 14 days</p>
           </CardHeader>
           <CardContent>
             <TrendChart data={trend} />
@@ -101,7 +100,6 @@ export default async function OverviewPage() {
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-bold text-foreground">Top Pages</CardTitle>
-            <p className="text-xs text-muted-foreground">By pageviews</p>
           </CardHeader>
           <CardContent>
             {topPages.length === 0 ? (
@@ -111,16 +109,19 @@ export default async function OverviewPage() {
             ) : (
               <ol className="space-y-3">
                 {topPages.map((page, index) => (
-                  <li key={page.path} className="flex items-center gap-3">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
+                  <li key={page.path} className="flex items-baseline gap-3">
+                    <span className="text-xs font-semibold tabular-nums text-muted-foreground">
                       {index + 1}
                     </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate font-mono text-sm text-foreground">
-                        {page.path}
+                    <span className="min-w-0 flex-1 truncate font-mono text-sm text-foreground">
+                      {page.path}
+                    </span>
+                    <span className="ml-auto shrink-0 text-right">
+                      <span className="block text-sm font-bold tabular-nums text-foreground">
+                        {page.views}
                       </span>
-                      <span className="text-xs text-muted-foreground">
-                        {page.views} {page.views === 1 ? 'view' : 'views'}
+                      <span className="block text-[11px] text-muted-foreground">
+                        {page.views === 1 ? 'view' : 'views'}
                       </span>
                     </span>
                   </li>
@@ -133,18 +134,15 @@ export default async function OverviewPage() {
 
       <Card className="shadow-sm">
         <CardHeader className="flex-row items-center justify-between pb-2">
-          <div>
-            <CardTitle className="text-base font-bold text-foreground">
-              Recent Identifications
-            </CardTitle>
-            <p className="text-xs text-muted-foreground">Latest emails resolved</p>
-          </div>
+          <CardTitle className="text-base font-bold text-foreground">
+            Recent Identifications
+          </CardTitle>
           <Link
             href="/dashboard/visitors"
-            className="flex items-center gap-1 text-sm font-semibold text-amber-600 hover:text-amber-700 focus-brand"
+            className="flex items-center gap-0.5 text-xs font-semibold text-amber-600 hover:text-amber-700 focus-brand"
           >
             View all
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
           </Link>
         </CardHeader>
         <CardContent>
@@ -169,7 +167,7 @@ export default async function OverviewPage() {
                       <td className="py-3 pr-4">
                         <span className="flex items-center gap-2.5">
                           <span
-                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-extrabold text-primary-foreground"
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-extrabold text-white"
                             aria-hidden="true"
                           >
                             {initialsForEmail(item.email)}
@@ -182,8 +180,12 @@ export default async function OverviewPage() {
                       </td>
                       <td className="py-3 pr-4">
                         <span className="flex items-center gap-2">
-                          <Progress value={item.confidence ?? 0} className="h-1.5 w-16" aria-hidden="true" />
-                          <span className="text-xs font-semibold tabular-nums text-teal-600">
+                          <Progress
+                            value={item.confidence ?? 0}
+                            className="h-1.5 w-16 [&>div]:bg-teal-500"
+                            aria-hidden="true"
+                          />
+                          <span className="text-xs font-semibold tabular-nums text-foreground">
                             {item.confidence}%
                           </span>
                         </span>

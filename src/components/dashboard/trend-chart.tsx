@@ -4,7 +4,6 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -13,8 +12,9 @@ import {
 import type { TrendPoint } from '@/lib/analytics'
 
 /**
- * Visitor identification trend. Amber = pageviews, teal = identified —
- * matching the product's data palette (chart-1 / chart-2 tokens).
+ * Visitor identification trend, styled after the live app: purple line for
+ * pageviews (no fill), teal line for identified visitors (light gradient
+ * fill), dashed grid in both directions, no legend.
  */
 export function TrendChart({ data }: { data: TrendPoint[] }) {
   return (
@@ -22,16 +22,12 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
           <defs>
-            <linearGradient id="pageviewsFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#F59E0B" stopOpacity={0.25} />
-              <stop offset="100%" stopColor="#F59E0B" stopOpacity={0} />
-            </linearGradient>
             <linearGradient id="identifiedFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#2DD4BF" stopOpacity={0.25} />
+              <stop offset="0%" stopColor="#2DD4BF" stopOpacity={0.12} />
               <stop offset="100%" stopColor="#2DD4BF" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#E7E5DF" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#E7E5DF" vertical />
           <XAxis
             dataKey="label"
             tick={{ fontSize: 11, fill: '#6B7280' }}
@@ -53,21 +49,12 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
               fontSize: '12px',
             }}
           />
-          <Legend
-            iconType="circle"
-            iconSize={8}
-            formatter={(value: string) => (
-              <span style={{ fontSize: 12, color: '#374151' }}>
-                {value === 'pageviews' ? 'Pageviews' : 'Identified'}
-              </span>
-            )}
-          />
           <Area
             type="monotone"
             dataKey="pageviews"
-            stroke="#F59E0B"
+            stroke="#9333EA"
             strokeWidth={2}
-            fill="url(#pageviewsFill)"
+            fill="none"
             dot={false}
             activeDot={{ r: 4 }}
           />
