@@ -1,9 +1,9 @@
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { getUsage } from '@/lib/analytics'
+import { getUsage, hasRecentIdentifications } from '@/lib/analytics'
 import { formatPrice } from '@/lib/plans'
 import { requireUser } from '@/lib/analytics'
-import { SidebarNav } from '@/components/dashboard/sidebar-nav'
+import { SidebarShell } from '@/components/dashboard/sidebar-shell'
 import { Topbar } from '@/components/dashboard/topbar'
 
 /**
@@ -14,7 +14,10 @@ import { Topbar } from '@/components/dashboard/topbar'
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const user = await requireUser(await getServerSession(authOptions))
 
-  const usage = await getUsage(user.id)
+  const [usage, unread] = await Promise.all([
+    getUsage(user.id),
+    hasRecentIdentifications(user.id),
+  ])
   const usageProps = {
     planName: usage.plan.name,
     used: usage.used,
@@ -27,16 +30,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="flex min-h-screen bg-app">
-      {/* Desktop sidebar */}
-      <aside className="hidden w-64 shrink-0 border-r border-border bg-card lg:block">
-        <div className="sticky top-0 h-screen">
-          <SidebarNav usage={usageProps} />
-        </div>
-      </aside>
+      {/* Desktop sidebar (collapsible to an icon rail) */}
+      <SidebarShell usage={usageProps} />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar email={user.email} usage={usageProps} />
-        <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
+        <Topbar email={user.email} usage={usageProps} unread={unread} />
+        <main className="flex-1 overflow-auto p-6">{children}</main>
       </div>
     </div>
   )

@@ -4,49 +4,28 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   Activity,
+  ChartColumn,
+  CodeXml,
   CreditCard,
   Eye,
-  Globe,
-  LayoutDashboard,
   Settings,
-  Code2,
+  Users,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { NAV_SECTIONS, type NavItem } from '@/lib/dashboard-nav'
 import { PixelcoWordmark } from '@/components/pixelco-logo'
 import { Progress } from '@/components/ui/progress'
 import { SignOutButton } from '@/components/dashboard/sign-out-button'
 
-interface NavItem {
-  href: string
-  label: string
-  icon: React.ComponentType<{ className?: string }>
-  exact?: boolean
+const ICONS: Record<NavItem['icon'], React.ComponentType<{ className?: string }>> = {
+  'chart-column': ChartColumn,
+  eye: Eye,
+  activity: Activity,
+  'code-xml': CodeXml,
+  users: Users,
+  'credit-card': CreditCard,
+  settings: Settings,
 }
-
-const NAV_SECTIONS: { title: string; items: NavItem[] }[] = [
-  {
-    title: 'Analytics',
-    items: [
-      { href: '/dashboard', label: 'Overview', icon: LayoutDashboard, exact: true },
-      { href: '/dashboard/visitors', label: 'Visitors', icon: Eye },
-      { href: '/dashboard/activity', label: 'Activity Log', icon: Activity },
-    ],
-  },
-  {
-    title: 'Setup',
-    items: [
-      { href: '/dashboard/install', label: 'Install Pixel', icon: Code2 },
-      { href: '/dashboard/domains', label: 'Domains', icon: Globe },
-    ],
-  },
-  {
-    title: 'Account',
-    items: [
-      { href: '/dashboard/pricing', label: 'Pricing & Plan', icon: CreditCard },
-      { href: '/dashboard/settings', label: 'Settings', icon: Settings },
-    ],
-  },
-]
 
 export interface UsageProps {
   planName: string
@@ -59,7 +38,10 @@ export interface UsageProps {
   overageCostLabel: string
 }
 
-export function SidebarNav({ usage }: { usage: UsageProps }) {
+export function SidebarNav({
+  usage,
+  collapsed = false,
+}: { usage: UsageProps; collapsed?: boolean }) {
   const pathname = usePathname()
 
   const isActive = (item: NavItem) =>
@@ -67,35 +49,61 @@ export function SidebarNav({ usage }: { usage: UsageProps }) {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex h-16 items-center border-b border-border px-5">
-        <Link href="/dashboard" className="focus-brand rounded-lg" aria-label="Pixelco dashboard">
-          <PixelcoWordmark />
+      <div
+        className={cn(
+          'flex h-14 items-center border-b border-border',
+          collapsed ? 'justify-center px-2' : 'px-5',
+        )}
+      >
+        <Link
+          href="/dashboard"
+          className="focus-brand rounded-lg"
+          aria-label="Pixelco dashboard"
+        >
+          {collapsed ? (
+            <span className="sr-only">Pixelco dashboard</span>
+          ) : null}
+          <PixelcoWordmark collapsed={collapsed} />
         </Link>
       </div>
 
-      <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4 brand-scroll" aria-label="Dashboard navigation">
+      <nav
+        className={cn(
+          'flex-1 space-y-6 overflow-y-auto py-4 brand-scroll',
+          collapsed ? 'px-2' : 'px-3',
+        )}
+        aria-label="Dashboard navigation"
+      >
         {NAV_SECTIONS.map((section) => (
           <div key={section.title}>
-            <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              {section.title}
-            </p>
+            {!collapsed && (
+              <p className="px-3 pb-2 text-sm font-medium text-muted-foreground">
+                {section.title}
+              </p>
+            )}
             <ul className="space-y-0.5">
               {section.items.map((item) => {
                 const active = isActive(item)
+                const Icon = ICONS[item.icon]
                 return (
                   <li key={item.href}>
                     <Link
                       href={item.href}
                       aria-current={active ? 'page' : undefined}
+                      title={collapsed ? item.label : undefined}
                       className={cn(
-                        'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-brand',
+                        'flex items-center rounded-lg text-sm font-medium transition-colors focus-brand',
+                        collapsed ? 'justify-center px-2 py-2' : 'gap-3 px-3 py-2',
                         active
-                          ? 'bg-primary/15 text-amber-700'
+                          ? 'bg-primary/10 text-foreground'
                           : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                       )}
                     >
-                      <item.icon className={cn('h-4 w-4', active && 'text-amber-600')} aria-hidden="true" />
-                      {item.label}
+                      <Icon
+                        className={cn('h-4 w-4 shrink-0', active && 'text-amber-700')}
+                        aria-hidden="true"
+                      />
+                      {!collapsed && item.label}
                     </Link>
                   </li>
                 )
@@ -105,27 +113,34 @@ export function SidebarNav({ usage }: { usage: UsageProps }) {
         ))}
       </nav>
 
-      <div className="border-t border-border p-3">
-        <div className="rounded-xl bg-primary/15 p-3.5">
-          <span className="inline-flex rounded-full bg-primary px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-primary-foreground">
-            {usage.planName}
-          </span>
-          <p className="mt-2 text-xs font-medium text-foreground">
-            {usage.used} / {usage.limit.toLocaleString()} identifications
-          </p>
-          {usage.overage > 0 && (
-            <p className="mt-1 text-[11px] font-medium text-amber-800">
-              +{usage.overage.toLocaleString()} extra this period · ≈ {usage.overageCostLabel}
+      {!collapsed && (
+        <div className="border-t border-border p-3">
+          <div className="rounded-xl bg-primary/10 p-3.5">
+            <span className="inline-flex rounded-full bg-primary px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-primary-foreground">
+              {usage.planName}
+            </span>
+            <p className="mt-2 text-xs font-medium text-foreground">
+              {usage.used} / {usage.limit.toLocaleString()} identifications
             </p>
-          )}
-          <Progress
-            value={usage.percent}
-            className="mt-2 h-1.5"
-            aria-label={`${usage.percent}% of ${usage.period} identification allowance used`}
-          />
+            {usage.overage > 0 && (
+              <p className="mt-1 text-[11px] font-medium text-amber-800">
+                +{usage.overage.toLocaleString()} extra this period · ≈ {usage.overageCostLabel}
+              </p>
+            )}
+            <Progress
+              value={usage.percent}
+              className="mt-2 h-1.5"
+              aria-label={`${usage.percent}% of ${usage.period} identification allowance used`}
+            />
+          </div>
+          <SignOutButton />
         </div>
-        <SignOutButton />
-      </div>
+      )}
+      {collapsed && (
+        <div className="border-t border-border p-2">
+          <SignOutButton collapsed />
+        </div>
+      )}
     </div>
   )
 }

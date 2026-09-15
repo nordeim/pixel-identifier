@@ -1,33 +1,59 @@
 import { cn } from '@/lib/utils'
 
 /**
- * Pixelco mark — a pixelated spark. Rendered as inline SVG so it inherits
- * currentColor and works in light and dark contexts without image requests.
+ * Pixelco mark — four rounded lobes bridged by a thick diagonal stroke,
+ * filled with the brand's yellow→amber gradient. Rendered as inline SVG
+ * (overlapping shapes share one gradient fill, so they read as a single
+ * blob) — works in light and dark contexts without image requests.
  */
 export function PixelcoLogo({ className }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 24 24"
+      viewBox="0 0 240 240"
       fill="none"
       aria-hidden="true"
-      className={cn('h-6 w-6', className)}
+      className={cn('h-8 w-8', className)}
     >
-      <rect x="2" y="2" width="6" height="6" rx="1" fill="#FACC15" />
-      <rect x="16" y="2" width="6" height="6" rx="1" fill="#FACC15" />
-      <rect x="9" y="9" width="6" height="6" rx="1" fill="#F59E0B" />
-      <rect x="2" y="16" width="6" height="6" rx="1" fill="#FACC15" />
-      <rect x="16" y="16" width="6" height="6" rx="1" fill="#FACC15" />
+      <defs>
+        <linearGradient id="pixelcoGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#FFD119" />
+          <stop offset="100%" stopColor="#FFB800" />
+        </linearGradient>
+      </defs>
+      {/* Central bridge: bottom-left → top-right, rounded ends. */}
+      <line
+        x1="55"
+        y1="180"
+        x2="190"
+        y2="70"
+        stroke="url(#pixelcoGrad)"
+        strokeWidth="62"
+        strokeLinecap="round"
+      />
+      {/* Four lobes clustered around the bridge ends. */}
+      <circle cx="90" cy="85" r="40" fill="url(#pixelcoGrad)" />
+      <circle cx="195" cy="75" r="35" fill="url(#pixelcoGrad)" />
+      <circle cx="45" cy="172" r="33" fill="url(#pixelcoGrad)" />
+      <circle cx="145" cy="172" r="37" fill="url(#pixelcoGrad)" />
     </svg>
   )
 }
 
-export function PixelcoWordmark({ className }: { className?: string }) {
+export function PixelcoWordmark({
+  className,
+  collapsed = false,
+}: {
+  className?: string
+  collapsed?: boolean
+}) {
   return (
-    <span className={cn('inline-flex items-center gap-2', className)}>
+    <span className={cn('inline-flex items-center', collapsed ? 'gap-0' : 'gap-2', className)}>
       <PixelcoLogo />
-      <span className="text-lg font-extrabold tracking-tight text-foreground">
-        Pixelco
-      </span>
+      {!collapsed && (
+        <span className="text-lg font-extrabold tracking-tight text-foreground">
+          Pixelco
+        </span>
+      )}
     </span>
   )
 }

@@ -124,9 +124,9 @@
 }
 
 @layer utilities {
-  /* App shell canvas: slightly cooler than the marketing page. */
+  /* App shell canvas: cool gray like the original dashboard (#F6F7F9). */
   .bg-app {
-    background-color: #f9fafb;
+    background-color: #f6f7f9;
   }
   .text-balance {
     text-wrap: balance;

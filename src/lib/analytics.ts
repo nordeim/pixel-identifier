@@ -36,6 +36,23 @@ export interface UsageInfo {
   overageCostCents: number
 }
 
+/**
+ * Bell unread flag (round-4 plan S5): true iff an identification resolved
+ * within the last 7 days on any of the user's sites. Backs the topbar's
+ * hot-pink dot — a real signal, never decorative.
+ */
+export async function hasRecentIdentifications(userId: string): Promise<boolean> {
+  const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  const count = await db.event.count({
+    where: {
+      name: 'identification',
+      createdAt: { gte: cutoff },
+      site: { userId },
+    },
+  })
+  return count > 0
+}
+
 export async function getUsage(userId: string): Promise<UsageInfo> {
   const user = await db.user.findUnique({
     where: { id: userId },
@@ -156,18 +173,16 @@ export interface TopPage {
 }
 
 export async function getTopPages(userId: string, limit = 5): Promise<TopPage[]> {
-  const events = await db.event.findMany({
+  // Aggregated in SQL (round-4 plan R4): no more loading every pageview
+  // row into JS. Ties break deterministically by path ascending.
+  const grouped = await db.event.groupBy({
+    by: ['path'],
     where: { site: { userId }, name: 'pageview' },
-    select: { path: true },
+    _count: { _all: true },
+    orderBy: [{ _count: { path: 'desc' } }, { path: 'asc' }],
+    take: limit,
   })
-  const counts = new Map<string, number>()
-  for (const event of events) {
-    counts.set(event.path, (counts.get(event.path) ?? 0) + 1)
-  }
-  return [...counts.entries()]
-    .map(([path, views]) => ({ path, views }))
-    .sort((a, b) => b.views - a.views)
-    .slice(0, limit)
+  return grouped.map((row) => ({ path: row.path, views: row._count._all }))
 }
 
 export interface VisitorListItem {
