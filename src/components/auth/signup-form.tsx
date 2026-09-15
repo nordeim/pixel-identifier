@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { signUpAction } from '@/actions/auth'
+import type { BillingCycle, PlanId } from '@/lib/plans'
 
 /**
  * Sign-up flow: the server action creates the account, then the client signs
@@ -16,7 +17,13 @@ import { signUpAction } from '@/actions/auth'
  * and enters the dashboard. Kept in the submit handler — not an effect — so
  * state transitions are driven by the user action, not by render cycles.
  */
-export function SignUpForm() {
+export function SignUpForm({
+  intentPlan = 'free',
+  intentCycle = 'monthly',
+}: {
+  intentPlan?: PlanId
+  intentCycle?: BillingCycle
+}) {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]> | null>(null)
@@ -42,7 +49,10 @@ export function SignUpForm() {
     const password = String(formData.get('password') ?? '')
     const signInResult = await signIn('credentials', { email, password, redirect: false })
     if (signInResult?.error) {
-      // Account exists but the auto sign-in failed — continue at the login page.
+      // Account exists but the auto sign-in failed — continue at the login
+      // page. Always release the pending state so the button recovers even
+      // if navigation is slow (F-06).
+      setPending(false)
       router.push('/login?registered=1')
       return
     }
@@ -54,6 +64,9 @@ export function SignUpForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      {/* Plan intent captured from the pricing page (?plan=…&cycle=…) */}
+      <input type="hidden" name="plan" value={intentPlan} />
+      <input type="hidden" name="cycle" value={intentCycle} />
       {error && (
         <p role="alert" className="flex items-start gap-2 rounded-lg bg-red-50 px-3 py-2.5 text-sm text-red-700">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
