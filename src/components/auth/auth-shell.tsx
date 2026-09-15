@@ -1,42 +1,46 @@
 import { PixelcoLogo } from '@/components/pixelco-logo'
 
 /**
- * Shared shell for the auth pages: dark canvas with a warm radial glow and a
- * centered white card, mirroring the product's sign-in aesthetic.
+ * Shared shell for the auth pages: dark canvas with a soft blurred radial
+ * glow behind a centered white card, mirroring the live product's sign-in
+ * aesthetic. The logo sits INSIDE the card (h-10 on login, h-16 on signup)
+ * and the account-switch link lives in the form, not under the card.
  */
 export function AuthShell({
   title,
   subtitle,
   children,
-  footer,
+  logoClassName = 'h-10 w-10',
 }: {
   title: string
   subtitle: string
   children: React.ReactNode
-  footer: React.ReactNode
+  /** Live sizes: h-10 on the login card, h-16 on the signup card. */
+  logoClassName?: string
 }) {
   return (
-    <main
-      className="flex min-h-screen items-center justify-center bg-stone-950 px-4 py-10"
-      style={{
-        backgroundImage:
-          'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(180,130,40,0.22), transparent), radial-gradient(ellipse 60% 50% at 50% 110%, rgba(120,80,20,0.18), transparent)',
-      }}
-    >
-      <div className="w-full max-w-md">
-        <div className="mb-6 flex justify-center" aria-hidden="true">
-          <PixelcoLogo className="h-10 w-10" />
-        </div>
+    <main className="flex min-h-screen items-center justify-center bg-stone-950 px-4 py-10">
+      <div className="relative w-full max-w-md">
+        {/* Soft blurred radial glow behind the card (live). */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-20 -z-10 rounded-full bg-amber-500/15 blur-3xl"
+        />
+        <div className="pointer-events-none absolute inset-0 -z-20" style={{
+          backgroundImage:
+            'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(180,130,40,0.16), transparent), radial-gradient(ellipse 60% 50% at 50% 110%, rgba(120,80,20,0.12), transparent)',
+        }} />
 
         <div className="rounded-2xl bg-white p-8 shadow-2xl shadow-black/40">
+          <div className="mb-6 flex justify-center" aria-hidden="true">
+            <PixelcoLogo className={logoClassName} />
+          </div>
           <div className="mb-6 text-center">
             <h1 className="text-2xl font-extrabold tracking-tight text-foreground">{title}</h1>
             <p className="mt-1.5 text-sm text-muted-foreground">{subtitle}</p>
           </div>
           {children}
         </div>
-
-        <p className="mt-6 text-center text-sm text-stone-400">{footer}</p>
       </div>
     </main>
   )

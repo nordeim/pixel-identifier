@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { CheckCircle2 } from 'lucide-react'
 import { AuthShell, OAuthButtons, OrDivider } from '@/components/auth/auth-shell'
 import { LoginForm } from '@/components/auth/login-form'
@@ -20,14 +19,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     <AuthShell
       title="Welcome back"
       subtitle="Sign in to your Pixelco account"
-      footer={
-        <>
-          Don&apos;t have an account?{' '}
-          <Link href="/signup" className="font-semibold text-amber-400 hover:text-amber-300">
-            Sign up free
-          </Link>
-        </>
-      }
+      logoClassName="h-10 w-10"
     >
       {registered && (
         <p className="flex items-start gap-2 rounded-lg bg-teal-500/10 px-3 py-2.5 text-sm text-teal-300" role="status">

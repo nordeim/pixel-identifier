@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { AuthShell, OAuthButtons, OrDivider } from '@/components/auth/auth-shell'
 import { SignUpForm } from '@/components/auth/signup-form'
 import { PLANS, type BillingCycle, type PlanId } from '@/lib/plans'
@@ -26,14 +25,7 @@ export default async function SignUpPage({ searchParams }: SignUpPageProps) {
     <AuthShell
       title="Create your account"
       subtitle="Start identifying visitors in minutes"
-      footer={
-        <>
-          Already have an account?{' '}
-          <Link href="/login" className="font-semibold text-amber-400 hover:text-amber-300">
-            Sign in
-          </Link>
-        </>
-      }
+      logoClassName="h-16 w-16"
     >
       <OAuthButtons />
       <OrDivider />

@@ -137,11 +137,11 @@ export function SignUpForm({
 
       <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
         By signing up you agree to our{' '}
-        <Link href="/" className="underline underline-offset-2 hover:text-foreground">
+        <Link href="/terms" className="underline underline-offset-2 hover:text-foreground">
           Terms of Service
         </Link>{' '}
         and{' '}
-        <Link href="/" className="underline underline-offset-2 hover:text-foreground">
+        <Link href="/privacy" className="underline underline-offset-2 hover:text-foreground">
           Privacy Policy
         </Link>
         .
