@@ -40,8 +40,6 @@ export const PLANS: Record<PlanId, Plan> = {
     features: [
       '100 lifetime identifications',
       '1 domain',
-      'Real-time dashboard',
-      'CSV export',
     ],
   },
   starter: {

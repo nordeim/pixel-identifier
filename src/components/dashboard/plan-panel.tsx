@@ -1,9 +1,10 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import { ArrowRight, Check, Loader2, Zap } from 'lucide-react'
+import { Check, Loader2, Zap } from 'lucide-react'
 import { changePlanAction } from '@/actions/settings'
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import {
   PLANS,
@@ -65,37 +66,30 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
         <p className="text-2xl font-extrabold tabular-nums text-amber-700">{percent}%</p>
       </div>
 
-      {/* Billing toggle */}
-      <div className="flex justify-center">
-        <div
-          className="inline-flex items-center rounded-full border border-border bg-card p-1"
-          role="group"
-          aria-label="Billing cycle"
+      {/* Billing toggle — Monthly [switch] Annual, like the live app */}
+      <div className="flex items-center justify-center gap-3">
+        <span
+          className={cycle === 'monthly' ? 'text-sm font-semibold text-foreground' : 'text-sm text-muted-foreground'}
         >
-          {(['monthly', 'annual'] as const).map((option) => (
-            <button
-              key={option}
-              type="button"
-              onClick={() => setCycle(option)}
-              aria-pressed={cycle === option}
-              className={
-                cycle === option
-                  ? 'rounded-full bg-primary px-5 py-1.5 text-sm font-semibold text-primary-foreground'
-                  : 'rounded-full px-5 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-brand'
-              }
-            >
-              {option === 'monthly' ? 'Monthly' : 'Annual'}
-              {option === 'annual' && (
-                <span className={cycle === 'annual' ? 'ml-1.5 text-xs font-bold' : 'ml-1.5 text-xs font-bold text-teal-600'}>
-                  {annualDiscountLabel(PLANS.starter)}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
+          Monthly
+        </span>
+        <Switch
+          checked={cycle === 'annual'}
+          onCheckedChange={(annual) => setCycle(annual ? 'annual' : 'monthly')}
+          aria-label="Switch to annual billing"
+        />
+        <span
+          className={cycle === 'annual' ? 'text-sm font-semibold text-foreground' : 'text-sm text-muted-foreground'}
+        >
+          Annual
+        </span>
+        <span className="text-xs font-semibold text-teal-600">
+          {annualDiscountLabel(PLANS.starter)}
+        </span>
       </div>
 
-      {/* Plan cards */}
+      {/* Plan cards — current plan keeps a plain border; the popular plan
+          carries the yellow border + POPULAR badge (live emphasis model). */}
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         {PLAN_ORDER.map((id) => {
           const plan = PLANS[id]
@@ -106,15 +100,13 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
             <div
               key={plan.id}
               className={
-                isCurrent
+                plan.popular
                   ? 'relative flex flex-col rounded-xl border-2 border-primary bg-card p-6 shadow-lg shadow-primary/10'
-                  : plan.popular
-                    ? 'relative flex flex-col rounded-xl border-2 border-primary/50 bg-card p-6 shadow-sm'
-                    : 'relative flex flex-col rounded-xl border border-border bg-card p-6 shadow-sm'
+                  : 'relative flex flex-col rounded-xl border border-border bg-card p-6 shadow-sm'
               }
             >
-              {plan.popular && !isCurrent && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-primary-foreground">
+              {plan.popular && (
+                <span className="absolute right-4 top-4 rounded-full bg-foreground px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-primary">
                   Popular
                 </span>
               )}
@@ -124,33 +116,24 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
                 <span className="text-4xl font-extrabold tracking-tight text-foreground">
                   {formatPrice(monthly)}
                 </span>
-                <span className="text-sm text-muted-foreground">/mo</span>
+                {plan.monthlyPrice > 0 && <span className="text-sm text-muted-foreground">/mo</span>}
               </p>
               {cycle === 'annual' && plan.monthlyPrice > 0 && (
                 <p className="mt-1 text-xs text-muted-foreground">
                   {formatPrice(annualTotalCents(plan))} billed annually
                 </p>
               )}
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{plan.description}</p>
 
-              <p className="mt-4 rounded-lg bg-muted/60 px-3 py-2 text-xs font-semibold text-foreground">
+              <p className="mt-4 text-sm font-bold text-foreground">
                 {plan.limitPeriod === 'lifetime'
                   ? `${plan.identificationLimit} lifetime identifications`
                   : `${plan.identificationLimit.toLocaleString()} identifications / mo`}
                 {plan.overagePrice > 0 &&
                   ` then ${formatPrice(plan.overagePrice)} per extra identification`}
               </p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{plan.description}</p>
 
-              <ul className="mt-5 flex-1 space-y-2.5">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2 text-sm text-foreground">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-teal-600" aria-hidden="true" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-
-              <form action={formAction} className="mt-6">
+              <form action={formAction} className="mt-5">
                 <input type="hidden" name="plan" value={plan.id} />
                 <input type="hidden" name="cycle" value={cycle} />
                 {isCurrent ? (
@@ -165,12 +148,20 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
                       <>
                         <Zap className="mr-1.5 h-4 w-4" aria-hidden="true" />
                         Get Started
-                        <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
                       </>
                     )}
                   </Button>
                 )}
               </form>
+
+              <ul className="mt-5 flex-1 space-y-2.5">
+                {plan.features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-2 text-sm text-foreground">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" aria-hidden="true" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
             </div>
           )
         })}
