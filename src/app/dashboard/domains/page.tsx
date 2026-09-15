@@ -2,8 +2,6 @@ import type { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { requireUser } from '@/lib/analytics'
-import { db } from '@/lib/db'
-import { getPlan } from '@/lib/plans'
 import { listDomainsAction } from '@/actions/domains'
 import { DomainsPanel } from '@/components/dashboard/domains-panel'
 
@@ -14,17 +12,11 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 export default async function DomainsPage() {
-  const sessionUser = await requireUser(await getServerSession(authOptions))
-
-  const user = await db.user.findUnique({
-    where: { id: sessionUser.id },
-    select: { plan: true },
-  })
-  const plan = getPlan(user?.plan ?? 'free')
+  await requireUser(await getServerSession(authOptions))
 
   // Single query path (F-36): the page consumes the action's _count-backed
   // list instead of duplicating the Prisma query.
   const domains = await listDomainsAction()
 
-  return <DomainsPanel domains={domains} domainLimit={plan.domainLimit} planName={plan.name} />
+  return <DomainsPanel domains={domains} />
 }
