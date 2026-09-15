@@ -1,18 +1,8 @@
 'use client'
 
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Bell, Download, LogOut, Menu, PanelLeft } from 'lucide-react'
-import { signOut } from 'next-auth/react'
+import { Bell, Download, Menu, PanelLeft } from 'lucide-react'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { SidebarNav, type UsageProps } from '@/components/dashboard/sidebar-nav'
 import { toggleSidebar, useChromeState } from '@/components/dashboard/chrome-store'
@@ -94,52 +84,29 @@ export function Topbar({
 
         <Button
           variant="ghost"
-          size="icon"
           aria-label={unread ? 'New identifications' : 'No new notifications'}
           title={unread ? 'New identifications this week' : 'No new notifications'}
-          className="relative"
+          className="relative h-10 w-10"
         >
-          <Bell className="h-4.5 w-4.5" />
+          <Bell className="h-4 w-4" />
           {unread && (
             <span
-              className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full"
+              className="absolute right-2 top-2 h-2 w-2 rounded-full"
               style={{ backgroundColor: NOTIFICATION_DOT_COLOR }}
               aria-hidden="true"
             />
           )}
         </Button>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              type="button"
-              aria-label="Account menu"
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-xs font-extrabold text-white transition focus-brand hover:opacity-90"
-            >
-              {initialsForEmail(email)}
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel className="font-normal">
-              <p className="truncate text-sm font-medium text-foreground">{email}</p>
-              <p className="text-xs text-muted-foreground">{usage.planName} plan</p>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/dashboard/settings">Settings</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/dashboard/pricing">Pricing &amp; Plan</Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <button type="button" onClick={() => void signOut({ callbackUrl: '/' })}>
-                <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
-                Sign out
-              </button>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* R5-H8: the live topbar avatar is a static gradient chip — no
+            account dropdown (sign-out lives in the sidebar). */}
+        <div
+          className="flex h-8 w-8 items-center justify-center rounded-full text-[10px] font-bold text-primary-foreground gradient-primary"
+          aria-label={`Signed in as ${email}`}
+          title={email}
+        >
+          {initialsForEmail(email)}
+        </div>
       </div>
     </header>
   )
