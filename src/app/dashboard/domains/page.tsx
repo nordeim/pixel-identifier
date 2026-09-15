@@ -4,8 +4,8 @@ import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { getPlan } from '@/lib/plans'
+import { listDomainsAction } from '@/actions/domains'
 import { DomainsPanel } from '@/components/dashboard/domains-panel'
-import type { DomainDto } from '@/actions/domains'
 
 export const metadata: Metadata = {
   title: 'Domains',
@@ -23,27 +23,9 @@ export default async function DomainsPage() {
   })
   const plan = getPlan(user?.plan ?? 'free')
 
-  const sites = await db.site.findMany({
-    where: { userId: session.user.id },
-    select: {
-      id: true,
-      domain: true,
-      status: true,
-      createdAt: true,
-      visitors: { select: { id: true } },
-    },
-    orderBy: { createdAt: 'desc' },
-  })
+  // Single query path (F-36): the page consumes the action's _count-backed
+  // list instead of duplicating the Prisma query.
+  const domains = await listDomainsAction()
 
-  const domains: DomainDto[] = sites.map((site) => ({
-    id: site.id,
-    domain: site.domain,
-    status: site.status,
-    createdAt: site.createdAt.toISOString(),
-    visitorCount: site.visitors.length,
-  }))
-
-  return (
-    <DomainsPanel domains={domains} domainLimit={plan.domainLimit} planName={plan.name} />
-  )
+  return <DomainsPanel domains={domains} domainLimit={plan.domainLimit} planName={plan.name} />
 }

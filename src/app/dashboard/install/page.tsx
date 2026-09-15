@@ -7,10 +7,12 @@ import { CheckCircle2, Globe, Timer } from 'lucide-react'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { buildSnippet, collectorUrlFromHeaders } from '@/lib/snippet'
+import { pickSelectedSite } from '@/lib/sites'
 import { CopyButton } from '@/components/dashboard/copy-button'
 import { PlatformInstructions } from '@/components/dashboard/platform-instructions'
 import { Button } from '@/components/ui/button'
 import { relativeTime } from '@/lib/format'
+import { cn } from '@/lib/utils'
 
 export const metadata: Metadata = {
   title: 'Install Your Pixel',
@@ -18,11 +20,18 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic'
 
-export default async function InstallPage() {
+interface InstallPageProps {
+  searchParams: Promise<{ site?: string | string[] }>
+}
+
+export default async function InstallPage({ searchParams }: InstallPageProps) {
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) redirect('/login')
 
-  const site = await db.site.findFirst({
+  const params = await searchParams
+  const siteParam = Array.isArray(params.site) ? params.site[0] : params.site
+
+  const sites = await db.site.findMany({
     where: { userId: session.user.id },
     orderBy: { createdAt: 'asc' },
     select: { siteKey: true, domain: true, lastEventAt: true, status: true },
@@ -34,6 +43,7 @@ export default async function InstallPage() {
   const collectorUrl = collectorUrlFromHeaders(host, proto)
 
   // No domain yet: guide the user to register one first.
+  const site = pickSelectedSite(sites, siteParam ?? null)
   if (!site) {
     return (
       <div className="mx-auto max-w-lg rounded-xl border border-border bg-card p-8 text-center shadow-sm">
@@ -57,6 +67,33 @@ export default async function InstallPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
+      {/* Domain switcher: every registered domain has its own snippet. */}
+      {sites.length > 1 && (
+        <nav aria-label="Domain" className="flex flex-wrap items-center gap-2">
+          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            Domain
+          </span>
+          {sites.map((option) => {
+            const active = option.siteKey === site.siteKey
+            return (
+              <Link
+                key={option.siteKey}
+                href={`/dashboard/install?site=${option.siteKey}`}
+                aria-current={active ? 'page' : undefined}
+                className={cn(
+                  'rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors focus-brand',
+                  active
+                    ? 'border-primary bg-primary/15 text-amber-800'
+                    : 'border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground',
+                )}
+              >
+                {option.domain}
+              </Link>
+            )
+          })}
+        </nav>
+      )}
+
       <section className="rounded-xl border border-border bg-card shadow-sm" aria-labelledby="quickstart-heading">
         <div className="border-b border-border p-5">
           <h2 id="quickstart-heading" className="flex items-center gap-2 text-base font-bold text-foreground">
@@ -92,8 +129,8 @@ export default async function InstallPage() {
               <Timer className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
               <span>
                 <strong className="font-semibold">Waiting for first event…</strong>{' '}
-                Paste the snippet on your site and visit a page. This status will
-                update automatically once we receive data.
+                Paste the snippet on your site and visit a page. Refresh this page
+                to see the latest status.
               </span>
             </p>
           )}

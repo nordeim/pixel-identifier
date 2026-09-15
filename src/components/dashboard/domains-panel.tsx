@@ -1,12 +1,25 @@
 'use client'
 
-import { useActionState } from 'react'
-import { Globe, Loader2, Plus, Trash2 } from 'lucide-react'
+import { useActionState, useEffect, useRef } from 'react'
+import Link from 'next/link'
+import { Code2, Globe, Loader2, Plus, Trash2 } from 'lucide-react'
 import { addDomainAction, deleteDomainAction, type DomainDto } from '@/actions/domains'
+import type { ActionResult } from '@/lib/validation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { formatDate } from '@/lib/format'
 import { useToast } from '@/hooks/use-toast'
 
@@ -18,21 +31,43 @@ interface DomainsPanelProps {
 
 export function DomainsPanel({ domains, domainLimit, planName }: DomainsPanelProps) {
   const [state, formAction, pending] = useActionState(addDomainAction, null)
+  const [deleteState, deleteFormAction] = useActionState(deleteDomainAction, null)
   const { toast } = useToast()
 
-  const atLimit = domainLimit !== -1 && domains.length >= domainLimit
-
-  function notifyResult() {
-    if (state && !state.ok) {
+  // Toasts fire from an effect keyed on state IDENTITY, never from onSubmit:
+  // onSubmit runs before the action resolves and would re-announce the
+  // previous submission's result (F-07).
+  const lastAddResult = useRef<ActionResult<DomainDto> | null>(null)
+  useEffect(() => {
+    if (state === null || state === lastAddResult.current) return
+    lastAddResult.current = state
+    if (state.ok) {
+      toast({ title: 'Domain added successfully' })
+    } else {
       toast({
         title: 'Could not add domain',
         description: state.error.message,
         variant: 'destructive',
       })
-    } else if (state && state.ok) {
-      toast({ title: 'Domain added successfully' })
     }
-  }
+  }, [state, toast])
+
+  const lastDeleteResult = useRef<ActionResult<{ deleted: true }> | null>(null)
+  useEffect(() => {
+    if (deleteState === null || deleteState === lastDeleteResult.current) return
+    lastDeleteResult.current = deleteState
+    if (deleteState.ok) {
+      toast({ title: 'Domain deleted', description: 'Its visitors and events were removed.' })
+    } else {
+      toast({
+        title: 'Could not delete domain',
+        description: deleteState.error.message,
+        variant: 'destructive',
+      })
+    }
+  }, [deleteState, toast])
+
+  const atLimit = domainLimit !== -1 && domains.length >= domainLimit
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -44,7 +79,7 @@ export function DomainsPanel({ domains, domainLimit, planName }: DomainsPanelPro
           </p>
         </CardHeader>
         <CardContent>
-          <form action={formAction} className="flex flex-col gap-2.5 sm:flex-row" onSubmit={notifyResult}>
+          <form action={formAction} className="flex flex-col gap-2.5 sm:flex-row">
             <div className="relative flex-1">
               <Globe
                 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
@@ -81,9 +116,9 @@ export function DomainsPanel({ domains, domainLimit, planName }: DomainsPanelPro
             <p className="mt-3 rounded-lg bg-primary/15 px-3.5 py-2.5 text-xs leading-relaxed text-amber-800">
               The {planName} plan includes {domainLimit}{' '}
               {domainLimit === 1 ? 'domain' : 'domains'}.{' '}
-              <a href="/dashboard/pricing" className="font-semibold underline underline-offset-2">
+              <Link href="/dashboard/pricing" className="font-semibold underline underline-offset-2">
                 Upgrade to add more
-              </a>
+              </Link>
               .
             </p>
           )}
@@ -133,18 +168,53 @@ export function DomainsPanel({ domains, domainLimit, planName }: DomainsPanelPro
                       Pending
                     </Badge>
                   )}
-                  <form action={deleteDomainAction}>
-                    <input type="hidden" name="siteId" value={domain.id} />
-                    <Button
-                      type="submit"
-                      variant="ghost"
-                      size="icon"
-                      aria-label={`Delete ${domain.domain}`}
-                      className="text-muted-foreground hover:text-red-600"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </form>
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="icon"
+                    aria-label={`Install pixel on ${domain.domain}`}
+                    className="text-muted-foreground hover:text-amber-700"
+                  >
+                    <Link href={`/dashboard/install?site=${domain.siteKey}`}>
+                      <Code2 className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                  {/* Deleting cascades visitors + events: always confirm (F-26). */}
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Delete ${domain.domain}`}
+                        className="text-muted-foreground hover:text-red-600"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete {domain.domain}?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This permanently removes the domain, its {domain.visitorCount}{' '}
+                          {domain.visitorCount === 1 ? 'visitor' : 'visitors'}, and every recorded
+                          event. This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <form action={deleteFormAction}>
+                          <input type="hidden" name="siteId" value={domain.id} />
+                          <AlertDialogAction
+                            type="submit"
+                            className="bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600"
+                          >
+                            Delete domain
+                          </AlertDialogAction>
+                        </form>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </li>
             ))}

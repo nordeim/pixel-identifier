@@ -10,6 +10,7 @@ import { getPlan } from '@/lib/plans'
 
 export interface DomainDto {
   id: string
+  siteKey: string
   domain: string
   status: string
   createdAt: string
@@ -20,6 +21,12 @@ async function requireUserId(): Promise<string> {
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) throw new Error('UNAUTHENTICATED')
   return session.user.id
+}
+
+function revalidateDashboardPaths(): void {
+  revalidatePath('/dashboard/domains')
+  revalidatePath('/dashboard/install')
+  revalidatePath('/dashboard')
 }
 
 export async function addDomainAction(
@@ -48,12 +55,12 @@ export async function addDomainAction(
 
   const user = await db.user.findUnique({
     where: { id: userId },
-    select: { plan: true, sites: { select: { id: true } } },
+    select: { plan: true, _count: { select: { sites: true } } },
   })
   if (!user) return fail('UNAUTHENTICATED', 'Account not found.')
 
   const plan = getPlan(user.plan)
-  if (plan.domainLimit !== -1 && user.sites.length >= plan.domainLimit) {
+  if (plan.domainLimit !== -1 && user._count.sites >= plan.domainLimit) {
     return fail('FORBIDDEN', `The ${plan.name} plan includes ${plan.domainLimit} domain${plan.domainLimit === 1 ? '' : 's'}. Upgrade to add more.`)
   }
 
@@ -68,14 +75,13 @@ export async function addDomainAction(
     data: { userId, domain, siteKey: generateSiteKey(), status: 'pending' },
   })
 
-  revalidatePath('/dashboard/domains')
-  revalidatePath('/dashboard/install')
-  revalidatePath('/dashboard')
+  revalidateDashboardPaths()
 
   return {
     ok: true,
     data: {
       id: site.id,
+      siteKey: site.siteKey,
       domain: site.domain,
       status: site.status,
       createdAt: site.createdAt.toISOString(),
@@ -84,17 +90,26 @@ export async function addDomainAction(
   }
 }
 
-export async function deleteDomainAction(formData: FormData): Promise<void> {
-  const userId = await requireUserId()
+export async function deleteDomainAction(
+  _prev: ActionResult<{ deleted: true }> | null,
+  formData: FormData,
+): Promise<ActionResult<{ deleted: true }>> {
+  let userId: string
+  try {
+    userId = await requireUserId()
+  } catch {
+    return fail('UNAUTHENTICATED', 'You need to be signed in.')
+  }
+
   const siteId = String(formData.get('siteId') ?? '')
-  if (!siteId) return
+  if (!siteId) return fail('VALIDATION', 'Missing domain id.')
 
   // Ownership check prevents cross-tenant deletion.
-  await db.site.deleteMany({ where: { id: siteId, userId } })
+  const deleted = await db.site.deleteMany({ where: { id: siteId, userId } })
+  if (deleted.count === 0) return fail('NOT_FOUND', 'Domain not found.')
 
-  revalidatePath('/dashboard/domains')
-  revalidatePath('/dashboard/install')
-  revalidatePath('/dashboard')
+  revalidateDashboardPaths()
+  return { ok: true, data: { deleted: true } }
 }
 
 export async function listDomainsAction(): Promise<DomainDto[]> {
@@ -103,19 +118,21 @@ export async function listDomainsAction(): Promise<DomainDto[]> {
     where: { userId },
     select: {
       id: true,
+      siteKey: true,
       domain: true,
       status: true,
       createdAt: true,
-      lastEventAt: true,
-      visitors: { select: { id: true, email: true } },
+      // _count aggregates in SQL instead of loading child rows (F-19).
+      _count: { select: { visitors: true } },
     },
     orderBy: { createdAt: 'desc' },
   })
   return sites.map((site) => ({
     id: site.id,
+    siteKey: site.siteKey,
     domain: site.domain,
     status: site.status,
     createdAt: site.createdAt.toISOString(),
-    visitorCount: site.visitors.length,
+    visitorCount: site._count.visitors,
   }))
 }
