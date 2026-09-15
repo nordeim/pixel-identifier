@@ -23,8 +23,8 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
         <AreaChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
           <defs>
             <linearGradient id="identifiedFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#2DD4BF" stopOpacity={0.12} />
-              <stop offset="100%" stopColor="#2DD4BF" stopOpacity={0} />
+              <stop offset="0%" stopColor="hsl(172 66% 50%)" stopOpacity={0.12} />
+              <stop offset="100%" stopColor="hsl(172 66% 50%)" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#E7E5DF" vertical />
@@ -56,7 +56,7 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
           <Area
             type="monotone"
             dataKey="pageviews"
-            stroke="#9333EA"
+            stroke="hsl(262 83% 58%)"
             strokeWidth={2}
             fill="none"
             dot={false}
@@ -65,7 +65,7 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
           <Area
             type="monotone"
             dataKey="identified"
-            stroke="#2DD4BF"
+            stroke="hsl(172 66% 50%)"
             strokeWidth={2}
             fill="url(#identifiedFill)"
             dot={false}

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getServerSession } from 'next-auth'
-import { ArrowUpRight, Eye, Globe, Mail, UserPlus } from 'lucide-react'
+import { ArrowUpRight, Eye, Globe, Mail, Users } from 'lucide-react'
 import { authOptions } from '@/lib/auth'
 import {
   requireUser,
@@ -49,7 +49,7 @@ export default async function OverviewPage() {
       label: 'New This Week',
       value: stats.newThisWeek.toLocaleString(),
       sub: `vs. ${stats.lastWeek} last week`,
-      icon: UserPlus,
+      icon: Users,
     },
     {
       label: 'Active Domains',
@@ -66,16 +66,16 @@ export default async function OverviewPage() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {kpis.map((kpi) => (
           <Card key={kpi.label} className="shadow-sm">
-            <CardContent className="p-5">
+            <CardContent className="p-6 pt-5 pb-4 px-5">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <p className="text-xs font-medium tracking-wider text-muted-foreground">
                   {kpi.label}
                 </p>
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15" aria-hidden="true">
-                  <kpi.icon className="h-4 w-4 text-amber-600" />
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10" aria-hidden="true">
+                  <kpi.icon className="h-4 w-4 text-primary" />
                 </span>
               </div>
-              <p className="mt-3 text-3xl font-extrabold tabular-nums tracking-tight text-foreground">
+              <p className="mt-3 text-3xl font-display font-bold tabular-nums tracking-tight text-foreground">
                 {kpi.value}
               </p>
               <p className="mt-1 text-xs text-muted-foreground">{kpi.sub}</p>
@@ -87,7 +87,7 @@ export default async function OverviewPage() {
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="shadow-sm lg:col-span-2">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base font-bold text-foreground">
+            <CardTitle className="font-display text-base font-semibold tracking-tight text-foreground">
               Visitor Identification Trend
             </CardTitle>
           </CardHeader>
@@ -98,7 +98,7 @@ export default async function OverviewPage() {
 
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base font-bold text-foreground">Top Pages</CardTitle>
+            <CardTitle className="font-display text-base font-semibold tracking-tight text-foreground">Top Pages</CardTitle>
           </CardHeader>
           <CardContent>
             {topPages.length === 0 ? (
@@ -133,7 +133,7 @@ export default async function OverviewPage() {
 
       <Card className="shadow-sm">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base font-bold text-foreground">
+          <CardTitle className="font-display text-base font-semibold tracking-tight text-foreground">
             Recent Identifications
           </CardTitle>
           <div data-slot="card-action" className="self-center">
@@ -168,7 +168,7 @@ export default async function OverviewPage() {
                       <td className="py-3 pr-4">
                         <span className="flex items-center gap-2.5">
                           <span
-                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-extrabold text-white"
+                            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full gradient-primary text-[10px] font-bold text-white"
                             aria-hidden="true"
                           >
                             {initialsForEmail(item.email)}
@@ -183,7 +183,7 @@ export default async function OverviewPage() {
                         <span className="flex items-center gap-2">
                           <Progress
                             value={item.confidence ?? 0}
-                            className="h-1.5 w-16 [&>div]:bg-teal-500"
+                            className="h-1.5 w-16 [&>div]:bg-neon-green"
                             aria-hidden="true"
                           />
                           <span className="text-xs font-semibold tabular-nums text-foreground">
