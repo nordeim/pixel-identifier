@@ -55,7 +55,7 @@ import tempfile
 
 DEFAULT_REMOTE = "git@github.com:nordeim/design-brand-strategy.git"
 DEFAULT_BRANCH = "main"
-KEY_MARKER = "-----BEGIN OPENSSH PRIVATE KEY-----"
+KEY_MARKER = "BEGIN OPENSSH PRIVATE KEY"
 
 
 def die(code: int, message: str) -> None:
