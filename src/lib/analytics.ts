@@ -293,7 +293,7 @@ export async function getRecentIdentifications(
   limit = 5,
 ): Promise<RecentIdentification[]> {
   const events = await db.event.findMany({
-    where: { site: { userId }, name: 'identification' },
+    where: { site: { userId }, name: 'identification', visitor: { email: { not: null } } },
     select: {
       id: true,
       path: true,
@@ -303,13 +303,69 @@ export async function getRecentIdentifications(
     orderBy: { createdAt: 'desc' },
     take: limit,
   })
-  return events
-    .filter((e) => e.visitor.email !== null)
-    .map((e) => ({
-      id: e.id,
-      email: e.visitor.email as string,
-      path: e.path,
-      confidence: e.visitor.confidence,
-      createdAt: e.createdAt,
-    }))
+  return events.map((e) => ({
+    id: e.id,
+    email: e.visitor.email as string,
+    path: e.path,
+    confidence: e.visitor.confidence,
+    createdAt: e.createdAt,
+  }))
+}
+
+export interface ActivityListItem {
+  id: string
+  name: string
+  domain: string
+  path: string
+  email: string | null
+  anonymousId: string | null
+  createdAt: string
+}
+
+export interface ActivityPage {
+  events: ActivityListItem[]
+  /** Cursor for the next older page; null when the log is exhausted. */
+  nextCursor: string | null
+}
+
+/**
+ * Activity-log query (F-25): the API route and the page share this single
+ * seam. Cursor pagination keeps older history reachable — the fixed
+ * 60-event window used to make anything older permanently invisible.
+ */
+export async function listActivity(
+  userId: string,
+  opts: { take?: number; cursor?: string } = {},
+): Promise<ActivityPage> {
+  const take = Math.min(100, Math.max(1, opts.take ?? 60))
+  const events = await db.event.findMany({
+    where: { site: { userId } },
+    select: {
+      id: true,
+      name: true,
+      path: true,
+      createdAt: true,
+      visitor: { select: { email: true, anonymousId: true } },
+      site: { select: { domain: true } },
+    },
+    orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+    take: take + 1,
+    ...(opts.cursor ? { cursor: { id: opts.cursor }, skip: 1 } : {}),
+  })
+
+  const hasMore = events.length > take
+  const page = hasMore ? events.slice(0, take) : events
+
+  return {
+    events: page.map((event) => ({
+      id: event.id,
+      name: event.name,
+      domain: event.site.domain,
+      path: event.path,
+      email: event.visitor.email,
+      anonymousId: event.visitor.email ? null : event.visitor.anonymousId.slice(0, 12),
+      createdAt: event.createdAt.toISOString(),
+    })),
+    nextCursor: hasMore ? page[page.length - 1].id : null,
+  }
 }
