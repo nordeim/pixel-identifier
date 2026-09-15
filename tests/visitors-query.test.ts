@@ -31,6 +31,9 @@ async function seed() {
         : null,
       type: isIdentified ? (isCompany ? 'company' : 'individual') : null,
       companyName: isCompany ? `Company ${i} Ltd` : null,
+      city: isCompany ? 'San Francisco' : null,
+      state: isCompany ? 'CA' : null,
+      country: isCompany ? 'US' : null,
       source: i % 3 === 0 ? 'search' : i % 3 === 1 ? 'direct' : 'social',
       confidence: isIdentified ? 70 + (i % 3) * 10 : null, // 70 / 80 / 90
       pageviews: 1 + (i % 5),
@@ -112,6 +115,21 @@ describe('listVisitors (F-24: server-side search, filters, pagination)', () => {
     expect(result.rows).toHaveLength(5)
     expect(result.total).toBe(12)
     expect(result.pageCount).toBe(3)
+  })
+
+  it('exposes the B2B location fields for company display (R5-H4)', async () => {
+    const { user } = await seed()
+    const companies = await listVisitors(user.id, { type: 'company', page: 1, pageSize: 25 })
+    expect(companies.rows.length).toBe(8)
+    for (const row of companies.rows) {
+      expect(`${row.city}, ${row.state}, ${row.country}`).toBe('San Francisco, CA, US')
+    }
+
+    const individuals = await listVisitors(user.id, { type: 'individual', page: 1, pageSize: 25 })
+    for (const row of individuals.rows) {
+      expect(row.city).toBeNull()
+      expect(row.country).toBeNull()
+    }
   })
 
   it('clamps out-of-range pages safely', async () => {

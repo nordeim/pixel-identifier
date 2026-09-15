@@ -187,6 +187,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             email: identity.email,
             type: identity.type,
             companyName: identity.companyName,
+            city: identity.city,
+            state: identity.state,
+            country: identity.country,
             confidence: identity.confidence,
           },
         })
@@ -211,7 +214,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             // without being counted.
             await db.visitor.updateMany({
               where: { id: visitor.id, email: identity.email },
-              data: { email: null, type: null, companyName: null, confidence: null },
+              data: { email: null, type: null, companyName: null, city: null, state: null, country: null, confidence: null },
             })
           }
         }

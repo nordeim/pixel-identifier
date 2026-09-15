@@ -193,6 +193,9 @@ export interface VisitorListItem {
   anonymousId: string
   type: string | null
   companyName: string | null
+  city: string | null
+  state: string | null
+  country: string | null
   source: string
   confidence: number | null
   status: string
@@ -227,6 +230,9 @@ const VISITOR_SELECT = {
   anonymousId: true,
   type: true,
   companyName: true,
+  city: true,
+  state: true,
+  country: true,
   source: true,
   confidence: true,
   status: true,
@@ -301,6 +307,9 @@ export async function listVisitors(
       anonymousId: visitor.anonymousId,
       type: visitor.type,
       companyName: visitor.companyName,
+      city: visitor.city,
+      state: visitor.state,
+      country: visitor.country,
       source: visitor.source,
       confidence: visitor.confidence,
       status: visitor.status,

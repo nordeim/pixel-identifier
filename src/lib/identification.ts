@@ -43,6 +43,38 @@ const COMPANY_TOKENS = [
 
 const COMPANY_SUFFIXES = ['corp', 'group', 'labs', 'works', 'systems', 'digital', 'industries', 'tech']
 
+/**
+ * B2B geo catalogue (R5-H4): the live product resolves company visitors to
+ * an office location ("Hong Kong, Hong Kong, HK") shown in the Confidence
+ * column. Entries follow the "City, State, CC" shape of the live display.
+ */
+const B2B_LOCATIONS: ReadonlyArray<{ city: string; state: string; country: string }> = [
+  { city: 'New York', state: 'NY', country: 'US' },
+  { city: 'San Francisco', state: 'CA', country: 'US' },
+  { city: 'Austin', state: 'TX', country: 'US' },
+  { city: 'Chicago', state: 'IL', country: 'US' },
+  { city: 'Seattle', state: 'WA', country: 'US' },
+  { city: 'Denver', state: 'CO', country: 'US' },
+  { city: 'Boston', state: 'MA', country: 'US' },
+  { city: 'London', state: 'England', country: 'GB' },
+  { city: 'Manchester', state: 'England', country: 'GB' },
+  { city: 'Dublin', state: 'Leinster', country: 'IE' },
+  { city: 'Paris', state: 'Île-de-France', country: 'FR' },
+  { city: 'Berlin', state: 'Berlin', country: 'DE' },
+  { city: 'Munich', state: 'Bavaria', country: 'DE' },
+  { city: 'Amsterdam', state: 'North Holland', country: 'NL' },
+  { city: 'Stockholm', state: 'Stockholm', country: 'SE' },
+  { city: 'Copenhagen', state: 'Capital Region', country: 'DK' },
+  { city: 'Toronto', state: 'Ontario', country: 'CA' },
+  { city: 'Vancouver', state: 'BC', country: 'CA' },
+  { city: 'Singapore', state: 'Singapore', country: 'SG' },
+  { city: 'Hong Kong', state: 'Hong Kong', country: 'HK' },
+  { city: 'Tokyo', state: 'Tokyo', country: 'JP' },
+  { city: 'Sydney', state: 'NSW', country: 'AU' },
+  { city: 'Melbourne', state: 'VIC', country: 'AU' },
+  { city: 'São Paulo', state: 'São Paulo', country: 'BR' },
+]
+
 /** Multiplier turned into a stable 32-bit unsigned integer. */
 function seedFrom(...parts: string[]): number {
   const digest = createHash('sha256').update(parts.join('|')).digest()
@@ -70,6 +102,10 @@ export interface ResolvedIdentity {
   type: 'individual' | 'company'
   companyName: string | null
   confidence: number
+  /** B2B office location — the live Confidence column shows "City, State, CC" for companies. */
+  city: string | null
+  state: string | null
+  country: string | null
 }
 
 /**
@@ -101,7 +137,19 @@ export function resolveIdentity(anonymousId: string, siteKey: string): ResolvedI
         : style < 0.8
           ? `${firstName}.${lastName}@${domain}`
           : `${firstName[0]}${lastName}@${domain}`
-    return { email, type: 'company', companyName: company, confidence }
+    // Location draws are APPENDED after every historical draw so existing
+    // email/company/confidence decisions are byte-identical — the new
+    // columns are purely additive (round-5 plan, A5).
+    const location = pick(B2B_LOCATIONS, rand)
+    return {
+      email,
+      type: 'company',
+      companyName: company,
+      confidence,
+      city: location.city,
+      state: location.state,
+      country: location.country,
+    }
   }
 
   const provider = pick(CONSUMER_DOMAINS, rand)
@@ -112,7 +160,7 @@ export function resolveIdentity(anonymousId: string, siteKey: string): ResolvedI
       : style < 0.75
         ? `${firstName}${lastName}${Math.floor(rand() * 900 + 10)}@${provider}`
         : `${firstName}.${lastName[0]}@${provider}`
-  return { email, type: 'individual', companyName: null, confidence }
+  return { email, type: 'individual', companyName: null, confidence, city: null, state: null, country: null }
 }
 
 /** Derive an attribution source from the document referrer. */

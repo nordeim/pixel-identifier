@@ -20,6 +20,10 @@ interface VisitorSpec {
   email: string | null
   type?: 'individual' | 'company'
   companyName?: string
+  /** B2B office location — "City, State, CC" like the live resolver output. */
+  city?: string
+  state?: string
+  country?: string
   confidence?: number
   source: string
   paths: string[]
@@ -41,6 +45,9 @@ const VISITORS: VisitorSpec[] = [
     email: 'marcus.smith@acmecorp.com',
     type: 'company',
     companyName: 'Acme Corp',
+    city: 'San Francisco',
+    state: 'CA',
+    country: 'US',
     confidence: 85,
     source: 'direct',
     paths: ['/', '/pricing'],
@@ -136,6 +143,9 @@ async function main(): Promise<void> {
         email: spec.email,
         type: spec.type ?? null,
         companyName: spec.companyName ?? null,
+        city: spec.city ?? null,
+        state: spec.state ?? null,
+        country: spec.country ?? null,
         confidence: spec.confidence ?? null,
         source: spec.source,
         pageviews: spec.paths.length,
