@@ -7,9 +7,10 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   /* Typography (R5-H1): Inter body, Space Grotesk display (the live's
-  font-display utility), Geist Mono for code/paths. */
+  font-display utility), DM Sans marketing, Geist Mono for code/paths. */
   --font-sans: var(--font-inter);
   --font-display: var(--font-space-grotesk);
+  --font-marketing: var(--font-dm-sans);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);

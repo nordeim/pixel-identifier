@@ -14,7 +14,9 @@ export default function MarketingLayout({
   children: React.ReactNode
 }>) {
   return (
-    <div className="flex min-h-screen flex-col">
+    // font-marketing (R5-H1): the live pixelco.io renders DM Sans on every
+    // marketing surface while the app keeps Inter.
+    <div className="flex min-h-screen flex-col font-marketing">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">{children}</main>
