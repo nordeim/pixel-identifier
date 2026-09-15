@@ -66,8 +66,10 @@ export interface OverviewStats {
   newThisWeek: number
   lastWeek: number
   matchRate: number
+  /** Verified domains only — pending sites are not "active" (F-29). */
   activeDomains: number
   verifiedDomains: number
+  pendingDomains: number
 }
 
 export async function getOverviewStats(userId: string): Promise<OverviewStats> {
@@ -84,14 +86,17 @@ export async function getOverviewStats(userId: string): Promise<OverviewStats> {
     db.site.findMany({ where: { userId }, select: { status: true } }),
   ])
 
+  const verifiedDomains = sites.filter((s) => s.status === 'verified').length
+
   return {
     totalVisitors,
     emailsIdentified,
     newThisWeek,
     lastWeek,
     matchRate: totalVisitors > 0 ? Math.round((emailsIdentified / totalVisitors) * 1000) / 10 : 0,
-    activeDomains: sites.length,
-    verifiedDomains: sites.filter((s) => s.status === 'verified').length,
+    activeDomains: verifiedDomains,
+    verifiedDomains,
+    pendingDomains: sites.length - verifiedDomains,
   }
 }
 
@@ -103,8 +108,13 @@ export interface TrendPoint {
 }
 
 export async function getTrend(userId: string, days = 14): Promise<TrendPoint[]> {
-  const since = new Date(Date.now() - (days - 1) * 86_400_000)
-  since.setHours(0, 0, 0, 0)
+  // Anchor the window to UTC midnight and bucket by UTC date keys, so the
+  // chart is identical on every server regardless of its local timezone
+  // (F-04: local-midnight anchoring shifted buckets by one day on servers
+  // running ahead of UTC).
+  const now = new Date()
+  const todayUtcMidnight = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+  const since = new Date(todayUtcMidnight - (days - 1) * 86_400_000)
 
   const events = await db.event.findMany({
     where: { site: { userId }, createdAt: { gte: since } },
@@ -117,7 +127,7 @@ export async function getTrend(userId: string, days = 14): Promise<TrendPoint[]>
     const key = d.toISOString().slice(0, 10)
     buckets.set(key, {
       date: key,
-      label: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      label: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }),
       pageviews: 0,
       identified: 0,
     })

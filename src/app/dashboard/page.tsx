@@ -54,7 +54,10 @@ export default async function OverviewPage() {
     {
       label: 'Active Domains',
       value: stats.activeDomains.toString(),
-      sub: `${stats.verifiedDomains} verified`,
+      sub:
+        stats.pendingDomains > 0
+          ? `${stats.pendingDomains} pending review`
+          : `${stats.verifiedDomains} verified`,
       icon: Globe,
     },
   ]
