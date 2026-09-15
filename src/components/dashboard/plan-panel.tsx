@@ -47,11 +47,11 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      {/* Current status banner */}
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-primary/20 px-5 py-4">
+      {/* Live summary: a plain flex row — no banner card (R5-H6). */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-bold text-foreground">
-            You&apos;re on the {PLANS[shownPlan].name} plan
+          <p className="text-sm font-semibold text-foreground">
+            You&apos;re on the <span className="text-gradient-primary capitalize">{PLANS[shownPlan].name}</span> plan
           </p>
           <p className="mt-0.5 text-xs text-muted-foreground">
             {used} of {limit.toLocaleString()} identifications used ({period})
@@ -62,7 +62,19 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
             </p>
           )}
         </div>
-        <p className="text-2xl font-extrabold tabular-nums text-amber-700">{percent}%</p>
+        <div className="flex items-center gap-2">
+          <div
+            className="h-1.5 w-32 overflow-hidden rounded-full bg-muted"
+            role="progressbar"
+            aria-valuenow={percent}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Identifications used"
+          >
+            <div className="h-full gradient-primary" style={{ width: `${Math.min(percent, 100)}%` }} />
+          </div>
+          <span className="text-xs font-semibold text-muted-foreground">{percent}%</span>
+        </div>
       </div>
 
       {/* Billing toggle — Monthly [switch] Annual, like the live app */}
@@ -84,8 +96,8 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
         </span>
       </div>
 
-      {/* Plan cards — current plan keeps a plain border; the popular plan
-          carries the yellow border + POPULAR badge (live emphasis model). */}
+      {/* Plan cards — the popular plan carries the live emphasis model:
+          border-primary + ring + top gradient strip + inline POPULAR pill. */}
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         {PLAN_ORDER.map((id) => {
           const plan = PLANS[id]
@@ -97,76 +109,99 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
               key={plan.id}
               className={
                 plan.popular
-                  ? 'relative flex flex-col rounded-xl border-2 border-primary bg-card p-6 shadow-lg shadow-primary/10'
-                  : 'relative flex flex-col rounded-xl border border-border bg-card p-6 shadow-sm'
+                  ? 'relative flex flex-col overflow-hidden rounded-lg border border-primary bg-card shadow-md ring-1 ring-primary/20 scale-[1.02]'
+                  : 'relative flex flex-col rounded-lg border border-border bg-card shadow-sm'
               }
             >
-              {plan.popular && (
-                <span className="absolute right-4 top-4 rounded-full bg-foreground px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-primary">
-                  Popular
-                </span>
-              )}
-
-              <h3 className="text-lg font-bold text-foreground">{plan.name}</h3>
-              <p className="mt-3 flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold tracking-tight text-foreground">
-                  {formatPrice(monthly)}
-                </span>
-                {plan.monthlyPrice > 0 && <span className="text-sm text-muted-foreground">/mo</span>}
-              </p>
-              {cycle === 'annual' && plan.monthlyPrice > 0 && (
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {formatPrice(annualTotalCents(plan))} billed annually
+              {plan.popular && <div className="h-1 gradient-primary" aria-hidden="true" />}
+              <div className="flex flex-1 flex-col p-6">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="font-display text-lg font-bold text-foreground">{plan.name}</h3>
+                  {plan.popular && (
+                    <span className="gradient-primary rounded-full px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-primary-foreground">
+                      Popular
+                    </span>
+                  )}
+                </div>
+                <p className="mt-3 flex items-baseline gap-1">
+                  <span className="font-display text-3xl font-bold tracking-tight text-foreground xl:text-4xl">
+                    {formatPrice(monthly)}
+                  </span>
+                  {plan.monthlyPrice > 0 && <span className="text-sm text-muted-foreground">/mo</span>}
                 </p>
-              )}
-
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{plan.description}</p>
-              <p className="mt-2 text-sm font-semibold text-foreground">
-                {plan.limitPeriod === 'lifetime'
-                  ? `${plan.identificationLimit} lifetime identifications`
-                  : `${plan.identificationLimit.toLocaleString()} identifications / mo`}
-                {plan.overagePrice > 0 &&
-                  ` then ${formatPrice(plan.overagePrice)} per extra identification`}
-              </p>
-
-              <form action={formAction} className="mt-5">
-                <input type="hidden" name="plan" value={plan.id} />
-                <input type="hidden" name="cycle" value={cycle} />
-                {isCurrent ? (
-                  <Button type="button" disabled variant="secondary" className="w-full font-semibold">
-                    Current Plan
-                  </Button>
-                ) : (
-                  <Button type="submit" disabled={pending} className="w-full font-semibold">
-                    {pending ? (
-                      <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                    ) : (
-                      <>
-                        <Zap className="mr-1.5 h-4 w-4" aria-hidden="true" />
-                        Get Started
-                      </>
-                    )}
-                  </Button>
+                {cycle === 'annual' && plan.monthlyPrice > 0 && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {formatPrice(annualTotalCents(plan))} billed annually
+                  </p>
                 )}
-              </form>
 
-              <ul className="mt-5 flex-1 space-y-2.5">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2 text-sm text-foreground">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" aria-hidden="true" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
+                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{plan.description}</p>
+
+                {/* Live quota block: number/label split under a hairline. */}
+                <div className="mt-3 border-t pt-3">
+                  <p className="text-sm font-semibold text-foreground">
+                    {plan.identificationLimit.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {plan.limitPeriod === 'lifetime'
+                      ? 'lifetime identifications'
+                      : 'identifications / mo'}
+                  </p>
+                  {plan.overagePrice > 0 && (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      then {formatPrice(plan.overagePrice)} per extra identification
+                    </p>
+                  )}
+                </div>
+
+                <form action={formAction} className="mt-5">
+                  <input type="hidden" name="plan" value={plan.id} />
+                  <input type="hidden" name="cycle" value={cycle} />
+                  {isCurrent ? (
+                    <Button type="button" disabled variant="secondary" className="h-10 w-full font-semibold">
+                      Current Plan
+                    </Button>
+                  ) : (
+                    <Button
+                      type="submit"
+                      disabled={pending}
+                      className="h-10 w-full gradient-primary font-semibold text-primary-foreground shadow-lg glow-primary transition-all duration-300 hover:opacity-90"
+                    >
+                      {pending ? (
+                        <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                      ) : (
+                        <>
+                          <Zap className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
+                          Get Started
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </form>
+
+                <ul className="mt-5 flex-1 space-y-2.5">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <span
+                        className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/10"
+                        aria-hidden="true"
+                      >
+                        <Check className="h-2.5 w-2.5 text-primary" />
+                      </span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           )
         })}
       </div>
 
       {/* Enterprise */}
-      <div className="flex flex-col items-center justify-between gap-4 rounded-xl border border-border bg-card p-6 shadow-sm sm:flex-row">
+      <div className="flex flex-col items-center justify-between gap-4 rounded-lg border border-border bg-card p-6 shadow-sm sm:flex-row">
         <div>
-          <h3 className="text-lg font-bold text-foreground">Need 7,500+ identifications?</h3>
+          <h3 className="font-display text-lg font-bold text-foreground">Need 7,500+ identifications?</h3>
           <p className="mt-1 text-sm text-muted-foreground">
             Custom pricing with volume discounts, SLA, dedicated infrastructure,
             and white-glove onboarding.
@@ -178,8 +213,8 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
       </div>
 
       {/* FAQ */}
-      <section aria-labelledby="plan-faq-heading" className="rounded-xl border border-border bg-card p-6 shadow-sm">
-        <h2 id="plan-faq-heading" className="text-center text-base font-bold text-foreground">
+      <section aria-labelledby="plan-faq-heading" className="rounded-lg border border-border bg-card p-6 shadow-sm">
+        <h2 id="plan-faq-heading" className="text-center font-display text-base font-bold text-foreground">
           Frequently Asked Questions
         </h2>
         <Accordion type="single" collapsible className="mt-3">
