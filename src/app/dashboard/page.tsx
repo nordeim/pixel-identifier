@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { getServerSession } from 'next-auth'
 import { ArrowRight, Eye, Globe, Mail, UserPlus } from 'lucide-react'
 import { authOptions } from '@/lib/auth'
@@ -138,13 +139,13 @@ export default async function OverviewPage() {
             </CardTitle>
             <p className="text-xs text-muted-foreground">Latest emails resolved</p>
           </div>
-          <a
+          <Link
             href="/dashboard/visitors"
             className="flex items-center gap-1 text-sm font-semibold text-amber-600 hover:text-amber-700 focus-brand"
           >
             View all
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </a>
+          </Link>
         </CardHeader>
         <CardContent>
           {recent.length === 0 ? (

@@ -13,12 +13,26 @@ export function fail(
   return { ok: false, error: { code, message, fieldErrors } }
 }
 
+/**
+ * Field-level error map from a failed safeParse — the Zod 4 replacement
+ * for error.flatten().fieldErrors, without casts: undefined entries are
+ * dropped so consumers always receive string[] values.
+ */
+export function fieldErrorsOf<T>(error: z.ZodError<T>): Record<string, string[]> {
+  const { fieldErrors } = z.flattenError(error)
+  const out: Record<string, string[]> = {}
+  for (const [field, messages] of Object.entries(fieldErrors)) {
+    if (Array.isArray(messages) && messages.length > 0) out[field] = messages
+  }
+  return out
+}
+
 export const emailSchema = z
   .string()
   .trim()
   .min(1, 'Email is required')
-  .email('Enter a valid email address')
   .max(254)
+  .check(z.email('Enter a valid email address'))
   .transform((value) => value.toLowerCase())
 
 export const passwordSchema = z

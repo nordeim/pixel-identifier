@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { addDomainSchema, normalizeDomain, fail, type ActionResult } from '@/lib/validation'
+import { addDomainSchema, normalizeDomain, fail, fieldErrorsOf, type ActionResult } from '@/lib/validation'
 import { generateSiteKey } from '@/lib/identification'
 import { getPlan } from '@/lib/plans'
 
@@ -42,8 +42,7 @@ export async function addDomainAction(
 
   const parsed = addDomainSchema.safeParse({ domain: formData.get('domain') })
   if (!parsed.success) {
-    const flat = parsed.error.flatten().fieldErrors
-    return fail('VALIDATION', 'Please enter a valid domain.', flat as Record<string, string[]>)
+    return fail('VALIDATION', 'Please enter a valid domain.', fieldErrorsOf(parsed.error))
   }
 
   const domain = normalizeDomain(parsed.data.domain)

@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { getServerSession } from 'next-auth'
 import { db } from '@/lib/db'
 import { authOptions } from '@/lib/auth'
-import { updateProfileSchema, changePlanSchema, fail, type ActionResult } from '@/lib/validation'
+import { updateProfileSchema, changePlanSchema, fail, fieldErrorsOf, type ActionResult } from '@/lib/validation'
 import { PLANS } from '@/lib/plans'
 
 async function requireUserId(): Promise<string> {
@@ -30,8 +30,7 @@ export async function updateProfileAction(
     website: formData.get('website'),
   })
   if (!parsed.success) {
-    const flat = parsed.error.flatten().fieldErrors
-    return fail('VALIDATION', 'Please fix the highlighted fields.', flat as Record<string, string[]>)
+    return fail('VALIDATION', 'Please fix the highlighted fields.', fieldErrorsOf(parsed.error))
   }
 
   const website = parsed.data.website?.trim()

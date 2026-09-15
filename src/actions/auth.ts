@@ -3,7 +3,7 @@
 import bcrypt from 'bcryptjs'
 import { headers } from 'next/headers'
 import { db } from '@/lib/db'
-import { signUpSchema, fail, type ActionResult } from '@/lib/validation'
+import { signUpSchema, fail, fieldErrorsOf, type ActionResult } from '@/lib/validation'
 import { PLANS, type BillingCycle, type PlanId } from '@/lib/plans'
 
 const BCRYPT_ROUNDS = 12
@@ -48,8 +48,7 @@ export async function signUpAction(
     confirmPassword: formData.get('confirmPassword'),
   })
   if (!parsed.success) {
-    const flat = parsed.error.flatten().fieldErrors
-    return fail('VALIDATION', 'Please fix the highlighted fields.', flat as Record<string, string[]>)
+    return fail('VALIDATION', 'Please fix the highlighted fields.', fieldErrorsOf(parsed.error))
   }
 
   const requestHeaders = await headers()
