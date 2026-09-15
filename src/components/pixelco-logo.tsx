@@ -50,7 +50,7 @@ export function PixelcoWordmark({
     <span className={cn('inline-flex items-center', collapsed ? 'gap-0' : 'gap-2', className)}>
       <PixelcoLogo />
       {!collapsed && (
-        <span className="text-lg font-extrabold tracking-tight text-foreground">
+        <span className="font-display text-lg font-bold tracking-tight text-foreground">
           Pixelco
         </span>
       )}

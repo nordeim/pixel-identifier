@@ -21,12 +21,13 @@ export function SignOutButton({
       onClick={() => void signOut({ callbackUrl: '/' })}
       title={collapsed ? 'Sign out' : undefined}
       className={cn(
-        'flex w-full items-center rounded-lg text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-brand',
-        collapsed ? 'justify-center px-2 py-2' : 'gap-3 px-3 py-2',
+        // R5-H7: live sign-out — text-xs, gap-2, px-1, LogOut h-3.5.
+        'flex w-full items-center rounded-lg py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-brand',
+        collapsed ? 'justify-center px-2' : 'gap-2 px-1',
         className,
       )}
     >
-      <LogOut className="h-4 w-4 shrink-0" aria-hidden="true" />
+      <LogOut className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
       {collapsed ? <span className="sr-only">Sign out</span> : 'Sign out'}
     </button>
   )

@@ -14,7 +14,6 @@ import {
 import { cn } from '@/lib/utils'
 import { NAV_SECTIONS, type NavItem } from '@/lib/dashboard-nav'
 import { PixelcoWordmark } from '@/components/pixelco-logo'
-import { Progress } from '@/components/ui/progress'
 import { SignOutButton } from '@/components/dashboard/sign-out-button'
 
 const ICONS: Record<NavItem['icon'], React.ComponentType<{ className?: string }>> = {
@@ -49,10 +48,11 @@ export function SidebarNav({
 
   return (
     <div className="flex h-full flex-col">
+      {/* R5-H7: live header is p-4 with no border, logo h-8 w-8 + display face. */}
       <div
         className={cn(
-          'flex h-14 items-center border-b border-border',
-          collapsed ? 'justify-center px-2' : 'px-5',
+          'flex items-center p-4',
+          collapsed && 'justify-center',
         )}
       >
         <Link
@@ -77,7 +77,7 @@ export function SidebarNav({
         {NAV_SECTIONS.map((section) => (
           <div key={section.title}>
             {!collapsed && (
-              <p className="px-3 pb-2 text-sm font-medium text-muted-foreground">
+              <p className="px-3 pb-2 text-xs font-medium text-muted-foreground">
                 {section.title}
               </p>
             )}
@@ -116,11 +116,13 @@ export function SidebarNav({
 
       {!collapsed && (
         <div className="border-t border-border p-3">
-          <div className="rounded-xl bg-primary/10 p-3.5">
-            <span className="inline-flex rounded-full bg-primary px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-primary-foreground">
+          {/* R5-H7: live usage card — bordered primary/5 card, gradient FREE
+              badge, muted count, thin gradient-filled custom progress. */}
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
+            <span className="inline-flex rounded-sm px-1.5 py-0 text-[10px] font-bold uppercase tracking-wider text-primary-foreground gradient-primary">
               {usage.planName}
             </span>
-            <p className="mt-2 text-xs font-medium text-foreground">
+            <p className="mt-2 text-xs text-muted-foreground">
               {usage.used} / {usage.limit.toLocaleString()} identifications
             </p>
             {usage.overage > 0 && (
@@ -128,11 +130,19 @@ export function SidebarNav({
                 +{usage.overage.toLocaleString()} extra this period · ≈ {usage.overageCostLabel}
               </p>
             )}
-            <Progress
-              value={usage.percent}
-              className="mt-2 h-1.5"
+            <div
+              className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={usage.percent}
               aria-label={`${usage.percent}% of ${usage.period} identification allowance used`}
-            />
+            >
+              <div
+                className="h-full rounded-full gradient-primary"
+                style={{ width: `${Math.min(100, Math.max(0, usage.percent))}%` }}
+              />
+            </div>
           </div>
           <SignOutButton />
         </div>
