@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { headers } from 'next/headers'
 import { getServerSession } from 'next-auth'
-import { redirect } from 'next/navigation'
 import { CheckCircle2, Globe, Timer } from 'lucide-react'
 import { authOptions } from '@/lib/auth'
+import { requireUser } from '@/lib/analytics'
 import { db } from '@/lib/db'
 import { buildSnippet, collectorUrlFromHeaders } from '@/lib/snippet'
 import { pickSelectedSite } from '@/lib/sites'
@@ -25,14 +25,13 @@ interface InstallPageProps {
 }
 
 export default async function InstallPage({ searchParams }: InstallPageProps) {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) redirect('/login')
+  const user = await requireUser(await getServerSession(authOptions))
 
   const params = await searchParams
   const siteParam = Array.isArray(params.site) ? params.site[0] : params.site
 
   const sites = await db.site.findMany({
-    where: { userId: session.user.id },
+    where: { userId: user.id },
     orderBy: { createdAt: 'asc' },
     select: { siteKey: true, domain: true, lastEventAt: true, status: true },
   })

@@ -12,13 +12,11 @@ import { Button } from '@/components/ui/button'
 export function LoginForm() {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]> | null>(null)
   const [pending, setPending] = useState(false)
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
-    setFieldErrors(null)
     setPending(true)
 
     const formData = new FormData(event.currentTarget)
@@ -70,7 +68,6 @@ export function LoginForm() {
           autoComplete="email"
           placeholder="you@company.com"
           required
-          aria-invalid={Boolean(fieldErrors?.email)}
         />
       </div>
 

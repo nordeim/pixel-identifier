@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
-import { redirect } from 'next/navigation'
 import { ArrowRight, Eye, Globe, Mail, UserPlus } from 'lucide-react'
 import { authOptions } from '@/lib/auth'
 import {
+  requireUser,
   getOverviewStats,
   getTrend,
   getTopPages,
@@ -21,10 +21,9 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 export default async function OverviewPage() {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) redirect('/login')
+  const user = await requireUser(await getServerSession(authOptions))
 
-  const userId = session.user.id
+  const userId = user.id
   const [stats, trend, topPages, recent] = await Promise.all([
     getOverviewStats(userId),
     getTrend(userId),

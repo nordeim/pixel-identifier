@@ -1,8 +1,8 @@
-import { redirect } from 'next/navigation'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getUsage } from '@/lib/analytics'
 import { formatPrice } from '@/lib/plans'
+import { requireUser } from '@/lib/analytics'
 import { SidebarNav } from '@/components/dashboard/sidebar-nav'
 import { Topbar } from '@/components/dashboard/topbar'
 
@@ -12,12 +12,9 @@ import { Topbar } from '@/components/dashboard/topbar'
  * scandihaven "gate is UX only" rule — real authz happens at the mutation).
  */
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id || !session.user.email) {
-    redirect('/login')
-  }
+  const user = await requireUser(await getServerSession(authOptions))
 
-  const usage = await getUsage(session.user.id)
+  const usage = await getUsage(user.id)
   const usageProps = {
     planName: usage.plan.name,
     used: usage.used,
@@ -38,7 +35,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar email={session.user.email} usage={usageProps} />
+        <Topbar email={user.email} usage={usageProps} />
         <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
       </div>
     </div>

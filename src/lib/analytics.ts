@@ -1,4 +1,5 @@
 import 'server-only'
+import { redirect } from 'next/navigation'
 import { db } from '@/lib/db'
 import { getPlan, type Plan } from '@/lib/plans'
 import { resetMonthlyWindowIfNeeded } from '@/lib/quota'
@@ -11,9 +12,14 @@ export interface DashUser {
   name: string | null
 }
 
+/**
+ * Single session guard for dashboard pages (F-36): resolves the session into
+ * a DashUser or redirects to /login. Pages must still treat this as a UX
+ * redirect — every server action and API route re-validates independently.
+ */
 export async function requireUser(session: Session | null): Promise<DashUser> {
   if (!session?.user?.id || !session.user.email) {
-    throw new Error('UNAUTHENTICATED')
+    redirect('/login')
   }
   return { id: session.user.id, email: session.user.email, name: session.user.name ?? null }
 }

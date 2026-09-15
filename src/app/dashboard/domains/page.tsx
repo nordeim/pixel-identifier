@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
-import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
+import { requireUser } from '@/lib/analytics'
 import { db } from '@/lib/db'
 import { getPlan } from '@/lib/plans'
 import { listDomainsAction } from '@/actions/domains'
@@ -14,11 +14,10 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 export default async function DomainsPage() {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) redirect('/login')
+  const sessionUser = await requireUser(await getServerSession(authOptions))
 
   const user = await db.user.findUnique({
-    where: { id: session.user.id },
+    where: { id: sessionUser.id },
     select: { plan: true },
   })
   const plan = getPlan(user?.plan ?? 'free')

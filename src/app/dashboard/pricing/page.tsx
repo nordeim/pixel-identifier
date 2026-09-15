@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
-import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
-import { getUsage } from '@/lib/analytics'
+import { getUsage, requireUser } from '@/lib/analytics'
 import { formatPrice, type PlanId } from '@/lib/plans'
 import { PlanPanel } from '@/components/dashboard/plan-panel'
 
@@ -13,10 +12,9 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 export default async function PricingPage() {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) redirect('/login')
+  const user = await requireUser(await getServerSession(authOptions))
 
-  const usage = await getUsage(session.user.id)
+  const usage = await getUsage(user.id)
 
   return (
     <PlanPanel

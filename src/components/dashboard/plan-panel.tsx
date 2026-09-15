@@ -8,6 +8,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import {
   PLANS,
   PLAN_ORDER,
+  annualDiscountLabel,
+  annualTotalCents,
   effectiveMonthlyPrice,
   formatPrice,
   type BillingCycle,
@@ -85,7 +87,7 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
               {option === 'monthly' ? 'Monthly' : 'Annual'}
               {option === 'annual' && (
                 <span className={cycle === 'annual' ? 'ml-1.5 text-xs font-bold' : 'ml-1.5 text-xs font-bold text-teal-600'}>
-                  Save 20%
+                  {annualDiscountLabel(PLANS.starter)}
                 </span>
               )}
             </button>
@@ -126,7 +128,7 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
               </p>
               {cycle === 'annual' && plan.monthlyPrice > 0 && (
                 <p className="mt-1 text-xs text-muted-foreground">
-                  {formatPrice(plan.monthlyPrice * 12 * (1 - plan.annualDiscount))} billed annually
+                  {formatPrice(annualTotalCents(plan))} billed annually
                 </p>
               )}
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{plan.description}</p>

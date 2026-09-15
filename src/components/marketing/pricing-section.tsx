@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight, Check, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { PLANS, PLAN_ORDER, effectiveMonthlyPrice, formatPrice, type BillingCycle } from '@/lib/plans'
+import { PLANS, PLAN_ORDER, annualDiscountLabel, annualTotalCents, effectiveMonthlyPrice, formatPrice, type BillingCycle } from '@/lib/plans'
 
 export function PricingSection() {
   const [cycle, setCycle] = useState<BillingCycle>('monthly')
@@ -41,7 +41,7 @@ export function PricingSection() {
               {option === 'monthly' ? 'Monthly' : 'Annual'}
               {option === 'annual' && (
                 <span className={cycle === 'annual' ? 'ml-1.5 text-xs font-bold' : 'ml-1.5 text-xs font-bold text-teal-600'}>
-                  Save 20%
+                  {annualDiscountLabel(PLANS.starter)}
                 </span>
               )}
             </button>
@@ -53,7 +53,7 @@ export function PricingSection() {
         {PLAN_ORDER.map((id) => {
           const plan = PLANS[id]
           const monthly = effectiveMonthlyPrice(plan, cycle)
-          const annualTotal = plan.monthlyPrice * 12 * (1 - plan.annualDiscount)
+          const annualTotal = annualTotalCents(plan)
 
           return (
             <div

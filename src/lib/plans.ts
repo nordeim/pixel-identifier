@@ -115,6 +115,16 @@ export function effectiveMonthlyPrice(plan: Plan, cycle: BillingCycle): number {
   return plan.monthlyPrice
 }
 
+/** Annual billed-once total for a plan, in cents (discount applied, rounded). */
+export function annualTotalCents(plan: Plan): number {
+  return Math.round(plan.monthlyPrice * 12 * (1 - plan.annualDiscount))
+}
+
+/** Badge label derived from the catalogue, e.g. "Save 20%". */
+export function annualDiscountLabel(plan: Plan): string {
+  return `Save ${Math.round(plan.annualDiscount * 100)}%`
+}
+
 export function formatPrice(cents: number): string {
   if (cents === 0) return '$0'
   const dollars = cents / 100

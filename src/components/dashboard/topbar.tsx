@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   Activity,
@@ -69,14 +70,15 @@ export function Topbar({ email, usage }: { email: string; usage: UsageProps }) {
       </div>
 
       <div className="flex items-center gap-2">
+        {/* Honest empty state: no notification system exists yet, so no
+            unread indicator is rendered (F-31a). */}
         <Button
           variant="ghost"
           size="icon"
           aria-label="Notifications (none yet)"
-          className="relative"
+          title="No notifications yet"
         >
           <Bell className="h-4.5 w-4.5" />
-          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" aria-hidden="true" />
         </Button>
 
         <DropdownMenu>
@@ -96,10 +98,10 @@ export function Topbar({ email, usage }: { email: string; usage: UsageProps }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <a href="/dashboard/settings">Settings</a>
+              <Link href="/dashboard/settings">Settings</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <a href="/dashboard/pricing">Pricing &amp; Plan</a>
+              <Link href="/dashboard/pricing">Pricing &amp; Plan</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>

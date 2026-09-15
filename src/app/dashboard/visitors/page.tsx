@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
-import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
-import { listVisitors } from '@/lib/analytics'
+import { listVisitors, requireUser } from '@/lib/analytics'
 import { VisitorsTable } from '@/components/dashboard/visitors-table'
 
 export const metadata: Metadata = {
@@ -31,8 +30,7 @@ interface VisitorsPageProps {
 }
 
 export default async function VisitorsPage({ searchParams }: VisitorsPageProps) {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) redirect('/login')
+  const user = await requireUser(await getServerSession(authOptions))
 
   const params = await searchParams
 
@@ -54,7 +52,7 @@ export default async function VisitorsPage({ searchParams }: VisitorsPageProps) 
   const pageParam = Number(firstParam(params.page) ?? '1')
   const page = Number.isFinite(pageParam) && pageParam > 0 ? Math.floor(pageParam) : 1
 
-  const list = await listVisitors(session.user.id, {
+  const list = await listVisitors(user.id, {
     q,
     type,
     minConfidence,
