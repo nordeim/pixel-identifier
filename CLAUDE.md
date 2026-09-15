@@ -81,6 +81,16 @@ hex in `@theme inline` (`src/app/globals.css`); `var()` chains inside
 `@theme` are dropped by the build. Use semantic tokens (`bg-card`,
 `text-muted-foreground`), not raw hexes in components.
 
+**Typography (v1.4, live-parity):** the app body is **Inter**; **Space
+Grotesk** is the display face — apply the `font-display` utility to card
+titles, page H1s, KPI values, prices and the sidebar wordmark; the
+marketing tree renders **DM Sans**; `font-mono` stays a mono stack for
+code/paths. Brand utilities live in `globals.css`, not per-component
+approximations: `.gradient-primary` (135deg #FFC105→#FFB200), `.glow-primary`,
+`.text-gradient-primary`, `.text-gradient-hero` and the `neon-green` color
+token (`bg-neon-green/10`-style utilities) — use them instead of hand-rolled
+amber/teal approximations.
+
 **Server Actions** — every mutation returns `ActionResult<T>`
 (`{ ok: true, data } | { ok: false, error: { code, message, fieldErrors? } }`).
 Validate with Zod at the boundary; catch once; never throw across the action
@@ -129,9 +139,14 @@ is off — SQLite is a single writer). `TZ` is pinned to UTC.
   and the dashboard chrome seam (`src/lib/dashboard-nav.ts` — sidebar
   sections/icons, per-page subtitles, visitors subtitle formatting, the
   7-day unread rule behind the bell dot, sidebar-rail state reducer).
-- **Behavioural:** the collector script is executed in `node:vm` with mocked
-  browser globals — SPA route-change beacons, `pushState`/`replaceState`
-  wiring, and the monkey-patch recursion regression.
+- **Behavioural:** the collector script **and the emitted install snippet**
+  are executed in `node:vm` with mocked browser globals — SPA route-change
+  beacons, `pushState`/`replaceState` wiring, the monkey-patch recursion
+  regression, and the snippet's must-not-throw + script-element contract
+  (right `src`, right `data-site`). Rule: never pin a snippet/collector
+  serialization in a string assertion when it has a behavioral contract —
+  execute it. (The string-pinning style once hid a snippet that threw on
+  every real customer page.)
 - **Integration (DB-backed):** `src/lib/quota.ts` (atomic consumption under
   110 concurrent calls, persisted monthly reset, overage); query seams
   `listVisitors` / `listActivity` / `getTopPages` (SQL groupBy with
@@ -274,3 +289,7 @@ Four layers, strictly top-down:
 - Editing the resolver's name lists or PRNG casually — it re-shapes
   historical identification decisions.
 - Weakening lint/type rules to pass the gate.
+- Trusting `visitors.status` — it's a dead schema default; display state
+  derives from `lastSeen` via `isVisitorActive` (30-minute window).
+- String-pinning generated JS in tests (see Behavioural above) — execute it
+  in `node:vm` instead.

@@ -29,6 +29,12 @@ make it pass — fix the code.
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. Brand values are literal hex (e.g. `--primary:
   #FACC15`); `var()` chains inside `@theme` are silently dropped by the build.
+- **Typography is live-parity (v1.4).** App body = **Inter**; **Space
+  Grotesk** is the `font-display` utility (card titles, page H1s, KPI values,
+  prices, sidebar wordmark); marketing = **DM Sans**; mono stays mono. Brand
+  utilities (`.gradient-primary`, `.glow-primary`, `.text-gradient-primary`,
+  `.text-gradient-hero`, `neon-green` token) live in `globals.css` — never
+  hand-roll amber/teal approximations in components.
 - **`/pixel.js` is a route, not a file.** The collector script is served by
   `src/app/pixel.js/route.ts` (folder named `pixel.js`). Don't add a
   `public/pixel.js`.
@@ -50,6 +56,10 @@ make it pass — fix the code.
   `prisma db push` on every run; `TZ` is pinned to UTC. Integration tests
   invoke route handlers/actions directly with mocked `next/headers` /
   `next-auth` (see `tests/setup.ts`). Keep new behavior test-first.
+- **Generated JS is executed in tests, never string-pinned.** The install
+  snippet and the collector both run under `node:vm` with mocked globals; a
+  serialization assertion once hid a snippet that threw on every real
+  customer page. If it has a behavioral contract, execute it.
 - **Auth gate is UX only.** `src/app/dashboard/layout.tsx` redirects
   unauthenticated users, but every action/route re-checks the session itself.
   Keep it that way.
@@ -80,7 +90,10 @@ make it pass — fix the code.
 - Ingest accepts only the minimal payload (`k,u,p,r,v`); beacons whose page
   hostname does not match the registered domain are dropped before any write.
 - The visitor list is URL-driven: `listVisitors` in `src/lib/analytics.ts` is
-  the single query seam (search/filters/pagination/counts).
+  the single query seam (search/filters/pagination/counts). It lists
+  **identified visitors only** (email non-null), matching the live product;
+  the active/inactive badge derives from `lastSeen` via `isVisitorActive`
+  (30-minute window) — `visitors.status` is a dead column, never render it.
 - The identity-resolution engine (`src/lib/identification.ts`) is
   deterministic: decisions derive from `sha256(siteKey + anonymousId)`. If you
   change name lists or the PRNG, historical decisions change — treat that as

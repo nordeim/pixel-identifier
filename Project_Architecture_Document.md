@@ -1,4 +1,4 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.3
+# Pixelco — Master Project Architecture Document (PAD) v1.4
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
@@ -12,6 +12,29 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.4** `[SYN]` Round-5 parity hardening (plan:
+  `docs/plans/2026-09-15-round5-parity-hardening.md`): a fresh live audit
+  (logged-in DOM extraction of all 7 dashboard surfaces + auth + marketing,
+  controlled beacon experiments, pairwise VLM diffs; evidence in
+  `research/round5-audit/`) closed the remaining functional and visual gaps.
+  Functional: the emitted install snippet now **executes** (R5-C1 — it
+  previously passed `'document'` as a string and threw the moment a customer
+  pasted it; pinned by a new `node:vm` execution test); visitor status is
+  honest (derived from the live collector's 30-minute session window, not a
+  dead schema default); the visitors table lists **identified visitors
+  only** with B2B company rows showing company name, resolved location
+  (`visitors.city/state/country` added) and an amber Company badge; the
+  domains row counts identified vs total visitors. Visual: Inter body +
+  Space Grotesk display (app) and DM Sans (marketing) replace Geist; brand
+  utilities (`.gradient-primary`, `.glow-primary`, `.text-gradient-primary`,
+  `.text-gradient-hero`, neon-green tokens) added to `globals.css`; sidebar,
+  topbar (static gradient avatar, no menu), Install (How It Works + Site Key
+  cards, neon banners), Settings (in-page H1, tinted inputs), Domains,
+  Pricing (plain summary row, inline POPULAR pill, quota block), Visitors,
+  Activity, Overview and auth pages realigned to the live DOM.
+- `[SR]` v1.4 evidence: `npm run verify` green (lint, typecheck, 175 tests
+  across 25 files + 2 opt-in smoke tests, build 34 routes); per-task
+  targeted Vitest runs recorded in the round-5 plan execution log.
 - **v1.3** `[SYN]` Round-4 dashboard parity & production readiness (plan:
   `docs/plans/2026-09-15-round4-dashboard-parity.md`): the dashboard chrome
   and all seven pages were re-audited against the live `app.pixelco.io`
@@ -696,9 +719,12 @@ erDiagram
         string email "null until identified"
         string type "individual|company"
         string companyName
+        string city "B2B resolved location (v1.4)"
+        string state "B2B resolved location (v1.4)"
+        string country "B2B resolved location (v1.4)"
         string source "direct|search|social|referral|campaign"
         int confidence "65-97"
-        string status "active"
+        string status "dead — display derives from lastSeen (v1.4)"
         int pageviews
         datetime firstSeen
         datetime lastSeen
@@ -757,10 +783,16 @@ in `plans.ts` (integer cents); no money columns are stored.
 
 ### 5.1 Typographic System
 
-- **Geist Sans** (`next/font/google`, `--font-geist-sans`) for all UI;
-  Geist Mono for code/paths. H1 landing: 4xl→[3.4rem] extrabold tracking-tight;
-  KPI values: 3xl extrabold with `tabular-nums`; body: `text-sm` /
-  `text-muted-foreground` for secondary.
+- **Inter** (`next/font/google`, `--font-inter`) is the app body face;
+  **Space Grotesk** (`--font-space-grotesk`, exposed as the `font-display`
+  utility via `--font-display`) renders card titles, page H1s, KPI values,
+  prices and the sidebar wordmark; **DM Sans** (`--font-dm-sans`) wraps the
+  marketing tree. Geist Mono remains the `font-mono` stack for code/paths.
+  H1 landing: 4xl→[3.4rem] extrabold tracking-tight with the hero's
+  italic gradient span; KPI values: 3xl `font-display font-bold
+  tracking-tight` with `tabular-nums`; body: `text-sm` /
+  `text-muted-foreground` for secondary. (Fonts aligned to the live app in
+  v1.4; Geist retired.)
 
 ### 5.2 Color Tokens
 
@@ -768,8 +800,10 @@ in `plans.ts` (integer cents); no money columns are stored.
 |-------|-----|-------|-------|
 | `--primary` | `#FACC15` | CTAs, active nav, badges, avatar fill | Black text on yellow — 14.7:1 |
 | `--primary-foreground` | `#1C1917` | Text/icons on primary | |
-| `--chart-1` | `#F59E0B` | Pageviews series | Amber |
-| `--chart-2` | `#2DD4BF` | Identified series, confidence bars | Teal |
+| `--chart-1` | `hsl(262 83% 58%)` | Pageviews series | Purple (v1.4 live palette) |
+| `--chart-2` | `hsl(172 66% 50%)` | Identified series, confidence bars | Teal (v1.4 live palette) |
+| `--color-neon-green` | `#2BD4BD` | Confidence fills, source badges, install banners | v1.4 token; generates `bg-`/`text-`/`border-neon-green` utilities |
+| `.gradient-primary` | `135deg #FFC105→#FFB200` | CTAs, FREE badge, avatars, icon chips | v1.4 utility (live class of the same name) |
 | `--background` | `#FFFCF5` | Marketing canvas | Warm off-white |
 | `.bg-app` | `#F9FAFB` | Dashboard canvas | Cool gray |
 | `--muted-foreground` | `#6B7280` | Secondary text | 4.8:1 on white |
@@ -874,11 +908,11 @@ speculatively.
 | Types (static) | 80+ | — | repo-wide | `tsc --noEmit`, strict |
 | Build (integration) | 34 routes | — | `next build` | Next 16 (16 marketing URLs incl. 10 SSG blog posts + 14 dynamic/authed routes) |
 | Unit (pure libs + data modules) | 9 files | ~66 | `tests/{plans,format,snippet,sites,smoke,marketing-links,blog-posts,blog-slug,dashboard-chrome}.test.ts` | Vitest |
-| Behavioural (collector in `node:vm`) | 1 | 7 | `tests/collector-script.test.ts` | Vitest |
-| Integration (DB-backed + routes + SEO) | 14 files | ~84 | `tests/*.test.ts` + `db/test.db` | Vitest |
+| Behavioural (collector + snippet in `node:vm`) | 2 | 9 | `tests/collector-script.test.ts`, `tests/snippet.test.ts` | Vitest |
+| Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
 | E2E (browser) | manual + opt-in smoke | — | dev server flows; `PIXELCO_STANDALONE_SMOKE=1` boots the standalone server | browser pass |
 
-The suite totals **157 tests across 24 files** (plus 2 opt-in standalone
+The suite totals **175 tests across 25 files** (plus 2 opt-in standalone
 smoke tests), runs in the `node`
 environment against a throwaway SQLite database (`db/test.db`, recreated
 from the schema by `tests/global-setup.ts` on every run), with `TZ=UTC`
@@ -891,6 +925,13 @@ Next server context (`next/cache`, `next/navigation`, `next/headers`,
 - **Red → green discipline:** behavioral changes start with a failing test
   that reproduces the bug or specifies the new behavior; the commit lands
   only when green.
+- **Snippet execution (round-5, R5-C1):** the emitted **install snippet** —
+  not just the collector — is built, stripped of `<script>` tags, and run
+  in `node:vm` against mocked `window`/`document`: it must not throw, must
+  create exactly one script element whose `src` is the collector URL and
+  whose `data-site` is the site key. This test exists because the previous
+  string-pinning assertion was green while the snippet threw on real
+  pages — never pin a serialization that has a behavioral contract.
 - **Pure-lib units:** plan/money math (integer cents, IEEE-754 robustness,
   `annualTotalCents` rounding), `normalizeDomain`, `csvCell` (RFC 4180 +
   formula-injection guard), relative time boundaries.
@@ -898,6 +939,11 @@ Next server context (`next/cache`, `next/navigation`, `next/headers`,
   mocked `document`/`history`/`localStorage`/`navigator` — asserts
   route-change beacons, `pushState`/`replaceState`/`popstate` wiring, and
   the monkey-patch recursion regression (ADR-007's risky edge).
+- **Visitor semantics (round-5):** `listVisitors` is identified-only
+  (anonymous seeded rows never appear; counts match), the 30-minute
+  `isVisitorActive` window has boundary cases (+29 min active, +31 min
+  inactive), B2B resolutions persist a deterministic `"City, State, CC"`
+  location, and the domains DTO splits identified vs total counts.
 - **Quota Prove-It:** 110 concurrent `consumeIdentification` calls against a
   free plan at the limit → exactly `limit` succeed (ADR-008's concurrency
   guarantee, tested at the DB level).
@@ -1045,6 +1091,19 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 | LOW | Relative SQLite paths resolve against `prisma/` | Confusing first-run behavior | Documented (README, §9.2) |
 | LOW | E2E is a manual browser pass (no Playwright) | Critical funnel regressions caught late | Open — §8.3 |
 | LOW | `deepmerge-ts` advisory (GHSA-ggr8-5vv4-36mx) pinned away via `overrides` | Override must be revisited when Prisma ships a fixed `@prisma/config` | Managed — `bun audit` clean; verified against db:push/db:seed/tests |
+
+**Fixed in v1.4 (round-5):** the install snippet passed `'document'` as a
+string and threw on the customer's page (→ passes the real `document`,
+pinned by a `node:vm` execution test — found-and-fixed same round);
+visitor `status` was a dead always-`'active'` column (→ honest active /
+inactive badge derived from the 30-minute session window); the visitors
+table listed anonymous visitors (→ identified-only scope with B2B company
++ location rows); the domains row showed only total visitors (→ identified
+vs total split); Geist typography (→ Inter + Space Grotesk app, DM Sans
+marketing); missing brand utilities and per-component color
+approximations (→ `.gradient-primary` family + neon-green tokens); chrome
+and page-level drift across sidebar, topbar, Install, Settings, Domains,
+Pricing, Visitors, Activity, Overview and auth (→ live DOM realignment).
 
 **Fixed in v1.3 (round-4):** standalone deployments serving 404 static
 assets (→ `npm run build:standalone` + opt-in smoke test — unhydrated pages

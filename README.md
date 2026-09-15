@@ -52,9 +52,9 @@ firmographics when the visitor is B2B. The product has four parts:
 | 📄 | Content pages | About, blog (10 posts), docs quickstart, privacy / terms / GDPR / CCPA — same route set as the original |
 | 🔍 | B2C + B2B identification | Resolves individual consumers by personal email and business visitors by work email + company |
 | 🍪 | Cookieless tracking | First-party localStorage visitor ID — no consent-banner dependencies |
-| ⚡ | One-line install | Single `<script>` snippet per domain with a domain switcher; per-platform guides (HTML, WordPress, Shopify, GTM) |
+| ⚡ | One-line install | Single `<script>` snippet per domain with a domain switcher; the install page carries the live's Quick Start, How It Works and Site Key cards plus per-platform guides (HTML, WordPress, Shopify, GTM) |
 | 📊 | Real-time dashboard | KPIs, 14-day UTC-bucketed trend chart, top pages, recent identifications, loading/error boundaries |
-| 👥 | Visitor CRM | Server-side search + segment/confidence/source filters, 25/page pagination, true DB counts, row selection, CSV export (all or selected) |
+| 👥 | Visitor CRM | **Identified visitors only** (like the live product — anonymous traffic never hits the table), B2B rows show company + resolved location, honest active/inactive status from the 30-minute session window, server-side search + segment/confidence/source filters, 25/page pagination, true DB counts, row selection, CSV export (all or selected) |
 | 🔴 | Live activity feed | Auto-refreshing event stream (pauses in background tabs) with cursor-based "Load older events" |
 | 🌍 | Domain management | Registration, hostname-based auto-verification, ingest gated to registered hostnames, plan-based limits, delete confirmations |
 | 💳 | Plans & quotas | Free / Starter / Growth / Scale with per-plan allowances; paid plans keep identifying past the limit and count overage at the per-identification rate |
@@ -220,9 +220,13 @@ npm run test:watch   # Watch mode
 The suite runs against a throwaway SQLite database (`db/test.db`, recreated
 from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
 
-- **Collector script** — executed in `node:vm` with mocked browser globals:
-  SPA route-change beacons, `pushState`/`replaceState`/`popstate` wiring,
-  stable visitor ids, and the monkey-patch recursion regression.
+- **Collector script + install snippet** — both executed in `node:vm` with
+  mocked browser globals: the collector's SPA route-change beacons,
+  `pushState`/`replaceState`/`popstate` wiring, stable visitor ids and the
+  monkey-patch recursion regression; the **install snippet** must actually
+  run (create the collector script element with the right `src` + `data-site`
+  and not throw) — a regression test for a bug the old string-pinning
+  assertion hid.
 - **Quota** (`src/lib/quota.ts`) — atomic consumption under 110 concurrent
   calls (exactly `limit` succeed), persisted monthly reset, paid-plan overage.
 - **Track route** — invoked directly with `Request` objects: hostname gating,
@@ -244,8 +248,10 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   visitors-subtitle formatting, the 7-day unread-activity rule behind the
   bell dot, and the collapsible-sidebar state reducer.
 - **Queries** — top pages via SQL `groupBy` (ordering, tie-breaks,
-  cross-user isolation), profile action (name never clobbered), and the
-  bell's recent-identification flag.
+  cross-user isolation), profile action (name never clobbered), the
+  bell's recent-identification flag, the identified-only visitors scope,
+  the 30-minute active/inactive window, B2B location persistence, and the
+  domains identified-vs-total count split.
 
 ## Verification
 
