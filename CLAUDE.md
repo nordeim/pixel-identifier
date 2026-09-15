@@ -136,6 +136,12 @@ is off — SQLite is a single writer). `TZ` is pinned to UTC.
 - **Integration (route handlers):** `/api/track` and `/api/export` invoked
   directly with `Request` objects — hostname gating, anti-enumeration, 429
   timing, write-failure containment, scoped export.
+- **Content & SEO data modules:** the marketing link map
+  (`src/lib/marketing-links.ts` — every link targets a real route; Careers
+  is dead on the original too and is flagged `dead: true`), the blog
+  catalogue (`src/data/blog-posts.ts` — unique URL-safe slugs, date
+  ordering, required fields), and `robots.ts`/`sitemap.ts` (16-URL set,
+  `/api/` disallowed, app routes excluded).
 - **E2E:** manual browser flows (sign-up → domain → beacon → dashboard →
   export). No Playwright suite yet.
 

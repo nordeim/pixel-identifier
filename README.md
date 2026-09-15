@@ -20,14 +20,18 @@ and B2B companies) — no forms, no popups, no cookies.
 Traditional visitor-identification tools only resolve the *company* behind an
 IP address. Pixelco is built for **individual-level identification**: it
 resolves the actual person — a personal or work email — plus company
-firmographics when the visitor is B2B. The product has three parts:
+firmographics when the visitor is B2B. The product has four parts:
 
 1. **Marketing site** (`/`) — hero, social proof, pricing (Free → Scale), FAQ.
    Pricing cards carry `?plan=…&cycle=…` intent into sign-up.
-2. **Dashboard** (`/dashboard`) — visitor analytics with server-side search,
+2. **Marketing sub-pages** — `/about`, `/blog` (ten posts, the same set
+   the original advertises), `/docs` quickstart, and the four legal pages
+   (`/privacy`, `/terms`, `/gdpr`, `/ccpa`). All share the site chrome via
+   the `(marketing)` route group and appear in `sitemap.xml`.
+3. **Dashboard** (`/dashboard`) — visitor analytics with server-side search,
    filters and pagination; a cursor-paged activity log; per-domain pixel
    installation; domain management; plan settings with overage accounting.
-3. **Tracking pipeline** — a one-line `<script>` snippet loads `/pixel.js`
+4. **Tracking pipeline** — a one-line `<script>` snippet loads `/pixel.js`
    from this app; beacons flow into `/api/track`, where visitors are stitched
    by a cookieless localStorage ID, hostnames are gated against the
    registered domain, and the identity-resolution engine resolves ~20% of
@@ -45,6 +49,7 @@ firmographics when the visitor is B2B. The product has three parts:
 
 | | Feature | What it does |
 |---|---|---|
+| 📄 | Content pages | About, blog (10 posts), docs quickstart, privacy / terms / GDPR / CCPA — same route set as the original |
 | 🔍 | B2C + B2B identification | Resolves individual consumers by personal email and business visitors by work email + company |
 | 🍪 | Cookieless tracking | First-party localStorage visitor ID — no consent-banner dependencies |
 | ⚡ | One-line install | Single `<script>` snippet per domain with a domain switcher; per-platform guides (HTML, WordPress, Shopify, GTM) |
@@ -93,23 +98,32 @@ reads. Errors anywhere in the DB section are contained to a silent 204.
 ```
 📂 src/
 ├── 📂 app/
-│   ├── 📄 page.tsx                  ← Marketing landing page
-│   ├── 📂 login/ · 📂 signup/       ← Auth pages (plan-intent aware)
-│   ├── 📂 dashboard/                ← 7 authed pages + layout guard + loading/error boundaries
+│   ├── 📂 (marketing)/             ← Route group: shared chrome (header/footer) for all public pages
+│   │   ├── 📄 page.tsx            ← Marketing landing page
+│   │   ├── 📂 about/ · 📂 docs/   ← Content pages
+│   │   ├── 📂 blog/ + blog/[slug]/ ← Blog index + 10 SSG article pages
+│   │   └── 📂 privacy/ · terms/ · gdpr/ · ccpa/ ← Legal pages (shared LegalPage prose)
+│   ├── 📂 login/ · 📂 signup/     ← Auth pages (plan-intent aware)
+│   ├── 📂 dashboard/              ← 7 authed pages + layout guard + loading/error boundaries
 │   ├── 📂 api/
-│   │   ├── 📂 track/                ← Pixel ingestion (hostname-gated beacon endpoint)
+│   │   ├── 📂 track/              ← Pixel ingestion (hostname-gated beacon endpoint)
 │   │   ├── 📂 activity/ · 📂 export/ · 📂 health/
-│   │   └── 📂 auth/[...nextauth]/   ← NextAuth handler
-│   └── 📂 pixel.js/                 ← Collector script route
+│   │   └── 📂 auth/[...nextauth]/ ← NextAuth handler
+│   ├── 📄 robots.ts · sitemap.ts · icon.svg ← SEO metadata routes + favicon
+│   └── 📂 pixel.js/               ← Collector script route
 ├── 📂 actions/                      ← Server Actions (auth, domains, settings)
 ├── 📂 components/
 │   ├── 📂 marketing/ · 📂 dashboard/ · 📂 auth/ · 📂 ui/
+├── 📂 data/
+│   └── 📄 blog-posts.ts           ← Blog catalogue (slug-tested; sitemap source)
 ├── 📂 lib/
 │   ├── 📄 identification.ts         ← Seeded identity-resolution engine
 │   ├── 📄 plans.ts                  ← Plan catalogue + money math (single source of truth)
 │   ├── 📄 quota.ts                  ← Atomic quota consumption + monthly reset (only mutation path)
 │   ├── 📄 analytics.ts              ← Aggregation + list queries, requireUser guard (server-only)
 │   ├── 📄 collector-script.ts       ← The emitted collector JS (VM-tested)
+│   ├── 📄 marketing-links.ts        ← Nav + footer link map (integrity-tested)
+│   ├── 📄 site-url.ts               ← Canonical origin for metadata URLs
 │   ├── 📄 auth.ts · validation.ts · snippet.ts · sites.ts · format.ts
 │   └── 📄 db.ts                     ← Prisma client singleton
 ├── 📂 types/                        ← NextAuth session augmentation
@@ -217,6 +231,11 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
 - **Server actions** — plan switching (counter never resets, downgrade
   guard), sign-up (duplicate race, per-IP throttle, plan intent), domains
   (IDOR guard, `_count`), account deletion (cascades, typed errors).
+- **Content & SEO data modules** — the footer/nav link map (every link
+  targets a real route; the only dead link is Careers, which is dead on
+  the original too), the blog catalogue (10 posts, unique URL-safe slugs,
+  date ordering, required fields), and the robots/sitemap route modules
+  (16-URL set, `/api/` disallowed, app routes excluded).
 - **Pure helpers** — plan/money math (IEEE-754 robustness), domain
   normalisation, snippet hardening (host validation, JS-string escaping),
   CSV escaping + formula guard, relative-time boundaries.
@@ -227,9 +246,14 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
 npm run lint        # ESLint 9 flat config (strict: no-explicit-any is an error)
 npm run typecheck   # tsc --noEmit
 npm run test        # Vitest suite
-npm run build       # next build (17 routes; standalone output)
+npm run build       # next build (34 routes; standalone output)
 npm run verify      # all four in order
 ```
+
+SEO surface: `/robots.txt` and `/sitemap.xml` are generated from
+`src/app/robots.ts` / `sitemap.ts` (the 16 marketing URLs — app routes
+excluded), the favicon is `src/app/icon.svg`, and `metadataBase` derives
+from `NEXTAUTH_URL` so canonical/OG URLs are absolute in production.
 
 Manual browser flows (sign-up → domain → beacon → dashboard → export)
 complement the automated suite.
@@ -266,6 +290,11 @@ uses portable types throughout.
 - Domain strings pass a hostname-grammar normaliser; the snippet generator
   validates the forwarded host and escapes every interpolation.
 - Rate limiting: in-memory fixed window per site key (120/min) — per-instance.
+- Baseline security headers on every response (`X-Content-Type-Options`,
+  `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`) via
+  `next.config.ts`; a strict CSP is deferred (see PAD §11).
+- Transitive dependency advisories are pinned away via `overrides`
+  (`deepmerge-ts ^8` — GHSA-ggr8-5vv4-36mx); `bun audit` is clean.
 - The marketing/ingest surface never logs secrets; see PAD §6 for the threat model.
 
 ## Project Status
@@ -273,6 +302,7 @@ uses portable types throughout.
 | Phase | Status | Key Deliverables |
 |-------|--------|------------------|
 | Marketing site | ✅ Complete | Landing page, pricing with plan intent, FAQ, auth pages |
+| Content pages | ✅ Complete | About, blog (10 posts), docs, privacy/terms/GDPR/CCPA, robots + sitemap |
 | Tracking pipeline | ✅ Complete | Collector, hostname-gated ingestion, verification, rate limiting, error containment |
 | Identity resolution | ✅ Complete | Deterministic engine, atomic quota accounting, paid overage |
 | Dashboard | ✅ Complete | All 7 pages, pagination/search, live feed with history, CSV export |

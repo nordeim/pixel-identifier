@@ -63,6 +63,13 @@ make it pass — fix the code.
 
 ## Conventions
 
+- **Marketing pages live in the `(marketing)` route group**
+  (`src/app/(marketing)/…`) and inherit the shared chrome (announcement
+  bar, header, footer) from its layout. Nav/footer links come only from
+  `src/lib/marketing-links.ts`; blog posts only from
+  `src/data/blog-posts.ts` (append a post there — index, article pages and
+  sitemap pick it up automatically). Both modules are unit-tested for
+  integrity; don't hand-write hrefs in components.
 - Server components fetch data via `src/lib/analytics.ts` (marked
   `server-only`); `requireUser(await getServerSession(authOptions))` is the
   single session guard for dashboard pages. Interactive leaves are

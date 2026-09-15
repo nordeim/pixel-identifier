@@ -1,4 +1,4 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.1
+# Pixelco — Master Project Architecture Document (PAD) v1.2
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
@@ -12,8 +12,22 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.2** `[SYN]` Round-3 parity & polish (plan:
+  `docs/plans/2026-09-15-round3-parity-polish.md`): the marketing
+  surface now matches the original's full page set — `(marketing)` route
+  group with shared chrome; `/about`, `/blog` + 10 SSG article pages,
+  `/docs`, and the four legal pages (`/privacy`, `/terms`, `/gdpr`,
+  `/ccpa`); footer/nav links are a single integrity-tested data module
+  (ADR-009); `robots.txt` + `sitemap.xml` metadata routes and brand
+  favicon shipped; `metadataBase` derives from `NEXTAUTH_URL`; baseline
+  security headers in `next.config.ts`; `deepmerge-ts` advisory cleared
+  via npm `overrides`; Zod 4 modernization completed (`z.email()`,
+  `z.flattenError()` — no casts).
+- `[SR]` v1.2 evidence: `npm run verify` green (lint, typecheck,
+  125/125 tests across 20 files, build with 34 routes incl. SSG blog);
+  `bun audit` clean; standalone smoke + security-header check.
 - **v1.1** `[SYN]` Realigned with the post-remediation codebase (21 commits
-  past `78f8342`): Vitest suite installed (16 files / 106 tests, §8), quota
+  past `78f8342`): Vitest suite installed (§8), quota
   consumption centralized and made atomic in `src/lib/quota.ts` (ADR-008,
   §4.3), paid-plan overage accounting, hostname-gated ingest, per-IP signup
   throttle, session revocation on account deletion, visitors/activity
@@ -280,6 +294,36 @@ accounting, analytics, exports, auth — is a real working pipeline.
   shared-state infrastructure contradicted by ADR-003's self-hosting
   posture).
 
+**ADR-009: Static marketing content as data-driven RSC pages**
+
+- **Context:** The original pixelco.io serves a full marketing surface —
+  landing, about, a ten-post blog, docs, and four legal pages — cloned
+  here for functional parity. The content changes rarely, must be
+  SEO-crawlable, and must stay consistent with the site's navigation.
+- **Decision:** Marketing pages are static React Server Components in a
+  `(marketing)` route group whose layout provides the shared chrome.
+  Repeated content lives in pure, unit-tested data modules:
+  `src/lib/marketing-links.ts` (nav + footer map — every link must target
+  a real route, with exactly one documented parity exception: Careers is
+  dead on the original too) and `src/data/blog-posts.ts` (the catalogue
+  driving the blog index, `generateStaticParams` article pages, and
+  `sitemap.ts`). `robots.ts` / `sitemap.ts` / `icon.svg` use the Next
+  Metadata Routes API.
+- **Rationale:** Data modules give the link graph and content a single
+  source of truth that tests can hold honest (route existence, slug
+  uniqueness, date ordering) without a CMS, database, or build-time
+  pipeline; RSC keeps the pages zero-JS and statically prerendered.
+- **Consequences:** (+) Adding a blog post or footer link is a one-file
+  edit picked up everywhere; the sitemap can never drift from the actual
+  page set. (−) Content edits are code edits — there is no editor
+  interface (acceptable for a clone; a CMS integration would be a new
+  ADR).
+- **Alternatives Rejected:** MDX per post (file explosion for ten short
+  posts, no stronger guarantees than the typed catalogue); a `posts` DB
+  table (adds a query per page and seed complexity for content that is
+  not user data); hard-coded JSX in every page (links drift, no testable
+  seam).
+
 ---
 
 ## 2. High-Level System Topology
@@ -362,10 +406,15 @@ review.
 pixel-identifier/
 ├── src/
 │   ├── app/
-│   │   ├── page.tsx                    ← Marketing landing (13 sections)
-│   │   ├── layout.tsx                  ← Root layout: fonts, metadata, Toaster
-│   │   ├── globals.css                 ← Tailwind 4 @theme tokens (brand palette)
-│   │   ├── login/ · signup/            ← Auth pages (dark shell + forms)
+│   │   ├── (marketing)/              ← Route group: shared chrome (layout.tsx)
+│   │   │   ├── page.tsx              ← Marketing landing (13 sections)
+│   │   │   ├── about/ · docs/        ← Content pages (RSC)
+│   │   │   ├── blog/ + blog/[slug]/  ← Blog index + 10 SSG article pages
+│   │   │   └── privacy/ · terms/ · gdpr/ · ccpa/ ← Legal pages (LegalPage prose)
+│   │   ├── layout.tsx                ← Root layout: fonts, metadata, metadataBase, Toaster
+│   │   ├── globals.css               ← Tailwind 4 @theme tokens (brand palette)
+│   │   ├── robots.ts · sitemap.ts · icon.svg ← SEO metadata routes + favicon
+│   │   ├── login/ · signup/          ← Auth pages (dark shell + forms)
 │   │   ├── dashboard/
 │   │   │   ├── layout.tsx              ← Session gate (UX) + sidebar/topbar chrome
 │   │   │   ├── page.tsx                ← Overview: KPIs, trend, top pages, recent
@@ -393,13 +442,17 @@ pixel-identifier/
 │   │   ├── ui/                         ← shadcn primitives (15 components in use)
 │   │   └── pixelco-logo.tsx            ← Inline SVG brand mark
 │   ├── hooks/                          ← use-toast (shadcn toast state)
+│   ├── data/
+│   │   └── blog-posts.ts              ← Blog catalogue (ADR-009: index/SSG/sitemap source)
 │   ├── lib/
 │   │   ├── db.ts                       ← Prisma client singleton
 │   │   ├── auth.ts                     ← NextAuth options (credentials + JWT)
 │   │   ├── analytics.ts                ← server-only: stats, trend, top pages
 │   │   ├── identification.ts           ← Deterministic resolver + source rules
 │   │   ├── plans.ts                    ← Plan catalogue (int cents, quotas)
-│   │   ├── validation.ts               ← Zod schemas + ActionResult type
+│   │   ├── validation.ts               ← Zod schemas + ActionResult + fieldErrorsOf
+│   │   ├── marketing-links.ts          ← Nav + footer link map (integrity-tested)
+│   │   ├── site-url.ts                 ← Canonical origin (NEXTAUTH_URL)
 │   │   ├── snippet.ts                  ← Snippet builder + collector URL
 │   │   └── format.ts                   ← relative time, initials, CSV cells
 │   └── types/next-auth.d.ts            ← Session.user.id augmentation
@@ -704,6 +757,7 @@ animations.
 | Password storage | bcrypt, 12 rounds; hashes never leave `authorize` |
 | Sessions | Signed JWT (HttpOnly cookie, 30-day); `NEXTAUTH_SECRET` required |
 | Beacon endpoint hardening | Site-key lookup returns 204 for unknown keys (anti-enumeration); 120/min fixed-window per key; 204 for malformed payloads; beacons whose page hostname ≠ the registered domain are dropped **before any write** (spoofed-key quota burning is impossible) |
+| Response hardening | Baseline headers on every route via `next.config.ts` `headers()`: `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy: camera=(), microphone=(), geolocation=()`. Strict CSP deferred (§11) |
 | Signup abuse | Per-IP fixed-window throttle (5 signups / 10 min) in the server action; duplicate-email races resolve to a typed CONFLICT result (never a thrown P2002) |
 | Output encoding | React escapes by default; CSV export escapes per RFC 4180 (`csvCell`) + formula-injection guard (`'` prefix on `=+-@`); the snippet generator validates the forwarded host against a hostname grammar and escapes every JS-string interpolation |
 | Account deletion | Requires retyped email confirmation; cascades all owned data; the client signs the session out on success (JWT revocation on delete is inherently best-effort with stateless tokens) |
@@ -760,20 +814,20 @@ speculatively.
 
 | Category | Files | Tests | Location | Framework |
 |----------|-------|-------|----------|-----------|
-| Lint (static) | 71+ | — | repo-wide | ESLint 9 + typescript-eslint + React Compiler rules |
-| Types (static) | 71+ | — | repo-wide | `tsc --noEmit`, strict |
-| Build (integration) | 17 routes | — | `next build` | Next 16 |
-| Unit (pure libs) | 5 files | ~35 | `tests/{plans,format,snippet,sites,smoke}.test.ts` | Vitest |
+| Lint (static) | 80+ | — | repo-wide | ESLint 9 + typescript-eslint + React Compiler rules |
+| Types (static) | 80+ | — | repo-wide | `tsc --noEmit`, strict |
+| Build (integration) | 34 routes | — | `next build` | Next 16 (16 marketing URLs incl. 10 SSG blog posts + 14 dynamic/authed routes) |
+| Unit (pure libs + data modules) | 8 files | ~50 | `tests/{plans,format,snippet,sites,smoke,marketing-links,blog-posts,blog-slug}.test.ts` | Vitest |
 | Behavioural (collector in `node:vm`) | 1 | 7 | `tests/collector-script.test.ts` | Vitest |
-| Integration (DB-backed) | 10 files | ~64 | `tests/*.test.ts` + `db/test.db` | Vitest |
+| Integration (DB-backed + routes + SEO) | 11 files | ~68 | `tests/*.test.ts` + `db/test.db` | Vitest |
 | E2E (browser) | manual | — | dev server flows | browser pass |
 
-The suite totals **106 tests across 16 files**, runs in the `node`
+The suite totals **125 tests across 20 files**, runs in the `node`
 environment against a throwaway SQLite database (`db/test.db`, recreated
 from the schema by `tests/global-setup.ts` on every run), with `TZ=UTC`
 pinned and `fileParallelism` disabled (SQLite single-writer). Mock seams for
-Next server context (`next/cache`, `next/navigation`, `next/headers`) live
-in `tests/setup.ts`.
+Next server context (`next/cache`, `next/navigation`, `next/headers`,
+`server-only`) live in `tests/setup.ts`.
 
 ### 8.2 Test Patterns
 
@@ -799,6 +853,11 @@ in `tests/setup.ts`.
   resets the counter and blocks impossible downgrades; sign-up handles the
   P2002 race, per-IP throttle, and plan intent; domains enforce IDOR guards
   and `_count` stats; account deletion cascades and returns typed errors.
+- **Content & SEO modules:** the link map (route existence, mailto Contact,
+  the single flagged dead link), the blog catalogue (unique URL-safe
+  slugs, date ordering, required fields, outbound sister-product links),
+  `robots.ts`/`sitemap.ts` (16-URL set, `/api/` disallowed, app routes
+  excluded, absolute URLs with priorities).
 - **Manual browser pass:** sign-up → domain add → beacon burst → dashboard
   (search/filters/pagination, activity load-more, export-selected) → plan
   switch → account deletion. Complements, never replaces, the suite.
@@ -908,15 +967,24 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 |----------|-------|--------|--------|
 | HIGH | Identity resolution and billing are simulations | Clone parity, not production capability — labelled everywhere | By design (ADR-005/006) |
 | HIGH | NextAuth v4 on Next 16 (one-major-behind pairing) | Peer-dependency warnings; upgrade path to Auth.js v5 is non-trivial | Accepted — pinned deliberately (ADR-004); revisit before any Next 17 move |
+| MEDIUM | Strict CSP not implemented | Clickjacking/mixed-content hardening limited to baseline headers | Open — needs nonce plumbing for Next's inline bootstrap and the collector route |
 | MEDIUM | In-memory rate limiting and signup throttle (per-instance) | Multi-instance deploys would multiply the effective limit | Open — swap to shared store when horizontally scaling |
 | MEDIUM | `getTopPages` aggregates lifetime pageviews in JS | Degrades at very large event counts | Open — SQL groupBy on Postgres migration |
 | LOW | OAuth buttons are disabled placeholders | Users must use email sign-in | By design — no providers configured |
 | LOW | Sessions are 30-day JWTs; no server-side revocation | Stolen cookies valid until expiry; deletion sign-out is client-side only | Accepted for this product shape |
+| LOW | Footer Careers link is dead | None functionally — the original pixelco.io links it to `#` too | Parity — flagged `dead: true` in the link map |
 | LOW | No Dockerfile / CI workflow | Self-hosting requires manual steps | Open |
 | LOW | Relative SQLite paths resolve against `prisma/` | Confusing first-run behavior | Documented (README, §9.2) |
 | LOW | E2E is a manual browser pass (no Playwright) | Critical funnel regressions caught late | Open — §8.3 |
+| LOW | `deepmerge-ts` advisory (GHSA-ggr8-5vv4-36mx) pinned away via `overrides` | Override must be revisited when Prisma ships a fixed `@prisma/config` | Managed — `bun audit` clean; verified against db:push/db:seed/tests |
 
-**Fixed in v1.1 (were open in v1.0):** no automated test suite (→ 106
+**Fixed in v1.2 (round-3):** missing marketing/legal routes and dead footer
+links (→ 16-URL marketing surface with robots + sitemap); no favicon; no
+`metadataBase`; no security headers; `deepmerge-ts` high advisory;
+Zod-4 migration leftovers (`z.string().email()`, `error.flatten()` casts);
+the last raw internal `<a>`.
+
+**Fixed in v1.1 (were open in v1.0):** no automated test suite (→ 125
 Vitest tests); quota check-then-increment overshoot (→ atomic conditional
 `updateMany`, ADR-008); display-only monthly reset (→ persisted, guarded);
 plan switch resetting the counter; ungated ingest from foreign hostnames;
@@ -936,6 +1004,8 @@ recursion (P0).
 | `src/lib/identification.ts` | ~136 | Deterministic identity-resolution engine + referrer→source rules + site-key generator |
 | `src/lib/plans.ts` | ~132 | Plan catalogue + money math: integer-cent prices, `annualTotalCents`, quotas, domain limits (single source of truth) |
 | `src/lib/quota.ts` | ~81 | **Only writer of `identificationsUsed`**: atomic conditional consumption, paid overage, persisted 30-day reset (ADR-008) |
+| `src/lib/marketing-links.ts` | ~70 | Nav + footer link map — single source of truth, integrity-tested (ADR-009) |
+| `src/data/blog-posts.ts` | ~415 | Blog catalogue: 10 posts driving index, SSG article pages and sitemap (ADR-009) |
 | `src/lib/analytics.ts` | ~387 | Server-only aggregations + query seams (`listVisitors`, `listActivity`) + `requireUser` guard |
 | `src/lib/validation.ts` | ~98 | Zod schemas for every boundary (minimal ingest keys) + `ActionResult<T>` envelope |
 | `src/lib/auth.ts` | ~52 | NextAuth options (credentials, JWT, session callbacks) |
