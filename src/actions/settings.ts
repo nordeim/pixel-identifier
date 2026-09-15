@@ -81,16 +81,25 @@ export async function changePlanAction(
   })
   if (!current) return fail('UNAUTHENTICATED', 'Account not found.')
 
+  // A downgrade must not strand more domains than the new plan allows.
+  if (plan.domainLimit !== -1) {
+    const siteCount = await db.site.count({ where: { userId } })
+    if (siteCount > plan.domainLimit) {
+      return fail('VALIDATION', `The ${plan.name} plan supports up to ${plan.domainLimit} domain${plan.domainLimit === 1 ? '' : 's'}. Remove domains before downgrading.`)
+    }
+  }
+
   // Billing is simulated in this clone: switching plans updates the entitlement
-  // immediately. Downgrading below current usage keeps the used counter but the
-  // next identification beyond the new limit simply will not resolve.
+  // immediately. The used counter is NEVER reset — cycling plans must not
+  // grant free quota — and the 30-day window anchor only advances when the
+  // tier actually changes (a cycle-only switch keeps the current window).
+  const changedTier = current.plan !== plan.id
   await db.user.update({
     where: { id: userId },
     data: {
       plan: plan.id,
       billingCycle: parsed.data.cycle,
-      usagePeriodStart: new Date(),
-      ...(current.plan !== plan.id ? { identificationsUsed: 0 } : {}),
+      ...(changedTier ? { usagePeriodStart: new Date() } : {}),
     },
   })
 
