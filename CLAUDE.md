@@ -107,10 +107,11 @@ npm run dev
 |---------|---------|
 | `npm run dev` | Development server (port 3000) |
 | `npm run build` | Production build (standalone output) |
+| `npm run build:standalone` | Build + copy `.next/static` (+ `public/`) into `.next/standalone` — **always** use this for standalone deploys; raw `next build` omits static assets |
 | `npm run start` | Serve the production build |
 | `npm run lint` | ESLint 9 flat config |
 | `npm run typecheck` | `tsc --noEmit` |
-| `npm run test` | Vitest suite (watch: `npm run test:watch`) |
+| `npm run test` | Vitest suite (watch: `npm run test:watch`); opt-in standalone smoke: `PIXELCO_STANDALONE_SMOKE=1` |
 | `npm run verify` | lint → typecheck → test → build (pre-push gate) |
 | `npm run db:push` | Sync Prisma schema to the database |
 | `npm run db:seed` | Idempotent demo seed |
@@ -124,15 +125,20 @@ Vitest (node env) against a throwaway SQLite DB (`db/test.db`, recreated by
 is off — SQLite is a single writer). `TZ` is pinned to UTC.
 
 - **Unit (pure libs):** plan/money math (`plans.ts`), domain normalisation,
-  snippet hardening, CSV escaping + formula-injection guard, relative time.
+  snippet hardening, CSV escaping + formula-injection guard, relative time,
+  and the dashboard chrome seam (`src/lib/dashboard-nav.ts` — sidebar
+  sections/icons, per-page subtitles, visitors subtitle formatting, the
+  7-day unread rule behind the bell dot, sidebar-rail state reducer).
 - **Behavioural:** the collector script is executed in `node:vm` with mocked
   browser globals — SPA route-change beacons, `pushState`/`replaceState`
   wiring, and the monkey-patch recursion regression.
 - **Integration (DB-backed):** `src/lib/quota.ts` (atomic consumption under
   110 concurrent calls, persisted monthly reset, overage); query seams
-  `listVisitors` / `listActivity` in `analytics.ts` (search/filter/
-  pagination/counts, cursor paging); server actions with mocked session/
-  headers (plan switch, sign-up, domains, account deletion).
+  `listVisitors` / `listActivity` / `getTopPages` (SQL groupBy with
+  deterministic tie-breaks) / `hasRecentIdentifications` in `analytics.ts`
+  (search/filter/pagination/counts, cursor paging); server actions with
+  mocked session/headers (plan switch, sign-up, domains, account deletion,
+  profile update — the stored name is never clobbered).
 - **Integration (route handlers):** `/api/track` and `/api/export` invoked
   directly with `Request` objects — hostname gating, anti-enumeration, 429
   timing, write-failure containment, scoped export.

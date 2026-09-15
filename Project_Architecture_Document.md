@@ -1,4 +1,4 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.2
+# Pixelco — Master Project Architecture Document (PAD) v1.3
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
@@ -12,6 +12,29 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.3** `[SYN]` Round-4 dashboard parity & production readiness (plan:
+  `docs/plans/2026-09-15-round4-dashboard-parity.md`): the dashboard chrome
+  and all seven pages were re-audited against the live `app.pixelco.io`
+  (logged-in DOM extraction + pairwise VLM screenshot diffs) and realigned —
+  live lucide icon set, Title Case section headers, exact active-item tokens
+  (#F8F6F2 / #CC9900), 4-lobe gradient logo, h-14 topbar without a page
+  icon, honest hot-pink bell dot backed by a 7-day identification query,
+  collapsible desktop icon rail (ADR-10), Visitors counts in the topbar
+  subtitle + topbar Export All, plain-text tabs, teal confidence bars,
+  purple/teal chart palette without a legend, light snippet block, live
+  pricing-card structure (switch toggle, POPULAR-on-Growth, checklist below
+  CTA), live-matching settings form (name no longer editable/clobbered).
+  Production readiness: `npm run build:standalone` (fixes the missing
+  `.next/static` copy that broke hydration on standalone deploys — passwords
+  leaked into URLs via native form GET), opt-in standalone smoke test,
+  multi-stage `Dockerfile` with `db push` entrypoint + HEALTHCHECK, GitHub
+  Actions CI, and `getTopPages` aggregated in SQL `groupBy`.
+- `[SR]` v1.3 evidence: `npm run verify` green (lint, typecheck, 157 tests
+  across 24 files + 2 opt-in smoke tests, build 34 routes);
+  `build:standalone` + chunk-200 smoke; browser E2E (login without
+  credentials in the URL, sidebar rail toggle + localStorage persistence,
+  bell dot, mobile 390px, zero console errors); VLM re-diff verdicts at
+  close-match level with remaining flags settled by live DOM extraction.
 - **v1.2** `[SYN]` Round-3 parity & polish (plan:
   `docs/plans/2026-09-15-round3-parity-polish.md`): the marketing
   surface now matches the original's full page set — `(marketing)` route
@@ -323,6 +346,39 @@ accounting, analytics, exports, auth — is a real working pipeline.
   table (adds a query per page and seed complexity for content that is
   not user data); hard-coded JSX in every page (links drift, no testable
   seam).
+
+**ADR-010: Dashboard chrome as a data seam + collapsible icon rail**
+
+- **Context:** Round-4 auditing against the logged-in live app showed the
+  chrome (sidebar sections, icons, per-page titles/subtitles, bell state,
+  sidebar geometry) drifting from the original across many components, and
+  the live app collapses its desktop sidebar into a ~64px icon rail via an
+  always-visible "Toggle Sidebar" button.
+- **Decision:** Chrome metadata lives in one pure, unit-tested module —
+  `src/lib/dashboard-nav.ts` exports `NAV_SECTIONS` (routes, labels, lucide
+  icon names matching the live set exactly), `PAGE_META` (verbatim
+  title/subtitle per route, incl. the Visitors counts template and the
+  Settings trailing period), `visitorsSubtitle`, `hasUnreadActivity` (the
+  honest 7-day rule behind the bell dot), and the `nextSidebarState`
+  reducer + storage key. `sidebar-nav.tsx` / `topbar.tsx` consume it; a
+  tiny client store (`chrome-store.ts`, `useSyncExternalStore`) shares the
+  rail state between the topbar toggle and `SidebarShell` (persisted to
+  `localStorage`, rehydrated post-mount to avoid SSR mismatch) and carries
+  the visitors segment counts from the page to the topbar subtitle.
+- **Rationale:** Chrome drift is a data problem, not a styling problem —
+  holding the exact strings/icon names/order in one testable module keeps
+  parity auditable (16 tests) instead of scattered across JSX; the store is
+  the minimal client-side bridge for state that must cross the
+  layout/page boundary without prop drilling through the server tree.
+- **Consequences:** (+) Parity regressions fail a unit test, not a visual
+  review; the collapse feature works on desktop with zero server changes.
+  (−) Two source files instead of one for the topbar; the visitors
+  subtitle arrives one client tick after first paint on hard load (the
+  live SPA behaves identically).
+- **Alternatives Rejected:** Route groups with per-page topbars (duplicates
+  chrome, breaks the single-layout model); URL-encoded sidebar state
+  (pollutes every link); a context provider in the layout (server
+  component cannot hold client state; would force a client layout).
 
 ---
 
@@ -817,12 +873,13 @@ speculatively.
 | Lint (static) | 80+ | — | repo-wide | ESLint 9 + typescript-eslint + React Compiler rules |
 | Types (static) | 80+ | — | repo-wide | `tsc --noEmit`, strict |
 | Build (integration) | 34 routes | — | `next build` | Next 16 (16 marketing URLs incl. 10 SSG blog posts + 14 dynamic/authed routes) |
-| Unit (pure libs + data modules) | 8 files | ~50 | `tests/{plans,format,snippet,sites,smoke,marketing-links,blog-posts,blog-slug}.test.ts` | Vitest |
+| Unit (pure libs + data modules) | 9 files | ~66 | `tests/{plans,format,snippet,sites,smoke,marketing-links,blog-posts,blog-slug,dashboard-chrome}.test.ts` | Vitest |
 | Behavioural (collector in `node:vm`) | 1 | 7 | `tests/collector-script.test.ts` | Vitest |
-| Integration (DB-backed + routes + SEO) | 11 files | ~68 | `tests/*.test.ts` + `db/test.db` | Vitest |
-| E2E (browser) | manual | — | dev server flows | browser pass |
+| Integration (DB-backed + routes + SEO) | 14 files | ~84 | `tests/*.test.ts` + `db/test.db` | Vitest |
+| E2E (browser) | manual + opt-in smoke | — | dev server flows; `PIXELCO_STANDALONE_SMOKE=1` boots the standalone server | browser pass |
 
-The suite totals **125 tests across 20 files**, runs in the `node`
+The suite totals **157 tests across 24 files** (plus 2 opt-in standalone
+smoke tests), runs in the `node`
 environment against a throwaway SQLite database (`db/test.db`, recreated
 from the schema by `tests/global-setup.ts` on every run), with `TZ=UTC`
 pinned and `fileParallelism` disabled (SQLite single-writer). Mock seams for
@@ -888,18 +945,24 @@ Playwright E2E smoke of the critical funnel.
 ### 9.1 Production Build
 
 ```bash
-npm run verify                       # gate
-npm run build                        # → .next/standalone (Node server)
-cp -r .next/static .next/standalone/.next/
+npm run verify                       # gate: lint → typecheck → test → build
+npm run build:standalone            # build + copy .next/static (+ public/) into .next/standalone
 cd .next/standalone
 DATABASE_URL="file:/abs/path/pixelco.db" \
 NEXTAUTH_SECRET="…" NEXTAUTH_URL="https://host" \
 PORT=3000 HOSTNAME=0.0.0.0 node server.js
 ```
 
-17 routes: 3 static (`/`, `/login`, `/signup`), 8 dynamic pages
-(dashboard + authed APIs), 6 handlers. Standalone is the supported
-self-host target; Vercel deploys work by removing `output: "standalone"`.
+⚠️ **Never deploy raw `next build` output:** `output: "standalone"` does
+not copy `.next/static` or `public/` into `.next/standalone` — a server
+started from that directory serves pages whose JS/CSS 404, React never
+hydrates, and forms fall back to native GET submission (login credentials
+land in the URL). `build:standalone` performs the documented copy; the
+opt-in `PIXELCO_STANDALONE_SMOKE=1` vitest run guards it end-to-end.
+
+34 routes: marketing surface (static + SSG blog), dashboard pages,
+authed APIs, collector. Standalone is the supported self-host target;
+Vercel deploys work by removing `output: "standalone"`.
 
 ### 9.2 Environment Variables
 
@@ -911,17 +974,22 @@ self-host target; Vercel deploys work by removing `output: "standalone"`.
 
 ### 9.3 Docker Configuration
 
-No Dockerfile ships yet. The standalone output is Docker-ready by design
-(`node:20-alpine` + server.js + prisma engine); a future container must
-mount the SQLite file as a volume and pass absolute `DATABASE_URL`.
+A multi-stage `Dockerfile` ships in the repo root (v1.3): `node:22-alpine`
+deps → build (`prisma generate` + `build:standalone`) → non-root runner
+carrying the standalone output, the Prisma schema + CLI for `db push` on
+boot (`RUN_DB_PUSH=false` to skip), a `/app/data` volume for SQLite, and a
+`/api/health` HEALTHCHECK. Build/run snippets live in README §Deployment.
 
 ### 9.4 CI/CD Pipeline
 
-No CI workflow is configured. The push runbook is manual: verification
-gate → conventional commit → `docs/ssh_git_wrapper_v3.py` with an
-externally-supplied deploy key (`docs/how-to-git-push-using-ssh-wrapper_SKILL.md`).
-The wrapper pre-flights auth with `git ls-remote`, pushes
-`HEAD:refs/heads/main` only, and shreds the materialized key.
+`.github/workflows/ci.yml` (v1.3) runs the full gate on every push/PR to
+`main`: `npm ci` → `prisma generate` → lint → typecheck → `vitest run`
+(`TZ=UTC`) → `next build`, with concurrency-cancelling per ref. The push
+runbook itself is manual: verification gate → conventional commit →
+`docs/ssh_git_wrapper_v3.py` with an externally-supplied deploy key
+(`docs/how-to-git-push-using-ssh-wrapper_SKILL.md`). The wrapper pre-flights
+auth with `git ls-remote`, pushes `HEAD:refs/heads/main` only, and shreds
+the materialized key.
 
 ---
 
@@ -969,14 +1037,22 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 | HIGH | NextAuth v4 on Next 16 (one-major-behind pairing) | Peer-dependency warnings; upgrade path to Auth.js v5 is non-trivial | Accepted — pinned deliberately (ADR-004); revisit before any Next 17 move |
 | MEDIUM | Strict CSP not implemented | Clickjacking/mixed-content hardening limited to baseline headers | Open — needs nonce plumbing for Next's inline bootstrap and the collector route |
 | MEDIUM | In-memory rate limiting and signup throttle (per-instance) | Multi-instance deploys would multiply the effective limit | Open — swap to shared store when horizontally scaling |
-| MEDIUM | `getTopPages` aggregates lifetime pageviews in JS | Degrades at very large event counts | Open — SQL groupBy on Postgres migration |
+| MEDIUM | `getTopPages` aggregates lifetime pageviews in JS | Degrades at very large event counts | **Fixed in v1.3** — SQL `groupBy` with deterministic tie-breaks |
 | LOW | OAuth buttons are disabled placeholders | Users must use email sign-in | By design — no providers configured |
 | LOW | Sessions are 30-day JWTs; no server-side revocation | Stolen cookies valid until expiry; deletion sign-out is client-side only | Accepted for this product shape |
 | LOW | Footer Careers link is dead | None functionally — the original pixelco.io links it to `#` too | Parity — flagged `dead: true` in the link map |
-| LOW | No Dockerfile / CI workflow | Self-hosting requires manual steps | Open |
+| LOW | No Dockerfile / CI workflow | Self-hosting requires manual steps | **Fixed in v1.3** — multi-stage Dockerfile + GitHub Actions CI |
 | LOW | Relative SQLite paths resolve against `prisma/` | Confusing first-run behavior | Documented (README, §9.2) |
 | LOW | E2E is a manual browser pass (no Playwright) | Critical funnel regressions caught late | Open — §8.3 |
 | LOW | `deepmerge-ts` advisory (GHSA-ggr8-5vv4-36mx) pinned away via `overrides` | Override must be revisited when Prisma ships a fixed `@prisma/config` | Managed — `bun audit` clean; verified against db:push/db:seed/tests |
+
+**Fixed in v1.3 (round-4):** standalone deployments serving 404 static
+assets (→ `npm run build:standalone` + opt-in smoke test — unhydrated pages
+previously native-GET-submitted login credentials into the URL); dashboard
+chrome drift (icons, headers, active tokens, logo, topbar); no desktop
+sidebar collapse; decorative-free bell (→ honest 7-day-activity dot);
+`getTopPages` in-JS aggregation (→ SQL groupBy); no Dockerfile/CI; the
+settings form editing/clobbering `name`.
 
 **Fixed in v1.2 (round-3):** missing marketing/legal routes and dead footer
 links (→ 16-URL marketing surface with robots + sitemap); no favicon; no
@@ -1005,15 +1081,16 @@ recursion (P0).
 | `src/lib/plans.ts` | ~132 | Plan catalogue + money math: integer-cent prices, `annualTotalCents`, quotas, domain limits (single source of truth) |
 | `src/lib/quota.ts` | ~81 | **Only writer of `identificationsUsed`**: atomic conditional consumption, paid overage, persisted 30-day reset (ADR-008) |
 | `src/lib/marketing-links.ts` | ~70 | Nav + footer link map — single source of truth, integrity-tested (ADR-009) |
+| `src/lib/dashboard-nav.ts` | ~140 | Chrome metadata seam: nav sections/icons, page subtitles, unread rule, rail reducer (ADR-010, 16 tests) |
 | `src/data/blog-posts.ts` | ~415 | Blog catalogue: 10 posts driving index, SSG article pages and sitemap (ADR-009) |
 | `src/lib/analytics.ts` | ~387 | Server-only aggregations + query seams (`listVisitors`, `listActivity`) + `requireUser` guard |
 | `src/lib/validation.ts` | ~98 | Zod schemas for every boundary (minimal ingest keys) + `ActionResult<T>` envelope |
 | `src/lib/auth.ts` | ~52 | NextAuth options (credentials, JWT, session callbacks) |
 | `src/actions/domains.ts` | ~121 | Add/delete/list domain actions (ownership-scoped) |
-| `src/actions/settings.ts` | ~137 | Profile, plan change (usage-preserving, downgrade guard), account deletion |
-| `src/app/dashboard/layout.tsx` | ~43 | Session gate (UX) + sidebar/topbar chrome + usage props |
+| `src/actions/settings.ts` | ~140 | Profile (company/website — name deliberately not editable), plan change (usage-preserving, downgrade guard), account deletion |
+| `src/app/dashboard/layout.tsx` | ~45 | Session gate (UX) + SidebarShell/Topbar chrome + usage + unread props |
 | `src/app/dashboard/page.tsx` | ~201 | Overview: KPI cards, trend chart, top pages, recent identifications |
-| `src/components/dashboard/visitors-table.tsx` | ~482 | Visitors page: segments, URL-driven search/filters, keyboard-navigable tabs, row selection, export, detail sheet |
+| `src/components/dashboard/visitors-table.tsx` | ~490 | Visitors page: plain-text tabs, URL-driven search/filters, circular select checkboxes, export, detail sheet |
 | `src/components/dashboard/activity-feed.tsx` | ~201 | Live feed: 5s polling (visibility-aware), cursor "Load more" |
 | `src/components/auth/signup-form.tsx` | ~160 | Action → client signIn → redirect sequence (ADR-004 pattern) |
 | `src/app/globals.css` | ~171 | Tailwind 4 `@theme` brand tokens, focus ring, motion, scrollbar |

@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 100+ assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 157 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -239,6 +239,13 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
 - **Pure helpers** — plan/money math (IEEE-754 robustness), domain
   normalisation, snippet hardening (host validation, JS-string escaping),
   CSV escaping + formula guard, relative-time boundaries.
+- **Dashboard chrome data seam** (`src/lib/dashboard-nav.ts`) — sidebar
+  sections/icons and per-page subtitles match the live app verbatim,
+  visitors-subtitle formatting, the 7-day unread-activity rule behind the
+  bell dot, and the collapsible-sidebar state reducer.
+- **Queries** — top pages via SQL `groupBy` (ordering, tie-breaks,
+  cross-user isolation), profile action (name never clobbered), and the
+  bell's recent-identification flag.
 
 ## Verification
 
@@ -260,21 +267,50 @@ complement the automated suite.
 
 ## Deployment
 
-`next build` emits a **standalone** server (`output: "standalone"`):
+### Standalone (recommended for self-hosting)
+
+`next build` with `output: "standalone"` emits a self-contained server — but
+**it does not copy the static assets**, and serving that directory as-is
+ships a page whose JS/CSS 404 (React never hydrates; forms fall back to
+native GET submission). Always build with the helper that performs the copy
+the Next docs require:
 
 ```bash
-npm run build
-cp -r .next/static .next/standalone/.next/
+npm run build:standalone   # next build + cp .next/static (+ public/) into .next/standalone
 cd .next/standalone
 DATABASE_URL="file:/absolute/path/pixelco.db" \
 NEXTAUTH_SECRET="..." NEXTAUTH_URL="https://your-host" \
 PORT=3000 HOSTNAME=0.0.0.0 node server.js
 ```
 
+An opt-in regression guard exists: `PIXELCO_STANDALONE_SMOKE=1 npx vitest run
+tests/standalone-smoke.test.ts` boots `server.js` and asserts a
+`_next/static` chunk answers 200.
+
 SQLite paths must be **absolute** in the standalone context (Prisma resolves
 relative paths against the build-time schema location). For Postgres, swap
 `DATABASE_URL` and change the provider in `prisma/schema.prisma` — the schema
 uses portable types throughout.
+
+### Docker
+
+```bash
+docker build -t pixelco .
+docker run -p 3000:3000 \
+  -e NEXTAUTH_SECRET="$(openssl rand -base64 32)" \
+  -e NEXTAUTH_URL="https://your-host" \
+  -v pixelco-data:/app/data \
+  pixelco
+```
+
+The image is a multi-stage `node:22-alpine` build: standalone output +
+static assets, non-root user, `/app/data` volume for the SQLite file, a
+`/api/health` HEALTHCHECK, and an entrypoint that runs `prisma db push` on
+boot (set `RUN_DB_PUSH=false` when the schema is managed externally). For
+Postgres, pass `DATABASE_URL=postgresql://…` instead of mounting the volume.
+
+CI (`.github/workflows/ci.yml`) runs lint → typecheck → test → build on
+every push and pull request.
 
 ## Security Notes
 
