@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { headers } from 'next/headers'
 import { getServerSession } from 'next-auth'
-import { CheckCircle2, Globe, Timer, Zap } from 'lucide-react'
+import { CircleAlert, CircleCheck, Globe, Zap } from 'lucide-react'
 import { authOptions } from '@/lib/auth'
 import { requireUser } from '@/lib/analytics'
 import { db } from '@/lib/db'
@@ -12,13 +12,33 @@ import { CopyButton } from '@/components/dashboard/copy-button'
 import { DomainSwitcher } from '@/components/dashboard/domain-switcher'
 import { PlatformInstructions } from '@/components/dashboard/platform-instructions'
 import { Button } from '@/components/ui/button'
-import { relativeTime } from '@/lib/format'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export const metadata: Metadata = {
   title: 'Install Your Pixel',
 }
 
 export const dynamic = 'force-dynamic'
+
+/** How It Works feature boxes — copy extracted verbatim from the live app. */
+const HOW_IT_WORKS = [
+  {
+    title: 'Automatic Email Detection',
+    text: "The pixel monitors all email input fields (type=email, name/id containing 'email') and form submissions. No code changes needed.",
+  },
+  {
+    title: 'Cross-Site Identification',
+    text: "Once a visitor enters their email on any site in the network, they're identified everywhere — automatically, without entering their email again.",
+  },
+  {
+    title: 'SPA Support',
+    text: 'Full single-page app support. The pixel tracks navigation via History API and popstate events — works with React, Vue, Angular, etc.',
+  },
+  {
+    title: 'Async & Lightweight',
+    text: "The pixel loads asynchronously and won't block page rendering. Typical load time is under 100ms.",
+  },
+]
 
 interface InstallPageProps {
   searchParams: Promise<{ site?: string | string[] }>
@@ -45,7 +65,7 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
   const site = pickSelectedSite(sites, siteParam ?? null)
   if (!site) {
     return (
-      <div className="mx-auto max-w-lg rounded-xl border border-border bg-card p-8 text-center shadow-sm">
+      <div className="mx-auto max-w-lg rounded-lg border border-border bg-card p-8 text-center shadow-sm">
         <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/15" aria-hidden="true">
           <Globe className="h-6 w-6 text-amber-600" />
         </span>
@@ -65,62 +85,126 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
   const receiving = site.lastEventAt !== null
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="mx-auto max-w-4xl space-y-6">
       {/* Page header + domain switcher, mirroring the live install page. */}
-      <div className="flex flex-wrap items-start justify-between gap-4">
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-2xl font-bold text-foreground">Install Your Pixel</h1>
-          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-1 text-sm text-muted-foreground">
             One snippet in your <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">&lt;head&gt;</code> tag — works on every page automatically.
           </p>
         </div>
         <DomainSwitcher domains={sites} activeSiteKey={site.siteKey} />
       </div>
 
-      <section className="rounded-xl border border-border bg-card shadow-sm" aria-labelledby="quickstart-heading">
-        <div className="border-b border-border p-5">
-          <h2 id="quickstart-heading" className="flex items-center gap-2 text-base font-bold text-foreground">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15" aria-hidden="true">
-              <Zap className="h-5 w-5 text-amber-600" />
+      {/* Quick Start */}
+      <Card className="border-primary/20">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <span
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-primary-foreground gradient-primary"
+              aria-hidden="true"
+            >
+              <Zap className="h-4 w-4" />
             </span>
-            Quick Start
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Copy and paste this snippet before the closing <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">&lt;/head&gt;</code> tag on{' '}
-            <span className="font-medium text-foreground">{site.domain}</span>.
-          </p>
-        </div>
-
-        <div className="p-5">
-          <div className="relative rounded-lg border border-border bg-[#F8F9FA]">
-            <div className="absolute right-2.5 top-2.5">
-              <CopyButton text={snippet} className="bg-card" />
+            <div>
+              <CardTitle className="font-display text-lg font-semibold tracking-tight text-foreground">
+                Quick Start
+              </CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Copy and paste this snippet before the closing{' '}
+                <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">&lt;/head&gt;</code>{' '}
+                tag on your website.
+              </p>
             </div>
-            <pre className="overflow-x-auto p-4 pr-24 text-xs leading-relaxed text-foreground">
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="relative">
+            <pre className="overflow-x-auto rounded-lg border border-border bg-foreground/5 p-4 font-mono text-sm leading-relaxed text-foreground">
               <code>{snippet}</code>
             </pre>
+            <CopyButton text={snippet} className="absolute right-3 top-3 h-9" />
           </div>
 
           {receiving ? (
-            <p className="mt-4 flex items-start gap-2.5 rounded-lg bg-teal-50 px-3.5 py-3 text-sm text-teal-800">
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-              Receiving data — last event {relativeTime(site.lastEventAt as Date)}.
-              Identifications will appear in your dashboard within seconds of a visit.
-            </p>
+            <div className="mt-4 rounded-lg border border-neon-green/20 bg-neon-green/10 p-3">
+              <div className="flex gap-2">
+                <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                <div className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Pixel verified!</span>{' '}
+                  We&apos;re receiving data from{' '}
+                  <span className="font-medium text-foreground">{site.domain}</span>. Everything is
+                  working.
+                </div>
+              </div>
+            </div>
           ) : (
-            <p className="mt-4 flex items-start gap-2.5 rounded-lg bg-sky-50 px-3.5 py-3 text-sm text-sky-800">
-              <Timer className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-              <span>
-                <strong className="font-semibold">Waiting for first event…</strong>{' '}
-                Paste the snippet on your site and visit a page. Refresh this page
-                to see the latest status.
-              </span>
-            </p>
+            <div className="mt-4 rounded-lg border border-neon-green/20 bg-neon-green/5 p-3">
+              <div className="flex gap-2">
+                <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                <div className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Waiting for first event...</span>{' '}
+                  Paste the snippet on your site and visit a page. This status will update
+                  automatically once we receive data.
+                </div>
+              </div>
+            </div>
           )}
-        </div>
-      </section>
+        </CardContent>
+      </Card>
 
       <PlatformInstructions />
+
+      {/* How It Works */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <span
+              className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted"
+              aria-hidden="true"
+            >
+              <CircleAlert className="h-4 w-4 text-muted-foreground" />
+            </span>
+            <div>
+              <CardTitle className="font-display text-lg font-semibold tracking-tight text-foreground">
+                How It Works
+              </CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">
+                What happens after you install the pixel.
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {HOW_IT_WORKS.map((feature) => (
+              <div key={feature.title} className="rounded-lg border border-border bg-muted/10 p-4">
+                <p className="mb-1 text-sm font-medium text-foreground">{feature.title}</p>
+                <p className="text-xs leading-relaxed text-muted-foreground">{feature.text}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Site Key */}
+      <Card className="border-primary/20">
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-foreground">Site Key</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Your unique identifier for{' '}
+                <span className="font-medium text-foreground">{site.domain}</span>
+              </p>
+            </div>
+            <code className="rounded-md bg-foreground/5 px-3 py-1.5 font-mono text-sm text-foreground">
+              {site.siteKey}
+            </code>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

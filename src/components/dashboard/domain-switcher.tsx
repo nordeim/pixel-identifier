@@ -28,7 +28,7 @@ export function DomainSwitcher({
       value={activeSiteKey}
       onValueChange={(siteKey) => router.push(`/dashboard/install?site=${siteKey}`)}
     >
-      <SelectTrigger className="w-[220px]" aria-label="Select domain">
+      <SelectTrigger className="h-10 w-[200px]" aria-label="Select domain">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

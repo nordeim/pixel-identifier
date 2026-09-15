@@ -1,7 +1,8 @@
 'use client'
 
-import { Code, FileText, Globe, ShoppingBag } from 'lucide-react'
+import { Code, Globe, PanelsTopLeft, ShoppingBag } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const WORDPRESS_STEPS = [
   {
@@ -60,6 +61,7 @@ const GTM_STEPS = [
   },
 ]
 
+// Live HTML guide carries four steps (incl. the deploy confirmation step).
 const HTML_STEPS = [
   {
     title: 'Open your HTML file',
@@ -73,6 +75,10 @@ const HTML_STEPS = [
     title: 'Paste the snippet',
     text: 'Paste the pixel code just before the closing </head> tag. It only needs to be in your main layout file — it will work on every page.',
   },
+  {
+    title: 'Deploy your site',
+    text: 'Save and deploy your changes. Visit your site, then check your Pixelco dashboard to confirm events are arriving.',
+  },
 ]
 
 const PLATFORMS = [
@@ -85,52 +91,62 @@ const PLATFORMS = [
 
 export function PlatformInstructions() {
   return (
-    <section className="rounded-xl border border-border bg-card shadow-sm" aria-labelledby="platform-heading">
-      <div className="border-b border-border p-5">
-        <h2 id="platform-heading" className="flex items-center gap-2 text-base font-bold text-foreground">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15" aria-hidden="true">
-            <FileText className="h-5 w-5 text-amber-600" />
+    <Card aria-labelledby="platform-heading">
+      <CardHeader>
+        <div className="flex items-center gap-3">
+          <span
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted"
+            aria-hidden="true"
+          >
+            <PanelsTopLeft className="h-4 w-4 text-muted-foreground" />
           </span>
-          Platform Instructions
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">Step-by-step guides for popular platforms.</p>
-      </div>
+          <div>
+            <CardTitle className="font-display text-lg font-semibold tracking-tight text-foreground">
+              Platform Instructions
+            </CardTitle>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Step-by-step guides for popular platforms.
+            </p>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <Tabs defaultValue="html">
+          <TabsList className="mb-4 h-10 w-full justify-start bg-muted p-1">
+            {PLATFORMS.map((platform) => (
+              <TabsTrigger
+                key={platform.id}
+                value={platform.id}
+                className="gap-1.5"
+              >
+                <platform.icon className="h-3.5 w-3.5" aria-hidden="true" />
+                {platform.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-      <Tabs defaultValue="html" className="p-5">
-        <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1 bg-muted/60 p-1">
           {PLATFORMS.map((platform) => (
-            <TabsTrigger
-              key={platform.id}
-              value={platform.id}
-              className="data-[state=active]:bg-card data-[state=active]:text-foreground"
-            >
-              <platform.icon className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
-              {platform.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-
-        {PLATFORMS.map((platform) => (
-          <TabsContent key={platform.id} value={platform.id} className="mt-5">
-            <ol className="space-y-5">
-              {platform.steps.map((step, index) => (
-                <li key={step.title} className="flex gap-3.5">
-                  <span
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-amber-300 bg-amber-50 text-xs font-extrabold text-amber-700"
-                    aria-hidden="true"
-                  >
-                    {index + 1}
-                  </span>
-                  <div>
-                    <h3 className="text-sm font-bold text-foreground">{step.title}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{step.text}</p>
+            <TabsContent key={platform.id} value={platform.id} className="mt-0 space-y-4">
+              <div className="space-y-3">
+                {platform.steps.map((step, index) => (
+                  <div key={step.title} className="flex gap-3">
+                    <span
+                      className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary"
+                      aria-hidden="true"
+                    >
+                      {index + 1}
+                    </span>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{step.title}</p>
+                      <p className="text-sm text-muted-foreground">{step.text}</p>
+                    </div>
                   </div>
-                </li>
-              ))}
-            </ol>
-          </TabsContent>
-        ))}
-      </Tabs>
-    </section>
+                ))}
+              </div>
+            </TabsContent>
+          ))}
+        </Tabs>
+      </CardContent>
+    </Card>
   )
 }

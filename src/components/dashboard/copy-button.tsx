@@ -23,19 +23,18 @@ export function CopyButton({ text, className }: { text: string; className?: stri
     <Button
       type="button"
       variant="outline"
-      size="sm"
       onClick={copy}
       className={className}
       aria-label={copied ? 'Copied to clipboard' : 'Copy snippet to clipboard'}
     >
       {copied ? (
         <>
-          <Check className="mr-1.5 h-3.5 w-3.5 text-teal-600" aria-hidden="true" />
+          <Check className="mr-1 h-3.5 w-3.5 text-neon-green" aria-hidden="true" />
           Copied
         </>
       ) : (
         <>
-          <Copy className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
+          <Copy className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
           Copy
         </>
       )}
