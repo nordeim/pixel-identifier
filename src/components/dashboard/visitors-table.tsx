@@ -23,6 +23,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
+import { publishVisitorsCounts } from '@/components/dashboard/chrome-store'
 import { formatDate, initialsForEmail, relativeTime } from '@/lib/format'
 
 export interface VisitorRow {
@@ -88,6 +89,13 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
     setQuery(filters.q)
   }
 
+  // Publish segment counts to the dashboard chrome so the topbar subtitle
+  // can render "N individuals · M companies identified" like the live app
+  // (round-4 plan, Task S6).
+  useEffect(() => {
+    publishVisitorsCounts({ individual: counts.individual, company: counts.company })
+  }, [counts.individual, counts.company])
+
   /** Push new filter values into the URL (single source of truth). */
   function navigate(overrides: Partial<VisitorFilters> & { page?: number }) {
     const next: Record<string, string> = {}
@@ -142,8 +150,14 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
 
   const selected = visitors.find((v) => v.id === selectedId) ?? null
 
-  const tabs: { key: Segment; label: string; count: number; icon: React.ComponentType<{ className?: string }> }[] = [
-    { key: 'all', label: 'All', count: counts.all, icon: Eye },
+  const tabs: {
+    key: Segment
+    label: string
+    count: number
+    icon: React.ComponentType<{ className?: string }> | null
+  }[] = [
+    // Live app: plain-text tabs, icons only on Individuals/Companies.
+    { key: 'all', label: 'All', count: counts.all, icon: null },
     { key: 'individual', label: 'Individuals', count: counts.individual, icon: User },
     { key: 'company', label: 'Companies', count: counts.company, icon: Building2 },
   ]
@@ -164,64 +178,53 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-muted-foreground">
-          <span className="font-semibold text-foreground">{counts.individual}</span> individuals ·{' '}
-          <span className="font-semibold text-foreground">{counts.company}</span> companies identified
-        </p>
-        <div className="flex items-center gap-2">
-          {exportSelectedUrl && (
-            <Button asChild variant="outline" className="border-primary font-semibold hover:bg-primary/10">
-              <a href={exportSelectedUrl} download>
-                <Download className="mr-1.5 h-4 w-4" aria-hidden="true" />
-                Export Selected ({selectedIds.size})
-              </a>
-            </Button>
-          )}
-          <Button asChild className="font-semibold shadow-sm">
-            <a href="/api/export" download>
+      {exportSelectedUrl && (
+        <div className="flex justify-end">
+          <Button asChild variant="outline" className="border-primary font-semibold hover:bg-primary/10">
+            <a href={exportSelectedUrl} download>
               <Download className="mr-1.5 h-4 w-4" aria-hidden="true" />
-              Export All
+              Export Selected ({selectedIds.size})
             </a>
           </Button>
         </div>
-      </div>
+      )}
 
-      {/* Segment tabs + filters (URL-driven) */}
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="flex rounded-lg border border-border bg-card p-0.5" role="tablist" aria-label="Visitor segments">
-          {tabs.map((tab, index) => (
-            <button
-              key={tab.key}
-              ref={(node) => {
-                tabRefs.current[index] = node
-              }}
-              type="button"
-              role="tab"
-              aria-selected={filters.type === tab.key}
-              tabIndex={filters.type === tab.key ? 0 : -1}
-              onClick={() => navigate({ type: tab.key })}
-              onKeyDown={(event) => onTabKeyDown(event, index)}
-              className={cn(
-                'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors focus-brand',
-                filters.type === tab.key
-                  ? 'bg-primary/15 text-amber-700'
-                  : 'text-muted-foreground hover:text-foreground',
-              )}
-            >
-              <tab.icon className="h-3.5 w-3.5" aria-hidden="true" />
+      {/* Segment tabs — plain text like the live app, on their own row */}
+      <div className="flex items-center gap-5" role="tablist" aria-label="Visitor segments">
+        {tabs.map((tab, index) => (
+          <button
+            key={tab.key}
+            ref={(node) => {
+              tabRefs.current[index] = node
+            }}
+            type="button"
+            role="tab"
+            aria-selected={filters.type === tab.key}
+            tabIndex={filters.type === tab.key ? 0 : -1}
+            onClick={() => navigate({ type: tab.key })}
+            onKeyDown={(event) => onTabKeyDown(event, index)}
+            className={cn(
+              'flex items-center gap-1.5 text-sm transition-colors focus-brand',
+              filters.type === tab.key
+                ? 'font-bold text-foreground'
+                : 'font-medium text-muted-foreground hover:text-foreground',
+            )}
+          >
+              {tab.icon && <tab.icon className="h-4 w-4" aria-hidden="true" />}
               {tab.label}
-              <span className="tabular-nums">{tab.count}</span>
+              <span className="font-semibold tabular-nums">{tab.count}</span>
             </button>
           ))}
-        </div>
+      </div>
 
-        <div className="relative min-w-0 flex-1 sm:max-w-xs">
+      {/* Search + filters row */}
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="relative min-w-0 flex-1 sm:max-w-sm">
           <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search emails, companies…"
+            placeholder="Search emails, companies..."
             className="pl-8"
             aria-label="Search visitors"
           />
@@ -351,8 +354,12 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                     <td className="px-2 py-3">
                       {visitor.confidence !== null ? (
                         <span className="flex items-center gap-2">
-                          <Progress value={visitor.confidence} className="h-1.5 w-14" aria-hidden="true" />
-                          <span className="text-xs font-semibold tabular-nums text-teal-600">
+                          <Progress
+                            value={visitor.confidence}
+                            className="h-1.5 w-14 [&>div]:bg-teal-500"
+                            aria-hidden="true"
+                          />
+                          <span className="text-xs font-semibold tabular-nums text-foreground">
                             {visitor.confidence}%
                           </span>
                         </span>
@@ -361,9 +368,15 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                       )}
                     </td>
                     <td className="px-2 py-3">
-                      <Badge variant="secondary" className="bg-primary/20 text-amber-800 hover:bg-primary/20">
-                        {visitor.status}
-                      </Badge>
+                      {visitor.status === 'active' ? (
+                        <Badge variant="secondary" className="bg-primary/20 text-amber-800 hover:bg-primary/20">
+                          active
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary" className="bg-muted text-muted-foreground hover:bg-muted">
+                          inactive
+                        </Badge>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-right text-xs text-muted-foreground">
                       {relativeTime(visitor.lastSeen)}
