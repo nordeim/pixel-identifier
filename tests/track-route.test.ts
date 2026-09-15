@@ -64,8 +64,11 @@ describe('POST /api/track (F-13: ingestion gated on hostname)', () => {
   it('ingests a beacon whose hostname matches the registered domain', async () => {
     const user = await createUser()
     const site = await createSite(user.id, 'tracked.example')
+    // Deterministically NON-resolving visitor id: this test asserts exact
+    // event counts, and a resolving id would add an identification event.
+    const vid = anonymousVisitorId(site.siteKey)
 
-    const response = await send(site.siteKey, 'https://tracked.example/pricing', 'v_abc_def_ghi')
+    const response = await send(site.siteKey, 'https://tracked.example/pricing', vid)
 
     expect(response.status).toBe(204)
     const { visitors, events } = await counts()
