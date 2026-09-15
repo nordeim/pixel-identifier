@@ -75,10 +75,10 @@ const HTML_STEPS = [
 ]
 
 const PLATFORMS = [
-  { id: 'html', label: '<> HTML / Custom', steps: HTML_STEPS },
+  { id: 'html', label: 'HTML / Custom', steps: HTML_STEPS },
   { id: 'wordpress', label: 'WordPress', steps: WORDPRESS_STEPS },
   { id: 'shopify', label: 'Shopify', steps: SHOPIFY_STEPS },
-  { id: 'gtm', label: '<> Google Tag Manager', steps: GTM_STEPS },
+  { id: 'gtm', label: 'Google Tag Manager', steps: GTM_STEPS },
 ]
 
 export function PlatformInstructions() {
@@ -113,7 +113,7 @@ export function PlatformInstructions() {
               {platform.steps.map((step, index) => (
                 <li key={step.title} className="flex gap-3.5">
                   <span
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-extrabold text-primary-foreground"
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-amber-300 bg-amber-50 text-xs font-extrabold text-amber-700"
                     aria-hidden="true"
                   >
                     {index + 1}

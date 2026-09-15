@@ -108,11 +108,11 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
         </div>
 
         <div className="p-5">
-          <div className="relative rounded-lg border border-border bg-stone-950">
+          <div className="relative rounded-lg border border-border bg-[#F8F9FA]">
             <div className="absolute right-2.5 top-2.5">
-              <CopyButton text={snippet} className="border-stone-700 bg-stone-900 text-stone-300 hover:bg-stone-800 hover:text-stone-100" />
+              <CopyButton text={snippet} className="bg-card" />
             </div>
-            <pre className="overflow-x-auto p-4 text-xs leading-relaxed text-stone-200">
+            <pre className="overflow-x-auto p-4 pr-24 text-xs leading-relaxed text-foreground">
               <code>{snippet}</code>
             </pre>
           </div>
