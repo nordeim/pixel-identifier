@@ -42,10 +42,7 @@ export const COLLECTOR_SCRIPT = String.raw`
       u: location.href,
       p: location.pathname + location.search,
       r: document.referrer || '',
-      t: document.title || '',
-      v: getVid(),
-      w: window.screen ? window.screen.width : 0,
-      h: window.screen ? window.screen.height : 0
+      v: getVid()
     };
     var body = JSON.stringify(payload);
     try {

@@ -85,14 +85,17 @@ export const changePlanSchema = z.object({
   cycle: z.enum(['monthly', 'annual']),
 })
 
-/** Ingest payload accepted from the browser pixel. */
+/**
+ * Ingest payload accepted from the browser pixel.
+ *
+ * Deliberately minimal (data minimisation): only the fields the pipeline
+ * persists. Legacy pixels that still send title/screen fields are parsed
+ * fine — Zod strips unknown keys — but nothing beyond these is stored.
+ */
 export const trackPayloadSchema = z.object({
   k: z.string().trim().min(3).max(64), // site key
   u: z.string().trim().max(2048).optional(), // full page URL
   p: z.string().trim().max(2048).default('/'), // pathname
   r: z.string().trim().max(2048).optional().default(''), // referrer
-  t: z.string().trim().max(500).optional().default(''), // title
   v: z.string().trim().max(64).optional(), // visitor id from cookie
-  w: z.number().int().positive().max(20000).optional(), // screen width
-  h: z.number().int().positive().max(20000).optional(), // screen height
 })
