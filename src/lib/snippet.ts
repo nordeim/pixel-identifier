@@ -24,12 +24,15 @@ export function buildSnippet(siteKey: string, collectorUrl: string): string {
   }
   const url = escapeJsString(collectorUrl)
   const key = escapeJsString(siteKey)
+  // `document` is passed as the OBJECT (not a string literal): the IIFE calls
+  // i.createElement on it. Round-5 regression-tested in node:vm — a quoted
+  // 'document' throws before the collector ever loads (R5-C1).
   return `<script>
 (function(p,i,x,e,l){p._pxq=p._pxq||[];
 var s=i.createElement('script');s.async=1;
 s.src='${url}';
 s.setAttribute('data-site',e);
-i.head.appendChild(s)})(window,'document','px','${key}');
+i.head.appendChild(s);})(window,document,'px','${key}');
 </script>`
 }
 
