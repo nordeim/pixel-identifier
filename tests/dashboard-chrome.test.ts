@@ -93,6 +93,24 @@ describe('dashboard-nav chrome metadata', () => {
   it('exposes the live hot-pink unread dot color', () => {
     expect(NOTIFICATION_DOT_COLOR).toBe('#EC4699')
   })
+
+  it('marks Install and Settings as in-page-title routes; the other five keep topbar titles (R5-H2)', () => {
+    // The live app renders NO topbar title on Install and Settings — the
+    // in-page H1 (`font-display text-2xl font-bold`) is the only title.
+    expect(PAGE_META['/dashboard/install'].inPageTitle).toBe(true)
+    expect(PAGE_META['/dashboard/settings'].inPageTitle).toBe(true)
+    // Every other dashboard route renders its title in the topbar like live.
+    const topbarRoutes = [
+      '/dashboard',
+      '/dashboard/visitors',
+      '/dashboard/activity',
+      '/dashboard/domains',
+      '/dashboard/pricing',
+    ]
+    for (const route of topbarRoutes) {
+      expect(PAGE_META[route].inPageTitle ?? false).toBe(false)
+    }
+  })
 })
 
 describe('visitorsSubtitle', () => {

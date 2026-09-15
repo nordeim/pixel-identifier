@@ -70,12 +70,16 @@ export function Topbar({
           <PanelLeft className="h-5 w-5" />
         </Button>
 
-        <div className="min-w-0">
-          <h1 className="truncate text-sm font-semibold leading-none text-foreground">
-            {meta.title}
-          </h1>
-          <p className="mt-0.5 truncate text-xs text-muted-foreground">{subtitle}</p>
-        </div>
+        {/* R5-H2: Install and Settings render their title in-page (H1) —
+            the live topbar shows no title block on those routes. */}
+        {!meta.inPageTitle && (
+          <div className="min-w-0">
+            <h1 className="truncate text-sm font-semibold leading-none text-foreground">
+              {meta.title}
+            </h1>
+            <p className="mt-0.5 truncate text-xs text-muted-foreground">{subtitle}</p>
+          </div>
+        )}
       </div>
 
       <div className="flex items-center gap-2">

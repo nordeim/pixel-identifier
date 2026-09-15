@@ -69,14 +69,12 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
       {/* Page header + domain switcher, mirroring the live install page. */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Install Your Pixel</h1>
+          <h1 className="font-display text-2xl font-bold text-foreground">Install Your Pixel</h1>
           <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
             One snippet in your <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">&lt;head&gt;</code> tag — works on every page automatically.
           </p>
         </div>
-        {sites.length > 1 && (
-          <DomainSwitcher domains={sites} activeSiteKey={site.siteKey} />
-        )}
+        <DomainSwitcher domains={sites} activeSiteKey={site.siteKey} />
       </div>
 
       <section className="rounded-xl border border-border bg-card shadow-sm" aria-labelledby="quickstart-heading">

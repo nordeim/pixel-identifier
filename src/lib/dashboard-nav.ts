@@ -56,6 +56,11 @@ export interface PageMeta {
   title: string
   /** Subtitle rendered under the topbar title. May be a format template. */
   subtitle: string
+  /**
+   * R5-H2: the live app renders no topbar title on Install and Settings —
+   * the in-page H1 (`font-display text-2xl font-bold`) is the only title.
+   */
+  inPageTitle?: boolean
 }
 
 export const PAGE_META: Record<string, PageMeta> = {
@@ -75,6 +80,7 @@ export const PAGE_META: Record<string, PageMeta> = {
   '/dashboard/install': {
     title: 'Install Your Pixel',
     subtitle: 'One snippet in your <head> tag — works on every page automatically.',
+    inPageTitle: true,
   },
   '/dashboard/domains': {
     title: 'Domains',
@@ -87,6 +93,7 @@ export const PAGE_META: Record<string, PageMeta> = {
   '/dashboard/settings': {
     title: 'Settings',
     subtitle: 'Manage your account and pixel configuration.',
+    inPageTitle: true,
   },
 }
 
