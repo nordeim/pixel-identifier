@@ -265,7 +265,7 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+      <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -332,7 +332,7 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                           </span>
                         ) : (
                           <span
-                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground"
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full gradient-primary text-[10px] font-bold text-primary-foreground"
                             aria-hidden="true"
                           >
                             {initialsForEmail(visitor.email ?? '')}
@@ -459,7 +459,7 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                     </span>
                   ) : (
                     <span
-                      className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground"
+                      className="flex h-10 w-10 items-center justify-center rounded-full gradient-primary text-xs font-bold text-primary-foreground"
                       aria-hidden="true"
                     >
                       {initialsForEmail(selected.email ?? '')}
