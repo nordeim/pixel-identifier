@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { TEST_DATABASE_URL } from './tests/test-db'
+import { TEST_DATABASE_URL } from './tests/test-db.ts'
 
 const repoRoot = path.dirname(fileURLToPath(import.meta.url))
 

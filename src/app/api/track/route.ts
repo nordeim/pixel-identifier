@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { trackPayloadSchema } from '@/lib/validation'
 import { resolveIdentity, sourceFromReferrer } from '@/lib/identification'
 import { getPlan } from '@/lib/plans'
+import { consumeIdentification, resetMonthlyWindowIfNeeded } from '@/lib/quota'
 import { randomBytes } from 'crypto'
 
 /**
@@ -154,48 +155,49 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   // Identity resolution for not-yet-identified visitors, gated by plan quota.
   if (visitor.email === null) {
     const plan = getPlan(site.user.plan)
-    let used = site.user.identificationsUsed
-    let periodStart = site.user.usagePeriodStart
+    // Lazily persist the rolling monthly reset before quota reasoning.
+    await resetMonthlyWindowIfNeeded(site.user.id, plan, {
+      used: site.user.identificationsUsed,
+      periodStart: site.user.usagePeriodStart,
+    })
 
-    if (plan.limitPeriod === 'monthly') {
-      const elapsedDays = (now.getTime() - periodStart.getTime()) / 86_400_000
-      if (elapsedDays >= 30) {
-        used = 0
-        periodStart = now
-        await db.user.update({
-          where: { id: site.user.id },
-          data: { identificationsUsed: 0, usagePeriodStart: now },
-        })
-      }
-    }
-
-    if (used < plan.identificationLimit) {
-      const identity = resolveIdentity(anonymousId, site.siteKey)
-      if (identity) {
-        await db.visitor.update({
-          where: { id: visitor.id },
-          data: {
-            email: identity.email,
-            type: identity.type,
-            companyName: identity.companyName,
-            confidence: identity.confidence,
-          },
-        })
-        await db.event.create({
-          data: {
-            siteId: site.id,
-            visitorId: visitor.id,
-            name: 'identification',
-            path: payload.p || '/',
-            pageUrl: payload.u ?? null,
-            referrer: payload.r || null,
-            userAgent: request.headers.get('user-agent')?.slice(0, 500) ?? null,
-          },
-        })
-        await db.user.update({
-          where: { id: site.user.id },
-          data: { identificationsUsed: { increment: 1 }, usagePeriodStart: periodStart },
-        })
+    const identity = resolveIdentity(anonymousId, site.siteKey)
+    if (identity) {
+      // Claim the visitor first: exactly one concurrent beacon may turn an
+      // anonymous visitor into an identified one.
+      const claimed = await db.visitor.updateMany({
+        where: { id: visitor.id, email: null },
+        data: {
+          email: identity.email,
+          type: identity.type,
+          companyName: identity.companyName,
+          confidence: identity.confidence,
+        },
+      })
+      if (claimed.count === 1) {
+        const consumed = await consumeIdentification(site.user.id, plan)
+        if (consumed) {
+          await db.event.create({
+            data: {
+              siteId: site.id,
+              visitorId: visitor.id,
+              name: 'identification',
+              path: payload.p || '/',
+              pageUrl: payload.u ?? null,
+              referrer: payload.r || null,
+              userAgent: request.headers.get('user-agent')?.slice(0, 500) ?? null,
+            },
+          })
+        } else {
+          // Quota exhausted between claim and consume: undo the claim (the
+          // where-clause targets the exact email we wrote, so a concurrent
+          // winner can never be wiped) so an identification is never shown
+          // without being counted.
+          await db.visitor.updateMany({
+            where: { id: visitor.id, email: identity.email },
+            data: { email: null, type: null, companyName: null, confidence: null },
+          })
+        }
       }
     }
   }

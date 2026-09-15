@@ -6,6 +6,10 @@ import { vi } from 'vitest'
  * `vi.mocked(headers).mockResolvedValue(...)`.
  */
 
+// 'server-only' is a build-time guard supplied by Next.js; stub it for the
+// node test environment.
+vi.mock('server-only', () => ({}))
+
 vi.mock('next/cache', () => ({
   revalidatePath: vi.fn(),
 }))

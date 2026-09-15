@@ -1,6 +1,7 @@
 import 'server-only'
 import { db } from '@/lib/db'
 import { getPlan, type Plan } from '@/lib/plans'
+import { resetMonthlyWindowIfNeeded } from '@/lib/quota'
 import type { Session } from 'next-auth'
 
 /** Narrow session shape used across the dashboard. */
@@ -31,18 +32,19 @@ export async function getUsage(userId: string): Promise<UsageInfo> {
     select: { plan: true, identificationsUsed: true, usagePeriodStart: true },
   })
   const plan = getPlan(user?.plan ?? 'free')
-  let used = user?.identificationsUsed ?? 0
 
-  if (plan.limitPeriod === 'monthly' && user) {
-    // Reset the rolling monthly window when it has elapsed.
-    const periodStart = user.usagePeriodStart
-    const elapsedDays = (Date.now() - periodStart.getTime()) / 86_400_000
-    if (elapsedDays >= 30) used = 0
-  }
+  // The monthly reset is PERSISTED here (not display-only) so the sidebar,
+  // pricing page and the ingest path always agree on the same window.
+  const snapshot = user
+    ? await resetMonthlyWindowIfNeeded(user.id, plan, {
+        used: user.identificationsUsed,
+        periodStart: user.usagePeriodStart,
+      })
+    : { used: 0, periodStart: new Date() }
 
   const limit = plan.identificationLimit
-  const percent = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0
-  return { plan, used, limit, percent, period: plan.limitPeriod }
+  const percent = limit > 0 ? Math.min(100, Math.round((snapshot.used / limit) * 100)) : 0
+  return { plan, used: snapshot.used, limit, percent, period: plan.limitPeriod }
 }
 
 export interface OverviewStats {
