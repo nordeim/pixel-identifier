@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { ChevronDown, Eye, Loader2, Mail, Radio } from 'lucide-react'
+import { ChevronDown, Eye, Globe, Loader2, Mail } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { relativeTime } from '@/lib/format'
@@ -27,7 +27,6 @@ interface ActivityFeedProps {
 export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps) {
   const [events, setEvents] = useState<ActivityEvent[]>(initialEvents)
   const [cursor, setCursor] = useState<string | null>(initialCursor)
-  const [live, setLive] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [tick, setTick] = useState(0)
 
@@ -57,14 +56,13 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
   }, [])
 
   useEffect(() => {
-    if (!live) return
     const timer = setInterval(() => {
       // Background tabs do not need to poll (F-32).
       if (typeof document === 'undefined' || document.hidden) return
       void refresh()
     }, POLL_INTERVAL_MS)
     return () => clearInterval(timer)
-  }, [live, refresh])
+  }, [refresh])
 
   const loadMore = useCallback(async () => {
     if (!cursor || loadingMore) return
@@ -89,26 +87,9 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card p-4 shadow-sm">
-        <div>
-          <p className="flex items-center gap-2 text-sm font-bold text-foreground">
-            <Radio className={`h-4 w-4 ${live ? 'text-teal-500' : 'text-muted-foreground'}`} aria-hidden="true" />
-            Live Feed
-          </p>
-          <p className="mt-0.5 text-xs text-muted-foreground">All events across your domains</p>
-        </div>
-        <button
-          type="button"
-          onClick={() => setLive((v) => !v)}
-          aria-pressed={live}
-          className="flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-muted focus-brand"
-        >
-          <span
-            className={`h-2 w-2 rounded-full ${live ? 'animate-pulse bg-teal-500' : 'bg-muted-foreground/40'}`}
-            aria-hidden="true"
-          />
-          {live ? 'Live' : 'Paused'}
-        </button>
+      <div className="rounded-xl bg-card p-5 shadow-sm">
+        <p className="text-base font-bold text-foreground">Live Feed</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">All events across your domains</p>
       </div>
 
       <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
@@ -128,13 +109,13 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
                 <span
                   className={
                     event.name === 'identification'
-                      ? 'flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/20'
+                      ? 'flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary'
                       : 'flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted'
                   }
                   aria-hidden="true"
                 >
                   {event.name === 'identification' ? (
-                    <Mail className="h-4 w-4 text-amber-600" />
+                    <Mail className="h-4 w-4 text-white" />
                   ) : (
                     <Eye className="h-4 w-4 text-muted-foreground" />
                   )}
@@ -146,17 +127,20 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
                       {event.email ?? `${event.anonymousId}…`}
                     </span>
                     {event.name === 'identification' ? (
-                      <Badge variant="secondary" className="bg-primary/20 text-amber-800 hover:bg-primary/20">
-                        identified
+                      <Badge variant="secondary" className="bg-amber-300 text-amber-950 hover:bg-amber-300">
+                        Identified
                       </Badge>
                     ) : (
-                      <Badge variant="secondary" className="bg-muted text-muted-foreground hover:bg-muted">
-                        pageview
+                      <Badge variant="secondary" className="bg-muted text-foreground hover:bg-muted">
+                        Pageview
                       </Badge>
                     )}
                   </p>
-                  <p className="truncate text-xs text-muted-foreground">
-                    @ {event.domain} → <span className="font-mono">{event.path}</span>
+                  <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground">
+                    <Globe className="h-3 w-3 shrink-0" aria-hidden="true" />
+                    {event.domain}
+                    <span aria-hidden="true">/</span>
+                    <span className="truncate font-mono">{event.path}</span>
                   </p>
                 </div>
 
@@ -190,12 +174,6 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
         )}
       </div>
 
-      {live && (
-        <p className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground" aria-hidden="true">
-          <Loader2 className="h-3 w-3 animate-spin" />
-          Auto-refreshing every 5 seconds
-        </p>
-      )}
     </div>
   )
 }
