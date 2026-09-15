@@ -109,7 +109,8 @@ export function visitorsSubtitle(counts: {
 }
 
 export interface ActivityEventLike {
-  type: string
+  /** Event name as persisted: 'pageview' | 'identification'. */
+  name: string
   createdAt: Date
 }
 
@@ -123,7 +124,7 @@ export function hasUnreadActivity(
 ): boolean {
   const cutoff = now.getTime() - 7 * 24 * 60 * 60 * 1000
   return events.some(
-    (event) => event.type === 'identification' && event.createdAt.getTime() >= cutoff,
+    (event) => event.name === 'identification' && event.createdAt.getTime() >= cutoff,
   )
 }
 

@@ -113,19 +113,19 @@ describe('hasUnreadActivity (bell dot honesty)', () => {
 
   it('is true when an identification happened in the last 7 days', () => {
     expect(
-      hasUnreadActivity([{ type: 'identification', createdAt: new Date('2026-09-14T00:00:00Z') }], now),
+      hasUnreadActivity([{ name: 'identification', createdAt: new Date('2026-09-14T00:00:00Z') }], now),
     ).toBe(true)
   })
 
   it('is false when the newest identification is older than 7 days', () => {
     expect(
-      hasUnreadActivity([{ type: 'identification', createdAt: new Date('2026-09-01T00:00:00Z') }], now),
+      hasUnreadActivity([{ name: 'identification', createdAt: new Date('2026-09-01T00:00:00Z') }], now),
     ).toBe(false)
   })
 
   it('ignores pageview events entirely', () => {
     expect(
-      hasUnreadActivity([{ type: 'pageview', createdAt: new Date('2026-09-15T11:00:00Z') }], now),
+      hasUnreadActivity([{ name: 'pageview', createdAt: new Date('2026-09-15T11:00:00Z') }], now),
     ).toBe(false)
   })
 
