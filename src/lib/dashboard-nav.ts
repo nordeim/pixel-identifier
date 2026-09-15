@@ -1,0 +1,149 @@
+/**
+ * Dashboard chrome metadata — the single source of truth for sidebar
+ * sections, per-page titles/subtitles and notification state helpers.
+ *
+ * Everything in here is pure and covered by `tests/dashboard-chrome.test.ts`;
+ * the visual components (sidebar-nav, topbar) must consume this module so
+ * the chrome stays in lockstep with the live app (round-4 plan, Task S1).
+ */
+
+export interface NavItem {
+  href: string
+  label: string
+  /** Lucide icon name, matching the live app's sidebar exactly. */
+  icon:
+    | 'chart-column'
+    | 'eye'
+    | 'activity'
+    | 'code-xml'
+    | 'users'
+    | 'credit-card'
+    | 'settings'
+  exact?: boolean
+}
+
+export interface NavSection {
+  title: string
+  items: NavItem[]
+}
+
+export const NAV_SECTIONS: NavSection[] = [
+  {
+    title: 'Analytics',
+    items: [
+      { href: '/dashboard', label: 'Overview', icon: 'chart-column', exact: true },
+      { href: '/dashboard/visitors', label: 'Visitors', icon: 'eye' },
+      { href: '/dashboard/activity', label: 'Activity Log', icon: 'activity' },
+    ],
+  },
+  {
+    title: 'Setup',
+    items: [
+      { href: '/dashboard/install', label: 'Install Pixel', icon: 'code-xml' },
+      { href: '/dashboard/domains', label: 'Domains', icon: 'users' },
+    ],
+  },
+  {
+    title: 'Account',
+    items: [
+      { href: '/dashboard/pricing', label: 'Pricing & Plan', icon: 'credit-card' },
+      { href: '/dashboard/settings', label: 'Settings', icon: 'settings' },
+    ],
+  },
+]
+
+export interface PageMeta {
+  title: string
+  /** Subtitle rendered under the topbar title. May be a format template. */
+  subtitle: string
+}
+
+export const PAGE_META: Record<string, PageMeta> = {
+  '/dashboard': {
+    title: 'Overview',
+    subtitle: 'Your visitor identification at a glance',
+  },
+  '/dashboard/visitors': {
+    title: 'Visitors',
+    // Filled with real counts at render time via `visitorsSubtitle`.
+    subtitle: '{individuals} individuals · {companies} companies identified',
+  },
+  '/dashboard/activity': {
+    title: 'Activity Log',
+    subtitle: 'Real-time feed of visitor events',
+  },
+  '/dashboard/install': {
+    title: 'Install Your Pixel',
+    subtitle: 'One snippet in your <head> tag — works on every page automatically.',
+  },
+  '/dashboard/domains': {
+    title: 'Domains',
+    subtitle: 'Manage the websites where your pixel is installed',
+  },
+  '/dashboard/pricing': {
+    title: 'Pricing & Plan',
+    subtitle: 'Choose the right plan for your business',
+  },
+  '/dashboard/settings': {
+    title: 'Settings',
+    subtitle: 'Manage your account and pixel configuration.',
+  },
+}
+
+/** Live app unread-dot pink (`bg-hot-pink`, rgb(236, 70, 153)). */
+export const NOTIFICATION_DOT_COLOR = '#EC4699'
+
+/**
+ * Format the Visitors topbar subtitle from segment counts
+ * (live: "2 individuals · 0 companies identified").
+ */
+export function visitorsSubtitle(counts: {
+  individual: number
+  company: number
+}): string {
+  const individuals =
+    counts.individual === 1 ? '1 individual' : `${counts.individual} individuals`
+  const companies =
+    counts.company === 1 ? '1 company' : `${counts.company} companies`
+  return `${individuals} · ${companies} identified`
+}
+
+export interface ActivityEventLike {
+  type: string
+  createdAt: Date
+}
+
+/**
+ * The bell shows an unread dot iff at least one identification resolved in
+ * the last 7 days — a real signal, never decorative (round-4 plan, S5).
+ */
+export function hasUnreadActivity(
+  events: ActivityEventLike[],
+  now: Date = new Date(),
+): boolean {
+  const cutoff = now.getTime() - 7 * 24 * 60 * 60 * 1000
+  return events.some(
+    (event) => event.type === 'identification' && event.createdAt.getTime() >= cutoff,
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/* Collapsible desktop sidebar (round-4 plan, Task S7)                 */
+/* ------------------------------------------------------------------ */
+
+export type SidebarState = 'expanded' | 'rail'
+
+export type SidebarAction =
+  | { type: 'toggle' }
+  | { type: 'hydrate'; value: string | null }
+
+export const SIDEBAR_STORAGE_KEY = 'pixelco.sidebar'
+
+export function nextSidebarState(state: SidebarState, action: SidebarAction): SidebarState {
+  switch (action.type) {
+    case 'toggle':
+      return state === 'expanded' ? 'rail' : 'expanded'
+    case 'hydrate':
+      return action.value === 'rail' ? 'rail' : 'expanded'
+  }
+}
