@@ -62,12 +62,14 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
       </div>
 
       <Card className="shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base font-bold text-foreground">Profile</CardTitle>
+        <CardHeader>
+          <CardTitle className="font-display text-lg font-semibold tracking-tight text-foreground">
+            Profile
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <form action={formAction} className="space-y-5">
-            <div className="space-y-1.5">
+          <form action={formAction} className="space-y-4">
+            <div className="space-y-2">
               <Label htmlFor="company">Company Name</Label>
               <Input
                 id="company"
@@ -76,10 +78,11 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
                 placeholder="Acme Inc."
                 autoComplete="organization"
                 maxLength={120}
+                className="bg-[#F6F7F9]"
               />
             </div>
 
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <Label htmlFor="website">Website</Label>
               <Input
                 id="website"
@@ -89,16 +92,21 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
                 placeholder="https://yoursite.com"
                 autoComplete="url"
                 maxLength={253}
+                className="bg-[#F6F7F9]"
               />
             </div>
 
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" defaultValue={email} disabled />
+              <Input id="email" defaultValue={email} disabled className="bg-[#F6F7F9]" />
             </div>
 
             <div className="flex items-center gap-3">
-              <Button type="submit" disabled={pending} className="font-semibold">
+              <Button
+                type="submit"
+                disabled={pending}
+                className="gradient-primary font-semibold text-primary-foreground shadow-lg glow-primary transition-all duration-300 hover:opacity-90"
+              >
                 {pending ? (
                   <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                 ) : (
@@ -120,14 +128,16 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
         </CardContent>
       </Card>
 
-      <Card className="shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base font-bold text-red-600">Danger Zone</CardTitle>
+      <Card className="border-destructive/20 shadow-sm">
+        <CardHeader>
+          <CardTitle className="font-display text-lg font-semibold tracking-tight text-destructive">
+            Danger Zone
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold text-foreground">Delete Account</p>
+              <p className="text-sm font-medium text-foreground">Delete Account</p>
               <p className="text-xs text-muted-foreground">
                 Permanently delete your account and all data.
               </p>
