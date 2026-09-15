@@ -212,21 +212,29 @@ describe('POST /api/track (beacon contract)', () => {
   })
 
   it('answers 429 with Retry-After matching the 60s window (F-10)', async () => {
-    const user = await createUser()
-    const site = await createSite(user.id, 'flood.example')
-    const vid = anonymousVisitorId(site.siteKey)
+    // Freeze Date so every beacon lands in the SAME rate-limit window even
+    // if the DB work slows under CPU contention — the window must never
+    // expire mid-test.
+    vi.useFakeTimers({ toFake: ['Date'] })
+    try {
+      const user = await createUser()
+      const site = await createSite(user.id, 'flood.example')
+      const vid = anonymousVisitorId(site.siteKey)
 
-    let rateLimited: Response | null = null
-    for (let i = 0; i <= 120; i++) {
-      const response = await send(site.siteKey, 'https://flood.example/', vid)
-      if (response.status === 429) {
-        rateLimited = response
-        break
+      let rateLimited: Response | null = null
+      for (let i = 0; i <= 120; i++) {
+        const response = await send(site.siteKey, 'https://flood.example/', vid)
+        if (response.status === 429) {
+          rateLimited = response
+          break
+        }
       }
+      expect(rateLimited).not.toBeNull()
+      expect(rateLimited?.headers.get('retry-after')).toBe('60')
+    } finally {
+      vi.useRealTimers()
     }
-    expect(rateLimited).not.toBeNull()
-    expect(rateLimited?.headers.get('retry-after')).toBe('60')
-  }, 30_000)
+  })
 
   it('never answers 500 when a write fails mid-ingest (F-08)', async () => {
     const user = await createUser()
