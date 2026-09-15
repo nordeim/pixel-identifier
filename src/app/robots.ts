@@ -6,6 +6,9 @@ import { siteUrl } from '@/lib/site-url'
  * crawlable except the API surface; app routes (/login, /signup,
  * /dashboard) are excluded from the sitemap instead and left crawlable so
  * the auth pages' noindex metadata governs them.
+ *
+ * Exported both as a named const (unit-testable) and as the route default
+ * (Next serves it at /robots.txt).
  */
 export const robots: MetadataRoute.Robots = {
   rules: [
@@ -16,4 +19,9 @@ export const robots: MetadataRoute.Robots = {
     },
   ],
   sitemap: `${siteUrl()}/sitemap.xml`,
+}
+
+/** Route handler: Next serves the return value at /robots.txt. */
+export default function robotsRoute(): MetadataRoute.Robots {
+  return robots
 }
