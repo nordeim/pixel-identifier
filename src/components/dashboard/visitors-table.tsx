@@ -1,7 +1,8 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { Building2, Download, Eye, Mail, Search, User } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Building2, ChevronLeft, ChevronRight, Download, Eye, Mail, Search, User } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
@@ -39,6 +40,13 @@ export interface VisitorRow {
   domain: string
 }
 
+export interface VisitorFilters {
+  q: string
+  type: string // 'all' | 'individual' | 'company'
+  confidence: string // 'all' | '90' | '75' | '50'
+  source: string // 'all' | source key
+}
+
 type Segment = 'all' | 'individual' | 'company'
 
 const SOURCE_LABELS: Record<string, string> = {
@@ -49,39 +57,88 @@ const SOURCE_LABELS: Record<string, string> = {
   campaign: 'Campaign',
 }
 
-export function VisitorsTable({ visitors }: { visitors: VisitorRow[] }) {
-  const [segment, setSegment] = useState<Segment>('all')
-  const [query, setQuery] = useState('')
-  const [confidence, setConfidence] = useState('all')
-  const [source, setSource] = useState('all')
+interface VisitorsTableProps {
+  visitors: VisitorRow[]
+  total: number
+  page: number
+  pageCount: number
+  counts: { all: number; individual: number; company: number }
+  filters: VisitorFilters
+}
+
+export function VisitorsTable({ visitors, total, page, pageCount, counts, filters }: VisitorsTableProps) {
+  const router = useRouter()
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [query, setQuery] = useState(filters.q)
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([])
 
-  const counts = useMemo(
-    () => ({
-      all: visitors.length,
-      individual: visitors.filter((v) => v.email && v.type === 'individual').length,
-      company: visitors.filter((v) => v.type === 'company').length,
-    }),
-    [visitors],
-  )
+  // Adjust state during render (React's documented pattern — never an
+  // effect) when the URL-driven filters change: the search box follows the
+  // URL (back/forward), and the row selection resets per page/filters.
+  const filterKey = `${page}|${filters.q}|${filters.type}|${filters.confidence}|${filters.source}`
+  const [syncedKey, setSyncedKey] = useState(filterKey)
+  const [syncedQuery, setSyncedQuery] = useState(filters.q)
+  if (syncedKey !== filterKey) {
+    setSyncedKey(filterKey)
+    setSelectedIds(new Set())
+  }
+  if (syncedQuery !== filters.q) {
+    setSyncedQuery(filters.q)
+    setQuery(filters.q)
+  }
 
-  const filtered = useMemo(() => {
-    return visitors.filter((visitor) => {
-      if (segment === 'individual' && visitor.type !== 'individual') return false
-      if (segment === 'company' && visitor.type !== 'company') return false
-      if (confidence !== 'all') {
-        const min = Number(confidence)
-        if ((visitor.confidence ?? 0) < min) return false
-      }
-      if (source !== 'all' && visitor.source !== source) return false
-      if (query) {
-        const q = query.toLowerCase()
-        const haystack = `${visitor.email ?? ''} ${visitor.companyName ?? ''} ${visitor.domain}`.toLowerCase()
-        if (!haystack.includes(q)) return false
-      }
-      return true
+  /** Push new filter values into the URL (single source of truth). */
+  function navigate(overrides: Partial<VisitorFilters> & { page?: number }) {
+    const next: Record<string, string> = {}
+    const merged = {
+      q: overrides.q !== undefined ? overrides.q : filters.q,
+      type: overrides.type !== undefined ? overrides.type : filters.type,
+      confidence:
+        overrides.confidence !== undefined ? overrides.confidence : filters.confidence,
+      source: overrides.source !== undefined ? overrides.source : filters.source,
+    }
+    if (merged.q) next.q = merged.q
+    if (merged.type !== 'all') next.type = merged.type
+    if (merged.confidence !== 'all') next.confidence = merged.confidence
+    if (merged.source !== 'all') next.source = merged.source
+    const targetPage = overrides.page ?? 1
+    if (targetPage > 1) next.page = String(targetPage)
+
+    const search = new URLSearchParams(next).toString()
+    router.push(search ? `/dashboard/visitors?${search}` : '/dashboard/visitors')
+  }
+
+  // Debounced search: typing updates the URL after a pause.
+  useEffect(() => {
+    if (query === filters.q) return
+    const timer = setTimeout(() => navigate({ q: query }), 350)
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query])
+
+  function toggleRow(id: string, checked: boolean) {
+    setSelectedIds((previous) => {
+      const next = new Set(previous)
+      if (checked) next.add(id)
+      else next.delete(id)
+      return next
     })
-  }, [visitors, segment, query, confidence, source])
+  }
+
+  const pageSelected = visitors.length > 0 && visitors.every((v) => selectedIds.has(v.id))
+  const someSelected = visitors.some((v) => selectedIds.has(v.id)) && !pageSelected
+
+  function toggleAll(checked: boolean) {
+    setSelectedIds((previous) => {
+      const next = new Set(previous)
+      for (const visitor of visitors) {
+        if (checked) next.add(visitor.id)
+        else next.delete(visitor.id)
+      }
+      return next
+    })
+  }
 
   const selected = visitors.find((v) => v.id === selectedId) ?? null
 
@@ -91,6 +148,20 @@ export function VisitorsTable({ visitors }: { visitors: VisitorRow[] }) {
     { key: 'company', label: 'Companies', count: counts.company, icon: Building2 },
   ]
 
+  /** WAI-ARIA tabs pattern: arrow keys move focus and selection. */
+  function onTabKeyDown(event: React.KeyboardEvent, index: number) {
+    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return
+    event.preventDefault()
+    const direction = event.key === 'ArrowRight' ? 1 : -1
+    const next = (index + direction + tabs.length) % tabs.length
+    const node = tabRefs.current[next]
+    node?.focus()
+    navigate({ type: tabs[next].key })
+  }
+
+  const exportSelectedUrl =
+    selectedIds.size > 0 ? `/api/export?ids=${[...selectedIds].join(',')}` : null
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -98,27 +169,42 @@ export function VisitorsTable({ visitors }: { visitors: VisitorRow[] }) {
           <span className="font-semibold text-foreground">{counts.individual}</span> individuals ·{' '}
           <span className="font-semibold text-foreground">{counts.company}</span> companies identified
         </p>
-        <Button asChild className="font-semibold shadow-sm">
-          <a href="/api/export" download>
-            <Download className="mr-1.5 h-4 w-4" aria-hidden="true" />
-            Export All
-          </a>
-        </Button>
+        <div className="flex items-center gap-2">
+          {exportSelectedUrl && (
+            <Button asChild variant="outline" className="border-primary font-semibold hover:bg-primary/10">
+              <a href={exportSelectedUrl} download>
+                <Download className="mr-1.5 h-4 w-4" aria-hidden="true" />
+                Export Selected ({selectedIds.size})
+              </a>
+            </Button>
+          )}
+          <Button asChild className="font-semibold shadow-sm">
+            <a href="/api/export" download>
+              <Download className="mr-1.5 h-4 w-4" aria-hidden="true" />
+              Export All
+            </a>
+          </Button>
+        </div>
       </div>
 
-      {/* Segment tabs + filters */}
+      {/* Segment tabs + filters (URL-driven) */}
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex rounded-lg border border-border bg-card p-0.5" role="tablist" aria-label="Visitor segments">
-          {tabs.map((tab) => (
+          {tabs.map((tab, index) => (
             <button
               key={tab.key}
+              ref={(node) => {
+                tabRefs.current[index] = node
+              }}
               type="button"
               role="tab"
-              aria-selected={segment === tab.key}
-              onClick={() => setSegment(tab.key)}
+              aria-selected={filters.type === tab.key}
+              tabIndex={filters.type === tab.key ? 0 : -1}
+              onClick={() => navigate({ type: tab.key })}
+              onKeyDown={(event) => onTabKeyDown(event, index)}
               className={cn(
                 'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors focus-brand',
-                segment === tab.key
+                filters.type === tab.key
                   ? 'bg-primary/15 text-amber-700'
                   : 'text-muted-foreground hover:text-foreground',
               )}
@@ -141,7 +227,10 @@ export function VisitorsTable({ visitors }: { visitors: VisitorRow[] }) {
           />
         </div>
 
-        <Select value={confidence} onValueChange={setConfidence}>
+        <Select
+          value={filters.confidence}
+          onValueChange={(value) => navigate({ confidence: value })}
+        >
           <SelectTrigger className="w-[140px]" aria-label="Filter by confidence">
             <SelectValue />
           </SelectTrigger>
@@ -153,7 +242,7 @@ export function VisitorsTable({ visitors }: { visitors: VisitorRow[] }) {
           </SelectContent>
         </Select>
 
-        <Select value={source} onValueChange={setSource}>
+        <Select value={filters.source} onValueChange={(value) => navigate({ source: value })}>
           <SelectTrigger className="w-[130px]" aria-label="Filter by source">
             <SelectValue />
           </SelectTrigger>
@@ -175,7 +264,12 @@ export function VisitorsTable({ visitors }: { visitors: VisitorRow[] }) {
             <thead>
               <tr className="border-b border-border bg-muted/40 text-left text-[11px] uppercase tracking-wide text-muted-foreground">
                 <th scope="col" className="w-10 px-4 py-3">
-                  <Checkbox aria-label="Select all visitors" disabled={filtered.length === 0} />
+                  <Checkbox
+                    aria-label="Select all visitors on this page"
+                    checked={pageSelected ? true : someSelected ? 'indeterminate' : false}
+                    onCheckedChange={(checked) => toggleAll(checked === true)}
+                    disabled={visitors.length === 0}
+                  />
                 </th>
                 <th scope="col" className="px-2 py-3 font-semibold">Visitor</th>
                 <th scope="col" className="px-2 py-3 font-semibold">Type</th>
@@ -185,16 +279,16 @@ export function VisitorsTable({ visitors }: { visitors: VisitorRow[] }) {
               </tr>
             </thead>
             <tbody>
-              {filtered.length === 0 ? (
+              {visitors.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-4 py-12 text-center text-sm text-muted-foreground">
-                    {visitors.length === 0
+                    {total === 0 && counts.all === 0
                       ? 'No visitors yet. Install your pixel to get started.'
                       : 'No visitors match the current filters.'}
                   </td>
                 </tr>
               ) : (
-                filtered.map((visitor) => (
+                visitors.map((visitor) => (
                   <tr
                     key={visitor.id}
                     onClick={() => setSelectedId(visitor.id)}
@@ -210,7 +304,11 @@ export function VisitorsTable({ visitors }: { visitors: VisitorRow[] }) {
                     className="cursor-pointer border-b border-border/60 transition-colors last:border-0 hover:bg-muted/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-500"
                   >
                     <td className="px-4 py-3" onClick={(event) => event.stopPropagation()}>
-                      <Checkbox aria-label={`Select ${visitor.email ?? 'visitor'}`} />
+                      <Checkbox
+                        aria-label={`Select ${visitor.email ?? 'visitor'}`}
+                        checked={selectedIds.has(visitor.id)}
+                        onCheckedChange={(checked) => toggleRow(visitor.id, checked === true)}
+                      />
                     </td>
                     <td className="px-2 py-3">
                       <span className="flex items-center gap-2.5">
@@ -276,6 +374,43 @@ export function VisitorsTable({ visitors }: { visitors: VisitorRow[] }) {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination footer */}
+        {pageCount > 1 && (
+          <nav
+            aria-label="Visitor pages"
+            className="flex items-center justify-between gap-3 border-t border-border px-4 py-3"
+          >
+            <p className="text-xs text-muted-foreground">
+              Page <span className="font-semibold text-foreground">{page}</span> of{' '}
+              <span className="font-semibold text-foreground">{pageCount}</span>
+              {' · '}
+              {total.toLocaleString()} visitor{total === 1 ? '' : 's'}
+            </p>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page <= 1}
+                onClick={() => navigate({ page: page - 1 })}
+                aria-label="Previous page"
+              >
+                <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+                Prev
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page >= pageCount}
+                onClick={() => navigate({ page: page + 1 })}
+                aria-label="Next page"
+              >
+                Next
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              </Button>
+            </div>
+          </nav>
+        )}
       </div>
 
       {/* Visitor detail sheet */}

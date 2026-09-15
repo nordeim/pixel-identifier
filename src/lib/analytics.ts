@@ -154,6 +154,132 @@ export async function getTopPages(userId: string, limit = 5): Promise<TopPage[]>
     .slice(0, limit)
 }
 
+export interface VisitorListItem {
+  id: string
+  email: string | null
+  anonymousId: string
+  type: string | null
+  companyName: string | null
+  source: string
+  confidence: number | null
+  status: string
+  pageviews: number
+  firstSeen: string
+  lastSeen: string
+  domain: string
+}
+
+export interface VisitorListQuery {
+  /** Substring search over email, company, domain and anonymous id. */
+  q?: string
+  type?: 'individual' | 'company'
+  minConfidence?: number
+  source?: string
+  page?: number
+  pageSize?: number
+}
+
+export interface VisitorListResult {
+  rows: VisitorListItem[]
+  total: number
+  page: number
+  pageCount: number
+  /** Global segment counts (independent of the active filters). */
+  counts: { all: number; individual: number; company: number }
+}
+
+const VISITOR_SELECT = {
+  id: true,
+  email: true,
+  anonymousId: true,
+  type: true,
+  companyName: true,
+  source: true,
+  confidence: true,
+  status: true,
+  pageviews: true,
+  firstSeen: true,
+  lastSeen: true,
+  site: { select: { domain: true } },
+} as const
+
+/**
+ * Server-side visitor list with search, filters, pagination and true counts
+ * (F-24). SQLite's LIKE comparison is ASCII-case-insensitive, so `contains`
+ * gives case-insensitive matching on the default collation.
+ */
+export async function listVisitors(
+  userId: string,
+  query: VisitorListQuery = {},
+): Promise<VisitorListResult> {
+  const page = Math.max(1, query.page ?? 1)
+  const pageSize = Math.min(100, Math.max(1, query.pageSize ?? 25))
+
+  const base = { site: { userId } }
+  const filters: Record<string, unknown>[] = [base]
+
+  if (query.q) {
+    const q = query.q.trim()
+    if (q) {
+      filters.push({
+        OR: [
+          { email: { contains: q } },
+          { companyName: { contains: q } },
+          { anonymousId: { contains: q } },
+          { site: { domain: { contains: q } } },
+        ],
+      })
+    }
+  }
+  if (query.type === 'individual') {
+    filters.push({ email: { not: null }, type: 'individual' })
+  } else if (query.type === 'company') {
+    filters.push({ type: 'company' })
+  }
+  if (typeof query.minConfidence === 'number') {
+    filters.push({ confidence: { gte: query.minConfidence } })
+  }
+  if (query.source) {
+    filters.push({ source: query.source })
+  }
+  const where = { AND: filters }
+
+  const [visitors, total, all, individual, company] = await Promise.all([
+    db.visitor.findMany({
+      where,
+      select: VISITOR_SELECT,
+      orderBy: { lastSeen: 'desc' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+    db.visitor.count({ where }),
+    db.visitor.count({ where: base }),
+    db.visitor.count({ where: { ...base, email: { not: null }, type: 'individual' } }),
+    db.visitor.count({ where: { ...base, type: 'company' } }),
+  ])
+
+  return {
+    rows: visitors.map((visitor) => ({
+      id: visitor.id,
+      email: visitor.email,
+      anonymousId: visitor.anonymousId,
+      type: visitor.type,
+      companyName: visitor.companyName,
+      source: visitor.source,
+      confidence: visitor.confidence,
+      status: visitor.status,
+      pageviews: visitor.pageviews,
+      firstSeen: visitor.firstSeen.toISOString(),
+      lastSeen: visitor.lastSeen.toISOString(),
+      domain: visitor.site.domain,
+    })),
+    total,
+    page,
+    pageCount: Math.max(1, Math.ceil(total / pageSize)),
+    counts: { all, individual, company },
+  }
+}
+
 export interface RecentIdentification {
   id: string
   email: string

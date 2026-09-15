@@ -31,11 +31,17 @@ export function initialsForEmail(email: string): string {
   return local.slice(0, 2).toUpperCase()
 }
 
-/** Escape a value for safe inclusion in a CSV cell (RFC 4180). */
+/**
+ * Escape a value for safe inclusion in a CSV cell (RFC 4180), with a
+ * formula-injection guard: values that begin with =, +, -, @ or a tab are
+ * prefixed with an apostrophe so spreadsheet applications render them as
+ * text instead of evaluating them as formulas.
+ */
 export function csvCell(value: string | number | null | undefined): string {
   const str = value === null || value === undefined ? '' : String(value)
-  if (/[",\n\r]/.test(str)) {
-    return `"${str.replace(/"/g, '""')}"`
+  const guarded = /^[=+\-@\t]/.test(str) ? `'${str}` : str
+  if (/[",\n\r]/.test(guarded)) {
+    return `"${guarded.replace(/"/g, '""')}"`
   }
-  return str
+  return guarded
 }
