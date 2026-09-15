@@ -6,6 +6,7 @@ import {
   NOTIFICATION_DOT_COLOR,
   SIDEBAR_STORAGE_KEY,
   hasUnreadActivity,
+  isVisitorActive,
   nextSidebarState,
   visitorsSubtitle,
 } from '@/lib/dashboard-nav'
@@ -131,6 +132,33 @@ describe('hasUnreadActivity (bell dot honesty)', () => {
 
   it('is false with no events at all', () => {
     expect(hasUnreadActivity([], now)).toBe(false)
+  })
+})
+
+describe('isVisitorActive (R5-C2: honest 30-minute session window)', () => {
+  const now = new Date('2026-09-15T12:00:00Z')
+
+  it('treats a visitor seen just now as active', () => {
+    expect(isVisitorActive(new Date('2026-09-15T11:59:30Z'), now)).toBe(true)
+  })
+
+  it('treats a visitor seen 29 minutes ago as active', () => {
+    expect(isVisitorActive(new Date('2026-09-15T11:31:00Z'), now)).toBe(true)
+  })
+
+  it('treats a visitor seen 31 minutes ago as inactive', () => {
+    // The live collector's SESSION_MAX_AGE is 1800s (30 minutes — one
+    // "visit"): beyond that window the visitor renders the gray pill.
+    expect(isVisitorActive(new Date('2026-09-15T11:29:00Z'), now)).toBe(false)
+  })
+
+  it('treats a visitor seen 13 hours ago as inactive (live observation)', () => {
+    expect(isVisitorActive(new Date('2026-09-14T23:00:00Z'), now)).toBe(false)
+  })
+
+  it('uses the current time when now is omitted', () => {
+    expect(isVisitorActive(new Date())).toBe(true)
+    expect(isVisitorActive(new Date(Date.now() - 45 * 60_000))).toBe(false)
   })
 })
 

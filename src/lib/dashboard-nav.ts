@@ -128,6 +128,18 @@ export function hasUnreadActivity(
   )
 }
 
+/**
+ * A visitor is "active" iff they were last seen within the 30-minute session
+ * window — the same boundary the live product's collector uses for one
+ * "visit" (SESSION_MAX_AGE = 1800s). Observed on the live app: a visitor
+ * seen "Just now" renders the solid-yellow active pill; one seen 13 hours
+ * ago renders the gray inactive pill. Derived at render time from lastSeen —
+ * no stored state, so it can never go stale (round-5 plan, A2).
+ */
+export function isVisitorActive(lastSeen: Date, now: Date = new Date()): boolean {
+  return now.getTime() - lastSeen.getTime() < 30 * 60_000
+}
+
 /* ------------------------------------------------------------------ */
 /* Collapsible desktop sidebar (round-4 plan, Task S7)                 */
 /* ------------------------------------------------------------------ */
