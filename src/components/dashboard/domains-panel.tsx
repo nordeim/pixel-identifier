@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState, useEffect, useRef } from 'react'
-import { CheckCircle2, Clock, Globe, Loader2, Plus, Trash2 } from 'lucide-react'
+import { CircleAlert, CircleCheckBig, Globe, Loader2, Trash2 } from 'lucide-react'
 import { addDomainAction, deleteDomainAction, type DomainDto } from '@/actions/domains'
 import type { ActionResult } from '@/lib/validation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -68,7 +68,7 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
     <div className="mx-auto max-w-3xl space-y-6">
       <Card className="shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base font-bold text-foreground">Add a Domain</CardTitle>
+          <CardTitle className="font-display text-base font-semibold tracking-tight text-foreground">Add a Domain</CardTitle>
           <p className="text-sm text-muted-foreground">
             Register a new domain to start tracking visitors.
           </p>
@@ -84,14 +84,16 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
                 required
               />
             </div>
-            <Button type="submit" disabled={pending} variant="outline" className="font-semibold">
+            {/* Live CTA: gradient-primary + glow, no icon (R5-H5). */}
+            <Button
+              type="submit"
+              disabled={pending}
+              className="h-10 gradient-primary font-semibold text-primary-foreground shadow-lg glow-primary transition-all duration-300 hover:opacity-90"
+            >
               {pending ? (
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
               ) : (
-                <>
-                  <Plus className="mr-1.5 h-4 w-4" aria-hidden="true" />
-                  Add Domain
-                </>
+                'Add Domain'
               )}
             </Button>
           </form>
@@ -123,21 +125,26 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
               {domains.map((domain) => (
                 <li
                   key={domain.id}
-                  className="flex items-center justify-between gap-4 px-5 py-4"
+                  className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-muted/20"
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <Globe className="h-5 w-5 shrink-0 text-amber-500" aria-hidden="true" />
+                    <span
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10"
+                      aria-hidden="true"
+                    >
+                      <Globe className="h-4 w-4 text-primary" />
+                    </span>
                     <div className="min-w-0">
                       <p className="flex flex-wrap items-center gap-2">
                         <span className="truncate text-sm font-bold text-foreground">{domain.domain}</span>
                         {domain.status === 'verified' ? (
-                          <Badge variant="secondary" className="gap-1 bg-primary/20 text-amber-900 hover:bg-primary/20">
-                            <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
+                          <Badge variant="secondary" className="gap-1 bg-primary px-2 py-0.5 text-[10px] text-primary-foreground hover:bg-primary">
+                            <CircleCheckBig className="h-2.5 w-2.5" aria-hidden="true" />
                             Verified
                           </Badge>
                         ) : (
-                          <Badge variant="secondary" className="gap-1 bg-muted text-muted-foreground hover:bg-muted">
-                            <Clock className="h-3 w-3" aria-hidden="true" />
+                          <Badge variant="secondary" className="gap-1 bg-secondary px-2 py-0.5 text-[10px] text-secondary-foreground hover:bg-secondary">
+                            <CircleAlert className="h-2.5 w-2.5" aria-hidden="true" />
                             Pending
                           </Badge>
                         )}
@@ -149,12 +156,14 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
                   </div>
 
                   <div className="flex shrink-0 items-center gap-5">
+                    {/* Live row: big number = identified visitors, small
+                        "N visitors" = total (R5-H5 / R5-M6). */}
                     <div className="text-right">
                       <p className="text-sm font-semibold tabular-nums leading-none text-foreground">
-                        {domain.visitorCount}
+                        {domain.identifiedCount}
                       </p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        {domain.visitorCount === 1 ? 'visitor' : 'visitors'}
+                      <p className="mt-0.5 text-[10px] text-muted-foreground">
+                        {domain.visitorCount === 1 ? '1 visitor' : `${domain.visitorCount} visitors`}
                       </p>
                     </div>
 
@@ -166,9 +175,9 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
                           variant="ghost"
                           size="icon"
                           aria-label={`Delete ${domain.domain}`}
-                          className="text-muted-foreground hover:text-red-600"
+                          className="h-8 w-8 text-muted-foreground hover:text-red-600"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>

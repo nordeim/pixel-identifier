@@ -15,6 +15,8 @@ export interface DomainDto {
   status: string
   createdAt: string
   visitorCount: number
+  /** Identified visitors (email resolved) — the live row's big number (R5-M6). */
+  identifiedCount: number
 }
 
 async function requireUserId(): Promise<string> {
@@ -85,6 +87,7 @@ export async function addDomainAction(
       status: site.status,
       createdAt: site.createdAt.toISOString(),
       visitorCount: 0,
+      identifiedCount: 0,
     },
   }
 }
@@ -126,6 +129,14 @@ export async function listDomainsAction(): Promise<DomainDto[]> {
     },
     orderBy: { createdAt: 'desc' },
   })
+  // Identified split (R5-M6): Prisma cannot count the same relation twice
+  // (total + filtered) in one _count, so the filtered count is a groupBy.
+  const identified = await db.visitor.groupBy({
+    by: ['siteId'],
+    where: { site: { userId }, email: { not: null } },
+    _count: { _all: true },
+  })
+  const identifiedBySite = new Map(identified.map((row) => [row.siteId, row._count._all]))
   return sites.map((site) => ({
     id: site.id,
     siteKey: site.siteKey,
@@ -133,5 +144,6 @@ export async function listDomainsAction(): Promise<DomainDto[]> {
     status: site.status,
     createdAt: site.createdAt.toISOString(),
     visitorCount: site._count.visitors,
+    identifiedCount: identifiedBySite.get(site.id) ?? 0,
   }))
 }

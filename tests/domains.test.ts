@@ -110,6 +110,29 @@ describe('domains actions', () => {
       expect(domains[0].visitorCount).toBe(3)
       expect(domains[0].siteKey).toBe(siteKey)
     })
+
+    it('splits identified vs total counts for the live row display (R5-M6)', async () => {
+      const user = await createUser()
+      sessionUserId = user.id
+
+      const added = await addDomainAction(null, domainForm('split.example'))
+      const siteKey = added.ok ? added.data.siteKey : ''
+      const site = await db.site.findUniqueOrThrow({ where: { siteKey } })
+      await db.visitor.createMany({
+        data: [
+          { siteId: site.id, anonymousId: 'anon-01' },
+          { siteId: site.id, anonymousId: 'anon-02' },
+          { siteId: site.id, anonymousId: 'id-01', email: 'a@x.com', type: 'individual' },
+          { siteId: site.id, anonymousId: 'id-02', email: 'b@x.com', type: 'company', companyName: 'B Ltd' },
+        ],
+      })
+
+      const domains = await listDomainsAction()
+      // Live domains row: big number = identified visitors, small label
+      // "N visitors" = total. The DTO must carry both.
+      expect(domains[0].visitorCount).toBe(4)
+      expect(domains[0].identifiedCount).toBe(2)
+    })
   })
 
   describe('deleteDomainAction (F-26: ActionResult envelope)', () => {
