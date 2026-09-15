@@ -41,6 +41,10 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  /* Neon green data accent (live #2BD4BD): confidence bars, source badges,
+  install banners. Generates bg-/text-/border-neon-green utilities. */
+  --color-neon-green: #2bd4bd;
+  --color-neon-green-foreground: #073b32;
 }
 
 :root {
@@ -135,6 +139,33 @@
   .focus-brand:focus-visible {
     outline: 2px solid #a16207;
     outline-offset: 2px;
+  }
+  /* --- Live-app brand utilities (round-5, R5-M5) ---------------------- */
+  /* Primary amber gradient — buttons, badges, avatars (live .gradient-primary). */
+  .gradient-primary {
+    background-image: linear-gradient(135deg, #ffc105, #ffb200);
+  }
+  /* Soft amber halo for elevated CTAs (live .glow-primary). */
+  .glow-primary {
+    box-shadow:
+      0 8px 24px -8px rgba(255, 178, 0, 0.55),
+      0 2px 8px -2px rgba(255, 178, 0, 0.35);
+  }
+  /* Gradient-clipped amber text — plan names, usage percentages (live
+  .text-gradient-primary). */
+  .text-gradient-primary {
+    background-image: linear-gradient(135deg, #ffc105, #ffb200);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+  /* Marketing hero headline treatment (live .text-gradient-hero): italic
+  yellow-orange sweep on "— By Their Email". */
+  .text-gradient-hero {
+    background-image: linear-gradient(135deg, #ffaa00, #ffd91a, #f58f00);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
   }
 }
 
