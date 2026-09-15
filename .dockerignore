@@ -1,0 +1,22 @@
+# Everything not needed inside the build context.
+.git
+.github
+.next
+node_modules
+npm-debug.log*
+coverage
+*.md
+!README.md
+docs
+tests
+prisma/*.db
+prisma/db
+.env
+.env.*
+!.env.example
+Dockerfile
+.dockerignore
+# scripts/ is mostly dev tooling — keep the two files the image needs.
+scripts/*
+!scripts/build-standalone.mjs
+!scripts/docker-entrypoint.sh
