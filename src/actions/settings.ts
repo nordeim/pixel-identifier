@@ -24,10 +24,10 @@ export async function updateProfileAction(
     return fail('UNAUTHENTICATED', 'You need to be signed in.')
   }
 
+  // Absent FormData keys read as null; Zod optionals expect undefined.
   const parsed = updateProfileSchema.safeParse({
-    name: formData.get('name'),
-    company: formData.get('company'),
-    website: formData.get('website'),
+    company: formData.get('company') ?? undefined,
+    website: formData.get('website') ?? undefined,
   })
   if (!parsed.success) {
     return fail('VALIDATION', 'Please fix the highlighted fields.', fieldErrorsOf(parsed.error))
@@ -40,10 +40,11 @@ export async function updateProfileAction(
     })
   }
 
+  // Name is deliberately not editable here — the live settings form offers
+  // Company + Website (+ read-only email) only (round-4 plan X1).
   await db.user.update({
     where: { id: userId },
     data: {
-      name: parsed.data.name?.trim() || null,
       company: parsed.data.company?.trim() || null,
       website: website || null,
     },

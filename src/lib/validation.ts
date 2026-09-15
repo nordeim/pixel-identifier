@@ -91,7 +91,6 @@ export const updateProfileSchema = z.object({
     .max(253, 'URL is too long')
     .optional()
     .or(z.literal('')),
-  name: z.string().trim().max(120, 'Name is too long').optional().or(z.literal('')),
 })
 
 export const changePlanSchema = z.object({

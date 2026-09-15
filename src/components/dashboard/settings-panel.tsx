@@ -1,10 +1,9 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { signOut } from 'next-auth/react'
-import { AlertTriangle, Loader2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { updateProfileAction, deleteAccountAction } from '@/actions/settings'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
@@ -23,12 +22,11 @@ import {
 
 interface SettingsPanelProps {
   email: string
-  name: string | null
   company: string | null
   website: string | null
 }
 
-export function SettingsPanel({ email, name, company, website }: SettingsPanelProps) {
+export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
   const router = useRouter()
   const [state, formAction, pending] = useActionState(updateProfileAction, null)
   const [confirmText, setConfirmText] = useState('')
@@ -87,27 +85,7 @@ export function SettingsPanel({ email, name, company, website }: SettingsPanelPr
 
             <div className="space-y-1.5">
               <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                defaultValue={email}
-                disabled
-                aria-describedby="email-help"
-              />
-              <p id="email-help" className="text-xs text-muted-foreground">
-                Your sign-in email — contact support to change it.
-              </p>
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="name">Display Name</Label>
-              <Input
-                id="name"
-                name="name"
-                defaultValue={name ?? ''}
-                placeholder="Jane Doe"
-                autoComplete="name"
-                maxLength={120}
-              />
+              <Input id="email" defaultValue={email} disabled />
             </div>
 
             <div className="flex items-center gap-3">
@@ -133,15 +111,12 @@ export function SettingsPanel({ email, name, company, website }: SettingsPanelPr
         </CardContent>
       </Card>
 
-      <Card className="border-red-200 shadow-sm">
+      <Card className="shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base font-bold text-red-600">
-            <AlertTriangle className="h-4 w-4" aria-hidden="true" />
-            Danger Zone
-          </CardTitle>
+          <CardTitle className="text-base font-bold text-red-600">Danger Zone</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-red-100 bg-red-50/60 px-4 py-3.5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-sm font-semibold text-foreground">Delete Account</p>
               <p className="text-xs text-muted-foreground">
@@ -203,14 +178,6 @@ export function SettingsPanel({ email, name, company, website }: SettingsPanelPr
               </AlertDialogContent>
             </AlertDialog>
           </div>
-
-          <p className="mt-3 text-xs text-muted-foreground">
-            Need your data first?{' '}
-            <Link href="/dashboard/visitors" className="font-medium text-amber-600 hover:text-amber-700">
-              Export your visitors as CSV
-            </Link>{' '}
-            before deleting.
-          </p>
         </CardContent>
       </Card>
     </div>

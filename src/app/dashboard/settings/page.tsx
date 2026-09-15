@@ -17,7 +17,7 @@ export default async function SettingsPage() {
 
   const user = await db.user.findUnique({
     where: { id: sessionUser.id },
-    select: { email: true, name: true, company: true, website: true },
+    select: { email: true, company: true, website: true },
   })
   // A deleted-but-still-cookied account lands here: send it to the login page.
   if (!user) redirect('/login')
@@ -25,7 +25,6 @@ export default async function SettingsPage() {
   return (
     <SettingsPanel
       email={user.email}
-      name={user.name}
       company={user.company}
       website={user.website}
     />
