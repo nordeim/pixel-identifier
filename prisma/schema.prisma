@@ -91,5 +91,6 @@ model Event {
 
   @@index([siteId, createdAt])
   @@index([siteId, name, createdAt])
+  @@index([visitorId])
   @@map("events")
 }

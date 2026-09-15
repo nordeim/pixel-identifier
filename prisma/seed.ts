@@ -71,9 +71,20 @@ const VISITORS: VisitorSpec[] = [
   },
 ]
 
+/** Only file: databases or loopback hosts are considered local (F-20). */
+function isLocalDatabase(url: string): boolean {
+  if (url.startsWith('file:')) return true
+  try {
+    const parsed = new URL(url)
+    return ['localhost', '127.0.0.1', '[::1]', '::1'].includes(parsed.hostname)
+  } catch {
+    return false
+  }
+}
+
 async function main(): Promise<void> {
-  const host = process.env.DATABASE_URL ?? ''
-  if (!host.includes('localhost') && !host.startsWith('file:')) {
+  const databaseUrl = process.env.DATABASE_URL ?? ''
+  if (!isLocalDatabase(databaseUrl)) {
     throw new Error('Refusing to seed a non-local database.')
   }
 
@@ -95,8 +106,14 @@ async function main(): Promise<void> {
     where: { userId: user.id, domain: DEMO_DOMAIN },
   })
   if (existingSite) {
-    console.info('Seed already applied — demo data present, nothing to do.')
-    return
+    const visitorCount = await db.visitor.count({ where: { siteId: existingSite.id } })
+    if (visitorCount === VISITORS.length) {
+      console.info('Seed already applied — demo data present, nothing to do.')
+      return
+    }
+    // Partial seed (interrupted mid-run earlier): rebuild the graph cleanly
+    // instead of reporting success with half the data (F-20).
+    await db.site.delete({ where: { id: existingSite.id } })
   }
 
   const site = await db.site.create({
