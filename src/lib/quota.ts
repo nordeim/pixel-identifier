@@ -54,10 +54,25 @@ export async function resetMonthlyWindowIfNeeded(
 }
 
 /**
- * Atomically consume one identification slot. Returns false (and leaves the
- * counter untouched) when the plan's limit has been reached.
+ * Atomically consume one identification slot.
+ *
+ * Monthly (paid) plans keep identifying past their allowance — the extra
+ * identifications are counted and billed at the plan's per-identification
+ * rate (see the plan-panel copy), so consumption is unconditional.
+ *
+ * The free lifetime plan hard-stops: a single conditional UPDATE
+ * (`used < limit`) guarantees exactly `limit` successful consumptions can
+ * ever happen, even under fully concurrent beacons.
  */
 export async function consumeIdentification(userId: string, plan: Plan): Promise<boolean> {
+  if (plan.limitPeriod === 'monthly') {
+    await db.user.update({
+      where: { id: userId },
+      data: { identificationsUsed: { increment: 1 } },
+    })
+    return true
+  }
+
   const consumed = await db.user.updateMany({
     where: { id: userId, identificationsUsed: { lt: plan.identificationLimit } },
     data: { identificationsUsed: { increment: 1 } },

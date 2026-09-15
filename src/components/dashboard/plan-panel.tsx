@@ -20,6 +20,9 @@ interface PlanPanelProps {
   limit: number
   percent: number
   period: 'lifetime' | 'monthly'
+  overage: number
+  /** Pre-formatted overage list price, e.g. "$15.00". */
+  overageCostLabel: string
 }
 
 const FAQ = [
@@ -33,7 +36,7 @@ const FAQ = [
   },
 ]
 
-export function PlanPanel({ currentPlan, used, limit, percent, period }: PlanPanelProps) {
+export function PlanPanel({ currentPlan, used, limit, percent, period, overage, overageCostLabel }: PlanPanelProps) {
   const [cycle, setCycle] = useState<BillingCycle>('monthly')
   const [state, formAction, pending] = useActionState(changePlanAction, null)
 
@@ -51,6 +54,11 @@ export function PlanPanel({ currentPlan, used, limit, percent, period }: PlanPan
           <p className="mt-0.5 text-xs text-muted-foreground">
             {used} of {limit.toLocaleString()} identifications used ({period})
           </p>
+          {overage > 0 && (
+            <p className="mt-0.5 text-xs font-medium text-amber-800">
+              +{overage.toLocaleString()} extra identification{overage === 1 ? '' : 's'} — ≈ {overageCostLabel} at your plan&apos;s per-identification rate
+            </p>
+          )}
         </div>
         <p className="text-2xl font-extrabold tabular-nums text-amber-700">{percent}%</p>
       </div>

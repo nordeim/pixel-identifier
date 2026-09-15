@@ -61,11 +61,18 @@ describe('consumeIdentification', () => {
     expect((await reload(user.id)).identificationsUsed).toBe(free.identificationLimit)
   })
 
-  it('caps monthly plans at their limit (pre-overage behaviour)', async () => {
+  it('allows consumption past the limit for monthly (paid) plans — overage', async () => {
     const user = await createUser({ plan: 'growth', identificationsUsed: 1500 })
     const allowed = await consumeIdentification(user.id, getPlan('growth'))
+    expect(allowed).toBe(true)
+    expect((await reload(user.id)).identificationsUsed).toBe(1501)
+  })
+
+  it('still hard-stops the free lifetime plan at its limit', async () => {
+    const user = await createUser({ plan: 'free', identificationsUsed: 100 })
+    const allowed = await consumeIdentification(user.id, getPlan('free'))
     expect(allowed).toBe(false)
-    expect((await reload(user.id)).identificationsUsed).toBe(1500)
+    expect((await reload(user.id)).identificationsUsed).toBe(100)
   })
 })
 
@@ -159,5 +166,26 @@ describe('getUsage (F-03: display reset must persist)', () => {
     expect(usage.used).toBe(0)
     expect(usage.limit).toBe(100)
     expect(usage.period).toBe('lifetime')
+  })
+
+  it('reports overage and its cost when a paid plan exceeds the limit (F-22)', async () => {
+    const user = await createUser({
+      plan: 'growth', // $0.15 per extra identification
+      identificationsUsed: 1600, // 100 past the 1,500 limit
+    })
+
+    const usage = await getUsage(user.id)
+    expect(usage.used).toBe(1600)
+    expect(usage.limit).toBe(1500)
+    expect(usage.percent).toBe(100) // capped for the progress bar
+    expect(usage.overage).toBe(100)
+    expect(usage.overageCostCents).toBe(100 * 15)
+  })
+
+  it('reports zero overage within the limit', async () => {
+    const user = await createUser({ plan: 'growth', identificationsUsed: 42 })
+    const usage = await getUsage(user.id)
+    expect(usage.overage).toBe(0)
+    expect(usage.overageCostCents).toBe(0)
   })
 })

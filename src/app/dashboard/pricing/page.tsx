@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
 import { getUsage } from '@/lib/analytics'
-import type { PlanId } from '@/lib/plans'
+import { formatPrice, type PlanId } from '@/lib/plans'
 import { PlanPanel } from '@/components/dashboard/plan-panel'
 
 export const metadata: Metadata = {
@@ -25,6 +25,8 @@ export default async function PricingPage() {
       limit={usage.limit}
       percent={usage.percent}
       period={usage.period}
+      overage={usage.overage}
+      overageCostLabel={formatPrice(usage.overageCostCents)}
     />
   )
 }

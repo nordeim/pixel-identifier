@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getUsage } from '@/lib/analytics'
+import { formatPrice } from '@/lib/plans'
 import { SidebarNav } from '@/components/dashboard/sidebar-nav'
 import { Topbar } from '@/components/dashboard/topbar'
 
@@ -23,6 +24,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
     limit: usage.limit,
     percent: usage.percent,
     period: usage.period,
+    overage: usage.overage,
+    overageCostLabel: formatPrice(usage.overageCostCents),
   }
 
   return (

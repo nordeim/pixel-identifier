@@ -24,12 +24,16 @@ export interface UsageInfo {
   limit: number
   percent: number
   period: 'lifetime' | 'monthly'
+  /** Identifications beyond the allowance on a paid plan this period. */
+  overage: number
+  /** Overage list price in cents (overage × plan.overagePrice). */
+  overageCostCents: number
 }
 
 export async function getUsage(userId: string): Promise<UsageInfo> {
   const user = await db.user.findUnique({
     where: { id: userId },
-    select: { plan: true, identificationsUsed: true, usagePeriodStart: true },
+    select: { id: true, plan: true, identificationsUsed: true, usagePeriodStart: true },
   })
   const plan = getPlan(user?.plan ?? 'free')
 
@@ -44,7 +48,16 @@ export async function getUsage(userId: string): Promise<UsageInfo> {
 
   const limit = plan.identificationLimit
   const percent = limit > 0 ? Math.min(100, Math.round((snapshot.used / limit) * 100)) : 0
-  return { plan, used: snapshot.used, limit, percent, period: plan.limitPeriod }
+  const overage = plan.limitPeriod === 'monthly' ? Math.max(0, snapshot.used - limit) : 0
+  return {
+    plan,
+    used: snapshot.used,
+    limit,
+    percent,
+    period: plan.limitPeriod,
+    overage,
+    overageCostCents: overage * plan.overagePrice,
+  }
 }
 
 export interface OverviewStats {

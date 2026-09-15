@@ -54,6 +54,9 @@ export interface UsageProps {
   limit: number
   percent: number
   period: 'lifetime' | 'monthly'
+  overage: number
+  /** Pre-formatted overage list price, e.g. "$15.00". */
+  overageCostLabel: string
 }
 
 export function SidebarNav({ usage }: { usage: UsageProps }) {
@@ -110,6 +113,11 @@ export function SidebarNav({ usage }: { usage: UsageProps }) {
           <p className="mt-2 text-xs font-medium text-foreground">
             {usage.used} / {usage.limit.toLocaleString()} identifications
           </p>
+          {usage.overage > 0 && (
+            <p className="mt-1 text-[11px] font-medium text-amber-800">
+              +{usage.overage.toLocaleString()} extra this period · ≈ {usage.overageCostLabel}
+            </p>
+          )}
           <Progress
             value={usage.percent}
             className="mt-2 h-1.5"
