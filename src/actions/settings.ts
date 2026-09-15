@@ -1,7 +1,6 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { getServerSession } from 'next-auth'
 import { db } from '@/lib/db'
 import { authOptions } from '@/lib/auth'
@@ -108,23 +107,31 @@ export async function changePlanAction(
   return { ok: true, data: { plan: plan.id } }
 }
 
-export async function deleteAccountAction(formData: FormData): Promise<void> {
+/**
+ * Permanently delete the account. Cascades remove sites, visitors and
+ * events. Returns a typed result instead of redirecting: the client calls
+ * signOut() on success so the 30-day JWT session is destroyed together
+ * with the account — otherwise the cookie would keep granting a ghost
+ * dashboard until expiry (F-12).
+ */
+export async function deleteAccountAction(
+  _prev: ActionResult<{ deleted: true }> | null,
+  formData: FormData,
+): Promise<ActionResult<{ deleted: true }>> {
   const session = await getServerSession(authOptions)
-  if (!session?.user?.id) redirect('/login')
+  if (!session?.user?.id) return fail('UNAUTHENTICATED', 'You need to be signed in.')
 
   const confirmEmail = String(formData.get('confirmEmail') ?? '').trim().toLowerCase()
   const user = await db.user.findUnique({
     where: { id: session.user.id },
     select: { email: true },
   })
-  if (!user) redirect('/login')
+  if (!user) return fail('UNAUTHENTICATED', 'Account not found.')
 
   if (confirmEmail !== user.email.toLowerCase()) {
-    // No-op on mismatch; the dialog asks the user to retype the email.
-    redirect('/dashboard/settings?error=email-mismatch')
+    return fail('VALIDATION', 'Type your email exactly as shown to confirm deletion.')
   }
 
-  // Cascades remove sites, visitors and events.
   await db.user.delete({ where: { id: session.user.id } })
-  redirect('/?deleted=1')
+  return { ok: true, data: { deleted: true } }
 }

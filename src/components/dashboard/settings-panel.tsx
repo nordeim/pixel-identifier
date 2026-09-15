@@ -2,6 +2,8 @@
 
 import { useActionState, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { signOut } from 'next-auth/react'
 import { AlertTriangle, Loader2 } from 'lucide-react'
 import { updateProfileAction, deleteAccountAction } from '@/actions/settings'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -27,8 +29,28 @@ interface SettingsPanelProps {
 }
 
 export function SettingsPanel({ email, name, company, website }: SettingsPanelProps) {
+  const router = useRouter()
   const [state, formAction, pending] = useActionState(updateProfileAction, null)
   const [confirmText, setConfirmText] = useState('')
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
+
+  async function handleDelete(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    setDeleteError(null)
+    setDeleting(true)
+    const result = await deleteAccountAction(null, formData)
+    if (!result.ok) {
+      setDeleteError(result.error.message)
+      setDeleting(false)
+      return
+    }
+    // Destroy the JWT session together with the account — without this the
+    // 30-day cookie would keep rendering a ghost dashboard (F-12).
+    await signOut({ callbackUrl: '/?deleted=1' })
+    router.refresh()
+  }
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -157,18 +179,27 @@ export function SettingsPanel({ email, name, company, website }: SettingsPanelPr
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel onClick={() => setConfirmText('')}>Cancel</AlertDialogCancel>
-                  <form action={deleteAccountAction}>
+                  <form onSubmit={handleDelete}>
                     <input type="hidden" name="confirmEmail" value={confirmText} />
                     <Button
                       type="submit"
                       variant="destructive"
-                      disabled={confirmText.trim().toLowerCase() !== email.toLowerCase()}
+                      disabled={confirmText.trim().toLowerCase() !== email.toLowerCase() || deleting}
                       className="font-semibold"
                     >
-                      Delete Account
+                      {deleting ? (
+                        <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                      ) : (
+                        'Delete Account'
+                      )}
                     </Button>
                   </form>
                 </AlertDialogFooter>
+                {deleteError && (
+                  <p role="alert" className="text-xs text-red-600">
+                    {deleteError}
+                  </p>
+                )}
               </AlertDialogContent>
             </AlertDialog>
           </div>
