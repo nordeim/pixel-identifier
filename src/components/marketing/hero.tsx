@@ -32,9 +32,7 @@ export function Hero() {
             className="text-balance text-4xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-[3.4rem]"
           >
             Identify Anonymous Website Visitors —{' '}
-            <span className="bg-primary px-2 [box-decoration-break:clone]">
-              By Their Email
-            </span>
+            <em className="text-gradient-hero">By Their Email</em>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
             One pixel snippet reveals who&apos;s browsing your site. B2B companies
