@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import { PixelcoLogo } from '@/components/pixelco-logo'
+import { FOOTER_COLUMNS } from '@/lib/marketing-links'
 
 const FAQS = [
   {
@@ -39,36 +40,6 @@ const FAQS = [
   {
     q: "What happens if I exceed my plan's identification limit?",
     a: 'On paid plans you never stop collecting data: once your monthly allowance is used up, additional identifications are billed at a low per-identification rate ($0.10–$0.20 depending on plan). On the Free plan, tracking continues but identification pauses until you upgrade.',
-  },
-]
-
-const FOOTER_COLUMNS = [
-  {
-    title: 'Product',
-    links: [
-      { label: 'Features', href: '#benefits' },
-      { label: 'Pricing', href: '#pricing' },
-      { label: 'How It Works', href: '#how-it-works' },
-      { label: 'Documentation', href: '#faq' },
-    ],
-  },
-  {
-    title: 'Company',
-    links: [
-      { label: 'About', href: '#' },
-      { label: 'Contact', href: '#' },
-      { label: 'Careers', href: '#' },
-      { label: 'Blog', href: '#' },
-    ],
-  },
-  {
-    title: 'Legal',
-    links: [
-      { label: 'Privacy Policy', href: '#' },
-      { label: 'Terms of Service', href: '#' },
-      { label: 'GDPR', href: '#' },
-      { label: 'CCPA', href: '#' },
-    ],
   },
 ]
 
@@ -170,9 +141,20 @@ export function SiteFooter() {
               <ul className="mt-4 space-y-2.5">
                 {column.links.map((link) => (
                   <li key={link.label}>
-                    <a href={link.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground focus-brand">
-                      {link.label}
-                    </a>
+                    {link.href.startsWith('mailto:') ? (
+                      <a href={link.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground focus-brand">
+                        {link.label}
+                      </a>
+                    ) : link.href === '#' ? (
+                      // Careers: dead on the original pixelco.io footer too (parity).
+                      <span aria-disabled="true" className="cursor-default text-sm text-muted-foreground/70">
+                        {link.label}
+                      </span>
+                    ) : (
+                      <Link href={link.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground focus-brand">
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
