@@ -34,8 +34,8 @@ and stable per visitor.
    (schema changes, resolver changes, plan/limit changes).
 4. **IMPLEMENT** — Small, testable units; one responsibility per file;
    server components for data, client islands for interactivity.
-5. **VERIFY** — `npm run verify` (lint → typecheck → build) plus a browser
-   pass on the affected flow. Evidence or it didn't happen.
+5. **VERIFY** — `npm run verify` (lint → typecheck → test → build) plus a
+   browser pass on the affected flow. Evidence or it didn't happen.
 6. **DELIVER** — Conventional Commit, updated docs when behavior or setup
    changes, honest notes on what was and wasn't verified.
 
@@ -49,9 +49,11 @@ and stable per visitor.
 - **Honesty over simulation:** billing and identity resolution are
   simulations and are labelled as such in docs and UI copy. Never present
   simulated behavior as production capability.
-- **Quotas are integer accounting:** identification allowances decrement
-  atomically (`increment`), lifetime vs monthly semantics live in
-  `src/lib/plans.ts` and `src/lib/analytics.ts` (`getUsage`).
+- **Quotas are integer accounting:** `src/lib/quota.ts` is the only module
+  that writes `identificationsUsed` — a single conditional UPDATE (free
+  plans hard-stop at the limit; paid monthly plans increment unconditionally
+  and count overage). The 30-day reset persists and is guarded on the stale
+  anchor. Plan semantics live in `src/lib/plans.ts`.
 
 ## Implementation Standards
 
@@ -108,7 +110,8 @@ npm run dev
 | `npm run start` | Serve the production build |
 | `npm run lint` | ESLint 9 flat config |
 | `npm run typecheck` | `tsc --noEmit` |
-| `npm run verify` | lint → typecheck → build (pre-push gate) |
+| `npm run test` | Vitest suite (watch: `npm run test:watch`) |
+| `npm run verify` | lint → typecheck → test → build (pre-push gate) |
 | `npm run db:push` | Sync Prisma schema to the database |
 | `npm run db:seed` | Idempotent demo seed |
 
@@ -116,22 +119,43 @@ npm run dev
 
 ### Test Pyramid
 
-- **Unit:** none yet (no test framework installed). Pure logic most worth
-  testing first: `resolveIdentity` distribution, `sourceFromReferrer`,
-  `normalizeDomain`, `csvCell`, plan math in `plans.ts`.
-- **Integration:** ingest pipeline (`POST /api/track` → visitor/event/quota
-  assertions) is the highest-value target.
-- **E2E:** manual browser flows today (sign-up → domain → beacon → dashboard
-  shows data). No Playwright suite yet.
+Vitest (node env) against a throwaway SQLite DB (`db/test.db`, recreated by
+`tests/global-setup.ts` via `prisma db push` on every run; `fileParallelism`
+is off — SQLite is a single writer). `TZ` is pinned to UTC.
+
+- **Unit (pure libs):** plan/money math (`plans.ts`), domain normalisation,
+  snippet hardening, CSV escaping + formula-injection guard, relative time.
+- **Behavioural:** the collector script is executed in `node:vm` with mocked
+  browser globals — SPA route-change beacons, `pushState`/`replaceState`
+  wiring, and the monkey-patch recursion regression.
+- **Integration (DB-backed):** `src/lib/quota.ts` (atomic consumption under
+  110 concurrent calls, persisted monthly reset, overage); query seams
+  `listVisitors` / `listActivity` in `analytics.ts` (search/filter/
+  pagination/counts, cursor paging); server actions with mocked session/
+  headers (plan switch, sign-up, domains, account deletion).
+- **Integration (route handlers):** `/api/track` and `/api/export` invoked
+  directly with `Request` objects — hostname gating, anti-enumeration, 429
+  timing, write-failure containment, scoped export.
+- **E2E:** manual browser flows (sign-up → domain → beacon → dashboard →
+  export). No Playwright suite yet.
 
 ### Test Commands
 
 ```bash
-npm run verify   # the only automated gate: lint + typecheck + build
+npm run test         # Vitest run (also inside npm run verify)
+npm run test:watch   # watch mode
 ```
 
-When adding tests, wire the framework (Vitest is the intended choice) into
-`npm run verify` so the gate stays single-command.
+New behavior is test-first: reproduce the bug or specify the behavior in a
+failing test, then make it green. Mock seams live in `tests/setup.ts`
+(`next/cache`, `next/navigation`, `next/headers`).
+
+### Gotchas
+
+- SQLite `contains` is ASCII-case-insensitive — don't hand-roll lower()
+  comparisons for search.
+- Integration tests share one DB file per run; clean up rows you create or
+  assert relatively, not absolutely, when tests might interact.
 
 ## Code Quality Standards
 
@@ -199,9 +223,12 @@ Four layers, strictly top-down:
 
 ### API Design
 
-- Ingest payload contract (camel-truncated keys): `{k, u, p, r, t, v, w, h}`
-  — Zod schema in `validation.ts` is the single source of truth.
-- Public ingest responses are 204/429 only. Authed APIs return JSON.
+- Ingest payload contract (camel-truncated keys): `{k, u, p, r, v}` — Zod
+  schema in `validation.ts` is the single source of truth (legacy `t/w/h`
+  keys are stripped). Beacons whose page hostname does not match the
+  registered domain are dropped before any write.
+- Public ingest responses are 204/429 only (429 carries `Retry-After: 60`).
+  Authed APIs return JSON.
 - The collector script (`src/app/pixel.js/route.ts`) sends beacons as
   `text/plain` JSON specifically to avoid a CORS preflight — don't switch to
   `application/json` beacons.
@@ -231,6 +258,7 @@ Four layers, strictly top-down:
   client-only via `next-auth/react`).
 - REST endpoints for UI mutations, or client-side global data fetching.
 - Floats for money or quotas; string statuses without a shared constant.
+- Incrementing `identificationsUsed` anywhere outside `src/lib/quota.ts`.
 - Editing the resolver's name lists or PRNG casually — it re-shapes
   historical identification decisions.
 - Weakening lint/type rules to pass the gate.

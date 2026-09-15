@@ -1,4 +1,4 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.0
+# Pixelco — Master Project Architecture Document (PAD) v1.1
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
@@ -10,18 +10,28 @@
 
 ---
 
-#### Revision Block — v1.0 (Tracked Changes)
+#### Revision Block (Tracked Changes)
 
-- `[SYN]` Initial blueprint generated from the as-built codebase (71 TS files,
-  ~6,950 source lines). All sections verified against the repository state at
-  commit `7d06bae` (main).
-- `[SR]` Verification evidence recorded: ESLint clean, `tsc --noEmit` clean,
-  `next build` green (17 routes), standalone production server smoke-tested,
-  browser E2E flows exercised (sign-up, login, domain add, beacon ingest,
-  identification, plan switch, profile persistence, CSV export).
-- `[SAN]` Scope honesty pass: simulated subsystems (identity resolution,
-  billing) and known gaps (no automated test suite, per-instance rate
-  limiting) are labelled as such in §1, §7, §8, §11.
+- **v1.1** `[SYN]` Realigned with the post-remediation codebase (21 commits
+  past `78f8342`): Vitest suite installed (16 files / 106 tests, §8), quota
+  consumption centralized and made atomic in `src/lib/quota.ts` (ADR-008,
+  §4.3), paid-plan overage accounting, hostname-gated ingest, per-IP signup
+  throttle, session revocation on account deletion, visitors/activity
+  pagination, per-domain install snippets, `_count` domain stats,
+  `events.visitorId` index. §6 STRIDE and §11 known-issues refreshed.
+- `[SR]` v1.1 evidence: `npm run verify` green (lint → typecheck → test →
+  build), including the 110-concurrent-consumption quota Prove-It test.
+- v1.0 `[SYN]` Initial blueprint generated from the as-built codebase (71 TS
+  files, ~6,950 source lines). All sections verified against the repository
+  state at commit `7d06bae` (main).
+- v1.0 `[SR]` Verification evidence recorded: ESLint clean, `tsc --noEmit`
+  clean, `next build` green (17 routes), standalone production server
+  smoke-tested, browser E2E flows exercised (sign-up, login, domain add,
+  beacon ingest, identification, plan switch, profile persistence, CSV
+  export).
+- v1.0 `[SAN]` Scope honesty pass: simulated subsystems (identity resolution,
+  billing) and known gaps (per-instance rate limiting) are labelled as such
+  in §1, §7, §8, §11.
 
 ---
 
@@ -71,19 +81,20 @@ accounting, analytics, exports, auth — is a real working pipeline.
 
 | Layer | Technology | Version | Key Rationale |
 |-------|------------|---------|---------------|
-| Web framework | Next.js (App Router, Turbopack) | 16.3.5 | RSC-by-default colocates data fetching with rendering; route handlers for the collector; standalone output for self-hosting |
-| UI runtime | React / React DOM | 19.3.0 | Required by Next 16; `useActionState` drives form pending states |
-| Language | TypeScript (strict) | 5.9.3 | `any` is an ESLint error; strictness is a release gate |
-| Styling | Tailwind CSS (CSS-first) | 4.3.3 | No config file; tokens in `@theme inline`; matches the shadcn/ui v4 toolchain |
-| UI primitives | shadcn/ui (New York) + Radix | radix 1.1.x–1.3.x | Accessible composable primitives; source-owned, no runtime lock-in |
-| Charts | Recharts | 2.15.4 | Declarative SVG charts; area chart for the 14-day trend |
-| ORM | Prisma | 6.19.3 | Type-safe queries; push-based schema sync fits the single-DB design |
+| Web framework | Next.js (App Router, Turbopack) | 16.x | RSC-by-default colocates data fetching with rendering; route handlers for the collector; standalone output for self-hosting |
+| UI runtime | React / React DOM | 19.x | Required by Next 16; `useActionState` drives form pending states |
+| Language | TypeScript (strict) | 5.9.x | `any` is an ESLint error; strictness is a release gate |
+| Styling | Tailwind CSS (CSS-first) | 4.x | No config file; tokens in `@theme inline`; matches the shadcn/ui v4 toolchain |
+| UI primitives | shadcn/ui (New York) + Radix | radix 1.x | Accessible composable primitives; source-owned, no runtime lock-in |
+| Charts | Recharts | 2.x | Declarative SVG charts; area chart for the 14-day trend |
+| ORM | Prisma | 6.x | Type-safe queries; push-based schema sync fits the single-DB design |
 | Database | SQLite (Postgres-ready) | file-based | Zero-config self-hosting; schema uses portable types (see ADR-003) |
-| Auth | NextAuth v4 (credentials + JWT) | 4.24.15 | Email/password without OAuth provider dependencies; stateless sessions (ADR-004) |
-| Password hashing | bcryptjs | 3.0.3 | Pure-JS bcrypt; 12 rounds |
-| Validation | Zod | 4.6.5 | Single validation dialect at every boundary (actions + ingest) |
-| Icons | lucide-react | 0.525.0 | Consistent outline icon set |
-| Dev tooling | ESLint 9 flat, tsx | 9.x / 4.23.13 | Flat config with React Compiler rules; tsx runs the Prisma seed |
+| Auth | NextAuth v4 (credentials + JWT) | 4.24.x | Email/password without OAuth provider dependencies; stateless sessions (ADR-004) |
+| Password hashing | bcryptjs | 3.x | Pure-JS bcrypt; 12 rounds |
+| Validation | Zod | 4.x | Single validation dialect at every boundary (actions + ingest) |
+| Test runner | Vitest | 3.x | Node env, SQLite-backed integration tests, `node:vm` collector tests (§8) |
+| Icons | lucide-react | 0.x | Consistent outline icon set |
+| Dev tooling | ESLint 9 flat, tsx | 9.x / 4.x | Flat config with React Compiler rules; tsx runs the Prisma seed |
 | Runtime | Node.js | ≥ 20 | Next 16 requirement |
 
 ### 1.3 Architecture Decision Records
@@ -236,6 +247,38 @@ accounting, analytics, exports, auth — is a real working pipeline.
 - **Alternatives Rejected:** `application/json` fetch beacons (preflight on
   every pageview); first-party cookies (contradicts the cookieless claim);
   1×1 GIF GET tracking (URL length limits, no SPA route events).
+
+**ADR-008: Centralized atomic quota consumption with paid-plan overage**
+
+- **Context:** v1.0 incremented `identificationsUsed` inside the ingest
+  flow with a read-then-write pattern. Under concurrent beacons the counter
+  could overshoot the plan limit, the monthly reset was display-only
+  (computed in `getUsage`, never persisted), and plan switches zeroed the
+  counter — three defects sharing one root cause: no single owner of quota
+  state.
+- **Decision:** All quota mutations live in `src/lib/quota.ts`.
+  `consumeIdentification` is one conditional `updateMany`
+  (`WHERE id = ? AND identificationsUsed < limit`, `increment: 1`) for
+  free/lifetime plans — the database arbitrates the race, so exactly
+  `limit` consumptions can ever succeed. Paid monthly plans increment
+  unconditionally and keep counting **overage** (`used − limit`, priced at
+  the plan's per-identification rate, displayed in the UI, never charged —
+  billing is simulated). `resetMonthlyWindowIfNeeded` persists the 30-day
+  reset with a staleness-guarded `updateMany` so concurrent readers reset
+  exactly once.
+- **Rationale:** A conditional UPDATE is atomic in every backend (SQLite,
+  Postgres) without transactions or advisory locks; centralizing the write
+  path makes the invariant auditable in one file and testable with a
+  Prove-It (110 concurrent consumptions → exactly `limit` succeed).
+- **Consequences:** (+) No overshoot, ever; usage survives plan switches;
+  overage is honest accounting. (−) The free-plan rejection path needs a
+  pre-check read for the response shape (accepted: worst case the visitor
+  is not identified, which is the quota's purpose).
+- **Alternatives Rejected:** Prisma interactive transactions (single-writer
+  SQLite makes them redundant here); optimistic locking with version
+  columns (more schema for the same guarantee); Redis counters (introduces
+  shared-state infrastructure contradicted by ADR-003's self-hosting
+  posture).
 
 ---
 
@@ -566,8 +609,9 @@ erDiagram
 
 Uniques and indexes: `sites @@unique([userId, domain])`, `siteKey` unique;
 `visitors @@unique([siteId, anonymousId])` + index `(siteId, lastSeen)`;
-`events` indexes `(siteId, createdAt)` and `(siteId, name, createdAt)` —
-the latter serves the trend chart and the identification feed.
+`events` indexes `(siteId, createdAt)`, `(siteId, name, createdAt)` (trend
+chart + identification feed), and `(visitorId)` (added v1.1 — serves the
+visitor-activity joins and cascade deletes).
 
 ### 4.2 Data Models
 
@@ -589,11 +633,14 @@ in `plans.ts` (integer cents); no money columns are stored.
   complexity is O(events in window) regardless of total table size. Top
   pages scans lifetime pageviews; at very large scales this becomes a
   SQL groupBy (Postgres) — tracked in §11.
-- **Quota accounting:** `identificationsUsed` increments atomically inside
-  the ingest transaction chain; the monthly window resets lazily on first
-  event after 30 days (checked in both ingest and `getUsage`). The
-  check-then-increment race can overshoot the quota by at most one —
-  documented, acceptable at this scale.
+- **Quota accounting (ADR-008):** `src/lib/quota.ts` is the only writer of
+  `identificationsUsed`. Free/lifetime consumption is a single conditional
+  `updateMany` (`used < limit`) — the DB arbitrates concurrency, so the
+  limit can never be overshot. Paid monthly plans increment unconditionally
+  and count overage at the plan's per-identification rate. The 30-day
+  window resets lazily via a staleness-guarded `updateMany` (persisted, not
+  display-only) on the first event after expiry — checked in both ingest
+  and `getUsage`.
 
 ---
 
@@ -656,9 +703,10 @@ animations.
 | Authorization on every mutation, not just the layout | Each action re-fetches the session and scopes writes by `userId`; `deleteDomainAction` deletes by `{ id, userId }` |
 | Password storage | bcrypt, 12 rounds; hashes never leave `authorize` |
 | Sessions | Signed JWT (HttpOnly cookie, 30-day); `NEXTAUTH_SECRET` required |
-| Beacon endpoint hardening | Site-key lookup returns 204 for unknown keys (anti-enumeration); 120/min fixed-window per key; 204 for malformed payloads |
-| Output encoding | React escapes by default; CSV export escapes per RFC 4180 (`csvCell`); snippet interpolates only server-generated values (site key hex + derived origin) |
-| Account deletion | Requires retyped email confirmation; cascades all owned data |
+| Beacon endpoint hardening | Site-key lookup returns 204 for unknown keys (anti-enumeration); 120/min fixed-window per key; 204 for malformed payloads; beacons whose page hostname ≠ the registered domain are dropped **before any write** (spoofed-key quota burning is impossible) |
+| Signup abuse | Per-IP fixed-window throttle (5 signups / 10 min) in the server action; duplicate-email races resolve to a typed CONFLICT result (never a thrown P2002) |
+| Output encoding | React escapes by default; CSV export escapes per RFC 4180 (`csvCell`) + formula-injection guard (`'` prefix on `=+-@`); the snippet generator validates the forwarded host against a hostname grammar and escapes every JS-string interpolation |
+| Account deletion | Requires retyped email confirmation; cascades all owned data; the client signs the session out on success (JWT revocation on delete is inherently best-effort with stateless tokens) |
 
 ### 6.2 Security Utilities
 
@@ -678,12 +726,12 @@ predicates (`where: { site: { userId } }`), not by client-supplied IDs.
 
 | Threat | Vector | Mitigation |
 |--------|--------|------------|
-| Spoofing | Forged beacons with a stolen site key (public in page source) | Accepted limitation of all client-side analytics; rate limiting bounds abuse; verification requires hostname match |
-| Tampering | Malformed/oversized payloads | Zod schema with length caps; silent 204 rejection |
+| Spoofing | Forged beacons with a stolen site key (public in page source) | Hostname gate: the beacon's page URL (`u`) must resolve to the registered domain before any write; rate limiting bounds abuse; verification is hostname-based |
+| Tampering | Malformed/oversized payloads | Zod schema with length caps and minimal keys (`k,u,p,r,v` — legacy keys stripped); silent 204 rejection |
 | Repudiation | No ingest audit trail | Events ledger is append-only with timestamps — acceptable |
-| Information disclosure | Site-key enumeration; user enumeration at signup | 204s for unknown keys/domains; duplicate-email returns a generic conflict without confirming ownership |
-| DoS | Beacon floods | Per-key fixed window (120/min) + response shape that costs nothing; in-memory (per-instance) — see §11 |
-| Elevation | Direct mutation of another tenant's resources | Ownership predicates on every write; actions re-check session |
+| Information disclosure | Site-key enumeration; user enumeration at signup | 204s for unknown keys/domains; duplicate-email returns a generic conflict without confirming ownership; signup throttled per IP |
+| DoS | Beacon floods | Per-key fixed window (120/min) + response shape that costs nothing; 429 carries `Retry-After: 60`; ingest write failures are contained to a 204 (never a 500); in-memory (per-instance) — see §11 |
+| Elevation | Direct mutation of another tenant's resources | Ownership predicates on every write; actions re-check session; `/api/export` scopes `ids` to the session user's visitors |
 
 ---
 
@@ -712,33 +760,61 @@ speculatively.
 
 | Category | Files | Tests | Location | Framework |
 |----------|-------|-------|----------|-----------|
-| Lint (static) | 71 | — | repo-wide | ESLint 9 + typescript-eslint + React Compiler rules |
-| Types (static) | 71 | — | repo-wide | `tsc --noEmit`, strict |
+| Lint (static) | 71+ | — | repo-wide | ESLint 9 + typescript-eslint + React Compiler rules |
+| Types (static) | 71+ | — | repo-wide | `tsc --noEmit`, strict |
 | Build (integration) | 17 routes | — | `next build` | Next 16 |
-| Unit / E2E (dynamic) | 0 | 0 | — | **none installed** |
+| Unit (pure libs) | 5 files | ~35 | `tests/{plans,format,snippet,sites,smoke}.test.ts` | Vitest |
+| Behavioural (collector in `node:vm`) | 1 | 7 | `tests/collector-script.test.ts` | Vitest |
+| Integration (DB-backed) | 10 files | ~64 | `tests/*.test.ts` + `db/test.db` | Vitest |
+| E2E (browser) | manual | — | dev server flows | browser pass |
 
-### 8.2 Test Patterns (current, manual)
+The suite totals **106 tests across 16 files**, runs in the `node`
+environment against a throwaway SQLite database (`db/test.db`, recreated
+from the schema by `tests/global-setup.ts` on every run), with `TZ=UTC`
+pinned and `fileParallelism` disabled (SQLite single-writer). Mock seams for
+Next server context (`next/cache`, `next/navigation`, `next/headers`) live
+in `tests/setup.ts`.
 
-The verification evidence for v1.0 is: gate green (lint/typecheck/build),
-standalone-server smoke (routes 200, health `{"status":"ok","db":"up"}`,
-auth guard 307), and a scripted browser pass: sign-up → auto sign-in →
-dashboard empty state → add domain → beacon burst via `curl` (16 + 26
-visitors) → 6 identifications at ~20% match rate → trend/top-pages/recent
-render → visitor filters + detail sheet → CSV export content check → plan
-switch (Growth) → profile save persistence → mobile viewport pass.
+### 8.2 Test Patterns
+
+- **Red → green discipline:** behavioral changes start with a failing test
+  that reproduces the bug or specifies the new behavior; the commit lands
+  only when green.
+- **Pure-lib units:** plan/money math (integer cents, IEEE-754 robustness,
+  `annualTotalCents` rounding), `normalizeDomain`, `csvCell` (RFC 4180 +
+  formula-injection guard), relative time boundaries.
+- **Collector in `node:vm`:** the emitted `/pixel.js` source runs against
+  mocked `document`/`history`/`localStorage`/`navigator` — asserts
+  route-change beacons, `pushState`/`replaceState`/`popstate` wiring, and
+  the monkey-patch recursion regression (ADR-007's risky edge).
+- **Quota Prove-It:** 110 concurrent `consumeIdentification` calls against a
+  free plan at the limit → exactly `limit` succeed (ADR-008's concurrency
+  guarantee, tested at the DB level).
+- **Route-handler integration:** `/api/track` and `/api/export` invoked
+  directly with `Request` objects — hostname gating (forged hostnames
+  produce no rows), anti-enumeration 204s, 429 + `Retry-After` timing,
+  write-failure containment (mocked DB rejection still returns 204), and
+  ownership-scoped export of selected ids.
+- **Action integration (mocked session/headers):** plan switching never
+  resets the counter and blocks impossible downgrades; sign-up handles the
+  P2002 race, per-IP throttle, and plan intent; domains enforce IDOR guards
+  and `_count` stats; account deletion cascades and returns typed errors.
+- **Manual browser pass:** sign-up → domain add → beacon burst → dashboard
+  (search/filters/pagination, activity load-more, export-selected) → plan
+  switch → account deletion. Complements, never replaces, the suite.
 
 ### 8.3 Coverage Thresholds
 
-None configured (no test framework). Highest-value first targets when
-adding Vitest: `resolveIdentity` (distribution + determinism property
-tests), `normalizeDomain` (hostname grammar), `sourceFromReferrer`,
-`csvCell` (RFC 4180), `plans.ts` (price math), and an integration test for
-`/api/track` (visitor upsert, hostname verification, quota gating, rate
-limiting).
+None enforced numerically yet. The high-value targets named in v1.0
+(resolver determinism, `normalizeDomain`, `sourceFromReferrer`, `csvCell`,
+plan math, `/api/track` integration) are all covered. Remaining gaps worth
+adding: resolver distribution property tests over larger samples, and a
+Playwright E2E smoke of the critical funnel.
 
 ### 8.4 Pre-PR / Pre-Deploy Checklist
 
-- [ ] `npm run verify` green (lint → typecheck → build)
+- [ ] `npm run verify` green (lint → typecheck → **test** → build)
+- [ ] New/changed behavior has a test that failed before the change
 - [ ] `npm run db:push` still clean against the current schema
 - [ ] Ingest probe returns 204 (README "Testing the tracking pipeline")
 - [ ] `/api/health` reports `db: up`
@@ -830,15 +906,24 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 
 | Priority | Issue | Impact | Status |
 |----------|-------|--------|--------|
-| HIGH | No automated unit/E2E test suite | Regressions in resolver/quota/ingest logic are caught only by the manual gate | Open — Vitest wiring is the first contribution to make |
 | HIGH | Identity resolution and billing are simulations | Clone parity, not production capability — labelled everywhere | By design (ADR-005/006) |
-| MEDIUM | In-memory rate limiting (per-instance) | Multi-instance deploys would multiply the effective limit | Open — swap to shared store when horizontally scaling |
+| HIGH | NextAuth v4 on Next 16 (one-major-behind pairing) | Peer-dependency warnings; upgrade path to Auth.js v5 is non-trivial | Accepted — pinned deliberately (ADR-004); revisit before any Next 17 move |
+| MEDIUM | In-memory rate limiting and signup throttle (per-instance) | Multi-instance deploys would multiply the effective limit | Open — swap to shared store when horizontally scaling |
 | MEDIUM | `getTopPages` aggregates lifetime pageviews in JS | Degrades at very large event counts | Open — SQL groupBy on Postgres migration |
-| MEDIUM | Quota check-then-increment can overshoot by one | Off-by-one over quota under concurrent beacons | Accepted — documented in §4.3 |
 | LOW | OAuth buttons are disabled placeholders | Users must use email sign-in | By design — no providers configured |
-| LOW | Sessions are 30-day JWTs; no early revocation | Stolen cookies valid until expiry | Accepted for this product shape |
+| LOW | Sessions are 30-day JWTs; no server-side revocation | Stolen cookies valid until expiry; deletion sign-out is client-side only | Accepted for this product shape |
 | LOW | No Dockerfile / CI workflow | Self-hosting requires manual steps | Open |
 | LOW | Relative SQLite paths resolve against `prisma/` | Confusing first-run behavior | Documented (README, §9.2) |
+| LOW | E2E is a manual browser pass (no Playwright) | Critical funnel regressions caught late | Open — §8.3 |
+
+**Fixed in v1.1 (were open in v1.0):** no automated test suite (→ 106
+Vitest tests); quota check-then-increment overshoot (→ atomic conditional
+`updateMany`, ADR-008); display-only monthly reset (→ persisted, guarded);
+plan switch resetting the counter; ungated ingest from foreign hostnames;
+P2002 crashes on duplicate-email signup races; account deletion leaving
+the JWT session alive; first-domain-only install page; decorative visitor
+row selection (→ real "Export Selected"); collector `replaceState`
+recursion (P0).
 
 ---
 
@@ -846,23 +931,24 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 
 | File | Lines | Purpose |
 |------|-------|---------|
-| `src/app/api/track/route.ts` | ~204 | Beacon ingest: validation, rate limit, hostname verification, visitor upsert, quota-gated resolution |
+| `src/app/api/track/route.ts` | ~228 | Beacon ingest: validation, rate limit, hostname gate, visitor upsert, quota-gated resolution, contained errors |
 | `src/app/pixel.js/route.ts` | ~116 | Collector script served as a route (cookieless vid, sendBeacon, SPA hooks) |
 | `src/lib/identification.ts` | ~136 | Deterministic identity-resolution engine + referrer→source rules + site-key generator |
-| `src/lib/plans.ts` | ~122 | Plan catalogue: integer-cent prices, quotas, domain limits (single source of truth) |
-| `src/lib/analytics.ts` | ~174 | Server-only aggregations: overview stats, 14-day trend, top pages, usage window |
-| `src/lib/validation.ts` | ~98 | Zod schemas for every boundary + `ActionResult<T>` envelope |
+| `src/lib/plans.ts` | ~132 | Plan catalogue + money math: integer-cent prices, `annualTotalCents`, quotas, domain limits (single source of truth) |
+| `src/lib/quota.ts` | ~81 | **Only writer of `identificationsUsed`**: atomic conditional consumption, paid overage, persisted 30-day reset (ADR-008) |
+| `src/lib/analytics.ts` | ~387 | Server-only aggregations + query seams (`listVisitors`, `listActivity`) + `requireUser` guard |
+| `src/lib/validation.ts` | ~98 | Zod schemas for every boundary (minimal ingest keys) + `ActionResult<T>` envelope |
 | `src/lib/auth.ts` | ~52 | NextAuth options (credentials, JWT, session callbacks) |
 | `src/actions/domains.ts` | ~121 | Add/delete/list domain actions (ownership-scoped) |
-| `src/actions/settings.ts` | ~121 | Profile, plan change (simulated billing), account deletion |
+| `src/actions/settings.ts` | ~137 | Profile, plan change (usage-preserving, downgrade guard), account deletion |
 | `src/app/dashboard/layout.tsx` | ~43 | Session gate (UX) + sidebar/topbar chrome + usage props |
 | `src/app/dashboard/page.tsx` | ~201 | Overview: KPI cards, trend chart, top pages, recent identifications |
-| `src/components/dashboard/visitors-table.tsx` | ~347 | Visitors page: segments, search, filters, detail sheet, export |
-| `src/components/dashboard/activity-feed.tsx` | ~138 | Live feed with 5s polling + pause control |
+| `src/components/dashboard/visitors-table.tsx` | ~482 | Visitors page: segments, URL-driven search/filters, keyboard-navigable tabs, row selection, export, detail sheet |
+| `src/components/dashboard/activity-feed.tsx` | ~201 | Live feed: 5s polling (visibility-aware), cursor "Load more" |
 | `src/components/auth/signup-form.tsx` | ~160 | Action → client signIn → redirect sequence (ADR-004 pattern) |
 | `src/app/globals.css` | ~171 | Tailwind 4 `@theme` brand tokens, focus ring, motion, scrollbar |
 | `prisma/schema.prisma` | ~95 | users · sites · visitors · events (uniques + ingest indexes) |
-| `prisma/seed.ts` | ~174 | Idempotent demo seed (local-DB guard) |
+| `prisma/seed.ts` | ~191 | Idempotent, resumable demo seed (local-DB guard) |
 
 ---
 

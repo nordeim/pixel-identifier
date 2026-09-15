@@ -12,6 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 100+ assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -22,12 +23,15 @@ resolves the actual person — a personal or work email — plus company
 firmographics when the visitor is B2B. The product has three parts:
 
 1. **Marketing site** (`/`) — hero, social proof, pricing (Free → Scale), FAQ.
-2. **Dashboard** (`/dashboard`) — visitor analytics, identification feed,
-   pixel installation, domain management, plan settings.
+   Pricing cards carry `?plan=…&cycle=…` intent into sign-up.
+2. **Dashboard** (`/dashboard`) — visitor analytics with server-side search,
+   filters and pagination; a cursor-paged activity log; per-domain pixel
+   installation; domain management; plan settings with overage accounting.
 3. **Tracking pipeline** — a one-line `<script>` snippet loads `/pixel.js`
    from this app; beacons flow into `/api/track`, where visitors are stitched
-   by a cookieless localStorage ID, domains are auto-verified by hostname,
-   and the identity-resolution engine resolves ~20% of visitors to an email.
+   by a cookieless localStorage ID, hostnames are gated against the
+   registered domain, and the identity-resolution engine resolves ~20% of
+   visitors to an email.
 
 > **Honest scope note:** the identity-resolution engine in this codebase is a
 > deterministic simulation of the proprietary identity graph behind the
@@ -35,7 +39,7 @@ firmographics when the visitor is B2B. The product has three parts:
 > advertised ~20% match rate). Everything else — ingest, session stitching,
 > quota accounting, analytics, exports — is a real, working pipeline. Billing
 > is also simulated: plan switching updates entitlements without processing
-> payments.
+> payments (overage is counted and priced, never charged).
 
 ## Key Features
 
@@ -43,12 +47,12 @@ firmographics when the visitor is B2B. The product has three parts:
 |---|---|---|
 | 🔍 | B2C + B2B identification | Resolves individual consumers by personal email and business visitors by work email + company |
 | 🍪 | Cookieless tracking | First-party localStorage visitor ID — no consent-banner dependencies |
-| ⚡ | One-line install | Single `<script>` snippet; per-platform guides (HTML, WordPress, Shopify, GTM) |
-| 📊 | Real-time dashboard | KPIs, 14-day trend chart, top pages, recent identifications |
-| 👥 | Visitor CRM | Segments, search, confidence/source filters, detail view, CSV export |
-| 🔴 | Live activity feed | Auto-refreshing event stream across all domains |
-| 🌍 | Domain management | Registration, hostname-based auto-verification, plan-based limits |
-| 💳 | Plans & quotas | Free / Starter / Growth / Scale with per-plan identification allowances |
+| ⚡ | One-line install | Single `<script>` snippet per domain with a domain switcher; per-platform guides (HTML, WordPress, Shopify, GTM) |
+| 📊 | Real-time dashboard | KPIs, 14-day UTC-bucketed trend chart, top pages, recent identifications, loading/error boundaries |
+| 👥 | Visitor CRM | Server-side search + segment/confidence/source filters, 25/page pagination, true DB counts, row selection, CSV export (all or selected) |
+| 🔴 | Live activity feed | Auto-refreshing event stream (pauses in background tabs) with cursor-based "Load older events" |
+| 🌍 | Domain management | Registration, hostname-based auto-verification, ingest gated to registered hostnames, plan-based limits, delete confirmations |
+| 💳 | Plans & quotas | Free / Starter / Growth / Scale with per-plan allowances; paid plans keep identifying past the limit and count overage at the per-identification rate |
 
 ## Architecture
 
@@ -60,6 +64,7 @@ flowchart TB
     subgraph App["Pixelco (Next.js)"]
         PJ["/pixel.js collector"]
         TR["/api/track ingest"]
+        Q["lib/quota.ts (atomic)"]
         IR["Identity resolver"]
         DB[(SQLite via Prisma)]
         DASH["Dashboard RSC pages"]
@@ -67,17 +72,21 @@ flowchart TB
     end
     U["Visitor browser"] --> SN
     SN -->|sendBeacon text/plain| TR
-    TR -->|Zod validate + rate limit| IR
-    TR --> DB
+    TR -->|Zod validate + rate limit + hostname gate| IR
+    TR --> Q
+    Q --> DB
     IR --> DB
+    TR --> DB
     A["Account owner"] --> DASH
     DASH --> DB
     SA --> DB
 ```
 
-**Data flow:** beacon → validate → find site by key → verify domain by
-hostname → upsert visitor (pageviews++) → append pageview event → resolve
-identity (quota-gated) → append identification event → dashboard reads.
+**Data flow:** beacon → validate → find site by key → **hostname gate**
+(reject non-matching hosts) → upsert visitor (pageviews++) → append pageview
+event → resolve identity → claim visitor (conditional update) → **consume
+quota atomically** (`lib/quota.ts`) → append identification event → dashboard
+reads. Errors anywhere in the DB section are contained to a silent 204.
 
 ## File Hierarchy
 
@@ -85,10 +94,10 @@ identity (quota-gated) → append identification event → dashboard reads.
 📂 src/
 ├── 📂 app/
 │   ├── 📄 page.tsx                  ← Marketing landing page
-│   ├── 📂 login/ · 📂 signup/       ← Auth pages (dark shell, OAuth placeholders)
-│   ├── 📂 dashboard/                ← 7 authed pages + layout guard
+│   ├── 📂 login/ · 📂 signup/       ← Auth pages (plan-intent aware)
+│   ├── 📂 dashboard/                ← 7 authed pages + layout guard + loading/error boundaries
 │   ├── 📂 api/
-│   │   ├── 📂 track/                ← Pixel ingestion (beacon endpoint)
+│   │   ├── 📂 track/                ← Pixel ingestion (hostname-gated beacon endpoint)
 │   │   ├── 📂 activity/ · 📂 export/ · 📂 health/
 │   │   └── 📂 auth/[...nextauth]/   ← NextAuth handler
 │   └── 📂 pixel.js/                 ← Collector script route
@@ -97,15 +106,18 @@ identity (quota-gated) → append identification event → dashboard reads.
 │   ├── 📂 marketing/ · 📂 dashboard/ · 📂 auth/ · 📂 ui/
 ├── 📂 lib/
 │   ├── 📄 identification.ts         ← Seeded identity-resolution engine
-│   ├── 📄 plans.ts                  ← Plan catalogue (single source of truth)
-│   ├── 📄 analytics.ts              ← Aggregation queries (server-only)
-│   ├── 📄 auth.ts · validation.ts · snippet.ts · format.ts
+│   ├── 📄 plans.ts                  ← Plan catalogue + money math (single source of truth)
+│   ├── 📄 quota.ts                  ← Atomic quota consumption + monthly reset (only mutation path)
+│   ├── 📄 analytics.ts              ← Aggregation + list queries, requireUser guard (server-only)
+│   ├── 📄 collector-script.ts       ← The emitted collector JS (VM-tested)
+│   ├── 📄 auth.ts · validation.ts · snippet.ts · sites.ts · format.ts
 │   └── 📄 db.ts                     ← Prisma client singleton
 ├── 📂 types/                        ← NextAuth session augmentation
 📂 prisma/
-├── 📄 schema.prisma                 ← users · sites · visitors · events
-└── 📄 seed.ts                       ← Idempotent demo seed
-📂 docs/                             ← SSH push runbook + reference materials
+├── 📄 schema.prisma                 ← users · sites · visitors · events (FK indexes)
+└── 📄 seed.ts                       ← Resumable idempotent demo seed
+📂 tests/                            ← Vitest suite (see Testing)
+📂 docs/                             ← Plans, SSH push runbook, reference materials
 ```
 
 ## Quick Start
@@ -145,7 +157,8 @@ curl -o /dev/null -w "%{http_code}\n" http://localhost:3000/dashboard
 ```
 
 Then open `http://localhost:3000`, create an account, add a domain on the
-**Domains** page, and install the snippet from **Install Pixel**.
+**Domains** page, and install the snippet from **Install Pixel** (the page
+serves a snippet for every registered domain).
 
 ### Testing the tracking pipeline
 
@@ -153,9 +166,10 @@ With the dev server running and a domain registered (site key visible in the
 snippet, e.g. `px_abc123…`):
 
 ```bash
+# u must match the registered domain — beacons from other hostnames are dropped
 curl -X POST http://localhost:3000/api/track \
   -H "Content-Type: text/plain;charset=UTF-8" \
-  -d '{"k":"px_YOUR_SITE_KEY","u":"https://yourdomain.com/","p":"/","r":"","v":"testvisitor0001","w":1920,"h":1080}'
+  -d '{"k":"px_YOUR_SITE_KEY","u":"https://yourdomain.com/","p":"/","r":"","v":"testvisitor0001"}'
 # 204 No Content — check the dashboard: visitor appears, domain verifies
 ```
 
@@ -167,12 +181,12 @@ match rate in practice.
 | Endpoint | Method | Auth | Description |
 |----------|--------|------|-------------|
 | `/pixel.js` | GET | public | Collector script (CORS `*`, 5-min cache) |
-| `/api/track` | POST | public (site key) | Beacon ingestion — 204 on accept, 429 when rate-limited (120/min per site key) |
+| `/api/track` | POST | public (site key) | Beacon ingestion — hostname-gated; 204 on accept, 204 on reject (indistinguishable), 429 when rate-limited (120/min per site key, `Retry-After: 60`) |
 | `/api/health` | GET | public | Liveness + DB readiness |
 | `/api/auth/[...nextauth]` | GET/POST | public | NextAuth credentials flow |
-| `/api/activity` | GET | session | Latest 60 events (polled by Activity Log) |
-| `/api/export` | GET | session | CSV export of identified visitors |
-| Server Actions | — | session | Mutations: sign-up, add/delete domain, update profile, change plan, ⚠️ delete account |
+| `/api/activity` | GET | session | Latest 60 events, or the page after `?cursor=` (event id) |
+| `/api/export` | GET | session | CSV (UTF-8 BOM, formula-injection guarded) of identified visitors; `?ids=` exports a selection (ownership-scoped, max 500) |
+| Server Actions | — | session | Mutations: sign-up (throttled, P2002-safe, plan-intent), add/delete domain, update profile, change plan, ⚠️ delete account (signs out) |
 
 ## Environment Variables
 
@@ -182,32 +196,43 @@ match rate in practice.
 | `NEXTAUTH_SECRET` | yes | ≥32-char secret (`openssl rand -base64 32`) |
 | `NEXTAUTH_URL` | yes in prod | Canonical origin, e.g. `https://pixelco.example.com` |
 
-## Design System
+## Testing
 
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--primary` | `#FACC15` | Brand yellow — CTAs, active nav, badges, avatar fills |
-| `--chart-1` | `#F59E0B` | Pageviews series, amber accents |
-| `--chart-2` | `#2DD4BF` | Identified series, confidence bars |
-| `--background` | `#FFFCF5` | Marketing canvas (warm off-white) |
-| `.bg-app` | `#F9FAFB` | Dashboard canvas (cool gray) |
-| `--destructive` | red | Danger zone, delete confirm |
+```bash
+npm run test         # Vitest — full suite (unit + SQLite-backed integration)
+npm run test:watch   # Watch mode
+```
 
-Typography: **Geist Sans** (UI) via `next/font`, tabular numerals for all
-metrics. Radii: `--radius: 0.75rem`. Motion: CSS-only `feed-in` keyframes
-(0.45s brand easing), disabled under `prefers-reduced-motion`.
+The suite runs against a throwaway SQLite database (`db/test.db`, recreated
+from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
+
+- **Collector script** — executed in `node:vm` with mocked browser globals:
+  SPA route-change beacons, `pushState`/`replaceState`/`popstate` wiring,
+  stable visitor ids, and the monkey-patch recursion regression.
+- **Quota** (`src/lib/quota.ts`) — atomic consumption under 110 concurrent
+  calls (exactly `limit` succeed), persisted monthly reset, paid-plan overage.
+- **Track route** — invoked directly with `Request` objects: hostname gating,
+  auto-verification, anti-enumeration, quota/overage at the route level, 429
+  timing, and write-failure containment (never a 500).
+- **Server actions** — plan switching (counter never resets, downgrade
+  guard), sign-up (duplicate race, per-IP throttle, plan intent), domains
+  (IDOR guard, `_count`), account deletion (cascades, typed errors).
+- **Pure helpers** — plan/money math (IEEE-754 robustness), domain
+  normalisation, snippet hardening (host validation, JS-string escaping),
+  CSV escaping + formula guard, relative-time boundaries.
 
 ## Verification
 
 ```bash
 npm run lint        # ESLint 9 flat config (strict: no-explicit-any is an error)
 npm run typecheck   # tsc --noEmit
+npm run test        # Vitest suite
 npm run build       # next build (17 routes; standalone output)
-npm run verify      # all three in order
+npm run verify      # all four in order
 ```
 
-There is no automated unit/E2E suite yet — verification today is the gate
-above plus manual browser flows (sign-up → domain → beacon → dashboard).
+Manual browser flows (sign-up → domain → beacon → dashboard → export)
+complement the automated suite.
 
 ## Deployment
 
@@ -229,9 +254,17 @@ uses portable types throughout.
 
 ## Security Notes
 
-- Passwords: bcrypt (12 rounds); sessions: signed JWTs (30 days), HttpOnly cookies.
-- Ingest input is Zod-validated; unknown site keys return 204 (no enumeration).
-- Domain strings pass a hostname-grammar normaliser before storage/snippet use.
+- Passwords: bcrypt (12 rounds); sessions: signed JWTs (30 days), HttpOnly
+  cookies; account deletion revokes the session client-side.
+- Ingest input is Zod-validated and minimised (`k,u,p,r,v` only); unknown
+  site keys and foreign hostnames both return 204 (no enumeration, no
+  quota-burning forged beacons).
+- Quota consumption is a single conditional UPDATE — exactly `limit`
+  concurrent consumptions can ever succeed; paid plans count overage.
+- Sign-up is per-IP throttled (5 / 10 min); duplicate-email races return
+  typed CONFLICT results, never thrown P2002s.
+- Domain strings pass a hostname-grammar normaliser; the snippet generator
+  validates the forwarded host and escapes every interpolation.
 - Rate limiting: in-memory fixed window per site key (120/min) — per-instance.
 - The marketing/ingest surface never logs secrets; see PAD §6 for the threat model.
 
@@ -239,12 +272,12 @@ uses portable types throughout.
 
 | Phase | Status | Key Deliverables |
 |-------|--------|------------------|
-| Marketing site | ✅ Complete | Landing page, pricing, FAQ, auth pages |
-| Tracking pipeline | ✅ Complete | Collector, ingestion, verification, rate limiting |
-| Identity resolution | ✅ Complete | Deterministic engine, quota accounting |
-| Dashboard | ✅ Complete | All 7 pages, live feed, CSV export |
-| Billing | 🟡 Simulated | Plan switching without payment processing |
-| Tests | 🔴 Not started | No automated unit/E2E suite |
+| Marketing site | ✅ Complete | Landing page, pricing with plan intent, FAQ, auth pages |
+| Tracking pipeline | ✅ Complete | Collector, hostname-gated ingestion, verification, rate limiting, error containment |
+| Identity resolution | ✅ Complete | Deterministic engine, atomic quota accounting, paid overage |
+| Dashboard | ✅ Complete | All 7 pages, pagination/search, live feed with history, CSV export |
+| Billing | 🟡 Simulated | Plan switching + overage counting without payment processing |
+| Tests | ✅ Complete | Vitest: unit + integration (see Testing) |
 
 ## License
 

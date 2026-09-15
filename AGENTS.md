@@ -11,12 +11,13 @@ Everything here is easy to get wrong without reading it first.
 | Dev server | `npm run dev` → http://localhost:3000 |
 | Lint | `npm run lint` |
 | Typecheck | `npm run typecheck` |
+| Tests | `npm run test` (Vitest; watch mode: `npm run test:watch`) |
 | Production build | `npm run build` |
-| Full gate (run before pushing) | `npm run verify` = lint → typecheck → build |
+| Full gate (run before pushing) | `npm run verify` = lint → typecheck → test → build |
 | Create/refresh DB | `npm run db:push` |
 | Seed demo data | `npm run db:seed` (idempotent; refuses non-local DBs) |
 
-**Order matters:** lint → typecheck → build. Never weaken a failing gate to
+**Order matters:** lint → typecheck → test → build. Never weaken a failing gate to
 make it pass — fix the code.
 
 **Env first:** copy `.env.example` to `.env` and set `NEXTAUTH_SECRET`
@@ -40,6 +41,15 @@ make it pass — fix the code.
   a fixed whitelist: `api/track`, `api/activity`, `api/export`, `api/health`,
   `api/auth/[...nextauth]`, `pixel.js`. Don't add REST endpoints for UI
   mutations.
+- **Quota has one mutation path.** `src/lib/quota.ts` is the only module that
+  writes `identificationsUsed` — consumption is a single conditional UPDATE
+  (free plans hard-stop; paid monthly plans increment unconditionally and
+  count overage). The 30-day reset persists and is guarded on the stale
+  anchor. Never increment the counter anywhere else.
+- **Tests run against `db/test.db`.** `tests/global-setup.ts` recreates it via
+  `prisma db push` on every run; `TZ` is pinned to UTC. Integration tests
+  invoke route handlers/actions directly with mocked `next/headers` /
+  `next-auth` (see `tests/setup.ts`). Keep new behavior test-first.
 - **Auth gate is UX only.** `src/app/dashboard/layout.tsx` redirects
   unauthenticated users, but every action/route re-checks the session itself.
   Keep it that way.
@@ -54,10 +64,16 @@ make it pass — fix the code.
 ## Conventions
 
 - Server components fetch data via `src/lib/analytics.ts` (marked
-  `server-only`); interactive leaves are `'use client'` components under
-  `src/components/{marketing,dashboard,auth}`.
+  `server-only`); `requireUser(await getServerSession(authOptions))` is the
+  single session guard for dashboard pages. Interactive leaves are
+  `'use client'` components under `src/components/{marketing,dashboard,auth}`.
 - Money and quotas are integers (cents / counts) — never floats. Plan
-  definitions live only in `src/lib/plans.ts`.
+  definitions and all money math (`annualTotalCents`, `formatPrice`, …) live
+  only in `src/lib/plans.ts`.
+- Ingest accepts only the minimal payload (`k,u,p,r,v`); beacons whose page
+  hostname does not match the registered domain are dropped before any write.
+- The visitor list is URL-driven: `listVisitors` in `src/lib/analytics.ts` is
+  the single query seam (search/filters/pagination/counts).
 - The identity-resolution engine (`src/lib/identification.ts`) is
   deterministic: decisions derive from `sha256(siteKey + anonymousId)`. If you
   change name lists or the PRNG, historical decisions change — treat that as
@@ -83,6 +99,10 @@ verification gate before pushing.
 - OAuth buttons (Google/Apple) on the auth pages are intentionally disabled
   placeholders — no OAuth providers are configured.
 - Billing is simulated: `changePlanAction` updates entitlements directly, no
-  payment processor.
+  payment processor. Switching plans never resets the used counter; paid
+  plans keep identifying past the limit and report overage.
 - The Activity Log polls `/api/activity` every 5 s (client polling, no
-  websockets).
+  websockets); polling pauses while the tab is hidden.
+- NextAuth v4 on Next 16 is a maintenance-mode pairing — works today, but
+  budget an Auth.js v5 / Better-Auth migration before the next Next major
+  (see PAD §11).
