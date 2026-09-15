@@ -47,19 +47,17 @@ describe('listVisitors (F-24: server-side search, filters, pagination)', () => {
     await db.user.deleteMany()
   })
 
-  it('paginates with accurate totals and true segment counts', async () => {
+  it('lists IDENTIFIED visitors only, like the live product (R5-H4)', async () => {
     const { user } = await seed()
 
     const page1 = await listVisitors(user.id, { page: 1, pageSize: 25 })
-    expect(page1.rows).toHaveLength(25)
-    expect(page1.total).toBe(60)
-    expect(page1.pageCount).toBe(3)
+    expect(page1.rows).toHaveLength(20)
+    expect(page1.rows.every((r) => r.email !== null)).toBe(true)
+    expect(page1.total).toBe(20)
+    expect(page1.pageCount).toBe(1)
     expect(page1.page).toBe(1)
     // Counts come from DB aggregates, not the loaded page.
-    expect(page1.counts).toEqual({ all: 60, individual: 12, company: 8 })
-
-    const page3 = await listVisitors(user.id, { page: 3, pageSize: 25 })
-    expect(page3.rows).toHaveLength(10)
+    expect(page1.counts).toEqual({ all: 20, individual: 12, company: 8 })
   })
 
   it('orders by lastSeen descending', async () => {
@@ -69,7 +67,7 @@ describe('listVisitors (F-24: server-side search, filters, pagination)', () => {
     expect(rows[4].anonymousId).toBe('v_seed_0004')
   })
 
-  it('searches case-insensitively across email, company and anonymous id', async () => {
+  it('searches case-insensitively across email and company', async () => {
     const { user } = await seed()
 
     const byEmail = await listVisitors(user.id, { q: 'PERSON12@', page: 1, pageSize: 25 })
@@ -80,8 +78,10 @@ describe('listVisitors (F-24: server-side search, filters, pagination)', () => {
     expect(byCompany.total).toBe(1)
     expect(byCompany.rows[0].companyName).toBe('Company 3 Ltd')
 
+    // Anonymous ids are no longer searchable: the live list shows
+    // identified visitors only.
     const byAnonId = await listVisitors(user.id, { q: 'v_seed_0042', page: 1, pageSize: 25 })
-    expect(byAnonId.total).toBe(1)
+    expect(byAnonId.total).toBe(0)
   })
 
   it('filters by segment, confidence and source', async () => {
@@ -97,7 +97,7 @@ describe('listVisitors (F-24: server-side search, filters, pagination)', () => {
     expect(confident.total).toBe(6)
 
     const search = await listVisitors(user.id, { source: 'social', page: 1, pageSize: 25 })
-    expect(search.total).toBe(20)
+    expect(search.total).toBe(6)
     expect(search.rows.every((r) => r.source === 'social')).toBe(true)
   })
 

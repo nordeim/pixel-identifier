@@ -238,6 +238,10 @@ const VISITOR_SELECT = {
  * Server-side visitor list with search, filters, pagination and true counts
  * (F-24). SQLite's LIKE comparison is ASCII-case-insensitive, so `contains`
  * gives case-insensitive matching on the default collation.
+ *
+ * Scope (R5-H4): like the live product, the list shows IDENTIFIED visitors
+ * only — anonymous traffic stays in the Overview totals and the activity
+ * feed. Every count below therefore also excludes anonymous visitors.
  */
 export async function listVisitors(
   userId: string,
@@ -246,7 +250,7 @@ export async function listVisitors(
   const page = Math.max(1, query.page ?? 1)
   const pageSize = Math.min(100, Math.max(1, query.pageSize ?? 25))
 
-  const base = { site: { userId } }
+  const base = { site: { userId }, email: { not: null } }
   const filters: Record<string, unknown>[] = [base]
 
   if (query.q) {
@@ -256,7 +260,6 @@ export async function listVisitors(
         OR: [
           { email: { contains: q } },
           { companyName: { contains: q } },
-          { anonymousId: { contains: q } },
           { site: { domain: { contains: q } } },
         ],
       })
