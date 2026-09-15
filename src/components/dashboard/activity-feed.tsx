@@ -86,13 +86,13 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
   }, [cursor, events, loadingMore])
 
   return (
-    <div className="space-y-4">
-      <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
-        <p className="text-base font-bold text-foreground">Live Feed</p>
+    <div className="mx-auto max-w-3xl space-y-4">
+      <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
+        <p className="font-display text-base font-semibold tracking-tight text-foreground">Live Feed</p>
         <p className="mt-0.5 text-xs text-muted-foreground">All events across your domains</p>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+      <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
         {events.length === 0 ? (
           <p className="px-4 py-16 text-center text-sm text-muted-foreground" data-tick={tick}>
             No events yet. Install your pixel and visit your site — events will
@@ -103,21 +103,21 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
             {events.map((event) => (
               <li
                 key={event.id}
-                className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/30"
+                className="flex items-start gap-4 px-5 py-4 transition-colors hover:bg-muted/20"
                 data-tick={tick}
               >
                 <span
                   className={
                     event.name === 'identification'
-                      ? 'flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary'
-                      : 'flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted'
+                      ? 'flex h-8 w-8 shrink-0 items-center justify-center rounded-full gradient-primary'
+                      : 'flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted'
                   }
                   aria-hidden="true"
                 >
                   {event.name === 'identification' ? (
-                    <Mail className="h-4 w-4 text-white" />
+                    <Mail className="h-3.5 w-3.5 text-white" />
                   ) : (
-                    <Eye className="h-4 w-4 text-muted-foreground" />
+                    <Eye className="h-3.5 w-3.5 text-muted-foreground" />
                   )}
                 </span>
 
@@ -127,11 +127,11 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
                       {event.email ?? `${event.anonymousId}…`}
                     </span>
                     {event.name === 'identification' ? (
-                      <Badge variant="secondary" className="bg-amber-300 text-amber-950 hover:bg-amber-300">
+                      <Badge variant="secondary" className="bg-amber-300 px-1.5 py-0 text-[10px] text-amber-950 hover:bg-amber-300">
                         Identified
                       </Badge>
                     ) : (
-                      <Badge variant="secondary" className="bg-muted text-foreground hover:bg-muted">
+                      <Badge variant="outline" className="px-1.5 py-0 text-[10px] text-foreground">
                         Pageview
                       </Badge>
                     )}
