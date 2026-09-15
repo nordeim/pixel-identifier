@@ -89,7 +89,7 @@ export interface OverviewStats {
   newThisWeek: number
   lastWeek: number
   matchRate: number
-  /** Verified domains only — pending sites are not "active" (F-29). */
+  /** All registered domains — the live KPI value; the sub-line shows verified. */
   activeDomains: number
   verifiedDomains: number
   pendingDomains: number
@@ -117,7 +117,9 @@ export async function getOverviewStats(userId: string): Promise<OverviewStats> {
     newThisWeek,
     lastWeek,
     matchRate: totalVisitors > 0 ? Math.round((emailsIdentified / totalVisitors) * 1000) / 10 : 0,
-    activeDomains: verifiedDomains,
+    // Live semantics (R5-M2): the KPI value is the total domain count; the
+    // card sub-line renders "N verified". Pending domains stay reportable.
+    activeDomains: sites.length,
     verifiedDomains,
     pendingDomains: sites.length - verifiedDomains,
   }

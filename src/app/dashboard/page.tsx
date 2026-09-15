@@ -54,10 +54,9 @@ export default async function OverviewPage() {
     {
       label: 'Active Domains',
       value: stats.activeDomains.toString(),
-      sub:
-        stats.pendingDomains > 0
-          ? `${stats.pendingDomains} pending review`
-          : `${stats.verifiedDomains} verified`,
+      // Live semantics: the value is the total domain count; the sub-line
+      // reports verified domains ("1 verified" with a pending domain present).
+      sub: `${stats.verifiedDomains} verified`,
       icon: Globe,
     },
   ]

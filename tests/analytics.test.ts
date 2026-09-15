@@ -23,19 +23,21 @@ async function addSite(userId: string, domain: string, status: 'pending' | 'veri
   })
 }
 
-describe('getOverviewStats (F-29: honest Active Domains KPI)', () => {
+describe('getOverviewStats (R5-M2: Active Domains KPI matches live)', () => {
   beforeEach(async () => {
     await db.user.deleteMany()
   })
 
-  it('counts only VERIFIED domains as active, pending reported separately', async () => {
+  it('counts ALL domains as the KPI value, verified reported in the sub-line', async () => {
     const user = await seed()
     await addSite(user.id, 'live.example', 'verified')
     await addSite(user.id, 'staged.example', 'pending')
 
     const stats = await getOverviewStats(user.id)
 
-    expect(stats.activeDomains).toBe(1)
+    // Live observation: the KPI shows the total domain count (2) with the
+    // sub-line "1 verified" — not the verified count as the value.
+    expect(stats.activeDomains).toBe(2)
     expect(stats.verifiedDomains).toBe(1)
     expect(stats.pendingDomains).toBe(1)
   })
