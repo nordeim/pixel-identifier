@@ -74,9 +74,14 @@ export function LoginForm() {
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label htmlFor="password">Password</Label>
-          <span className="text-xs font-medium text-amber-600" title="Password reset is not configured in this deployment">
+          {/* R6-H4: a real link like the live login (the live's own target
+              404s; ours resolves to an honest reset-request page). */}
+          <Link
+            href="/forgot-password"
+            className="text-xs font-medium text-primary hover:underline"
+          >
             Forgot password?
-          </span>
+          </Link>
         </div>
         <Input
           id="password"

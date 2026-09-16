@@ -67,3 +67,19 @@ describe('sitemap.ts', () => {
     expect(home?.priority).toBe(1)
   })
 })
+
+describe('auth surfaces', () => {
+  it('ships the /forgot-password route the live login links to (R6-H4)', async () => {
+    // The live login form links to /forgot-password (where the live app
+    // itself 404s — a dead link we deliberately do not replicate).
+    const mod = await import('@/app/forgot-password/page')
+    expect(typeof mod.default).toBe('function')
+    expect(mod.metadata.title).toBe('Forgot Password')
+  })
+
+  it('keeps /forgot-password out of the sitemap (auth surface)', async () => {
+    const entries = await sitemapFn()
+    const paths = entries.map((entry) => new URL(entry.url).pathname)
+    expect(paths).not.toContain('/forgot-password')
+  })
+})
