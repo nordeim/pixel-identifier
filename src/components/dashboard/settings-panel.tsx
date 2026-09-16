@@ -51,7 +51,7 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <div className="max-w-2xl space-y-6">
       {/* R5-H2: in-page title — the live settings page renders its H1 inside
           the content area, not in the topbar. */}
       <div>

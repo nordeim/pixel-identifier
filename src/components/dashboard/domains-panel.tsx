@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState, useEffect, useRef } from 'react'
-import { CircleAlert, CircleCheckBig, Globe, Loader2, Trash2 } from 'lucide-react'
+import { CircleAlert, CircleCheckBig, Globe, Loader2, Plus, Trash2 } from 'lucide-react'
 import { addDomainAction, deleteDomainAction, type DomainDto } from '@/actions/domains'
 import type { ActionResult } from '@/lib/validation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -65,7 +65,7 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
   }, [deleteState, toast])
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="max-w-3xl space-y-6">
       <Card className="shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="font-display text-base font-semibold tracking-tight text-foreground">Add a Domain</CardTitle>
@@ -74,17 +74,16 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
           </p>
         </CardHeader>
         <CardContent>
-          <form action={formAction} className="flex flex-col gap-2.5 sm:flex-row">
-            <div className="flex-1">
-              <Input
-                name="domain"
-                placeholder="yoursite.com"
-                aria-label="Domain to register"
-                autoComplete="off"
-                required
-              />
-            </div>
-            {/* Live CTA: gradient-primary + glow, no icon (R5-H5). */}
+          <form action={formAction} className="flex gap-3">
+            <Input
+              name="domain"
+              placeholder="yoursite.com"
+              className="h-10 flex-1"
+              aria-label="Domain to register"
+              autoComplete="off"
+              required
+            />
+            {/* Live CTA: gradient-primary + glow with a Plus glyph (R6-M3). */}
             <Button
               type="submit"
               disabled={pending}
@@ -93,7 +92,10 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
               {pending ? (
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
               ) : (
-                'Add Domain'
+                <>
+                  <Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
+                  Add Domain
+                </>
               )}
             </Button>
           </form>
@@ -107,12 +109,13 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
       </Card>
 
       <section aria-labelledby="domains-heading">
-        <h2 id="domains-heading" className="mb-3 text-base font-bold text-foreground">
-          Your Domains
-        </h2>
-
         {domains.length === 0 ? (
           <Card className="shadow-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="font-display text-base font-semibold tracking-tight text-foreground" id="domains-heading">
+                Your Domains
+              </CardTitle>
+            </CardHeader>
             <CardContent className="py-12 text-center">
               <p className="text-sm text-muted-foreground">
                 No domains yet. Add one above to get started.
@@ -121,92 +124,99 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
           </Card>
         ) : (
           <Card className="shadow-sm">
-            <ul className="divide-y divide-border/60">
-              {domains.map((domain) => (
-                <li
-                  key={domain.id}
-                  className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-muted/20"
-                >
-                  <div className="flex min-w-0 items-center gap-3">
-                    <span
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10"
-                      aria-hidden="true"
-                    >
-                      <Globe className="h-4 w-4 text-primary" />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="flex flex-wrap items-center gap-2">
-                        <span className="truncate text-sm font-bold text-foreground">{domain.domain}</span>
-                        {domain.status === 'verified' ? (
-                          <Badge variant="secondary" className="gap-1 bg-primary px-2 py-0.5 text-[10px] text-primary-foreground hover:bg-primary">
-                            <CircleCheckBig className="h-2.5 w-2.5" aria-hidden="true" />
-                            Verified
-                          </Badge>
-                        ) : (
-                          <Badge variant="secondary" className="gap-1 bg-secondary px-2 py-0.5 text-[10px] text-secondary-foreground hover:bg-secondary">
-                            <CircleAlert className="h-2.5 w-2.5" aria-hidden="true" />
-                            Pending
-                          </Badge>
-                        )}
-                      </p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        Added {formatDate(domain.createdAt)}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex shrink-0 items-center gap-5">
-                    {/* Live row: big number = identified visitors, small
-                        "N visitors" = total (R5-H5 / R5-M6). */}
-                    <div className="text-right">
-                      <p className="text-sm font-semibold tabular-nums leading-none text-foreground">
-                        {domain.identifiedCount}
-                      </p>
-                      <p className="mt-0.5 text-[10px] text-muted-foreground">
-                        {domain.visitorCount === 1 ? '1 visitor' : `${domain.visitorCount} visitors`}
-                      </p>
+            <CardHeader className="pb-2">
+              <CardTitle className="font-display text-base font-semibold tracking-tight text-foreground" id="domains-heading">
+                Your Domains
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <ul className="divide-y divide-border">
+                {domains.map((domain) => (
+                  <li
+                    key={domain.id}
+                    className="flex items-center justify-between px-5 py-4 transition-colors hover:bg-muted/20"
+                  >
+                    <div className="flex min-w-0 items-center gap-4">
+                      <span
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10"
+                        aria-hidden="true"
+                      >
+                        <Globe className="h-4 w-4 text-primary" />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="flex flex-wrap items-center gap-2">
+                          <span className="truncate text-sm font-semibold text-foreground">{domain.domain}</span>
+                          {domain.status === 'verified' ? (
+                            <Badge variant="secondary" className="gradient-primary gap-1 border-0 px-1.5 py-0 text-[10px] text-primary-foreground hover:opacity-90">
+                              <CircleCheckBig className="h-2.5 w-2.5" aria-hidden="true" />
+                              Verified
+                            </Badge>
+                          ) : (
+                            <Badge variant="secondary" className="gap-1 px-1.5 py-0 text-[10px] text-secondary-foreground hover:bg-secondary">
+                              <CircleAlert className="h-2.5 w-2.5" aria-hidden="true" />
+                              Pending
+                            </Badge>
+                          )}
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          Added {formatDate(domain.createdAt)}
+                        </p>
+                      </div>
                     </div>
 
-                    {/* Deleting cascades visitors + events: always confirm (F-26). */}
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          aria-label={`Delete ${domain.domain}`}
-                          className="h-8 w-8 text-muted-foreground hover:text-red-600"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete {domain.domain}?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This permanently removes the domain, its {domain.visitorCount}{' '}
-                            {domain.visitorCount === 1 ? 'visitor' : 'visitors'}, and every recorded
-                            event. This action cannot be undone.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <form action={deleteFormAction}>
-                            <input type="hidden" name="siteId" value={domain.id} />
-                            <AlertDialogAction
-                              type="submit"
-                              className="bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600"
-                            >
-                              Delete domain
-                            </AlertDialogAction>
-                          </form>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                    <div className="flex shrink-0 items-center gap-6">
+                      {/* Live row: big number = identified visitors, small
+                          "N visitors" = total (R5-H5 / R5-M6). */}
+                      <div className="text-right">
+                        <p className="text-sm font-semibold text-foreground">
+                          {domain.identifiedCount}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground">
+                          {domain.visitorCount === 1 ? '1 visitor' : `${domain.visitorCount} visitors`}
+                        </p>
+                      </div>
+
+                      {/* Deleting cascades visitors + events: always confirm (F-26). */}
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            aria-label={`Delete ${domain.domain}`}
+                            className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete {domain.domain}?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This permanently removes the domain, its {domain.visitorCount}{' '}
+                              {domain.visitorCount === 1 ? 'visitor' : 'visitors'}, and every recorded
+                              event. This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <form action={deleteFormAction}>
+                              <input type="hidden" name="siteId" value={domain.id} />
+                              <AlertDialogAction
+                                type="submit"
+                                className="bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600"
+                              >
+                                Delete domain
+                              </AlertDialogAction>
+                            </form>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
           </Card>
         )}
       </section>
