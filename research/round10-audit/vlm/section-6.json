@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "**CLOSE MATCH**\n\nThe two images are nearly identical in layout, typography, and color. The only visual difference detected is:\n\n*   **Severity: Low**\n    *   **Location:** Bottom right of the screen, below the \"Start Free. Scale as You Grow.\" heading.\n    *   **Description:** In the original (Image 1), the text next to the toggle switch reads \"Annual Save 20%\". In the clone (Image 2), there is an additional yellow badge labeled \"**POPULAR**\" positioned directly above the word \"Annual\". This badge is absent in the original image.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789565686,
+  "id": "20260916213442a7f8d98b20644ffa",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260916213442a7f8d98b20644ffa",
+  "usage": {
+    "completion_tokens": 124,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 3455,
+    "prompt_tokens_details": {
+      "cached_tokens": 2
+    },
+    "total_tokens": 3579
+  }
+}

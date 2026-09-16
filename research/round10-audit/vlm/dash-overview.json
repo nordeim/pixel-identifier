@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "**CLOSE MATCH**\n\nThe clone is a high-fidelity reproduction of the original UI. The layout, typography, color palette, iconography, and component styling (cards, badges, progress bars) are nearly identical. \n\nHere are the only real residuals detected, excluding dynamic data differences:\n\n*   **Sidebar Navigation Icon:** The \"Overview\" active state icon in the left sidebar appears slightly bolder or has a heavier stroke weight in Image 2 compared to Image 1. **Severity: Low**\n*   **Chart Data Rendering:** While the chart axes and legend match perfectly, the specific curve shapes and peak positions in the \"Visitor Identification Trend\" graph differ between the two images (as expected with different underlying data). **Severity: Low (Data)**",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789562569,
+  "id": "20260916204245e24c4b5296f94994",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260916204245e24c4b5296f94994",
+  "usage": {
+    "completion_tokens": 152,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 3448,
+    "prompt_tokens_details": {
+      "cached_tokens": 2
+    },
+    "total_tokens": 3600
+  }
+}

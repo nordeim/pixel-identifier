@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "**CLOSE MATCH**\n\nThe two images are visually identical in terms of layout, spacing, colors, typography, borders, icons, and text content. There are no discernible visual differences between the original production site (Image 1) and the clone (Image 2).",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789565952,
+  "id": "20260916213907effd376a6d914b18",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260916213907effd376a6d914b18",
+  "usage": {
+    "completion_tokens": 55,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 3419,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 3474
+  }
+}
