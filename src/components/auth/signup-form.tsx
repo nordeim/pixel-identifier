@@ -74,7 +74,7 @@ export function SignUpForm({
         </p>
       )}
 
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         <Label htmlFor="email">Work Email</Label>
         <Input
           id="email"
@@ -88,7 +88,7 @@ export function SignUpForm({
         {fieldError('email') && <p className="text-xs text-red-600">{fieldError('email')}</p>}
       </div>
 
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         <Label htmlFor="password">Password</Label>
         <Input
           id="password"
@@ -103,7 +103,7 @@ export function SignUpForm({
         {fieldError('password') && <p className="text-xs text-red-600">{fieldError('password')}</p>}
       </div>
 
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         <Label htmlFor="confirmPassword">Confirm Password</Label>
         <Input
           id="confirmPassword"

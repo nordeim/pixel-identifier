@@ -57,7 +57,7 @@ export function LoginForm() {
         </p>
       )}
 
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         <div className="flex items-center justify-between">
           <Label htmlFor="email">Email</Label>
         </div>
@@ -71,14 +71,14 @@ export function LoginForm() {
         />
       </div>
 
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         <div className="flex items-center justify-between">
           <Label htmlFor="password">Password</Label>
           {/* R6-H4: a real link like the live login (the live's own target
               404s; ours resolves to an honest reset-request page). */}
           <Link
             href="/forgot-password"
-            className="text-xs font-medium text-primary hover:underline"
+            className="text-xs text-primary hover:underline"
           >
             Forgot password?
           </Link>
