@@ -448,15 +448,22 @@ export async function listActivity(
   const page = hasMore ? events.slice(0, take) : events
 
   return {
-    events: page.map((event) => ({
-      id: event.id,
-      name: event.name,
-      domain: event.site.domain,
-      path: event.path,
-      email: event.visitor.email,
-      anonymousId: event.visitor.email ? null : event.visitor.anonymousId.slice(0, 12),
-      createdAt: event.createdAt.toISOString(),
-    })),
+    events: page.map((event) => {
+      // R7-F1: the row identity depends on the EVENT type, not the visitor's
+      // current state — pageview rows always show the (truncated) anonymous
+      // id, identification rows show the email. Joining the visitor's email
+      // onto pageviews rewrites history once a visitor is identified.
+      const isIdentification = event.name === 'identification'
+      return {
+        id: event.id,
+        name: event.name,
+        domain: event.site.domain,
+        path: event.path,
+        email: isIdentification ? event.visitor.email : null,
+        anonymousId: isIdentification ? null : event.visitor.anonymousId.slice(0, 12),
+        createdAt: event.createdAt.toISOString(),
+      }
+    }),
     nextCursor: hasMore ? page[page.length - 1].id : null,
   }
 }
