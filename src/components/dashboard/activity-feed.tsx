@@ -126,7 +126,10 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
                 <div className="min-w-0 flex-1">
                   <p className="mb-0.5 flex flex-wrap items-center gap-2">
                     <span className="truncate text-sm font-medium text-foreground">
-                      {event.email ?? `${event.anonymousId}…`}
+                      {/* R7-F1: pageview rows show the truncated anonymous id
+                          ("first 12 chars + ...") like the live; only
+                          identification rows show the email. */}
+                      {event.email ?? `${event.anonymousId}...`}
                     </span>
                     {event.name === 'identification' ? (
                       <Badge variant="secondary" className="gradient-primary border-0 px-1.5 py-0 text-[10px] text-primary-foreground hover:opacity-90">
