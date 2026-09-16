@@ -264,6 +264,7 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                     checked={pageSelected ? true : someSelected ? 'indeterminate' : false}
                     onCheckedChange={(checked) => toggleAll(checked === true)}
                     disabled={visitors.length === 0}
+                    className="rounded-sm border-primary"
                   />
                 </th>
                 <th scope="col" className="p-3 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
@@ -308,6 +309,7 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                         aria-label={`Select ${visitor.email ?? 'visitor'}`}
                         checked={selectedIds.has(visitor.id)}
                         onCheckedChange={(checked) => toggleRow(visitor.id, checked === true)}
+                        className="rounded-sm border-primary"
                       />
                     </td>
                     <td className="p-3">
