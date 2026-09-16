@@ -1,9 +1,10 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { ChevronDown, Eye, Globe, Loader2, Mail } from 'lucide-react'
+import { ArrowUpRight, ChevronDown, Eye, Globe, Loader2, Mail } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { relativeTime } from '@/lib/format'
 
 export interface ActivityEvent {
@@ -86,20 +87,21 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
   }, [cursor, events, loadingMore])
 
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
-      <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
-        <p className="font-display text-base font-semibold tracking-tight text-foreground">Live Feed</p>
-        <p className="mt-0.5 text-xs text-muted-foreground">All events across your domains</p>
-      </div>
-
-      <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+    <div className="max-w-3xl space-y-4">
+      {/* R6-M2: one card like the live — header + p-0 divide list. */}
+      <Card className="shadow-sm">
+        <CardHeader className="pb-2">
+          <p className="font-display text-base font-semibold tracking-tight text-foreground">Live Feed</p>
+          <p className="text-sm text-muted-foreground">All events across your domains</p>
+        </CardHeader>
+        <CardContent className="p-0">
         {events.length === 0 ? (
           <p className="px-4 py-16 text-center text-sm text-muted-foreground" data-tick={tick}>
             No events yet. Install your pixel and visit your site — events will
             appear here in real time.
           </p>
         ) : (
-          <ul className="divide-y divide-border/60">
+          <ul className="divide-y divide-border">
             {events.map((event) => (
               <li
                 key={event.id}
@@ -109,25 +111,25 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
                 <span
                   className={
                     event.name === 'identification'
-                      ? 'flex h-8 w-8 shrink-0 items-center justify-center rounded-full gradient-primary'
-                      : 'flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted'
+                      ? 'mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full gradient-primary'
+                      : 'mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted'
                   }
                   aria-hidden="true"
                 >
                   {event.name === 'identification' ? (
-                    <Mail className="h-3.5 w-3.5 text-white" />
+                    <Mail className="h-3.5 w-3.5 text-primary-foreground" />
                   ) : (
                     <Eye className="h-3.5 w-3.5 text-muted-foreground" />
                   )}
                 </span>
 
                 <div className="min-w-0 flex-1">
-                  <p className="flex flex-wrap items-center gap-2">
+                  <p className="mb-0.5 flex flex-wrap items-center gap-2">
                     <span className="truncate text-sm font-medium text-foreground">
                       {event.email ?? `${event.anonymousId}…`}
                     </span>
                     {event.name === 'identification' ? (
-                      <Badge variant="secondary" className="bg-amber-300 px-1.5 py-0 text-[10px] text-amber-950 hover:bg-amber-300">
+                      <Badge variant="secondary" className="gradient-primary border-0 px-1.5 py-0 text-[10px] text-primary-foreground hover:opacity-90">
                         Identified
                       </Badge>
                     ) : (
@@ -136,15 +138,21 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
                       </Badge>
                     )}
                   </p>
-                  <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground">
-                    <Globe className="h-3 w-3 shrink-0" aria-hidden="true" />
-                    {event.domain}
-                    <span aria-hidden="true">/</span>
-                    <span className="truncate font-mono">{event.path}</span>
+                  {/* R6-M2: two meta groups with gap-3 — globe+domain and
+                      arrow+path — like the live row footer. */}
+                  <p className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <span className="flex min-w-0 items-center gap-1">
+                      <Globe className="h-3 w-3 shrink-0" aria-hidden="true" />
+                      <span className="truncate">{event.domain}</span>
+                    </span>
+                    <span className="flex min-w-0 items-center gap-1">
+                      <ArrowUpRight className="h-3 w-3 shrink-0" aria-hidden="true" />
+                      <span className="truncate">{event.path}</span>
+                    </span>
                   </p>
                 </div>
 
-                <time className="shrink-0 text-xs text-muted-foreground" dateTime={event.createdAt}>
+                <time className="mt-1 shrink-0 text-xs text-muted-foreground" dateTime={event.createdAt}>
                   {relativeTime(event.createdAt)}
                 </time>
               </li>
@@ -172,7 +180,8 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
             </Button>
           </div>
         )}
-      </div>
+      </CardContent>
+      </Card>
 
     </div>
   )
