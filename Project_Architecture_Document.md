@@ -1,4 +1,4 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.5
+# Pixelco — Master Project Architecture Document (PAD) v1.6
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
@@ -12,6 +12,38 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.6** `[SYN]` Round-7 parity refinement (plan:
+  `docs/plans/2026-09-16-round7-parity-refinement.md`; evidence in
+  `research/round7-audit/`): a fresh live re-audit (logged-in DOM
+  extraction, computed styles, pairwise VLM diffs, OpenCV logo tracing)
+  closed the residual gaps. Functional: the activity feed's pageview rows
+  show the **truncated anonymous id** (12 chars + "...") — the previous
+  seam joined the visitor's current email onto every event, rewriting
+  pageview history after identification (R7-F1, RED→GREEN in
+  `tests/activity-query.test.ts`). Visual: the trend chart gained the
+  live's hand-built centered legend (bg-primary / bg-neon-green dots —
+  round 6's "no legend" finding had missed it because it is not a
+  Recharts legend) and gradient fills on both series; `--primary`
+  realigned to the measured app bundle value #FFC105 (marketing tree
+  re-scopes to #FFBF00); every text input moved to the live's h-10; the
+  auth forms use space-y-2 fields, my-6 divider, sibling footer links,
+  #F6F7F9 OAuth tint and the live's diffuse glow-primary; the logo mark
+  is now the OpenCV-traced silhouette of the live asset (54-anchor
+  Catmull-Rom path, 135° #FFD119→#FFB800 gradient); marketing: the
+  "By Ai Viral" Dancing Script wordmark subtext (captured but missed in
+  rounds 5–6), photo-avatar trust row with stacked stars, pill trust
+  points, plain-text testimonials, live process-step chrome, the live's
+  six-item benefits list with a real product screenshot, gradient-text
+  H2 highlights, live pricing CTA variants (marketing enterprise banner
+  removed — dashboard-only on the live), card-style FAQ items, the
+  max-w-4xl gradient CTA card, audience icon corrections, the live's
+  ten-name logo marquee and globe/external-link/mail footer socials;
+  HSTS added to the baseline headers (the live sends it).
+- `[SR]` v1.6 evidence: `npm run verify` green (lint, typecheck, **187
+  tests across 25 files**, build 35 routes); browser DOM pass on every
+  changed surface with zero console errors; VLM re-diffs at CLOSE MATCH
+  for overview/activity/login with residuals verified as data or
+  animation-state differences.
 - **v1.5** `[SYN]` Round-6 visual & functional parity (plan:
   `docs/plans/2026-09-16-round6-visual-parity.md`; evidence in
   `research/round6-audit/`): a fresh logged-in live audit (DOM ground
@@ -833,23 +865,27 @@ in `plans.ts` (integer cents); no money columns are stored.
 
 | Token | Hex | Usage | Notes |
 |-------|-----|-------|-------|
-| `--primary` | `#FACC15` | CTAs, active nav, badges, avatar fill | Black text on yellow — 14.7:1 |
+| `--primary` | `#FFC105` | CTAs, active nav, badges, avatar fill | v1.6: measured off the live app bundle (hsl(45 100% 51%)); the marketing tree re-scopes it to `#FFBF00` in its layout wrapper. Black text on yellow stays ≥ 12:1 |
 | `--primary-foreground` | `#1C1917` | Text/icons on primary | |
 | `--chart-1` | `hsl(262 83% 58%)` | Pageviews series | Purple (v1.4 live palette) |
 | `--chart-2` | `hsl(172 66% 50%)` | Identified series, confidence bars | Teal (v1.4 live palette) |
-| `--color-neon-green` | `#2BD4BD` | Confidence fills, source badges, install banners | v1.4 token; generates `bg-`/`text-`/`border-neon-green` utilities |
+| `--color-neon-green` | `#2BD4BD` | Confidence fills, source badges, install banners, legend dot | v1.4 token; generates `bg-`/`text-`/`border-neon-green` utilities |
 | `--color-hot-pink` | `#EC4699` | Bell dot, auth-page orb glow | v1.5 token (R6-M8) |
+| `--color-highlight` | `#FFD91A` | Hero Zap icon | v1.6 token (R7-V6, live `--highlight`) |
+| `--shadow-card` | amber two-layer elevation | Open FAQ items | v1.6 token (R7-V14, measured off the live's open item) |
 | `.gradient-primary` | `135deg #FFC105→#FFB200` | CTAs, FREE badge, avatars, icon chips | v1.4 utility (live class of the same name) |
 | `.gradient-hero` | `135deg #0F111A→#2B2312` | Auth canvas (login/signup/forgot) | v1.5 — the live APP bundle's dark variant |
-| `.gradient-hero-light` | `135deg #FFAA00→#FFD91A→#F58F00` | Marketing announcement bar | v1.5 — the live MARKETING bundle reuses the name `gradient-hero` in yellow; one bundle needs two names |
-| `.gradient-cta` | `135deg #FFAA00→#FFCE0A` | Marketing POPULAR pill | v1.5 |
+| `.gradient-hero-light` | `135deg #FFAA00→#FFD91A→#F58F00` | Marketing announcement bar, process icon boxes, bottom CTA card | v1.5 — the live MARKETING bundle reuses the name `gradient-hero` in yellow; one bundle needs two names |
+| `.gradient-cta` | `135deg #FFAA00→#FFCE0A` | Marketing POPULAR pill, Free/Growth CTAs | v1.5 |
 | `.shadow-elevated` | amber elevation | Featured marketing cards | v1.5 |
+| `.glow-primary` | `rgba(255,193,5,0.3) 0 0 40px` | Elevated CTAs | v1.6: realigned to the live's diffuse zero-offset glow |
 | `.animate-pulse-glow` | 3s opacity breathing | Auth-page blurred orbs | v1.5; disabled under `prefers-reduced-motion` |
 | `--background` | `#FFFCF5` | Marketing canvas | Warm off-white |
 | `.bg-app` | `#F9FAFB` | Dashboard canvas | Cool gray |
 | `--muted-foreground` | `#6B7280` | Secondary text | 4.8:1 on white |
 | `--destructive` | red (oklch) | Danger zone, delete | |
 | `--border` | `#E7E5DF` | Hairlines | Warm gray |
+| `--font-script` | Dancing Script | "By Ai Viral" wordmark subtext | v1.6 (R7-V4); marketing chrome only |
 
 Focus visibility: brand yellow fails contrast for focus rings, so
 `.focus-brand` uses `#A16207` (amber-700) 2px outlines — an accessibility
@@ -888,7 +924,7 @@ animations.
 | Password storage | bcrypt, 12 rounds; hashes never leave `authorize` |
 | Sessions | Signed JWT (HttpOnly cookie, 30-day); `NEXTAUTH_SECRET` required |
 | Beacon endpoint hardening | Site-key lookup returns 204 for unknown keys (anti-enumeration); 120/min fixed-window per key; 204 for malformed payloads; beacons whose page hostname ≠ the registered domain are dropped **before any write** (spoofed-key quota burning is impossible) |
-| Response hardening | Baseline headers on every route via `next.config.ts` `headers()`: `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy: camera=(), microphone=(), geolocation=()`. Strict CSP deferred (§11) |
+| Response hardening | Baseline headers on every route via `next.config.ts` `headers()`: `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy: camera=(), microphone=(), geolocation=()`, `Strict-Transport-Security: max-age=31536000; includeSubDomains` (v1.6 — the live sends HSTS on both surfaces). Strict CSP deferred (§11) |
 | Signup abuse | Per-IP fixed-window throttle (5 signups / 10 min) in the server action; duplicate-email races resolve to a typed CONFLICT result (never a thrown P2002) |
 | Output encoding | React escapes by default; CSV export escapes per RFC 4180 (`csvCell`) + formula-injection guard (`'` prefix on `=+-@`); the snippet generator validates the forwarded host against a hostname grammar and escapes every JS-string interpolation |
 | Account deletion | Requires retyped email confirmation; cascades all owned data; the client signs the session out on success (JWT revocation on delete is inherently best-effort with stateless tokens) |
@@ -953,7 +989,7 @@ speculatively.
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
 | E2E (browser) | manual + opt-in smoke | — | dev server flows; `PIXELCO_STANDALONE_SMOKE=1` boots the standalone server | browser pass |
 
-The suite totals **186 tests across 25 files** (plus 2 opt-in standalone
+The suite totals **187 tests across 25 files** (plus 2 opt-in standalone
 smoke tests), runs in the `node`
 environment against a throwaway SQLite database (`db/test.db`, recreated
 from the schema by `tests/global-setup.ts` on every run), with `TZ=UTC`
@@ -1133,6 +1169,37 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 | LOW | Relative SQLite paths resolve against `prisma/` | Confusing first-run behavior | Documented (README, §9.2) |
 | LOW | E2E is a manual browser pass (no Playwright) | Critical funnel regressions caught late | Open — §8.3 |
 | LOW | `deepmerge-ts` advisory (GHSA-ggr8-5vv4-36mx) pinned away via `overrides` | Override must be revisited when Prisma ships a fixed `@prisma/config` | Managed — `bun audit` clean; verified against db:push/db:seed/tests |
+
+**Fixed in v1.6 (round-7):** the activity feed rewrote pageview history —
+once a visitor was identified, their earlier pageview rows displayed the
+email (the seam joined the visitor's *current* email onto every event);
+the row identity now keys off the event type like the live (pageview rows
+show the truncated anonymous id, identification rows show the email).
+The trend chart was missing the live's hand-built legend (round 6's
+"no legend" finding only checked for a Recharts legend) and the
+pageviews area carried no fill. `--primary` was #FACC15 against the live
+app bundle's measured #FFC105 (marketing #FFBF00). Text inputs were h-9
+against the live's uniform h-10. The auth pages carried a layered CTA
+shadow where the live uses a diffuse glow, and the OAuth buttons lacked
+the live's #F6F7F9 tint. The logo mark's bar+circles construction read
+as an "X" next to the live's organic four-lobe silhouette. The marketing
+header/footer wordmark lacked the "By Ai Viral" Dancing Script subtext
+(present in the round-5/6 evidence, missed both rounds); the hero trust
+points were a plain list (live: pill badges) with initials avatars and
+no stars (live: photo avatars + stacked ★★★★★); testimonials carried
+avatar circles the live does not render; process steps used
+number-in-circle badges (live: faint background numbers + gradient icon
+boxes); the benefits list had five items with different copy/icons (live:
+six incl. Instant Integrations and Privacy Compliant) and a hand-built
+mockup where the live ships a real product screenshot; H2 highlights
+used bg-primary boxes (live: text-gradient-hero spans); marketing
+pricing CTAs were uniform (live: gradient on Free/Growth, muted on
+Starter/Scale, CTA above features) and carried an enterprise banner the
+live only renders on the dashboard; the marketing FAQ used divider
+accordion items (live: card items with an amber open-shadow); the bottom
+CTA was full-width (live: max-w-4xl card, white heading); audience icons
+had SaaS/Startups swapped; the logo marquee and footer social icons
+differed. HSTS was missing from the baseline headers.
 
 **Fixed in v1.5 (round-6):** the visitors topbar subtitle rendered literal
 `{individuals}` braces on server paint (→ server-rendered via
