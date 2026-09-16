@@ -59,7 +59,7 @@ avatar row, and feed widget content.
 
 ## Remediation ToDo (TDD — RED first at every seam)
 
-- [ ] **A. Marketing palette scope (R10-F1)**
+- [x] **A. Marketing palette scope (R10-F1)**
   - A1 RED — `tests/marketing-theme.test.ts`: parse
     `src/app/globals.css` + `src/app/(marketing)/layout.tsx`; require a
     `.marketing-scope` class defining the 13 live marketing tokens
@@ -72,7 +72,7 @@ avatar row, and feed widget content.
     apply to the marketing wrapper div (replacing the one-off
     `[--primary:#ffbf00]` arbitrary property), keep app tokens untouched.
   - A3 — `.bg-app` #F9FAFB → #F6F7F9 (R10-F13).
-- [ ] **B. Hero rebuild (R10-F2)**
+- [x] **B. Hero rebuild (R10-F2)**
   - B1 RED — extend `tests/social-proof.test.tsx`-style SSR render
     (`tests/marketing-hero.test.tsx`): h1 `lg:text-[3.5rem] font-bold … leading-[1.1] mb-5`,
     italic gradient span containing "— By Their Email", card-chip badge
@@ -82,12 +82,12 @@ avatar row, and feed widget content.
     no `radial-gradient` decoration, section `pt-16 pb-20`, text col `max-w-xl`,
     container `container mx-auto px-6`.
   - B2 GREEN — rewrite `hero.tsx` to the live DOM verbatim.
-- [ ] **C. Benefits grid (R10-F3)**
+- [x] **C. Benefits grid (R10-F3)**
   - C1 RED — SSR render of `Features`: grid `sm:grid-cols-2 gap-x-6 gap-y-7`,
     items `flex gap-3`, icons `w-4.5 h-4.5` (18px), wrap
     `shadow-elevated overflow-hidden` with no padding utilities, h2 `mt-2 mb-10 font-bold`.
   - C2 GREEN — rebuild the features list + screenshot wrap.
-- [ ] **D. Pricing (R10-F4)**
+- [x] **D. Pricing (R10-F4)**
   - D1 RED — SSR render of `PricingSection` (default state): annual prices
     $63/$199/$639 render by default, iOS switch (`w-14 h-7` + knob +
     `aria-label="Toggle annual pricing"`), "Save 20%" label, Free CTA text
@@ -95,7 +95,7 @@ avatar row, and feed widget content.
   - D2 GREEN — rebuild the toggle as the live switch (useState 'annual'),
     CTA matrix (Free: secondary "Free Tier"; Growth: gradient; others:
     secondary "Get Started"), card chrome.
-- [ ] **E. Process + audience (R10-F5, R10-F7)**
+- [x] **E. Process + audience (R10-F5, R10-F7)**
   - E1 RED — SSR render of `Audience` + `HowItWorks`: audience section
     `py-20 border-t border-border` + container inner + grid
     `sm:grid-cols-3 lg:grid-cols-5 gap-4 max-w-5xl mx-auto`, cards
@@ -104,7 +104,7 @@ avatar row, and feed widget content.
     cards `bg-background … shadow-card`, tags as `flex items-center gap-2` +
     `w-2 h-2 rounded-full bg-accent` dots (no pill classes).
   - E2 GREEN — rebuild both components.
-- [ ] **F. Compare + CTA + footer (R10-F6, R10-F8, R10-F11)**
+- [x] **F. Compare + CTA + footer (R10-F6, R10-F8, R10-F11)**
   - F1 RED — SSR render of `Comparison` + `BottomCta` + `SiteFooter`:
     compare cards `bg-background p-7`, right card `border-2 border-primary … shadow-elevated`,
     badge `left-6` + `gradient-cta`, h3 headings, copy "Individual email
@@ -112,25 +112,25 @@ avatar row, and feed widget content.
     `relative z-10` + trust row (3 spans + CircleCheckBig + "GDPR compliant");
     footer `bg-background` inner + `container mx-auto px-6 py-14` + `lg:grid-cols-5`.
   - F2 GREEN — rebuild the three components.
-- [ ] **G. Typography + wrappers (R10-F9, R10-F10, R10-F12)**
+- [x] **G. Typography + wrappers (R10-F9, R10-F10, R10-F12)**
   - G1 RED — assert (via the SSR renders above) every kicker
     `text-xs font-semibold text-primary uppercase tracking-widest` and every
     h2 `text-3xl sm:text-4xl font-bold`; stats grid `md:grid-cols-4`.
   - G2 GREEN — sweep the kicker/h2 classes + stats breakpoint + section
     wrapper pattern (full-bleed sections with `container mx-auto px-6` inner
     + flat `py-20`) across all marketing components.
-- [ ] **H. Gate + browser verification**
+- [x] **H. Gate + browser verification**
   - H1 — `npm run verify` (lint → typecheck → test → build) green.
   - H2 — production server browser pass: re-capture every changed surface,
     re-run pairwise VLM diffs, verify computed tokens (body bg white, card
     warm-white, accent yellow, 10px radius on marketing only) and zero
     console errors; confirm the app bundle is untouched (dashboard spot-check).
-- [ ] **I. Documentation**
+- [x] **I. Documentation**
   - I1 — PAD v1.9 revision block + §5.2 token table refresh + suite counts;
     README test-count + notes; AGENTS.md/CLAUDE.md deltas (marketing-scope
     convention: "marketing palette lives in `.marketing-scope`, not per-component").
   - I2 — this plan's execution log + worklog entry.
-- [ ] **J. Commit + push**
+- [x] **J. Commit + push**
   - J1 — Conventional Commits, atomic workstreams (A/B/C/D/E/F/G docs).
   - J2 — `npm run verify` → `docs/ssh_git_wrapper_v3.py` push via the
     paramiko shim (runbook Appendix A); key shredded after.
@@ -151,3 +151,69 @@ avatar row, and feed widget content.
 - The hero rebuild touches the largest rendered surface — re-verify the
   feed widget column and the announcement bar are unaffected (both match
   today; they live outside `hero.tsx`).
+
+## Execution Log
+
+- **A1/A2 (6f3de84)** — RED `tests/marketing-theme.test.ts` (2 failing:
+  no `.marketing-scope`, no wrapper application) → GREEN: scope class with
+  the 13 live marketing tokens in `globals.css`, applied on the marketing
+  wrapper (replacing `[--primary:#ffbf00]`); global `--background` cream →
+  white (overscroll strip below the footer); `--radius-xl` re-derived at
+  radius + 2px after measuring the live's 12px marketing card radii.
+  `.bg-app` was already `#f6f7f9` (R10-F13 was a stale-PAD issue only —
+  the PAD is corrected instead).
+- **B (63e83f3)** — RED `tests/marketing-hero.test.tsx` (8 failing) →
+  GREEN: hero rebuilt to the live DOM (card-chip badge, italic gradient
+  span holding the dash, mb-8 subtitle with `<em>and</em>`,
+  gradient-cta/bg-background CTA pair, `·` takes-line, radial decoration
+  removed, container + max-w-xl structure). CTA icons verified on the
+  live (ArrowRight ml-2; text-only secondary).
+- **C (14bf1e1)** — RED `tests/marketing-benefits.test.tsx` (4 failing) →
+  GREEN: benefits 2-col grid + 18px icons + edge-to-edge screenshot wrap;
+  comparison rebuilt (bg-background p-7 cards, left-6 BEST VALUE badge —
+  caps text verified on the live, h3 headings, "Individual email
+  identification" copy, items-center rows).
+- **D (a8cb5ab)** — RED `tests/marketing-pricing.test.tsx` (5 failing) →
+  GREEN: annual default + iOS switch (knob translate verified 28px in
+  browser), CTA matrix per the live DOM (Free Tier secondary + trailing
+  arrow + no /mo on $0 — both verified on the live; Growth = gradient +
+  leading Zap, no trailing arrow — verified), cards p-7/shadow-card
+  without flex-col.
+- **E (85863ea)** — RED `tests/marketing-process.test.tsx` (10 failing) →
+  GREEN: audience (border-t section, 3/5-col grid, square bg-secondary
+  chips, semibold h3s, no trailing periods — verified on the live) +
+  process (full tints, bg-background/shadow-card cards, yellow-dot
+  feature rows).
+- **F (9d80401)** — RED `tests/marketing-compare-cta.test.tsx` (10
+  failing) → GREEN: CTA card (radial sheen + z-10 + three CircleCheckBig
+  trust spans incl. "GDPR compliant"), footer two-band structure
+  (bg-background band + tinted bg-card/50 bottom bar, 5-col grid,
+  text-sm font-semibold headings), FAQ container + kicker/h2 typography.
+- **G (a7f97ea)** — stats grid at md inside the container wrapper; inline
+  "By Ai Viral" wordmark (verified sibling layout on the live header
+  gap-2.5/footer gap-2); kicker/h2 sweep across all sections
+  (font-semibold text-primary kickers, font-bold h2s — the step-card
+  background numbers and price values legitimately stay extrabold).
+- **H** — `npm run verify` GREEN: lint ✓, typecheck ✓, **241 tests /
+  34 files** ✓, build 35 routes ✓. Browser verification: all 10 landing
+  sections at pairwise CLOSE MATCH (residuals: data/screenshot content,
+  avatar photos, marquee animation state, feed-row order); computed
+  tokens verified (white wrapper rgb(255,255,255), warm-white cards
+  rgb(251,250,248), secondary chips rgb(248,246,242), 12px card radii,
+  yellow toggle rgb(255,191,0), knob 28px); dashboard + auth re-verified
+  untouched (gradient-hero canvas, #F6F7F9 bg-app, 12px app radii);
+  zero console errors. VLM misreads triaged against DOM: POPULAR badge
+  centered on both (pillCenter == cardCenter), toggle state ON on both.
+- **I (this commit)** — PAD v1.9 (revision block + §5.2 two-palette token
+  table + §8 distribution incl. the SSR-render row), README 241
+  assertions + SSR-parity coverage note, AGENTS.md (two-palette
+  non-obvious fact + annual-default pricing note), CLAUDE.md (Tailwind
+  two-palette guidance + annual-default note), this log, worklog entry.
+- **J** — 8 atomic Conventional Commits on main; push via
+  `docs/ssh_git_wrapper_v3.py` + the paramiko shim (runbook Appendix A).
+
+**Deferred (recorded, not blocking):** R10-F14 scroll-reveal entrance
+animations (at-rest parity holds; CSS-only motion convention — PAD §5.4);
+the live's own avatar photos and product screenshots are reproduced as
+originals by design (R8); the live header wordmark is an img/png while the
+clone ships the R8-traced SVG equivalent.

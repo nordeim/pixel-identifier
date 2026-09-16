@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 198 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 241 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -243,6 +243,13 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
 - **Server actions** — plan switching (counter never resets, downgrade
   guard), sign-up (duplicate race, per-IP throttle, plan intent), domains
   (IDOR guard, `_count`), account deletion (cascades, typed errors).
+- **SSR render parity tests (round-10)** — every rebuilt marketing section
+  (hero, benefits, pricing, audience/process, compare/CTA/footer, social
+  proof) renders through `renderToStaticMarkup` and pins the live DOM's
+  exact class strings, plus `tests/marketing-theme.test.ts` pinning the
+  scoped marketing palette (`.marketing-scope` — the live ships separate
+  app/marketing palettes; the marketing tree renders a white canvas,
+  warm-white cards, cool borders, a yellow accent and 10px corners).
 - **Content & SEO data modules** — the footer/nav link map (every link
   targets a real route; the only dead link is Careers, which is dead on
   the original too), the blog catalogue (10 posts, unique URL-safe slugs,

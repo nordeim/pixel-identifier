@@ -27,10 +27,15 @@ make it pass — fix the code.
 
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
-  `src/app/globals.css`. Brand values are literal hex (e.g. `--primary:
-  #FFC105` — measured off the live app bundle in round 7; the marketing
-  layout re-scopes it to `#FFBF00`); `var()` chains inside `@theme` are
-  silently dropped by the build.
+  `src/app/globals.css`. The **live ships TWO palettes**: the app bundle
+  uses the global `:root` tokens (brand `--primary: #FFC105`); the
+  marketing bundle's palette lives in the `.marketing-scope` class and is
+  applied on the `(marketing)` layout wrapper (white canvas, warm-white
+  cards `hsl(40 30% 98%)`, cool borders `hsl(230 15% 90%)`, a YELLOW
+  accent `#FFBF00`, `--radius: 0.625rem`). Never hand-roll per-component
+  approximations of either palette — `var()` chains inside `@theme` are
+  silently dropped by the build. `--radius-xl` derives at radius + 2px
+  (measured off the live, R10).
 - **Typography is live-parity (v1.4).** App body = **Inter**; **Space
   Grotesk** is the `font-display` utility (card titles, page H1s, KPI values,
   prices, sidebar wordmark); marketing = **DM Sans**; mono stays mono. Brand
@@ -65,12 +70,14 @@ make it pass — fix the code.
   template once leaked literal `{individuals}` on first paint; pinned by a
   chrome test). The format never singularizes: the live renders
   "1 companies".
-- **Annual prices are a table, not a derivation (v1.5).** The live
-  dashboard hardcodes $65/$199/$639 annual monthly prices while the live
-  marketing shows floored 20%-off values ($63/$199/$639). `plans.ts`
-  carries both: `annualMonthlyPrice` (dashboard) and
-  `marketingAnnualMonthlyCents` (marketing). Never compute annual prices
-  inline in components.
+- **The marketing pricing section defaults to ANNUAL (v1.9).** The live
+  loads with the billing toggle switched on — an iOS-style switch
+  (`w-14 h-7` + translating knob), not a segmented pill — rendering the
+  floored annual table ($63/$199/$639) first. The Free card CTA reads
+  "Free Tier" in the secondary style (no gradient, no "/mo" on $0); only
+  the Growth card carries the gradient (leading Zap, no trailing arrow).
+  Both price tables still come from `plans.ts` — never compute prices
+  inline.
 - **Tests run against `db/test.db`.** `tests/global-setup.ts` recreates it via
   `prisma db push` on every run; `TZ` is pinned to UTC. `vitest.config.mts`
   sets `testTimeout`/`hookTimeout` to 30 s and `tests/setup.ts` raises

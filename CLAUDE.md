@@ -62,7 +62,9 @@ and stable per visitor.
   dashboard hardcodes $65/$199/$639 annual monthly prices while the live
   marketing floors the 20%-off display ($63/$199/$639). `plans.ts` owns
   both (`annualMonthlyPrice`, `marketingAnnualMonthlyCents`); components
-  never compute prices inline.
+  never compute prices inline. **The marketing pricing section defaults
+  to annual** behind an iOS-style switch (v1.9) — the floored table
+  renders first, and the Free card's $0 carries no "/mo" suffix.
 - **The visitors topbar subtitle is server-rendered (v1.5):** the layout
   fetches `getVisitorSegmentCounts` into the Topbar. `PAGE_META` subtitles
   must never be brace templates (pinned by a chrome test), and the count
@@ -91,8 +93,13 @@ unions.
 
 **Tailwind CSS 4 (CSS-first)** — no `tailwind.config.js`. Tokens are literal
 hex in `@theme inline` (`src/app/globals.css`); `var()` chains inside
-`@theme` are dropped by the build. Use semantic tokens (`bg-card`,
-`text-muted-foreground`), not raw hexes in components.
+`@theme` are dropped by the build. The live ships TWO palettes (v1.9): the
+app bundle renders the global `:root` tokens; the marketing tree renders
+the `.marketing-scope` class applied on the `(marketing)` layout wrapper
+(white canvas, warm-white cards, cool borders, yellow `#FFBF00` accent,
+10px radius base). Use semantic tokens (`bg-card`,
+`text-muted-foreground`, `bg-secondary`, `bg-accent`), not raw hexes in
+components — both palettes resolve through the same utilities.
 
 **Typography (v1.4, live-parity):** the app body is **Inter**; **Space
 Grotesk** is the display face — apply the `font-display` utility to card

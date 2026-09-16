@@ -1,4 +1,4 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.8
+# Pixelco — Master Project Architecture Document (PAD) v1.9
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
@@ -12,6 +12,47 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.9** `[SYN]` Round-10 marketing parity deep-dive (plan:
+  `docs/plans/2026-09-16-round10-marketing-parity-deep-dive.md`; evidence in
+  `research/round10-audit/`). A fresh live audit extracted BOTH `:root`
+  token sets — the marketing bundle and the app bundle ship DIFFERENT
+  palettes, and the clone's single global palette matched neither. The
+  marketing tree now renders through a scoped `.marketing-scope` class on
+  the `(marketing)` layout wrapper (R10-F1): pure-white canvas
+  (`--background: hsl(0 0% 100%)`), warm-white cards (`hsl(40 30% 98%)`),
+  cool-gray hairlines (`hsl(230 15% 90%)`), a **yellow accent**
+  (`--accent: hsl(45 100% 50%)` — the process dot bullets, "Save 20%",
+  hovers), a 10px radius base, and `--primary-foreground: hsl(0 0% 5%)`;
+  the app bundle keeps the global tokens (verified aligned: #FFC105
+  primary, 12px radius, #F6F7F9 canvas). The global `--background` moved
+  cream → white (each tinted surface paints its own wrapper; the body
+  color only shows below the document where the live renders white), and
+  `--radius-xl` re-derived at radius + 2px (measured: marketing cards
+  resolve 12px at the 10px scope). Structural fixes rebuilt to the live
+  DOM verbatim: the hero (card-chip badge with stars/divider/accent dot,
+  font-bold 3.5rem h1 with the dash inside the italic gradient span,
+  gradient-cta primary / bg-background secondary CTAs, middle-dot
+  takes-line, no radial decoration — R10-F2), the benefits 2-column grid
+  (R10-F3), the pricing section **defaulting to annual** behind an iOS
+  switch with the live CTA matrix (Free = secondary "Free Tier" with no
+  /mo on $0; Growth = gradient + leading Zap, no trailing arrow —
+  R10-F4), the audience/process chrome incl. yellow-dot feature rows
+  instead of pills (R10-F5/F7), the compare cards on bg-background with
+  the left-anchored BEST VALUE badge (R10-F6), the CTA card's radial
+  sheen + check-icon trust row (R10-F8), the footer's two-band structure
+  (R10-F11), the inline "By Ai Viral" wordmark, the kicker/h2 typography
+  sweep (font-semibold text-primary kickers, font-bold h2s — R10-F9),
+  the stats grid at md, and audience descriptions without trailing
+  periods. Scroll-reveal entrance animations are deferred (F14 — at-rest
+  parity holds; the repo's motion convention is CSS-only).
+- `[SR]` v1.9 evidence: `npm run verify` green (lint, typecheck, **241
+  tests across 34 files**, build 35 routes); browser verification:
+  pairwise VLM re-diffs at CLOSE MATCH on all 10 landing sections
+  (residuals are data/screenshot-content only), computed tokens verified
+  (white wrapper, rgb(251,250,248) cards, rgb(248,246,242) secondary
+  chips, 12px card radii, yellow toggle), app surfaces re-verified
+  untouched (auth gradient canvas, #F6F7F9 dashboard, 12px app radii);
+  zero console errors.
 - **v1.8** `[SYN]` Round-9 fresh pairwise audit & remediation (plan:
   `docs/plans/2026-09-16-round9-fresh-pairwise-audit.md`; evidence in
   `research/round9-audit/`). A new scroll-stimulated capture pass of
@@ -912,29 +953,40 @@ in `plans.ts` (integer cents); no money columns are stored.
 
 ### 5.2 Color Tokens
 
-| Token | Hex | Usage | Notes |
-|-------|-----|-------|-------|
-| `--primary` | `#FFC105` | CTAs, active nav, badges, avatar fill | v1.6: measured off the live app bundle (hsl(45 100% 51%)); the marketing tree re-scopes it to `#FFBF00` in its layout wrapper. Black text on yellow stays ≥ 12:1 |
-| `--primary-foreground` | `#1C1917` | Text/icons on primary | |
-| `--chart-1` | `hsl(262 83% 58%)` | Pageviews series | Purple (v1.4 live palette) |
-| `--chart-2` | `hsl(172 66% 50%)` | Identified series, confidence bars | Teal (v1.4 live palette) |
-| `--color-neon-green` | `#2BD4BD` | Confidence fills, source badges, install banners, legend dot | v1.4 token; generates `bg-`/`text-`/`border-neon-green` utilities |
-| `--color-hot-pink` | `#EC4699` | Bell dot, auth-page orb glow | v1.5 token (R6-M8) |
-| `--color-highlight` | `#FFD91A` | Hero Zap icon | v1.6 token (R7-V6, live `--highlight`) |
-| `--shadow-card` | amber two-layer elevation | Open FAQ items | v1.6 token (R7-V14, measured off the live's open item) |
-| `.gradient-primary` | `135deg #FFC105→#FFB200` | CTAs, FREE badge, avatars, icon chips | v1.4 utility (live class of the same name) |
-| `.gradient-hero` | `135deg #0F111A→#2B2312` | Auth canvas (login/signup/forgot) | v1.5 — the live APP bundle's dark variant |
-| `.gradient-hero-light` | `135deg #FFAA00→#FFD91A→#F58F00` | Marketing announcement bar, process icon boxes, bottom CTA card | v1.5 — the live MARKETING bundle reuses the name `gradient-hero` in yellow; one bundle needs two names |
-| `.gradient-cta` | `135deg #FFAA00→#FFCE0A` | Marketing POPULAR pill, Free/Growth CTAs | v1.5 |
-| `.shadow-elevated` | amber elevation | Featured marketing cards | v1.5 |
-| `.glow-primary` | `rgba(255,193,5,0.3) 0 0 40px` | Elevated CTAs | v1.6: realigned to the live's diffuse zero-offset glow |
-| `.animate-pulse-glow` | 3s opacity breathing | Auth-page blurred orbs | v1.5; disabled under `prefers-reduced-motion` |
-| `--background` | `#FFFCF5` | Marketing canvas | Warm off-white |
-| `.bg-app` | `#F9FAFB` | Dashboard canvas | Cool gray |
-| `--muted-foreground` | `#6B7280` | Secondary text | 4.8:1 on white |
-| `--destructive` | red (oklch) | Danger zone, delete | |
-| `--border` | `#E7E5DF` | Hairlines | Warm gray |
-| `--font-script` | Dancing Script | "By Ai Viral" wordmark subtext | v1.6 (R7-V4); marketing chrome only |
+Two palettes ship on the live: the **app bundle** renders the global
+`:root` tokens below; the **marketing bundle** renders the scoped
+`.marketing-scope` set (R10-F1, extracted verbatim from the live landing
+`:root`) — pure-white canvas, warm-white cards, cool-gray hairlines, a
+yellow accent and a 10px radius base. The scope lives on the `(marketing)`
+layout wrapper and never leaks into `/dashboard/*` or the auth pages.
+
+| Token | App (global `:root`) | Marketing (`.marketing-scope`) | Usage | Notes |
+|-------|----------------------|-------------------------------|-------|-------|
+| `--background` | `#ffffff` (R10: white; body shows only below-document/overscroll) | `hsl(0 0% 100%)` | Canvas | The old warm canvas `#FFFCF5` was retired in R10 — each tinted surface paints its own wrapper (`.bg-app`, auth gradient canvas) |
+| `--primary` | `#FFC105` | `hsl(45 100% 50%)` = `#FFBF00` | CTAs, active nav, badges, avatar fill | v1.6 measured off the live app bundle (hsl(45 100% 51%)); the marketing scope carries the marketing bundle's 50% variant |
+| `--card` | `#ffffff` | `hsl(40 30% 98%)` (rgb(251,250,248) warm white) | Cards, chips | R10: the marketing tree's cards are warm-white on the white canvas |
+| `--secondary` | `#f5f0e6` | `hsl(40 30% 96%)` (rgb(248,246,242)) | Icon chips, muted CTAs | Marketing secondary verified against the live's icon-chip fill |
+| `--border` / `--input` | `#e7e5df` (warm) | `hsl(230 15% 90%)` (cool, rgb(226,227,233)) | Hairlines | R10: the marketing bundle's borders are cool-gray |
+| `--muted-foreground` | `#6b7280` | `hsl(230 10% 46%)` (rgb(106,109,129)) | Secondary text | |
+| `--accent` | `#fef9c3` (pale) | `hsl(45 100% 50%)` = **yellow** | Process dot bullets, "Save 20%", hovers | R10: the live marketing accent IS the brand yellow with black foreground |
+| `--radius` | `0.75rem` (12px) | `0.625rem` (10px) | Corner base | `--radius-xl` derives at radius + 2px (R10, measured) — marketing cards resolve 12px |
+| `--chart-1` | `hsl(262 83% 58%)` | — | Pageviews series | Purple (v1.4 live palette) |
+| `--chart-2` | `hsl(172 66% 50%)` | — | Identified series, confidence bars | Teal (v1.4 live palette) |
+| `--color-neon-green` | `#2BD4BD` | — | Confidence fills, source badges, install banners, legend dot | v1.4 token; generates `bg-`/`text-`/`border-neon-green` utilities |
+| `--color-hot-pink` | `#EC4699` | — | Bell dot, auth-page orb glow | v1.5 token (R6-M8) |
+| `--color-highlight` | `#FFD91A` | — | Hero Zap icon, badge stars | v1.6 token (R7-V6, live `--highlight`) |
+| `--shadow-card` | amber two-layer elevation | same | Open FAQ items, marketing cards | v1.6 token (R7-V14) — the live uses it on testimonial/audience/pricing cards too (R10) |
+| `.gradient-primary` | `135deg #FFC105→#FFB200` | — | CTAs, FREE badge, avatars, icon chips | v1.4 utility (live class of the same name) |
+| `.gradient-hero` | `135deg #0F111A→#2B2312` | — | Auth canvas (login/signup/forgot) | v1.5 — the live APP bundle's dark variant |
+| `.gradient-hero-light` | `135deg #FFAA00→#FFD91A→#F58F00` | same | Announcement bar, process icon boxes, bottom CTA card | v1.5 — the live MARKETING bundle reuses the name `gradient-hero` in yellow; one bundle needs two names |
+| `.gradient-cta` | `135deg #FFAA00→#FFCE0A` | same | Marketing POPULAR pill, hero/Growth CTAs | v1.5 |
+| `.shadow-elevated` | amber elevation | same | Featured marketing cards, compare/popular pricing cards | v1.5 |
+| `.glow-primary` | `rgba(255,193,5,0.3) 0 0 40px` | — | Elevated CTAs | v1.6: realigned to the live's diffuse zero-offset glow |
+| `.animate-pulse-glow` | 3s opacity breathing | — | Auth-page blurred orbs | v1.5; disabled under `prefers-reduced-motion` |
+| `.bg-app` | `#F6F7F9` | — | Dashboard canvas | The live app body is `220 20% 97%` = #F6F7F9 |
+| `--muted-foreground` (text contrast) | `#6B7280` | `hsl(230 10% 46%)` | Secondary text | 4.8:1 on white |
+| `--destructive` | red (oklch) | — | Danger zone, delete, compare X icons | |
+| `--font-script` | Dancing Script | — | "By Ai Viral" wordmark subtext | v1.6 (R7-V4); rendered INLINE beside the wordmark (R10 — was stacked) |
 
 Focus visibility: brand yellow fails contrast for focus rings, so
 `.focus-brand` uses `#A16207` (amber-700) 2px outlines — an accessibility
@@ -1033,12 +1085,13 @@ speculatively.
 | Lint (static) | 80+ | — | repo-wide | ESLint 9 + typescript-eslint + React Compiler rules |
 | Types (static) | 80+ | — | repo-wide | `tsc --noEmit`, strict |
 | Build (integration) | 35 routes | — | `next build` | Next 16 (16 marketing URLs incl. 10 SSG blog posts + 15 dynamic/authed routes — `/forgot-password` added v1.5) |
-| Unit (pure libs + data modules) | 9 files | ~66 | `tests/{plans,format,snippet,sites,smoke,marketing-links,blog-posts,blog-slug,dashboard-chrome}.test.ts` | Vitest |
+| Unit (pure libs + data modules) | 10 files | ~69 | `tests/{plans,format,snippet,sites,smoke,marketing-links,blog-posts,blog-slug,dashboard-chrome,marketing-theme}.test.ts` | Vitest |
+| SSR render (marketing parity) | 6 files | 43 | `tests/{social-proof,marketing-hero,marketing-benefits,marketing-pricing,marketing-process,marketing-compare-cta}.test.tsx` | Vitest (`renderToStaticMarkup`) |
 | Behavioural (collector + snippet in `node:vm`) | 2 | 9 | `tests/collector-script.test.ts`, `tests/snippet.test.ts` | Vitest |
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
 | E2E (browser) | manual + opt-in smoke | — | dev server flows; `PIXELCO_STANDALONE_SMOKE=1` boots the standalone server | browser pass |
 
-The suite totals **198 tests across 28 files** (plus 2 opt-in standalone
+The suite totals **241 tests across 34 files** (plus 2 opt-in standalone
 smoke tests), runs in the `node`
 environment against a throwaway SQLite database (`db/test.db`, recreated
 from the schema by `tests/global-setup.ts` on every run), with `TZ=UTC`

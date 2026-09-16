@@ -163,3 +163,82 @@ Stage Summary:
   environment artifact, no code change
 - Suite grew 190/26 -> 198/28 (8 new guard tests)
 - Repository pushed to git@github.com:nordeim/pixel-identifier.git (main)
+
+---
+Task ID: 1
+Agent: main (Super Z)
+Task: Round-10 live audit — fresh pairwise comparison, findings, plan
+
+Work Log:
+- Cloned both repos; reviewed AGENTS.md, CLAUDE.md, README.md, PAD v1.8,
+  session_5/session_6, skills catalogs (pixel-identifier + scandihaven)
+- Baseline gate GREEN: lint, typecheck, 198 tests / 28 files, build 35
+  routes (matches PAD v1.8); DB pushed + seeded
+- Fresh live audit: pixelco.io 10 landing sections (scroll-stimulated,
+  1440x900) + app.pixelco.io logged-in 7 dashboard pages; identical local
+  captures on the production build (initial local landing batch invalidated
+  - browser was on the settings page during section scroll; re-captured)
+- Pairwise VLM diffs on 17 surface pairs: dashboard 7/7 CLOSE MATCH
+  (data-only residuals); marketing surfaced multiple claims, each triaged
+  against live DOM ground truth (computed styles, class lists, HTML)
+- Extracted live MARKETING and APP bundle :root tokens: the bundles ship
+  different palettes; the clone's single global palette matches neither
+  (marketing renders cream bg / warm borders / pale accent / 12px radius
+  vs the live's white bg / cool borders / yellow accent / 10px radius)
+- Findings R10-F1..F14 filed (see
+  docs/plans/2026-09-16-round10-marketing-parity-deep-dive.md); F14
+  (scroll-reveal animations) deferred per audit rules + CSS-only motion
+  convention
+- Plan validated against the codebase: all referenced files/seams exist
+  (globals.css tokens + .bg-app, marketing layout wrapper, hero/features/
+  pricing/how-it-works/faq-footer/social-proof components, vitest *.test.tsx
+  include, signup cycle=annual handling)
+
+Stage Summary:
+- Round-10 plan committed to docs/plans/; ready for TDD execution
+- Evidence in research/round10-audit/{live,local,vlm}/
+
+---
+Task ID: 2
+Agent: main (Super Z)
+Task: Round-10 remediation — TDD execution, verification, docs, push
+
+Work Log:
+- A1/A2 (6f3de84): RED tests/marketing-theme.test.ts -> GREEN; .marketing-scope
+  palette class (13 live marketing tokens) on the (marketing) wrapper;
+  global --background cream -> white; --radius-xl re-derived at radius+2px
+  (live cards measure 12px at the 10px scope); .bg-app already #f6f7f9
+  (R10-F13 was stale-PAD only)
+- B (63e83f3): hero rebuilt to the live DOM verbatim (8 SSR pins) - card-chip
+  badge, italic gradient span w/ dash inside, gradient-cta CTA pair, dot
+  takes-line, no radial decoration
+- C (14bf1e1): benefits 2-col grid + edge-to-edge screenshot wrap;
+  comparison rebuilt on bg-background p-7 cards w/ BEST VALUE left-anchored
+  badge + live copy (4 pins)
+- D (a8cb5ab): pricing defaults to ANNUAL behind the live's iOS switch;
+  CTA matrix per live DOM (Free Tier secondary, Growth gradient+Zap); cards
+  p-7/shadow-card (5 pins)
+- E (85863ea): audience (border-t section, 3/5-col grid, square secondary
+  chips, no trailing periods) + process (full tints, bg-background cards,
+  yellow-dot rows) rebuilt (10 pins)
+- F (9d80401): CTA card radial sheen + check-icon trust row; footer
+  two-band structure; FAQ container/kicker (11 pins)
+- G (a7f97ea): stats grid at md; inline By Ai Viral wordmark (verified
+  sibling layout on live); kicker/h2 typography sweep (font-semibold
+  text-primary, font-bold h2s)
+- H gate: npm run verify GREEN - lint, typecheck, 241 tests / 34 files,
+  build 35 routes; browser pass: 10/10 landing sections pairwise CLOSE
+  MATCH, computed tokens verified live-exact, app surfaces re-verified
+  untouched, zero console errors; VLM misreads triaged against DOM
+  (POPULAR centered both; toggle ON both)
+- I: PAD v1.9 (two-palette token table, SSR-render test row), README 241,
+  AGENTS.md + CLAUDE.md two-palette/annual-default conventions, plan
+  execution log, this entry
+- J: 8 atomic commits on main; push via docs/ssh_git_wrapper_v3.py +
+  paramiko shim (runbook Appendix A)
+
+Stage Summary:
+- All actionable Round-10 findings remediated; F14 (scroll-reveal entrance
+  animations) deferred per audit rules + CSS-only motion convention
+- Suite grew 198/28 -> 241/34 (43 new guard tests across 7 files)
+- Repository pushed to git@github.com:nordeim/pixel-identifier.git (main)
