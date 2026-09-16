@@ -1,114 +1,139 @@
 import Link from 'next/link'
-import { ArrowRight, ChartColumn, CircleCheckBig, PlayCircle, Zap } from 'lucide-react'
+import { ArrowRight, ChartColumn, CircleCheckBig, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { LiveFeedMockup } from '@/components/marketing/live-feed'
 
-/** R7-V6: the live renders the hero trust points as pill badges with
- * lucide icons (CircleCheckBig / ChartColumn / Zap on --color-highlight)
- * and the metric wrapped in <strong>. */
+/** R10-F2: trust points extracted verbatim from the live DOM — pill chips
+ * (bg-card, border, rounded-lg) with lucide icons (CircleCheckBig /
+ * ChartColumn on text-primary, Zap on text-highlight) and the metric wrapped
+ * in a bare <strong class="text-foreground">. */
 const TRUST_POINTS = [
-  { icon: CircleCheckBig, before: '', strong: '1,200+', after: ' websites using Pixelco', iconCls: 'text-primary' },
-  { icon: ChartColumn, before: 'Avg match rate: ', strong: '20%', after: '', iconCls: 'text-primary' },
-  { icon: Zap, before: 'Setup in ', strong: '2 minutes', after: '', iconCls: 'text-highlight' },
+  {
+    icon: CircleCheckBig,
+    before: '',
+    strong: '1,200+',
+    after: ' websites using Pixelco',
+    iconCls: 'text-primary',
+  },
+  {
+    icon: ChartColumn,
+    before: 'Avg match rate: ',
+    strong: '20%',
+    after: '',
+    iconCls: 'text-primary',
+  },
+  {
+    icon: Zap,
+    before: 'Setup in ',
+    strong: '2 minutes',
+    after: '',
+    iconCls: 'text-highlight',
+  },
 ]
 
+/** R10-F2: rebuilt to the live hero DOM verbatim — full-bleed section +
+ * `container mx-auto px-6` inner + `max-w-xl` text column; card-chip badge
+ * (stars + divider + accent-dot label), h1 at font-bold/3.5rem/leading-1.1
+ * with the em-dash inside the italic gradient span, gradient-cta primary
+ * CTA and a plain-text secondary, and the takes-line in text-xs with the
+ * live's "·" separators. The old radial-gradient decoration is gone (the
+ * live ships none). */
 export function Hero() {
   return (
-    <section className="relative overflow-hidden" aria-labelledby="hero-heading">
-      {/* Soft radial glow behind the mockup. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_50%_at_75%_35%,rgba(250,204,21,0.16),transparent_65%)]"
-      />
-
-      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
-        <div>
-          <p className="mb-4 inline-flex items-center rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-700">
-            <span aria-hidden="true">🌟</span>&nbsp;World&apos;s first B2C email identification
-          </p>
-          <h1
-            id="hero-heading"
-            className="text-balance text-4xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-[3.4rem]"
-          >
-            Identify Anonymous Website Visitors —{' '}
-            <em className="text-gradient-hero">By Their Email</em>
-          </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-            One pixel snippet reveals who&apos;s browsing your site. B2B companies
-            and individual consumers — identified by their real email address.
-            No forms. No popups. No cookies.
-          </p>
-
-          {/* R7-V6: pill badges like the live (bg-card, border, rounded-lg). */}
-          <ul className="mb-8 flex flex-wrap gap-3">
-            {TRUST_POINTS.map((point) => (
-              <li
-                key={point.strong}
-                className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 text-sm"
-              >
-                <point.icon className={`h-4 w-4 ${point.iconCls}`} aria-hidden="true" />
-                <span className="text-muted-foreground">
-                  {point.before}
-                  <strong className="font-semibold text-foreground">{point.strong}</strong>
-                  {point.after}
-                </span>
-              </li>
-            ))}
-          </ul>
-
-          {/* R7-V5: the live's trust row — 5 photo avatars overlapping, then
-              a stacked (flex-col) stars + "Trusted by" block — positioned
-              BETWEEN the pills and the CTA buttons like the live. */}
-          <div className="mb-6 mt-8 flex items-center gap-4">
-            <div className="flex -space-x-2.5 shrink-0" aria-hidden="true">
-              {[1, 2, 3, 4, 5].map((n) => (
-                // eslint-disable-next-line @next/next/no-img-element -- decorative 96px JPEGs; next/image adds nothing at 32px display
-                <img
-                  key={n}
-                  src={`/assets/avatars/avatar-${n}.jpg`}
-                  alt=""
-                  width={32}
-                  height={32}
-                  className="h-8 w-8 rounded-full border-2 border-background object-cover"
-                />
-              ))}
-            </div>
-            <div className="flex min-w-0 flex-col">
-              <span className="text-sm text-primary" aria-hidden="true">
+    <section className="pt-16 pb-20 overflow-hidden" aria-labelledby="hero-heading">
+      <div className="container mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+          <div className="max-w-xl">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-card border border-border mb-6">
+              <span className="flex items-center gap-1 text-xs font-semibold text-highlight" aria-hidden="true">
                 ★★★★★
               </span>
-              <span className="text-sm text-muted-foreground">
-                Trusted by <strong className="font-semibold text-foreground">1,200+</strong> businesses worldwide
+              <span className="w-px h-3 bg-border" aria-hidden="true" />
+              <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent" aria-hidden="true" />
+                {"WORLD'S FIRST B2C EMAIL IDENTIFICATION"}
               </span>
             </div>
-          </div>
-
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Button size="lg" asChild className="h-12 px-7 text-base font-semibold">
-              <Link href="/signup">
-                Start Identifying Visitors
-                <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
-              </Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              asChild
-              className="h-12 bg-card px-7 text-base font-semibold"
+            <h1
+              id="hero-heading"
+              className="text-4xl sm:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] mb-5"
             >
-              <a href="#live-demo">
-                <PlayCircle className="mr-2 h-5 w-5" aria-hidden="true" />
-                See Live Demo
-              </a>
-            </Button>
-          </div>
-          <p className="mt-4 text-sm text-muted-foreground">
-            Takes less than 2 minutes • Free plan available • No credit card required
-          </p>
-        </div>
+              Identify Anonymous Website Visitors <span className="text-gradient-hero italic">— By Their Email</span>
+            </h1>
+            <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+              One pixel snippet reveals who&apos;s browsing your site. B2B companies <em>and</em> individual
+              consumers — identified by their real email address. No forms. No popups. No cookies.
+            </p>
 
-        <div id="live-demo" className="scroll-mt-24" aria-label="Live demo of the visitor feed">
-          <LiveFeedMockup />
+            <div className="mb-8 flex flex-wrap gap-3">
+              {TRUST_POINTS.map((point) => (
+                <div
+                  key={point.strong}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card border border-border text-sm"
+                >
+                  <point.icon className={`h-4 w-4 ${point.iconCls}`} aria-hidden="true" />
+                  <span className="text-muted-foreground">
+                    {point.before}
+                    <strong className="text-foreground">{point.strong}</strong>
+                    {point.after}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* R7-V5/R10: 5 photo avatars overlapping, then the stacked
+                (flex-col) stars + "Trusted by" block — directly after the
+                pills with no extra top margin. */}
+            <div className="flex items-center gap-4 mb-6">
+              <div className="flex -space-x-2.5 shrink-0" aria-hidden="true">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  // eslint-disable-next-line @next/next/no-img-element -- decorative 96px JPEGs; next/image adds nothing at 32px display
+                  <img
+                    key={n}
+                    src={`/assets/avatars/avatar-${n}.jpg`}
+                    alt="Customer"
+                    width={32}
+                    height={32}
+                    className="h-8 w-8 rounded-full border-2 border-background object-cover"
+                  />
+                ))}
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="text-primary text-sm" aria-hidden="true">
+                  ★★★★★
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  Trusted by <strong className="text-foreground">1,200+</strong> businesses worldwide
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 mb-4">
+              <Button
+                asChild
+                className="gradient-cta border-0 px-7 h-12 text-base font-semibold text-primary-foreground hover:opacity-90 w-full sm:w-auto"
+              >
+                <Link href="/signup">
+                  Start Identifying Visitors
+                  <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="w-full border-border bg-background px-7 text-base font-medium hover:bg-card sm:w-auto h-12"
+              >
+                <Link href="#live-demo">See Live Demo</Link>
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Takes less than 2 minutes · Free plan available · No credit card required
+            </p>
+          </div>
+
+          <div id="live-demo" className="relative scroll-mt-24 lg:pl-4" aria-label="Live demo of the visitor feed">
+            <LiveFeedMockup />
+          </div>
         </div>
       </div>
     </section>
