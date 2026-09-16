@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { PixelcoWordmark } from '@/components/pixelco-logo'
+import { PixelcoMarketingWordmark } from '@/components/pixelco-logo'
 import { NAV_LINKS } from '@/lib/marketing-links'
 
 export function SiteHeader() {
@@ -14,7 +14,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link href="/" className="focus-brand rounded-lg" aria-label="Pixelco home">
-          <PixelcoWordmark />
+          <PixelcoMarketingWordmark />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
