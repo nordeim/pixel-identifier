@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight, Check, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { PLANS, PLAN_ORDER, annualDiscountLabel, annualTotalCents, effectiveMonthlyPrice, formatPrice, type BillingCycle } from '@/lib/plans'
+import { PLANS, PLAN_ORDER, annualDiscountLabel, marketingAnnualMonthlyCents, formatPrice, type BillingCycle } from '@/lib/plans'
 
 export function PricingSection() {
   const [cycle, setCycle] = useState<BillingCycle>('monthly')
@@ -49,50 +49,52 @@ export function PricingSection() {
         </div>
       </div>
 
-      <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto mt-10 grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {PLAN_ORDER.map((id) => {
           const plan = PLANS[id]
-          const monthly = effectiveMonthlyPrice(plan, cycle)
-          const annualTotal = annualTotalCents(plan)
+          // R6-M6: the marketing surface displays the floored 20%-off annual
+          // price ($63/$199/$639) — its own live counterpart's convention.
+          const monthly =
+            cycle === 'annual' ? marketingAnnualMonthlyCents(plan) : plan.monthlyPrice
 
           return (
             <div
               key={plan.id}
               className={
                 plan.popular
-                  ? 'relative flex flex-col rounded-xl border-2 border-primary bg-card p-6 shadow-lg shadow-primary/10'
+                  ? 'shadow-elevated relative flex flex-col rounded-xl border-2 border-primary bg-background p-7'
                   : 'relative flex flex-col rounded-xl border border-border bg-card p-6 shadow-sm'
               }
             >
               {plan.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-primary-foreground">
-                  Popular
+                <span className="gradient-cta absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
+                  POPULAR
                 </span>
               )}
 
               <h3 className="text-lg font-bold text-foreground">{plan.name}</h3>
 
-              <p className="mt-3 flex items-baseline gap-1">
+              <p className="mb-4 mt-3 min-h-[40px] text-sm leading-relaxed text-muted-foreground">
+                {plan.description}
+              </p>
+
+              <div className="mb-1">
                 <span className="text-4xl font-extrabold tracking-tight text-foreground">
                   {formatPrice(monthly)}
                 </span>
                 <span className="text-sm text-muted-foreground">/mo</span>
-              </p>
+              </div>
               {cycle === 'annual' && plan.monthlyPrice > 0 && (
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {formatPrice(annualTotal)} billed annually
-                </p>
+                <p className="mb-4 text-xs text-muted-foreground">billed annually</p>
               )}
               {cycle === 'monthly' && plan.monthlyPrice === 0 && (
-                <p className="mt-1 text-xs text-muted-foreground">Free forever</p>
+                <p className="mb-4 text-xs text-muted-foreground">Free forever</p>
               )}
-
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{plan.description}</p>
 
               <ul className="mt-6 flex-1 space-y-2.5">
                 {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2 text-sm text-foreground">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-teal-600" aria-hidden="true" />
+                  <li key={feature} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
                     {feature}
                   </li>
                 ))}
