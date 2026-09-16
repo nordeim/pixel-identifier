@@ -28,7 +28,9 @@ make it pass — fix the code.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. Brand values are literal hex (e.g. `--primary:
-  #FACC15`); `var()` chains inside `@theme` are silently dropped by the build.
+  #FFC105` — measured off the live app bundle in round 7; the marketing
+  layout re-scopes it to `#FFBF00`); `var()` chains inside `@theme` are
+  silently dropped by the build.
 - **Typography is live-parity (v1.4).** App body = **Inter**; **Space
   Grotesk** is the `font-display` utility (card titles, page H1s, KPI values,
   prices, sidebar wordmark); marketing = **DM Sans**; mono stays mono. Brand
@@ -52,6 +54,11 @@ make it pass — fix the code.
   (free plans hard-stop; paid monthly plans increment unconditionally and
   count overage). The 30-day reset persists and is guarded on the stale
   anchor. Never increment the counter anywhere else.
+- **Activity rows key identity off the event type (v1.6).** `listActivity`
+  returns `email` only for identification events — pageview rows always show
+  `anonymousId.slice(0, 12) + '...'` — so identifying a visitor never
+  rewrites their earlier pageview rows (the live behaves the same; pinned by
+  a round-7 test).
 - **The visitors topbar subtitle is server-rendered (v1.5).** The dashboard
   layout fetches `getVisitorSegmentCounts` and passes the counts into the
   Topbar — `PAGE_META` subtitles must never contain brace templates (a

@@ -43,6 +43,10 @@ and stable per visitor.
 
 - **Ingest is sacred:** `/api/track` must stay fast, permissively-CORS'd
   (beacons are cross-origin), Zod-validated, and rate-limited.
+- **Activity rows key identity off the event type (v1.6):** `listActivity`
+  returns the email only for identification events — pageview rows always
+  carry the truncated anonymous id, so identification never rewrites
+  pageview history.
 - **Determinism of identity:** resolution decisions derive from
   `sha256(siteKey + anonymousId)` — changing resolver constants is a
   data-affecting migration, not a refactor.

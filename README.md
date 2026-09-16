@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 186 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 187 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -233,6 +233,10 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   assertion hid.
 - **Quota** (`src/lib/quota.ts`) — atomic consumption under 110 concurrent
   calls (exactly `limit` succeed), persisted monthly reset, paid-plan overage.
+- **Activity feed semantics (round-7)** — `listActivity` returns the email
+  only for identification events; pageview rows always carry the truncated
+  anonymous id (12 chars + `...`) so identification never rewrites a
+  visitor's pageview history.
 - **Track route** — invoked directly with `Request` objects: hostname gating,
   auto-verification, anti-enumeration, quota/overage at the route level, 429
   timing, and write-failure containment (never a 500).
