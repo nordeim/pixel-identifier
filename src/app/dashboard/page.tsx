@@ -12,7 +12,6 @@ import {
 } from '@/lib/analytics'
 import { TrendChart } from '@/components/dashboard/trend-chart'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
 import { initialsForEmail, relativeTime } from '@/lib/format'
 
 export const metadata: Metadata = {
@@ -65,20 +64,22 @@ export default async function OverviewPage() {
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {kpis.map((kpi) => (
-          <Card key={kpi.label} className="shadow-sm">
+          <Card key={kpi.label} className="shadow-sm transition-shadow hover:shadow-md">
             <CardContent className="p-6 pt-5 pb-4 px-5">
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-medium tracking-wider text-muted-foreground">
+              <div className="mb-3 flex items-center justify-between">
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   {kpi.label}
                 </p>
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10" aria-hidden="true">
                   <kpi.icon className="h-4 w-4 text-primary" />
                 </span>
               </div>
-              <p className="mt-3 text-3xl font-display font-bold tabular-nums tracking-tight text-foreground">
+              <p className="text-3xl font-display font-bold tracking-tight text-foreground">
                 {kpi.value}
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">{kpi.sub}</p>
+              <div className="mt-1 flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">{kpi.sub}</span>
+              </div>
             </CardContent>
           </Card>
         ))}
@@ -162,43 +163,54 @@ export default async function OverviewPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
-                    <th scope="col" className="pb-3 pr-4 font-semibold">Email</th>
-                    <th scope="col" className="pb-3 pr-4 font-semibold">Page</th>
-                    <th scope="col" className="pb-3 pr-4 font-semibold">Confidence</th>
-                    <th scope="col" className="pb-3 font-semibold">Time</th>
+                  <tr className="border-b border-border bg-muted/30">
+                    <th scope="col" className="px-5 p-3 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Email</th>
+                    <th scope="col" className="p-3 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Page</th>
+                    <th scope="col" className="p-3 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Confidence</th>
+                    <th scope="col" className="px-5 p-3 text-right text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Time</th>
                   </tr>
                 </thead>
                 <tbody>
                   {recent.map((item) => (
-                    <tr key={item.id} className="border-b border-border/60 last:border-0">
-                      <td className="py-3 pr-4">
-                        <span className="flex items-center gap-2.5">
+                    <tr key={item.id} className="border-b border-border transition-colors last:border-0 hover:bg-muted/20">
+                      <td className="p-3 px-5">
+                        <span className="flex items-center gap-3">
                           <span
-                            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full gradient-primary text-[10px] font-bold text-white"
+                            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full gradient-primary text-[10px] font-bold text-primary-foreground"
                             aria-hidden="true"
                           >
                             {initialsForEmail(item.email)}
                           </span>
-                          <span className="truncate font-medium text-foreground">{item.email}</span>
+                          <span className="truncate text-sm font-medium text-foreground">{item.email}</span>
                         </span>
                       </td>
-                      <td className="py-3 pr-4 font-mono text-xs text-muted-foreground">
-                        {item.path}
+                      <td className="p-3">
+                        <span className="font-mono text-sm text-muted-foreground">
+                          {item.path}
+                        </span>
                       </td>
-                      <td className="py-3 pr-4">
+                      <td className="p-3">
                         <span className="flex items-center gap-2">
-                          <Progress
-                            value={item.confidence ?? 0}
-                            className="h-1.5 w-16 [&>div]:bg-neon-green"
-                            aria-hidden="true"
-                          />
-                          <span className="text-xs font-semibold tabular-nums text-foreground">
+                          {/* Live confidence: plain neon bar + 12px label (R6-M1). */}
+                          <span
+                            className="h-1.5 w-12 overflow-hidden rounded-full bg-muted"
+                            role="progressbar"
+                            aria-valuenow={item.confidence ?? 0}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                            aria-label={`${item.confidence ?? 0}% confidence`}
+                          >
+                            <span
+                              className="block h-full rounded-full bg-neon-green"
+                              style={{ width: `${item.confidence ?? 0}%` }}
+                            />
+                          </span>
+                          <span className="text-xs font-medium text-foreground">
                             {item.confidence}%
                           </span>
                         </span>
                       </td>
-                      <td className="py-3 text-xs text-muted-foreground">
+                      <td className="p-3 px-5 text-right text-sm text-muted-foreground">
                         {relativeTime(item.createdAt)}
                       </td>
                     </tr>
