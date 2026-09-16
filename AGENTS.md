@@ -52,6 +52,18 @@ make it pass — fix the code.
   (free plans hard-stop; paid monthly plans increment unconditionally and
   count overage). The 30-day reset persists and is guarded on the stale
   anchor. Never increment the counter anywhere else.
+- **The visitors topbar subtitle is server-rendered (v1.5).** The dashboard
+  layout fetches `getVisitorSegmentCounts` and passes the counts into the
+  Topbar — `PAGE_META` subtitles must never contain brace templates (a
+  template once leaked literal `{individuals}` on first paint; pinned by a
+  chrome test). The format never singularizes: the live renders
+  "1 companies".
+- **Annual prices are a table, not a derivation (v1.5).** The live
+  dashboard hardcodes $65/$199/$639 annual monthly prices while the live
+  marketing shows floored 20%-off values ($63/$199/$639). `plans.ts`
+  carries both: `annualMonthlyPrice` (dashboard) and
+  `marketingAnnualMonthlyCents` (marketing). Never compute annual prices
+  inline in components.
 - **Tests run against `db/test.db`.** `tests/global-setup.ts` recreates it via
   `prisma db push` on every run; `TZ` is pinned to UTC. Integration tests
   invoke route handlers/actions directly with mocked `next/headers` /
@@ -118,6 +130,10 @@ verification gate before pushing.
 
 - OAuth buttons (Google/Apple) on the auth pages are intentionally disabled
   placeholders — no OAuth providers are configured.
+- `/forgot-password` renders an anti-enumeration acknowledgement but sends
+  no email — there is no mail transport. The live product links to the
+  route but serves a 404; replicating a dead link was ruled a defect (PAD
+  §11).
 - Billing is simulated: `changePlanAction` updates entitlements directly, no
   payment processor. Switching plans never resets the used counter; paid
   plans keep identifying past the limit and report overage.

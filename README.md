@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 157 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 186 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -43,7 +43,10 @@ firmographics when the visitor is B2B. The product has four parts:
 > advertised ~20% match rate). Everything else — ingest, session stitching,
 > quota accounting, analytics, exports — is a real, working pipeline. Billing
 > is also simulated: plan switching updates entitlements without processing
-> payments (overage is counted and priced, never charged).
+> payments (overage is counted and priced, never charged). Password-reset
+> emails are not sent either — `/forgot-password` acknowledges requests
+> anti-enumeratively and tells the reader that self-hosted operators must
+> configure email delivery.
 
 ## Key Features
 
@@ -54,7 +57,7 @@ firmographics when the visitor is B2B. The product has four parts:
 | 🍪 | Cookieless tracking | First-party localStorage visitor ID — no consent-banner dependencies |
 | ⚡ | One-line install | Single `<script>` snippet per domain with a domain switcher; the install page carries the live's Quick Start, How It Works and Site Key cards plus per-platform guides (HTML, WordPress, Shopify, GTM) |
 | 📊 | Real-time dashboard | KPIs, 14-day UTC-bucketed trend chart, top pages, recent identifications, loading/error boundaries |
-| 👥 | Visitor CRM | **Identified visitors only** (like the live product — anonymous traffic never hits the table), B2B rows show company + resolved location, honest active/inactive status from the 30-minute session window, server-side search + segment/confidence/source filters, 25/page pagination, true DB counts, row selection, CSV export (all or selected) |
+| 👥 | Visitor CRM | **Identified visitors only** (like the live product — anonymous traffic never hits the table), B2B rows show company + resolved location + a “· N visits” sub-line, honest active/inactive status from the 30-minute session window, server-side search + segment/confidence/source filters, 25/page pagination, true DB counts, row selection, CSV export (all or selected) |
 | 🔴 | Live activity feed | Auto-refreshing event stream (pauses in background tabs) with cursor-based "Load older events" |
 | 🌍 | Domain management | Registration, hostname-based auto-verification, ingest gated to registered hostnames, plan-based limits, delete confirmations |
 | 💳 | Plans & quotas | Free / Starter / Growth / Scale with per-plan allowances; paid plans keep identifying past the limit and count overage at the per-identification rate |
@@ -198,6 +201,7 @@ match rate in practice.
 | `/api/track` | POST | public (site key) | Beacon ingestion — hostname-gated; 204 on accept, 204 on reject (indistinguishable), 429 when rate-limited (120/min per site key, `Retry-After: 60`) |
 | `/api/health` | GET | public | Liveness + DB readiness |
 | `/api/auth/[...nextauth]` | GET/POST | public | NextAuth credentials flow |
+| `/forgot-password` | GET | public | Anti-enumeration reset-request page (no email transport — shows an honest configuration note; the live links here but 404s) |
 | `/api/activity` | GET | session | Latest 60 events, or the page after `?cursor=` (event id) |
 | `/api/export` | GET | session | CSV (UTF-8 BOM, formula-injection guarded) of identified visitors; `?ids=` exports a selection (ownership-scoped, max 500) |
 | Server Actions | — | session | Mutations: sign-up (throttled, P2002-safe, plan-intent), add/delete domain, update profile, change plan, ⚠️ delete account (signs out) |

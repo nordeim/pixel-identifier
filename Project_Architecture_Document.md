@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.4
+# Pixelco — Master Project Architecture Document (PAD) v1.5
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-15
+**Last Updated:** 2026-09-16
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,41 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.5** `[SYN]` Round-6 visual & functional parity (plan:
+  `docs/plans/2026-09-16-round6-visual-parity.md`; evidence in
+  `research/round6-audit/`): a fresh logged-in live audit (DOM ground
+  truth for all 7 dashboard surfaces, auth pages and the marketing
+  landing, plus pairwise VLM diffs) closed the remaining gaps. Critical:
+  the visitors topbar subtitle is now **server-rendered** — the
+  `PAGE_META` template leaked literal `{individuals}` braces on first
+  paint until the client store published counts (R6-C1); the layout now
+  fetches `getVisitorSegmentCounts` (new analytics seam) and passes the
+  counts into the Topbar. Functional: Top Pages shows the **identified
+  count** per page like live (second SQL groupBy over identification
+  events, R6-H1); `/forgot-password` exists as a real anti-enumeration
+  reset-request page — the live links to it but 404s, and this clone
+  deliberately does not replicate a dead link (R6-H4, honest divergence
+  documented in §11); the live's non-pluralizing subtitle format
+  ("1 companies") is matched exactly. Visual: visitors pill tabs with
+  count badges + sort-glyph headers + square checkboxes + "· N visits"
+  company sub-lines; uppercase KPI labels + hover elevation + the live
+  Recent-table chrome on Overview; one-card Activity with the gradient
+  Identified badge and two-group row meta; Plus-icon domain CTA inside a
+  card-wrapped domain list; the pricing banner card, six static FAQ
+  question cards, and the live's hardcoded annual price table
+  ($65/$199/$639 on the dashboard, floored $63/$199/$639 on marketing —
+  both surfaces single-sourced in `plans.ts`, R6-H7); the dark
+  gradient-hero auth canvas with breathing orbs and h-16 logos; the
+  marketing announcement bar, hero feed widget (stat strip + rotating
+  rows + Match Rate footer) and pricing-card rework; new brand utilities
+  (`.gradient-hero`, `.gradient-hero-light`, `.gradient-cta`,
+  `.shadow-elevated`, `--color-hot-pink`, `pulse-glow`).
+- `[SR]` v1.5 evidence: `npm run verify` green (lint, typecheck, **186
+  tests across 25 files**, build 35 routes); browser DOM pass on every
+  changed surface with zero console errors; pairwise VLM re-diffs at
+  CLOSE MATCH for 7/8 surfaces (the visitors pair's residual flags
+  verified as data differences + one VLM icon misread — byte-identical
+  `lucide-eye` path).
 - **v1.4** `[SYN]` Round-5 parity hardening (plan:
   `docs/plans/2026-09-15-round5-parity-hardening.md`): a fresh live audit
   (logged-in DOM extraction of all 7 dashboard surfaces + auth + marketing,
@@ -803,7 +838,13 @@ in `plans.ts` (integer cents); no money columns are stored.
 | `--chart-1` | `hsl(262 83% 58%)` | Pageviews series | Purple (v1.4 live palette) |
 | `--chart-2` | `hsl(172 66% 50%)` | Identified series, confidence bars | Teal (v1.4 live palette) |
 | `--color-neon-green` | `#2BD4BD` | Confidence fills, source badges, install banners | v1.4 token; generates `bg-`/`text-`/`border-neon-green` utilities |
+| `--color-hot-pink` | `#EC4699` | Bell dot, auth-page orb glow | v1.5 token (R6-M8) |
 | `.gradient-primary` | `135deg #FFC105→#FFB200` | CTAs, FREE badge, avatars, icon chips | v1.4 utility (live class of the same name) |
+| `.gradient-hero` | `135deg #0F111A→#2B2312` | Auth canvas (login/signup/forgot) | v1.5 — the live APP bundle's dark variant |
+| `.gradient-hero-light` | `135deg #FFAA00→#FFD91A→#F58F00` | Marketing announcement bar | v1.5 — the live MARKETING bundle reuses the name `gradient-hero` in yellow; one bundle needs two names |
+| `.gradient-cta` | `135deg #FFAA00→#FFCE0A` | Marketing POPULAR pill | v1.5 |
+| `.shadow-elevated` | amber elevation | Featured marketing cards | v1.5 |
+| `.animate-pulse-glow` | 3s opacity breathing | Auth-page blurred orbs | v1.5; disabled under `prefers-reduced-motion` |
 | `--background` | `#FFFCF5` | Marketing canvas | Warm off-white |
 | `.bg-app` | `#F9FAFB` | Dashboard canvas | Cool gray |
 | `--muted-foreground` | `#6B7280` | Secondary text | 4.8:1 on white |
@@ -906,13 +947,13 @@ speculatively.
 |----------|-------|-------|----------|-----------|
 | Lint (static) | 80+ | — | repo-wide | ESLint 9 + typescript-eslint + React Compiler rules |
 | Types (static) | 80+ | — | repo-wide | `tsc --noEmit`, strict |
-| Build (integration) | 34 routes | — | `next build` | Next 16 (16 marketing URLs incl. 10 SSG blog posts + 14 dynamic/authed routes) |
+| Build (integration) | 35 routes | — | `next build` | Next 16 (16 marketing URLs incl. 10 SSG blog posts + 15 dynamic/authed routes — `/forgot-password` added v1.5) |
 | Unit (pure libs + data modules) | 9 files | ~66 | `tests/{plans,format,snippet,sites,smoke,marketing-links,blog-posts,blog-slug,dashboard-chrome}.test.ts` | Vitest |
 | Behavioural (collector + snippet in `node:vm`) | 2 | 9 | `tests/collector-script.test.ts`, `tests/snippet.test.ts` | Vitest |
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
 | E2E (browser) | manual + opt-in smoke | — | dev server flows; `PIXELCO_STANDALONE_SMOKE=1` boots the standalone server | browser pass |
 
-The suite totals **175 tests across 25 files** (plus 2 opt-in standalone
+The suite totals **186 tests across 25 files** (plus 2 opt-in standalone
 smoke tests), runs in the `node`
 environment against a throwaway SQLite database (`db/test.db`, recreated
 from the schema by `tests/global-setup.ts` on every run), with `TZ=UTC`
@@ -1006,7 +1047,7 @@ hydrates, and forms fall back to native GET submission (login credentials
 land in the URL). `build:standalone` performs the documented copy; the
 opt-in `PIXELCO_STANDALONE_SMOKE=1` vitest run guards it end-to-end.
 
-34 routes: marketing surface (static + SSG blog), dashboard pages,
+35 routes: marketing surface (static + SSG blog), dashboard pages,
 authed APIs, collector. Standalone is the supported self-host target;
 Vercel deploys work by removing `output: "standalone"`.
 
@@ -1080,6 +1121,7 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 | Priority | Issue | Impact | Status |
 |----------|-------|--------|--------|
 | HIGH | Identity resolution and billing are simulations | Clone parity, not production capability — labelled everywhere | By design (ADR-005/006) |
+| MEDIUM | No email transport: `/forgot-password` acknowledges but cannot send reset links | Reset requests show an honest configuration note; operator must wire SMTP for delivery | Open — deliberate divergence: the live links to `/forgot-password` but 404s (R6-H4); a dead link would be a defect here |
 | HIGH | NextAuth v4 on Next 16 (one-major-behind pairing) | Peer-dependency warnings; upgrade path to Auth.js v5 is non-trivial | Accepted — pinned deliberately (ADR-004); revisit before any Next 17 move |
 | MEDIUM | Strict CSP not implemented | Clickjacking/mixed-content hardening limited to baseline headers | Open — needs nonce plumbing for Next's inline bootstrap and the collector route |
 | MEDIUM | In-memory rate limiting and signup throttle (per-instance) | Multi-instance deploys would multiply the effective limit | Open — swap to shared store when horizontally scaling |
@@ -1091,6 +1133,22 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 | LOW | Relative SQLite paths resolve against `prisma/` | Confusing first-run behavior | Documented (README, §9.2) |
 | LOW | E2E is a manual browser pass (no Playwright) | Critical funnel regressions caught late | Open — §8.3 |
 | LOW | `deepmerge-ts` advisory (GHSA-ggr8-5vv4-36mx) pinned away via `overrides` | Override must be revisited when Prisma ships a fixed `@prisma/config` | Managed — `bun audit` clean; verified against db:push/db:seed/tests |
+
+**Fixed in v1.5 (round-6):** the visitors topbar subtitle rendered literal
+`{individuals}` braces on server paint (→ server-rendered via
+`getVisitorSegmentCounts` in the layout); Top Pages showed views as the big
+number (→ identified counts per page like live); the login's "Forgot
+password?" was a dead span and no route existed (→ real link + honest
+reset-request page); visitors table chrome drift (→ pill tabs with count
+badges, sort-glyph headers, square checkboxes, `· N visits` company
+sub-lines, plain neon confidence bars); overview KPI/Recent-table drift;
+two-card activity feed (→ one card, gradient Identified badge); domains
+list outside a card with an icon-less CTA; pricing drift (→ banner card,
+FAQ question cards, live annual price table); auth-page drift (→ dark
+gradient-hero canvas, pulse orbs, h-16 logos, shadcn OAuth/divider);
+marketing drift (→ announcement bar, hero feed widget, pricing cards);
+missing brand utilities (gradient-hero/cta, shadow-elevated, hot-pink,
+pulse-glow).
 
 **Fixed in v1.4 (round-5):** the install snippet passed `'document'` as a
 string and threw on the customer's page (→ passes the real `document`,
@@ -1142,7 +1200,7 @@ recursion (P0).
 | `src/lib/marketing-links.ts` | ~70 | Nav + footer link map — single source of truth, integrity-tested (ADR-009) |
 | `src/lib/dashboard-nav.ts` | ~140 | Chrome metadata seam: nav sections/icons, page subtitles, unread rule, rail reducer (ADR-010, 16 tests) |
 | `src/data/blog-posts.ts` | ~415 | Blog catalogue: 10 posts driving index, SSG article pages and sitemap (ADR-009) |
-| `src/lib/analytics.ts` | ~387 | Server-only aggregations + query seams (`listVisitors`, `listActivity`) + `requireUser` guard |
+| `src/lib/analytics.ts` | ~440 | Server-only aggregations + query seams (`listVisitors`, `listActivity`, `getVisitorSegmentCounts`) + `requireUser` guard |
 | `src/lib/validation.ts` | ~98 | Zod schemas for every boundary (minimal ingest keys) + `ActionResult<T>` envelope |
 | `src/lib/auth.ts` | ~52 | NextAuth options (credentials, JWT, session callbacks) |
 | `src/actions/domains.ts` | ~121 | Add/delete/list domain actions (ownership-scoped) |

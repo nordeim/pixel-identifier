@@ -54,6 +54,15 @@ and stable per visitor.
   plans hard-stop at the limit; paid monthly plans increment unconditionally
   and count overage). The 30-day reset persists and is guarded on the stale
   anchor. Plan semantics live in `src/lib/plans.ts`.
+- **Annual prices are per-surface tables, not derivations (v1.5):** the live
+  dashboard hardcodes $65/$199/$639 annual monthly prices while the live
+  marketing floors the 20%-off display ($63/$199/$639). `plans.ts` owns
+  both (`annualMonthlyPrice`, `marketingAnnualMonthlyCents`); components
+  never compute prices inline.
+- **The visitors topbar subtitle is server-rendered (v1.5):** the layout
+  fetches `getVisitorSegmentCounts` into the Topbar. `PAGE_META` subtitles
+  must never be brace templates (pinned by a chrome test), and the count
+  line never singularizes — the live renders "1 companies".
 
 ## Implementation Standards
 
@@ -291,5 +300,9 @@ Four layers, strictly top-down:
 - Weakening lint/type rules to pass the gate.
 - Trusting `visitors.status` — it's a dead schema default; display state
   derives from `lastSeen` via `isVisitorActive` (30-minute window).
+- Brace-template subtitles in `PAGE_META` — the visitors count line is
+  server-rendered from `getVisitorSegmentCounts` (v1.5), never a template.
+- Computing annual prices inline — the live's dashboard and marketing
+  surfaces use different annual tables; `plans.ts` owns both (v1.5).
 - String-pinning generated JS in tests (see Behavioural above) — execute it
   in `node:vm` instead.
