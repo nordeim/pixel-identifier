@@ -4,7 +4,7 @@ import { useActionState, useState } from 'react'
 import { Check, CircleHelp, Loader2, Zap } from 'lucide-react'
 import { changePlanAction } from '@/actions/settings'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import {
   PLANS,
