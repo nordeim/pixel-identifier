@@ -13,17 +13,25 @@ import type { TrendPoint } from '@/lib/analytics'
 
 /**
  * Visitor identification trend, styled after the live app: purple line for
- * pageviews (no fill), teal line for identified visitors (light gradient
- * fill), dashed grid in both directions, no legend.
+ * pageviews (gradient fill 0.15→0, live #fillVisitors), teal line for
+ * identified visitors (gradient fill 0.2→0), dashed grid in both
+ * directions, and the live's hand-built centered legend below the chart
+ * (R8-F2/R8-F3 — the legend is plain flex markup, not a Recharts legend;
+ * round 7's loss of B1/B2 is what round 8 restores).
  */
 export function TrendChart({ data }: { data: TrendPoint[] }) {
   return (
-    <div className="h-72 w-full" role="img" aria-label="Line chart of daily pageviews and identified visitors over the last 14 days">
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
+    <>
+      <div className="h-72 w-full" role="img" aria-label="Line chart of daily pageviews and identified visitors over the last 14 days">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
           <defs>
-            <linearGradient id="identifiedFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="hsl(172 66% 50%)" stopOpacity={0.12} />
+            <linearGradient id="fillVisitors" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="hsl(262 83% 58%)" stopOpacity={0.15} />
+              <stop offset="100%" stopColor="hsl(262 83% 58%)" stopOpacity={0} />
+            </linearGradient>
+            <linearGradient id="fillIdentified" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="hsl(172 66% 50%)" stopOpacity={0.2} />
               <stop offset="100%" stopColor="hsl(172 66% 50%)" stopOpacity={0} />
             </linearGradient>
           </defs>
@@ -58,7 +66,7 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
             dataKey="pageviews"
             stroke="hsl(262 83% 58%)"
             strokeWidth={2}
-            fill="none"
+            fill="url(#fillVisitors)"
             dot={false}
             activeDot={{ r: 4 }}
           />
@@ -67,12 +75,25 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
             dataKey="identified"
             stroke="hsl(172 66% 50%)"
             strokeWidth={2}
-            fill="url(#identifiedFill)"
+            fill="url(#fillIdentified)"
             dot={false}
             activeDot={{ r: 4 }}
           />
         </AreaChart>
-      </ResponsiveContainer>
-    </div>
+        </ResponsiveContainer>
+      </div>
+      {/* Live legend markup, verbatim (R8-F2): centered under the chart,
+          amber dot = Pageviews, neon-green dot = Identified. */}
+      <div className="mt-2 flex items-center justify-center gap-6">
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <div className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
+          Pageviews
+        </div>
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <div className="h-2 w-2 rounded-full bg-neon-green" aria-hidden="true" />
+          Identified
+        </div>
+      </div>
+    </>
   )
 }
