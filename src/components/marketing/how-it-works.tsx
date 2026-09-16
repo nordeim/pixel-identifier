@@ -1,8 +1,10 @@
-import { Building2, ShoppingCart, Rocket, Users, Megaphone } from 'lucide-react'
+import { Building2, ShoppingCart, Rocket, Users, Megaphone, CodeXml, Cpu, Mail, FileText } from 'lucide-react'
 
 const AUDIENCES = [
   {
-    icon: Rocket,
+    // R7: icon set verified against the live (building2 for SaaS, rocket for
+    // Startups — the clone previously had these two swapped).
+    icon: Building2,
     title: 'SaaS Companies',
     text: 'Know which companies are evaluating your product.',
   },
@@ -12,7 +14,7 @@ const AUDIENCES = [
     text: 'Recover abandoned browsers with targeted emails.',
   },
   {
-    icon: Building2,
+    icon: Rocket,
     title: 'Startups',
     text: 'Turn early traffic into your first paying customers.',
   },
@@ -30,18 +32,22 @@ const AUDIENCES = [
 
 const STEPS = [
   {
+    icon: CodeXml,
     title: 'Install the Pixel',
     text: "Paste one line of JavaScript into your website's <head> tag. Works on HTML, WordPress, Shopify, React — anything.",
   },
   {
+    icon: Cpu,
     title: 'We Match Visitors',
     text: 'Our proprietary identity graph cross-references visitor signals to resolve their real email address in real time.',
   },
   {
+    icon: Mail,
     title: 'Get Real Emails',
     text: 'See identified visitors in your dashboard with their email, company (if B2C), pages viewed, and confidence score.',
   },
   {
+    icon: FileText,
     title: 'Export & Convert',
     text: 'Push leads to your CRM, trigger email sequences, or export CSV. Turn traffic into revenue on autopilot.',
   },
@@ -93,10 +99,9 @@ export function HowItWorks() {
         <div className="text-center">
           <p className="text-xs font-bold uppercase tracking-widest text-amber-600">Our process</p>
           <h2 id="how-heading" className="mt-2 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-            How We Identify Your Visitors{' '}
-            <span className="text-primary [box-decoration-break:clone] bg-primary/20 px-2">
-              In 4 Simple Steps
-            </span>
+            How We Identify Your Visitors
+            <br />
+            <span className="text-gradient-hero">In 4 Simple Steps</span>
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
             Most identifications happen within seconds of a visitor landing on your site.
@@ -109,17 +114,23 @@ export function HowItWorks() {
               key={step.title}
               className="relative overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm"
             >
+              {/* R7-V8: the live's step chrome — a big faint background
+                  number top-right and an icon in a gradient-hero box; no
+                  number-in-circle badge. */}
               <span
                 aria-hidden="true"
-                className="absolute -right-2 -top-4 select-none text-7xl font-black text-primary/10"
+                className="absolute right-4 top-3 select-none text-5xl font-extrabold leading-none text-muted/50"
               >
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-primary-foreground" aria-hidden="true">
-                {index + 1}
-              </span>
-              <h3 className="mt-4 text-base font-bold text-foreground">{step.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.text}</p>
+              <div
+                className="gradient-hero-light mb-4 flex h-10 w-10 items-center justify-center rounded-lg"
+                aria-hidden="true"
+              >
+                <step.icon className="h-5 w-5 text-primary-foreground" />
+              </div>
+              <h3 className="mb-1.5 font-bold text-foreground">{step.title}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">{step.text}</p>
             </li>
           ))}
         </ol>
