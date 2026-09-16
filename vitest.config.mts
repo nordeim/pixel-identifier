@@ -15,6 +15,8 @@ export default defineConfig({
     environment: 'node',
     include: ['tests/**/*.test.ts', 'src/**/*.test.ts'],
     fileParallelism: false, // SQLite is single-writer; serialise test files
+    testTimeout: 30000,
+    hookTimeout: 30000,
     env: {
       DATABASE_URL: TEST_DATABASE_URL,
       TZ: 'UTC', // pin timezones so date-bucketing tests are deterministic

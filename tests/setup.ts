@@ -1,4 +1,12 @@
-import { vi } from 'vitest'
+import { beforeAll, vi } from 'vitest'
+import { db } from '@/lib/db'
+
+beforeAll(async () => {
+  // SQLite single-writer: raise busy timeout so the 110-concurrent quota
+  // Prove-It can serialize without Prisma socket timeouts (ADR-008).
+  await db.$queryRawUnsafe('PRAGMA busy_timeout = 10000')
+  await db.$queryRawUnsafe('PRAGMA journal_mode = WAL')
+})
 
 /**
  * Shared mocks for Next.js server-context APIs that only exist inside a

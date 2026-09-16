@@ -72,8 +72,11 @@ make it pass — fix the code.
   `marketingAnnualMonthlyCents` (marketing). Never compute annual prices
   inline in components.
 - **Tests run against `db/test.db`.** `tests/global-setup.ts` recreates it via
-  `prisma db push` on every run; `TZ` is pinned to UTC. Integration tests
-  invoke route handlers/actions directly with mocked `next/headers` /
+  `prisma db push` on every run; `TZ` is pinned to UTC. `vitest.config.mts`
+  sets `testTimeout`/`hookTimeout` to 30 s and `tests/setup.ts` raises
+  `PRAGMA busy_timeout=10000` + `WAL` so the quota Prove-It (110 concurrent
+  `consumeIdentification`) can serialize on SQLite single-writer. Integration
+  tests invoke route handlers/actions directly with mocked `next/headers` /
   `next-auth` (see `tests/setup.ts`). Keep new behavior test-first.
 - **Generated JS is executed in tests, never string-pinned.** The install
   snippet and the collector both run under `node:vm` with mocked globals; a
@@ -149,3 +152,13 @@ verification gate before pushing.
 - NextAuth v4 on Next 16 is a maintenance-mode pairing — works today, but
   budget an Auth.js v5 / Better-Auth migration before the next Next major
   (see PAD §11).
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

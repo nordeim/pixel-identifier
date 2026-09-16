@@ -993,7 +993,9 @@ The suite totals **187 tests across 25 files** (plus 2 opt-in standalone
 smoke tests), runs in the `node`
 environment against a throwaway SQLite database (`db/test.db`, recreated
 from the schema by `tests/global-setup.ts` on every run), with `TZ=UTC`
-pinned and `fileParallelism` disabled (SQLite single-writer). Mock seams for
+pinned, `fileParallelism` disabled (SQLite single-writer), `testTimeout`/
+`hookTimeout` at 30 s, and `PRAGMA busy_timeout=10000` + `WAL` raised in
+`tests/setup.ts` for the quota Prove-It. Mock seams for
 Next server context (`next/cache`, `next/navigation`, `next/headers`,
 `server-only`) live in `tests/setup.ts`.
 

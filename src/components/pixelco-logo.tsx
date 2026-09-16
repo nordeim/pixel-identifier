@@ -57,3 +57,16 @@ export function PixelcoWordmark({
     </span>
   )
 }
+
+/** Marketing wordmark: Pixelco lockup + "By Ai Viral" cursive subtext (live header/footer, R7-V4). */
+export function PixelcoMarketingWordmark({ className }: { className?: string }) {
+  return (
+    <span className={cn('inline-flex items-center gap-2', className)}>
+      <PixelcoLogo />
+      <span className="flex flex-col leading-none">
+        <span className="font-display text-lg font-bold tracking-tight text-foreground">Pixelco</span>
+        <span className="font-script text-xs italic text-muted-foreground translate-y-[3px]">By Ai Viral</span>
+      </span>
+    </span>
+  )
+}

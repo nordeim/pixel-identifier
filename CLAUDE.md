@@ -145,7 +145,9 @@ npm run dev
 
 Vitest (node env) against a throwaway SQLite DB (`db/test.db`, recreated by
 `tests/global-setup.ts` via `prisma db push` on every run; `fileParallelism`
-is off — SQLite is a single writer). `TZ` is pinned to UTC.
+is off — SQLite is a single writer; `testTimeout`/`hookTimeout` is 30 s and
+`tests/setup.ts` raises `PRAGMA busy_timeout=10000` + `WAL` for the quota
+Prove-It). `TZ` is pinned to UTC.
 
 - **Unit (pure libs):** plan/money math (`plans.ts`), domain normalisation,
   snippet hardening, CSV escaping + formula-injection guard, relative time,
