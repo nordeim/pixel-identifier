@@ -1,16 +1,15 @@
 import Link from 'next/link'
-import { ArrowRight, PlayCircle } from 'lucide-react'
+import { ArrowRight, ChartColumn, CircleCheckBig, PlayCircle, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { LiveFeedMockup } from '@/components/marketing/live-feed'
 
+/** R7-V6: the live renders the hero trust points as pill badges with
+ * lucide icons (CircleCheckBig / ChartColumn / Zap on --color-highlight)
+ * and the metric wrapped in <strong>. */
 const TRUST_POINTS = [
-  { icon: '🌍', text: '1,200+ websites using Pixelco' },
-  { icon: '⚡', text: 'Avg match rate: 20%' },
-  { icon: '⏱️', text: 'Setup in 2 minutes' },
-]
-
-const AVATAR_COLORS = [
-  'bg-amber-500', 'bg-teal-500', 'bg-rose-500', 'bg-violet-500', 'bg-sky-500',
+  { icon: CircleCheckBig, before: '', strong: '1,200+', after: ' websites using Pixelco', iconCls: 'text-primary' },
+  { icon: ChartColumn, before: 'Avg match rate: ', strong: '20%', after: '', iconCls: 'text-primary' },
+  { icon: Zap, before: 'Setup in ', strong: '2 minutes', after: '', iconCls: 'text-highlight' },
 ]
 
 export function Hero() {
@@ -40,16 +39,51 @@ export function Hero() {
             No forms. No popups. No cookies.
           </p>
 
-          <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+          {/* R7-V6: pill badges like the live (bg-card, border, rounded-lg). */}
+          <ul className="mb-8 flex flex-wrap gap-3">
             {TRUST_POINTS.map((point) => (
-              <li key={point.text} className="flex items-center gap-2 text-sm font-medium text-foreground">
-                <span aria-hidden="true">{point.icon}</span>
-                {point.text}
+              <li
+                key={point.strong}
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 text-sm"
+              >
+                <point.icon className={`h-4 w-4 ${point.iconCls}`} aria-hidden="true" />
+                <span className="text-muted-foreground">
+                  {point.before}
+                  <strong className="font-semibold text-foreground">{point.strong}</strong>
+                  {point.after}
+                </span>
               </li>
             ))}
           </ul>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          {/* R7-V5: the live's trust row — 5 photo avatars overlapping, then
+              a stacked (flex-col) stars + "Trusted by" block — positioned
+              BETWEEN the pills and the CTA buttons like the live. */}
+          <div className="mb-6 mt-8 flex items-center gap-4">
+            <div className="flex -space-x-2.5 shrink-0" aria-hidden="true">
+              {[1, 2, 3, 4, 5].map((n) => (
+                // eslint-disable-next-line @next/next/no-img-element -- decorative 96px JPEGs; next/image adds nothing at 32px display
+                <img
+                  key={n}
+                  src={`/assets/avatars/avatar-${n}.jpg`}
+                  alt=""
+                  width={32}
+                  height={32}
+                  className="h-8 w-8 rounded-full border-2 border-background object-cover"
+                />
+              ))}
+            </div>
+            <div className="flex min-w-0 flex-col">
+              <span className="text-sm text-primary" aria-hidden="true">
+                ★★★★★
+              </span>
+              <span className="text-sm text-muted-foreground">
+                Trusted by <strong className="font-semibold text-foreground">1,200+</strong> businesses worldwide
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row">
             <Button size="lg" asChild className="h-12 px-7 text-base font-semibold">
               <Link href="/signup">
                 Start Identifying Visitors
@@ -71,22 +105,6 @@ export function Hero() {
           <p className="mt-4 text-sm text-muted-foreground">
             Takes less than 2 minutes • Free plan available • No credit card required
           </p>
-
-          <div className="mt-8 flex items-center gap-3">
-            <div className="flex -space-x-2" aria-hidden="true">
-              {AVATAR_COLORS.map((color, i) => (
-                <span
-                  key={color}
-                  className={`flex h-8 w-8 items-center justify-center rounded-full border-2 border-background text-[10px] font-bold text-white ${color}`}
-                >
-                  {['SC', 'MJ', 'EP', 'AK', 'RB'][i]}
-                </span>
-              ))}
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Trusted by <span className="font-semibold text-foreground">1,200+</span> businesses worldwide
-            </p>
-          </div>
         </div>
 
         <div id="live-demo" className="scroll-mt-24" aria-label="Live demo of the visitor feed">
