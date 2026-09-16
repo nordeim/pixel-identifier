@@ -106,26 +106,33 @@ export default async function OverviewPage() {
                 No page data yet
               </p>
             ) : (
-              <ol className="space-y-3">
+              <div className="space-y-3">
                 {topPages.map((page, index) => (
-                  <li key={page.path} className="flex items-baseline gap-3">
-                    <span className="text-xs font-semibold tabular-nums text-muted-foreground">
-                      {index + 1}
-                    </span>
-                    <span className="min-w-0 flex-1 truncate font-mono text-sm text-foreground">
-                      {page.path}
-                    </span>
-                    <span className="ml-auto shrink-0 text-right">
-                      <span className="block text-sm font-bold tabular-nums text-foreground">
-                        {page.views}
+                  <div
+                    key={page.path}
+                    className="flex items-center justify-between border-b border-border py-2 last:border-0"
+                  >
+                    <div className="flex min-w-0 items-center gap-2.5">
+                      <span className="w-4 font-mono text-xs text-muted-foreground">
+                        {index + 1}
                       </span>
-                      <span className="block text-[11px] text-muted-foreground">
-                        {page.views === 1 ? 'view' : 'views'}
+                      <span className="truncate text-sm font-medium text-foreground">
+                        {page.path}
                       </span>
-                    </span>
-                  </li>
+                    </div>
+                    {/* R6-H1: the live's big number is the identified count;
+                        total views rides along as the small label. */}
+                    <div className="ml-3 shrink-0 text-right">
+                      <div className="text-sm font-semibold text-foreground">
+                        {page.identified}
+                      </div>
+                      <div className="text-[10px] text-muted-foreground">
+                        {page.views === 1 ? '1 view' : `${page.views} views`}
+                      </div>
+                    </div>
+                  </div>
                 ))}
-              </ol>
+              </div>
             )}
           </CardContent>
         </Card>

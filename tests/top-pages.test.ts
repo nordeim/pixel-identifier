@@ -35,7 +35,22 @@ async function seed() {
     }
   }
 
-  return { user, events }
+  async function identifications(...specs: [path: string, count: number][]) {
+    for (const [path, count] of specs) {
+      for (let i = 0; i < count; i++) {
+        await db.event.create({
+          data: {
+            siteId: site.id,
+            visitorId: visitor.id,
+            name: 'identification',
+            path,
+          },
+        })
+      }
+    }
+  }
+
+  return { user, events, identifications }
 }
 
 /**
@@ -61,13 +76,14 @@ describe('getTopPages (SQL groupBy, contract preserved)', () => {
 
     const pages = await getTopPages(user.id)
     expect(pages).toHaveLength(5)
-    expect(pages[0]).toEqual({ path: '/', views: 7 })
-    expect(pages[1]).toEqual({ path: '/pricing', views: 5 })
-    expect(pages[2]).toEqual({ path: '/blog/a', views: 3 })
-    expect(pages[3]).toEqual({ path: '/blog/b', views: 2 })
+    expect(pages[0]).toEqual({ path: '/', views: 7, identified: 0 })
+    expect(pages[1]).toEqual({ path: '/pricing', views: 5, identified: 0 })
+    expect(pages[2]).toEqual({ path: '/blog/a', views: 3, identified: 0 })
+    expect(pages[3]).toEqual({ path: '/blog/b', views: 2, identified: 0 })
     // Tie between /docs and /about (1 view each) — deterministic by path.
     expect(['/about', '/docs']).toContain(pages[4].path)
     expect(pages[4].views).toBe(1)
+    expect(pages[4].identified).toBe(0)
   })
 
   it('breaks view-count ties deterministically by path asc', async () => {
@@ -78,7 +94,7 @@ describe('getTopPages (SQL groupBy, contract preserved)', () => {
     expect(pages.map((page) => page.path)).toEqual(['/a-page', '/m-page', '/z-page'])
   })
 
-  it('ignores identification events', async () => {
+  it('ignores identification events when ranking by views', async () => {
     const { user, events } = await seed()
     await events(['/', 3])
 
@@ -89,7 +105,9 @@ describe('getTopPages (SQL groupBy, contract preserved)', () => {
     })
 
     const pages = await getTopPages(user.id)
-    expect(pages).toEqual([{ path: '/', views: 3 }])
+    // /checkout has no pageviews, so it never ranks; the identification
+    // event does not inflate the views of any page either.
+    expect(pages).toEqual([{ path: '/', views: 3, identified: 0 }])
   })
 
   it('returns an empty array for a user with no events', async () => {
@@ -114,6 +132,40 @@ describe('getTopPages (SQL groupBy, contract preserved)', () => {
     })
 
     expect(await getTopPages(stranger.id)).toEqual([])
-    expect(await getTopPages(user.id)).toEqual([{ path: '/mine', views: 4 }])
+    expect(await getTopPages(user.id)).toEqual([
+      { path: '/mine', views: 4, identified: 0 },
+    ])
+  })
+
+  it('counts identification events per page as the identified metric (R6-H1)', async () => {
+    const { user, events, identifications } = await seed()
+    await events(['/', 7], ['/pricing', 5])
+    await identifications(['/', 2], ['/pricing', 1])
+
+    const pages = await getTopPages(user.id)
+    expect(pages[0]).toEqual({ path: '/', views: 7, identified: 2 })
+    expect(pages[1]).toEqual({ path: '/pricing', views: 5, identified: 1 })
+  })
+
+  it('lists pages with zero identifications like the live (big 0, views label)', async () => {
+    const { user, events, identifications } = await seed()
+    await events(['/round5-status-test', 2], ['/', 2])
+    await identifications(['/', 1])
+
+    const pages = await getTopPages(user.id)
+    // Same view count: deterministic order by path asc — "/" first.
+    expect(pages[0]).toEqual({ path: '/', views: 2, identified: 1 })
+    expect(pages[1]).toEqual({ path: '/round5-status-test', views: 2, identified: 0 })
+  })
+
+  it('keeps identification events out of the views count (contract preserved)', async () => {
+    const { user, events, identifications } = await seed()
+    await events(['/', 3])
+    await identifications(['/checkout', 1])
+
+    const pages = await getTopPages(user.id)
+    // The identification-only path never appears (base ranking is views),
+    // and the event does not inflate any page's views.
+    expect(pages).toEqual([{ path: '/', views: 3, identified: 0 }])
   })
 })

@@ -172,19 +172,39 @@ export async function getTrend(userId: string, days = 14): Promise<TrendPoint[]>
 export interface TopPage {
   path: string
   views: number
+  /** Identification events resolved on this page (live: the big row number). */
+  identified: number
 }
 
 export async function getTopPages(userId: string, limit = 5): Promise<TopPage[]> {
   // Aggregated in SQL (round-4 plan R4): no more loading every pageview
   // row into JS. Ties break deterministically by path ascending.
-  const grouped = await db.event.groupBy({
-    by: ['path'],
-    where: { site: { userId }, name: 'pageview' },
-    _count: { _all: true },
-    orderBy: [{ _count: { path: 'desc' } }, { path: 'asc' }],
-    take: limit,
-  })
-  return grouped.map((row) => ({ path: row.path, views: row._count._all }))
+  const [pageviews, identifications] = await Promise.all([
+    db.event.groupBy({
+      by: ['path'],
+      where: { site: { userId }, name: 'pageview' },
+      _count: { _all: true },
+      orderBy: [{ _count: { path: 'desc' } }, { path: 'asc' }],
+      take: limit,
+    }),
+    // R6-H1: the live's Top Pages shows the identified count per page as the
+    // big number — a second groupBy over identification events enriches the
+    // ranked rows without loading any event rows into JS.
+    db.event.groupBy({
+      by: ['path'],
+      where: { site: { userId }, name: 'identification' },
+      _count: { _all: true },
+    }),
+  ])
+
+  const identifiedByPath = new Map(
+    identifications.map((row) => [row.path, row._count._all]),
+  )
+  return pageviews.map((row) => ({
+    path: row.path,
+    views: row._count._all,
+    identified: identifiedByPath.get(row.path) ?? 0,
+  }))
 }
 
 export interface VisitorSegmentCounts {
