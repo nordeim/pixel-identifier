@@ -37,6 +37,18 @@ async function seed() {
       },
     })
   }
+  // R7-F1: pageviews from the IDENTIFIED visitor — the feed must keep
+  // showing the anonymous id for those rows (the live never rewrites a
+  // pageview row into an email, even after the visitor is identified).
+  await db.event.create({
+    data: {
+      siteId: site.id,
+      visitorId: visitorIdentified.id,
+      name: 'pageview',
+      path: '/identified-pageview',
+      createdAt: new Date(base + 101 * 60_000),
+    },
+  })
   return user
 }
 
@@ -53,15 +65,33 @@ describe('listActivity (F-25: cursor pagination, shared query)', () => {
     expect(first.events).toHaveLength(60)
     expect(first.nextCursor).not.toBeNull()
     // Newest first.
-    expect(first.events[0].path).toBe('/page-99')
+    expect(first.events[0].path).toBe('/identified-pageview')
     expect(first.events[0].name).toBe('pageview')
     // Identified visitors show email; anonymous show truncated id.
     const identified = first.events.find((e) => e.name === 'identification')
     expect(identified?.email).toBe('known@activity.example')
     expect(identified?.anonymousId).toBeNull()
-    const anonymous = first.events.find((e) => e.name === 'pageview')
+    const anonymous = first.events.find((e) => e.name === 'pageview' && e.path.startsWith('/page-'))
     expect(anonymous?.anonymousId).toBe('v_act_anonym')
     expect(anonymous?.email).toBeNull()
+  })
+
+  it('R7-F1: pageview rows from identified visitors show the anonymous id, not the email', async () => {
+    const user = await seed()
+
+    const first = await listActivity(user.id, { take: 60 })
+
+    // The newest event is a pageview from the identified visitor.
+    const pageview = first.events[0]
+    expect(pageview.path).toBe('/identified-pageview')
+    expect(pageview.name).toBe('pageview')
+    expect(pageview.email).toBeNull()
+    expect(pageview.anonymousId).toBe('v_act_identi') // 12-char truncation
+
+    // Identification rows still carry the email.
+    const identification = first.events.find((e) => e.name === 'identification')
+    expect(identification?.email).toBe('known@activity.example')
+    expect(identification?.anonymousId).toBeNull()
   })
 
   it('walks the cursor to the remaining events', async () => {
@@ -70,11 +100,11 @@ describe('listActivity (F-25: cursor pagination, shared query)', () => {
     const first = await listActivity(user.id, { take: 60 })
     const second = await listActivity(user.id, { take: 60, cursor: first.nextCursor ?? undefined })
 
-    expect(second.events).toHaveLength(40)
+    expect(second.events).toHaveLength(41)
     expect(second.nextCursor).toBeNull()
     // Contiguous, no overlap, still descending.
-    expect(second.events[0].path).toBe('/page-39')
-    expect(second.events[39].path).toBe('/page-0')
+    expect(second.events[0].path).toBe('/page-40')
+    expect(second.events[40].path).toBe('/page-0')
     const firstIds = new Set(first.events.map((e) => e.id))
     expect(second.events.every((e) => !firstIds.has(e.id))).toBe(true)
   })
