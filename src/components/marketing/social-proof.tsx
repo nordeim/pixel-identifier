@@ -1,7 +1,8 @@
 import { Star } from 'lucide-react'
 
 const LOGOS = [
-  'Salesforce', 'Amplify', 'NexGen', 'RevBoost', 'TechCorp', 'GrowthLabs', 'ScaleUp', 'DataFlow', 'LeadGen Pro',
+  // R7: the live's exact marquee set (10 names).
+  'TechCorp', 'GrowthLabs', 'ScaleUp', 'DataFlow', 'LeadGen Pro', 'CloudBase', 'SalesForge', 'Amplify', 'NexGen', 'RevBoost',
 ]
 
 const TESTIMONIALS = [
@@ -9,22 +10,16 @@ const TESTIMONIALS = [
     quote: 'Pixelco identified 3,200 leads in our first month. Our sales pipeline has never been this full.',
     name: 'Sarah Chen',
     role: 'VP Marketing, GrowthLabs',
-    initials: 'SC',
-    color: 'bg-amber-500',
   },
   {
     quote: "We went from guessing who visits our site to knowing their exact email. Game changer for outbound.",
     name: 'Marcus Johnson',
     role: 'Head of Sales, ScaleUp',
-    initials: 'MJ',
-    color: 'bg-teal-600',
   },
   {
     quote: 'Setup took 2 minutes. Within an hour, we had a list of high-intent visitors to reach out to.',
     name: 'Emily Park',
     role: 'Founder, DataFlow',
-    initials: 'EP',
-    color: 'bg-rose-500',
   },
 ]
 
@@ -32,7 +27,9 @@ const STATS = [
   { value: '20%', label: 'Avg match rate' },
   { value: '30s', label: 'Install time' },
   { value: 'B2B+B2C', label: 'Both supported' },
-  { value: 'Real-time', label: 'Identification' },
+  // R7-V11: the live renders this stat capitalized with the gradient-hero
+  // text treatment.
+  { value: 'Real-Time', label: 'Identification' },
 ]
 
 export function LogoStrip() {
@@ -76,17 +73,11 @@ export function Testimonials() {
                 “{t.quote}”
               </blockquote>
             </div>
-            <figcaption className="mt-6 flex items-center gap-3">
-              <span
-                className={`flex h-10 w-10 items-center justify-center rounded-full text-xs font-bold text-white ${t.color}`}
-                aria-hidden="true"
-              >
-                {t.initials}
-              </span>
-              <div>
-                <p className="text-sm font-semibold text-foreground">{t.name}</p>
-                <p className="text-xs text-muted-foreground">{t.role}</p>
-              </div>
+            {/* R7-V7: the live renders the author as plain stacked text
+                (no avatar circles). */}
+            <figcaption className="mt-6">
+              <p className="text-sm font-semibold text-foreground">{t.name}</p>
+              <p className="text-xs text-muted-foreground">{t.role}</p>
             </figcaption>
           </figure>
         ))}
@@ -101,10 +92,12 @@ export function StatsBar() {
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 sm:px-6 lg:grid-cols-4">
         {STATS.map((stat) => (
           <div key={stat.label} className="text-center">
-            <p className="text-3xl font-extrabold tracking-tight text-primary sm:text-4xl">
+            {/* R7-V11: the live's stat values carry the gradient-hero text
+                treatment with mb-1 (not text-primary + tracking-tight). */}
+            <p className="mb-1 text-gradient-hero text-3xl font-extrabold sm:text-4xl">
               {stat.value}
             </p>
-            <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {stat.label}
             </p>
           </div>
