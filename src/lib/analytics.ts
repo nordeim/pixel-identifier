@@ -187,6 +187,32 @@ export async function getTopPages(userId: string, limit = 5): Promise<TopPage[]>
   return grouped.map((row) => ({ path: row.path, views: row._count._all }))
 }
 
+export interface VisitorSegmentCounts {
+  individual: number
+  company: number
+}
+
+/**
+ * Global identified-visitor segment counts for the Visitors topbar subtitle
+ * (R6-C1): fetched server-side in the dashboard layout so the subtitle is
+ * real HTML on first paint — the client store only refreshes it after
+ * filter changes. Mirrors the `counts` tail of `listVisitors` (identified
+ * visitors only, ownership-scoped) without loading any rows.
+ */
+export async function getVisitorSegmentCounts(
+  userId: string,
+): Promise<VisitorSegmentCounts> {
+  const [individual, company] = await Promise.all([
+    db.visitor.count({
+      where: { site: { userId }, email: { not: null }, type: 'individual' },
+    }),
+    db.visitor.count({
+      where: { site: { userId }, email: { not: null }, type: 'company' },
+    }),
+  ])
+  return { individual, company }
+}
+
 export interface VisitorListItem {
   id: string
   email: string | null

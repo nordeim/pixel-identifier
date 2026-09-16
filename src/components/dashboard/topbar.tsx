@@ -8,6 +8,7 @@ import { SidebarNav, type UsageProps } from '@/components/dashboard/sidebar-nav'
 import { toggleSidebar, useChromeState } from '@/components/dashboard/chrome-store'
 import { PAGE_META, NOTIFICATION_DOT_COLOR, visitorsSubtitle } from '@/lib/dashboard-nav'
 import { initialsForEmail } from '@/lib/format'
+import type { VisitorsCounts } from '@/components/dashboard/chrome-store'
 
 function pageMeta(pathname: string) {
   return PAGE_META[pathname] ?? PAGE_META['/dashboard']
@@ -17,11 +18,16 @@ export function Topbar({
   email,
   usage,
   unread,
+  initialVisitorsCounts,
 }: {
   email: string
   usage: UsageProps
   /** True iff an identification resolved in the last 7 days (honest dot). */
   unread: boolean
+  /** Server-fetched global segment counts (R6-C1) — the visitors subtitle
+   * is real HTML on first paint; the client store only refreshes it after
+   * filter changes on the visitors page. */
+  initialVisitorsCounts: VisitorsCounts
 }) {
   const pathname = usePathname()
   const meta = pageMeta(pathname)
@@ -29,8 +35,8 @@ export function Topbar({
   const isVisitors = pathname === '/dashboard/visitors'
 
   let subtitle = meta.subtitle
-  if (isVisitors && visitorsCounts) {
-    subtitle = visitorsSubtitle(visitorsCounts)
+  if (isVisitors) {
+    subtitle = visitorsSubtitle(visitorsCounts ?? initialVisitorsCounts)
   }
 
   return (

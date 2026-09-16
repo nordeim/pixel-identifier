@@ -70,8 +70,10 @@ export const PAGE_META: Record<string, PageMeta> = {
   },
   '/dashboard/visitors': {
     title: 'Visitors',
-    // Filled with real counts at render time via `visitorsSubtitle`.
-    subtitle: '{individuals} individuals · {companies} companies identified',
+    // R6-C1: never a brace template — the real counts line is computed
+    // server-side from `getVisitorSegmentCounts` and passed through the
+    // layout, so this fallback is not rendered in practice.
+    subtitle: 'Your identified visitors',
   },
   '/dashboard/activity': {
     title: 'Activity Log',
@@ -102,17 +104,15 @@ export const NOTIFICATION_DOT_COLOR = '#EC4699'
 
 /**
  * Format the Visitors topbar subtitle from segment counts
- * (live: "2 individuals · 0 companies identified").
+ * (live: "2 individuals · 0 companies identified"). The live app never
+ * switches to singular forms ("1 companies" is rendered as-is), so neither
+ * do we (R6-H2 parity).
  */
 export function visitorsSubtitle(counts: {
   individual: number
   company: number
 }): string {
-  const individuals =
-    counts.individual === 1 ? '1 individual' : `${counts.individual} individuals`
-  const companies =
-    counts.company === 1 ? '1 company' : `${counts.company} companies`
-  return `${individuals} · ${companies} identified`
+  return `${counts.individual} individuals · ${counts.company} companies identified`
 }
 
 export interface ActivityEventLike {

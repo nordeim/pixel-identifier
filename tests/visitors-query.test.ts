@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { db } from '@/lib/db'
-import { listVisitors } from '@/lib/analytics'
+import { getVisitorSegmentCounts, listVisitors } from '@/lib/analytics'
 
 async function seed() {
   const user = await db.user.create({
@@ -137,5 +137,47 @@ describe('listVisitors (F-24: server-side search, filters, pagination)', () => {
     const result = await listVisitors(user.id, { page: 99, pageSize: 25 })
     expect(result.rows).toHaveLength(0)
     expect(result.page).toBe(99)
+  })
+})
+
+describe('getVisitorSegmentCounts (R6-C1: server-rendered topbar subtitle)', () => {
+  beforeEach(async () => {
+    await db.user.deleteMany()
+  })
+
+  it('counts identified individuals and companies across all of the user’s sites', async () => {
+    const { user } = await seed()
+
+    const counts = await getVisitorSegmentCounts(user.id)
+    // The seed creates 12 identified individuals and 8 identified companies;
+    // the 40 anonymous visitors must not count toward either segment.
+    expect(counts).toEqual({ individual: 12, company: 8 })
+  })
+
+  it('never leaks another user’s visitors', async () => {
+    const { user } = await seed()
+
+    const stranger = await db.user.create({
+      data: {
+        email: `stranger-${crypto.randomUUID()}@test.example`,
+        passwordHash: 'not-a-real-hash',
+      },
+    })
+
+    expect(await getVisitorSegmentCounts(stranger.id)).toEqual({
+      individual: 0,
+      company: 0,
+    })
+    expect(await getVisitorSegmentCounts(user.id)).toEqual({ individual: 12, company: 8 })
+  })
+
+  it('returns zeros for a user with no visitors at all', async () => {
+    const user = await db.user.create({
+      data: {
+        email: `empty-${crypto.randomUUID()}@test.example`,
+        passwordHash: 'not-a-real-hash',
+      },
+    })
+    expect(await getVisitorSegmentCounts(user.id)).toEqual({ individual: 0, company: 0 })
   })
 })

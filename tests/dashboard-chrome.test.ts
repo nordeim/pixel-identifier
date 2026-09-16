@@ -90,6 +90,12 @@ describe('dashboard-nav chrome metadata', () => {
     )
   })
 
+  it('never ships a raw format template as a subtitle (R6-C1: the visitors template rendered literal {individuals} braces on server paint)', () => {
+    for (const meta of Object.values(PAGE_META)) {
+      expect(meta.subtitle, `${meta.title} subtitle must not be a brace template`).not.toMatch(/[{}]/)
+    }
+  })
+
   it('exposes the live hot-pink unread dot color', () => {
     expect(NOTIFICATION_DOT_COLOR).toBe('#EC4699')
   })
@@ -121,8 +127,14 @@ describe('visitorsSubtitle', () => {
     expect(visitorsSubtitle({ individual: 5, company: 3 })).toBe(
       '5 individuals · 3 companies identified',
     )
+  })
+
+  it('never switches to singular forms — the live renders “1 companies” (R6-H2 parity)', () => {
+    expect(visitorsSubtitle({ individual: 1, company: 0 })).toBe(
+      '1 individuals · 0 companies identified',
+    )
     expect(visitorsSubtitle({ individual: 1, company: 1 })).toBe(
-      '1 individual · 1 company identified',
+      '1 individuals · 1 companies identified',
     )
   })
 })

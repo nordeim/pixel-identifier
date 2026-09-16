@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { getUsage, hasRecentIdentifications } from '@/lib/analytics'
+import { getUsage, getVisitorSegmentCounts, hasRecentIdentifications } from '@/lib/analytics'
 import { formatPrice } from '@/lib/plans'
 import { requireUser } from '@/lib/analytics'
 import { SidebarShell } from '@/components/dashboard/sidebar-shell'
@@ -14,9 +14,10 @@ import { Topbar } from '@/components/dashboard/topbar'
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const user = await requireUser(await getServerSession(authOptions))
 
-  const [usage, unread] = await Promise.all([
+  const [usage, unread, visitorsCounts] = await Promise.all([
     getUsage(user.id),
     hasRecentIdentifications(user.id),
+    getVisitorSegmentCounts(user.id),
   ])
   const usageProps = {
     planName: usage.plan.name,
@@ -34,7 +35,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <SidebarShell usage={usageProps} />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar email={user.email} usage={usageProps} unread={unread} />
+        <Topbar
+          email={user.email}
+          usage={usageProps}
+          unread={unread}
+          initialVisitorsCounts={visitorsCounts}
+        />
         <main className="flex-1 overflow-auto p-6">{children}</main>
       </div>
     </div>
