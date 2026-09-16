@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "Here are the visual differences between the original (IMAGE 1) and the clone (IMAGE 2):\n\n**1. Top Right User Avatar:**\n*   **Image 1:** Displays the initials \"**SE**\".\n*   **Image 2:** Displays the initials \"**DE**\".\n\n**2. \"Add Domain\" Button (in the \"Add a Domain\" card):**\n*   **Image 1:** Light yellow background with a plus icon (**+ Add Domain**).\n*   **Image 2:** Darker, solid yellow/gold background without a plus icon (**Add Domain**).\n\n**3. Domain List Content (\"Your Domains\" section):**\n*   **Image 1:** Contains **two** domain entries:\n    *   `second-test-domain.com` (Status: Pending, Visitors: 0)\n    *   `clone-research-test.com` (Status: Verified, Visitors: 3)\n*   **Image 2:** Contains only **one** domain entry:\n    *   `demo-store.example.com` (Status: Verified, Visitors: 3, Date: Sep 16, 2026)\n\n**4. Bottom Left Footer Area:**\n*   **Image 1:** Shows standard text \"**Sign out**\".\n*   **Image 2:** Shows text \"**L...n out**\" (partially obscured) with a dark circular tooltip containing the letter \"**N**\" hovering over it.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789533339,
+  "id": "202609161235320a33619e562f41b3",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "202609161235320a33619e562f41b3",
+  "usage": {
+    "completion_tokens": 294,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 3406,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 3700
+  }
+}

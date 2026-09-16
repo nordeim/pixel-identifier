@@ -1,0 +1,362 @@
+- generic [ref=e1] clickable [onclick]
+  - region "Notifications (F8)" [ref=e2]
+    - list
+  - region "Notifications alt+T" [ref=e3]
+  - StaticText "🚀 Launch Offer — Get 100 free visitor identifications when you sign up today"
+  - link "Claim Now" [ref=e4]
+  - button [ref=e5]
+  - navigation
+    - link "Pixelco Pixelco By Ai Viral" [ref=e6]
+      - image "Pixelco"
+      - StaticText "Pixelco"
+      - StaticText "By Ai Viral"
+    - link "Benefits" [ref=e7]
+    - link "How It Works" [ref=e8]
+    - link "Pricing" [ref=e9]
+    - link "FAQ" [ref=e10]
+    - link "Log In" [ref=e11]
+      - button "Log In" [ref=e20]
+    - link "Start Identifying" [ref=e12]
+      - button "Start Identifying" [ref=e21]
+  - main
+    - generic
+      - StaticText "★★★★★"
+      - StaticText "WORLD'S FIRST B2C EMAIL IDENTIFICATION"
+    - heading "Identify Anonymous Website Visitors — By Their Email" [level=1, ref=e22]
+      - StaticText "Identify Anonymous Website Visitors — By Their Email"
+    - paragraph
+      - StaticText "One pixel snippet reveals who's browsing your site. B2B companies "
+      - emphasis
+        - StaticText "and"
+      - StaticText " individual consumers — identified by their real email address. No forms. No popups. No cookies."
+    - strong
+      - StaticText "1,200+"
+    - StaticText " websites using Pixelco"
+    - StaticText "Avg match rate: "
+    - strong
+      - StaticText "20%"
+    - StaticText "Setup in "
+    - strong
+      - StaticText "2 minutes"
+    - image "Customer"
+    - image "Customer"
+    - image "Customer"
+    - image "Customer"
+    - image "Customer"
+    - StaticText "★★★★★"
+    - StaticText "Trusted by "
+    - strong
+      - StaticText "1,200+"
+    - StaticText " businesses worldwide"
+    - link "Start Identifying Visitors" [ref=e23]
+      - button "Start Identifying Visitors" [ref=e51]
+    - link "See Live Demo" [ref=e24]
+      - button "See Live Demo" [ref=e52]
+    - paragraph
+      - StaticText "Takes less than 2 minutes · Free plan available · No credit card required"
+    - generic
+      - StaticText "Live Visitor Feed"
+      - StaticText "Real-time"
+      - paragraph
+        - StaticText "847"
+      - paragraph
+        - StaticText "Visitors Today"
+      - paragraph
+        - StaticText "Pixelco"
+      - paragraph
+        - StaticText "169"
+      - paragraph
+        - StaticText "Emails Found"
+      - generic
+        - generic
+        - generic
+        - generic
+      - StaticText "Match Rate"
+      - StaticText "20%"
+    - StaticText "TechCorp"
+    - StaticText "GrowthLabs"
+    - StaticText "ScaleUp"
+    - StaticText "DataFlow"
+    - StaticText "LeadGen Pro"
+    - StaticText "CloudBase"
+    - StaticText "SalesForge"
+    - StaticText "Amplify"
+    - StaticText "NexGen"
+    - StaticText "RevBoost"
+    - StaticText "TechCorp"
+    - StaticText "GrowthLabs"
+    - StaticText "ScaleUp"
+    - StaticText "DataFlow"
+    - StaticText "LeadGen Pro"
+    - StaticText "CloudBase"
+    - StaticText "SalesForge"
+    - StaticText "Amplify"
+    - StaticText "NexGen"
+    - StaticText "RevBoost"
+    - paragraph
+      - StaticText "\"Pixelco identified 3,200 leads in our first month. Our sales pipeline has never been this full.\""
+    - paragraph
+      - StaticText "Sarah Chen"
+    - paragraph
+      - StaticText "VP Marketing, GrowthLabs"
+    - paragraph
+      - StaticText "\"We went from guessing who visits our site to knowing their exact email. Game changer for outbound.\""
+    - paragraph
+      - StaticText "Marcus Johnson"
+    - paragraph
+      - StaticText "Head of Sales, ScaleUp"
+    - paragraph
+      - StaticText "\"Setup took 2 minutes. Within an hour, we had a list of high-intent visitors to reach out to.\""
+    - paragraph
+      - StaticText "Emily Park"
+    - paragraph
+      - StaticText "Founder, DataFlow"
+    - StaticText "20%"
+    - StaticText "AVG MATCH RATE"
+    - StaticText "30s"
+    - StaticText "INSTALL TIME"
+    - StaticText "B2B+B2C"
+    - StaticText "BOTH SUPPORTED"
+    - StaticText "Real-Time"
+    - StaticText "IDENTIFICATION"
+    - StaticText "PERFECT FIT"
+    - heading "Who Is Pixelco For?" [level=2, ref=e25]
+    - paragraph
+      - StaticText "Designed for anyone who wants to turn anonymous website traffic into actionable leads."
+    - heading "SaaS Companies" [level=3, ref=e26]
+    - paragraph
+      - StaticText "Know which companies are evaluating your product"
+    - heading "E-Commerce Stores" [level=3, ref=e27]
+    - paragraph
+      - StaticText "Recover abandoned browsers with targeted emails"
+    - heading "Startups" [level=3, ref=e28]
+    - paragraph
+      - StaticText "Turn early traffic into your first paying customers"
+    - heading "Agencies" [level=3, ref=e29]
+    - paragraph
+      - StaticText "Deliver lead intelligence to clients automatically"
+    - heading "Marketers" [level=3, ref=e30]
+    - paragraph
+      - StaticText "Measure campaign ROI by seeing who actually visits"
+    - StaticText "OUR PROCESS"
+    - heading "How We Identify Your Visitors In 4 Simple Steps" [level=2, ref=e31]
+      - StaticText "How We Identify Your Visitors"
+      - LineBreak "\n"
+      - StaticText "In 4 Simple Steps"
+    - paragraph
+      - StaticText "Most identifications happen within seconds of a visitor landing on your site."
+    - generic
+      - StaticText "01"
+      - heading "Install the Pixel" [level=3, ref=e53]
+      - paragraph
+        - StaticText "Paste one line of JavaScript into your website's <head> tag. Works on HTML, WordPress, Shopify, React — anything."
+    - generic
+      - StaticText "02"
+      - heading "We Match Visitors" [level=3, ref=e54]
+      - paragraph
+        - StaticText "Our proprietary identity graph cross-references visitor signals to resolve their real email address in real time."
+    - generic
+      - StaticText "03"
+      - heading "Get Real Emails" [level=3, ref=e55]
+      - paragraph
+        - StaticText "See identified visitors in your dashboard with their email, company (if B2B), pages viewed, and confidence score."
+    - generic
+      - StaticText "04"
+      - heading "Export & Convert" [level=3, ref=e56]
+      - paragraph
+        - StaticText "Push leads to your CRM, trigger email sequences, or export CSV. Turn traffic into revenue on autopilot."
+    - StaticText "Real-time identification"
+    - StaticText "100% Cookieless"
+    - StaticText "Works on any platform"
+    - StaticText "No forms needed"
+    - StaticText "BENEFITS"
+    - heading "Everything you need to unmask your traffic." [level=2, ref=e32]
+      - StaticText "Everything you need to"
+      - LineBreak "\n"
+      - StaticText "unmask your traffic."
+    - heading "B2C Email Identification" [level=3, ref=e33]
+    - paragraph
+      - StaticText "The first tool globally that identifies individual consumers by personal email — not just companies."
+    - heading "B2B Company Reveal" [level=3, ref=e34]
+    - paragraph
+      - StaticText "See which companies visit your site with firmographic data like industry, size, and location."
+    - heading "Any Website, Any Platform" [level=3, ref=e35]
+    - paragraph
+      - StaticText "One JavaScript snippet works on HTML, WordPress, Shopify, Webflow, React, and more."
+    - heading "Real-Time Dashboard" [level=3, ref=e36]
+    - paragraph
+      - StaticText "Track pageviews, visitor trends, identification rates, and top pages in a beautiful live dashboard."
+    - heading "Instant Integrations" [level=3, ref=e37]
+    - paragraph
+      - StaticText "Push leads to HubSpot, Salesforce, Zapier, or webhooks. Export CSV anytime."
+    - heading "Privacy Compliant" [level=3, ref=e38]
+    - paragraph
+      - StaticText "Built with GDPR and CCPA in mind. Only identifies publicly matchable data. No cookies used."
+    - image "Pixelco visitors view showing identified companies and individuals"
+    - heading "Why Teams Switch to Pixelco" [level=2, ref=e39]
+    - paragraph
+      - StaticText "Get individual-level identification that competitors simply can't match."
+    - heading "Traditional IP-Lookup Tools" [level=3, ref=e40]
+    - paragraph
+      - StaticText "Company-level only"
+    - list
+      - listitem [level=1]
+        - StaticText "Only identifies companies"
+      - listitem [level=1]
+        - StaticText "No individual emails"
+      - listitem [level=1]
+        - StaticText "B2B only — zero B2C"
+      - listitem [level=1]
+        - StaticText "Requires expensive plans"
+      - listitem [level=1]
+        - StaticText "Low match rates (<5%)"
+    - generic
+      - StaticText "BEST VALUE"
+      - heading "Pixelco" [level=3, ref=e57]
+      - paragraph
+        - StaticText "Individual email identification"
+      - list
+        - listitem [level=1]
+        - listitem [level=1]
+        - listitem [level=1]
+        - listitem [level=1]
+        - listitem [level=1]
+      - link "Start Free" [ref=e58]
+        - button "Start Free" [ref=e86]
+    - StaticText "PRICING"
+    - heading "Start Free. Scale as You Grow." [level=2, ref=e41]
+      - StaticText "Start Free. Scale as You Grow."
+    - paragraph
+      - StaticText "No credit card required · Cancel anytime · Results in minutes"
+    - StaticText "Monthly"
+    - button "Toggle annual pricing" [ref=e42]
+    - StaticText "Annual"
+    - StaticText "Save 20%"
+    - generic
+      - heading "Free" [level=3, ref=e59]
+      - paragraph
+        - StaticText "Test the waters — see what Pixelco can do"
+      - StaticText "$0"
+      - paragraph
+      - link "Free Tier" [ref=e60]
+        - button "Free Tier" [ref=e87]
+      - list
+        - listitem [level=1]
+        - listitem [level=1]
+    - generic
+      - heading "Starter" [level=3, ref=e61]
+      - paragraph
+        - StaticText "For small teams ready to convert more traffic"
+      - generic
+        - StaticText "$63/mo"
+      - paragraph
+        - StaticText "billed annually"
+      - link "Get Started" [ref=e62]
+        - button "Get Started" [ref=e88]
+      - list
+        - listitem [level=1]
+        - listitem [level=1]
+        - listitem [level=1]
+        - listitem [level=1]
+    - generic
+      - StaticText "POPULAR"
+      - heading "Growth" [level=3, ref=e63]
+      - paragraph
+        - StaticText "For growing businesses that need serious lead gen"
+      - generic
+        - StaticText "$199/mo"
+      - paragraph
+        - StaticText "billed annually"
+      - link "Get Started" [ref=e64]
+        - button "Get Started" [ref=e89]
+      - list
+        - listitem [level=1]
+        - listitem [level=1]
+        - listitem [level=1]
+        - listitem [level=1]
+    - generic
+      - heading "Scale" [level=3, ref=e65]
+      - paragraph
+        - StaticText "For high-traffic sites and agencies"
+      - generic
+        - StaticText "$639/mo"
+      - paragraph
+        - StaticText "billed annually"
+      - link "Get Started" [ref=e66]
+        - button "Get Started" [ref=e90]
+      - list
+        - listitem [level=1]
+        - listitem [level=1]
+        - listitem [level=1]
+        - listitem [level=1]
+    - StaticText "FAQ"
+    - heading "Frequently Asked Questions" [level=2, ref=e43]
+    - paragraph
+      - StaticText "Have questions? We've got answers."
+    - heading "How does Pixelco identify visitors by email?" [level=3, ref=e44]
+      - button "How does Pixelco identify visitors by email?" [expanded=false, ref=e67]
+        - StaticText "How does Pixelco identify visitors by email?"
+    - heading "Does it really work for B2C (individual) visitors?" [level=3, ref=e45]
+      - button "Does it really work for B2C (individual) visitors?" [expanded=false, ref=e68]
+        - StaticText "Does it really work for B2C (individual) visitors?"
+    - heading "How do I install the pixel?" [level=3, ref=e46]
+      - button "How do I install the pixel?" [expanded=false, ref=e69]
+        - StaticText "How do I install the pixel?"
+    - heading "Is this legal and privacy-compliant?" [level=3, ref=e47]
+      - button "Is this legal and privacy-compliant?" [expanded=false, ref=e70]
+        - StaticText "Is this legal and privacy-compliant?"
+    - heading "What's the typical match rate?" [level=3, ref=e48]
+      - button "What's the typical match rate?" [expanded=false, ref=e71]
+        - StaticText "What's the typical match rate?"
+    - heading "Can I export leads or integrate with my CRM?" [level=3, ref=e49]
+      - button "Can I export leads or integrate with my CRM?" [expanded=false, ref=e72]
+        - StaticText "Can I export leads or integrate with my CRM?"
+    - heading "What happens if I exceed my plan's identification limit?" [level=3, ref=e50]
+      - button "What happens if I exceed my plan's identification limit?" [expanded=false, ref=e73]
+        - StaticText "What happens if I exceed my plan's identification limit?"
+    - generic
+      - generic
+        - heading "Stop Losing Anonymous Visitors." [level=2, ref=e91]
+        - paragraph
+        - link "Start Identifying Visitors — Free" [ref=e92]
+          - button "Start Identifying Visitors — Free" [ref=e93]
+  - contentinfo
+    - link "Pixelco Pixelco By Ai Viral" [ref=e13]
+      - image "Pixelco"
+      - StaticText "Pixelco"
+      - StaticText "By Ai Viral"
+    - paragraph
+      - StaticText "The world's first B2C email identification platform. Know who's visiting your site — by their real email."
+    - link [ref=e14]
+    - link [ref=e15]
+    - link [ref=e16]
+    - heading "PRODUCT" [level=4, ref=e17]
+    - list
+      - listitem [level=1]
+        - link "Features" [ref=e74]
+      - listitem [level=1]
+        - link "Pricing" [ref=e75]
+      - listitem [level=1]
+        - link "How It Works" [ref=e76]
+      - listitem [level=1]
+        - link "Documentation" [ref=e77]
+    - heading "COMPANY" [level=4, ref=e18]
+    - list
+      - listitem [level=1]
+        - link "About" [ref=e78]
+      - listitem [level=1]
+        - link "Contact" [ref=e79]
+      - listitem [level=1]
+        - link "Careers" [ref=e80]
+      - listitem [level=1]
+        - link "Blog" [ref=e81]
+    - heading "LEGAL" [level=4, ref=e19]
+    - list
+      - listitem [level=1]
+        - link "Privacy Policy" [ref=e82]
+      - listitem [level=1]
+        - link "Terms of Service" [ref=e83]
+      - listitem [level=1]
+        - link "GDPR" [ref=e84]
+      - listitem [level=1]
+        - link "CCPA" [ref=e85]

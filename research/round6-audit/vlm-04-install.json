@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "Here are the visual differences between the original (Image 1) and the clone (Image 2):\n\n*   **Top Right User Badge:** The text in the yellow circle changed from **\"SE\"** to **\"DE\"**.\n*   **Site Selector Dropdown:** The text inside the dropdown menu at the top right changed from **\"second-test-...\"** to **\"demo-store.example.c...\"**.\n*   **Code Snippet Content:**\n    *   The `s.src` URL changed from a Supabase function URL (`...supabase.co/functions/v1/pixel'`) to a localhost URL (`'http://localhost:3000/pixel.js'`).\n    *   The unique pixel ID string at the end of the script changed from `'px_cfdff430f45b04c6'` to `'px_5b41ab65df14e9d5'`.\n*   **Status Alert Box (Below Code):**\n    *   The icon changed from a **clock/loading spinner** to a **checkmark circle**.\n    *   The background color appears slightly more saturated/green-tinted in the clone.\n    *   The text changed from \"Waiting for first event...\" to **\"Pixel verified! We're receiving data from demo-store.example.com. Everything is working.\"**\n*   **Platform Instructions Tabs:** In Image 1, the tabs are displayed inline within a light gray container. In Image 2, the **\"HTML / Custom\" tab looks like an active/selected button** with a white background and shadow, while the other tabs are grayed out.\n*   **Bottom Left Footer:** A large, dark circular avatar with the letter **\"N\"** is overlaid on top of the \"FREE\" usage box and the \"Sign out\" link in the bottom left corner.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789533324,
+  "id": "20260916123516b67e851d219844c2",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260916123516b67e851d219844c2",
+  "usage": {
+    "completion_tokens": 381,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 3408,
+    "prompt_tokens_details": {
+      "cached_tokens": 4
+    },
+    "total_tokens": 3789
+  }
+}

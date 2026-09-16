@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "- **Sidebar \"Visitors\" icon**: Image 1 uses an eye icon, Image 2 uses a different icon (looks like a target or bullseye).\n- **Table Row 1 Checkbox/Icon**: Image 1 has a yellow circle outline with a building icon inside; Image 2 has a standard square checkbox.\n- **Table Data Order & Content**: The rows are completely different. \n    - Image 1: Row 2 is an individual (\"marcus.smith...\") with type \"Direct\". \n    - Image 2: Row 1 is an individual (\"jane.doe...\") with type \"Social\".\n- **Type Badge Colors**: \n    - Image 1: \"Direct\" is a light cyan/blue.\n    - Image 2: \"Social\" is a lighter blue/cyan, and \"Search\" is cyan.\n- **Bottom Left Corner**: Image 2 has a dark circular tooltip/badge with the letter \"N\" which is absent in Image 1.\n\n**Note:** While data differences were requested to be ignored, the structural difference in row ordering and the specific badge types/colors used for those rows constitute a visual layout difference between the two states shown.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789535844,
+  "id": "2026091613171629dc74696a9540fd",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "2026091613171629dc74696a9540fd",
+  "usage": {
+    "completion_tokens": 246,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 3410,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 3656
+  }
+}

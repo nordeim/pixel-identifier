@@ -47,4 +47,4 @@ ssh-key.txt
 next-env.d.ts
 
 # live-site audit artifacts: session captures never enter the repo
-research/**/live-auth.json
+research/**/*-auth.json

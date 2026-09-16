@@ -1,0 +1,126 @@
+- generic [ref=e1] clickable [onclick]
+  - region "Notifications (F8)" [ref=e2]
+    - list
+  - region "Notifications alt+T" [ref=e3]
+  - image "Pixelco"
+  - StaticText "Pixelco"
+  - generic
+    - StaticText "Analytics"
+    - list
+      - listitem [level=1]
+        - link "Overview" [ref=e20]
+      - listitem [level=1]
+        - link "Visitors" [ref=e21]
+      - listitem [level=1]
+        - link "Activity Log" [ref=e22]
+  - generic
+    - StaticText "Setup"
+    - list
+      - listitem [level=1]
+        - link "Install Pixel" [ref=e23]
+      - listitem [level=1]
+        - link "Domains" [ref=e24]
+  - generic
+    - StaticText "Account"
+    - list
+      - listitem [level=1]
+        - link "Pricing & Plan" [ref=e25]
+      - listitem [level=1]
+        - link "Settings" [ref=e26]
+  - StaticText "FREE"
+  - paragraph
+    - StaticText "3 / 100 identifications"
+  - button "Sign out" [ref=e4]
+    - image
+    - StaticText "Sign out"
+  - banner
+    - button "Toggle Sidebar" [ref=e5]
+      - image
+      - StaticText "Toggle Sidebar"
+    - heading "Overview" [level=1, ref=e6]
+    - paragraph
+      - StaticText "Your visitor identification at a glance"
+    - button [ref=e7]
+      - image
+    - StaticText "SE"
+  - main
+    - StaticText "TOTAL VISITORS"
+    - image
+    - StaticText "4"
+    - StaticText "All time"
+    - StaticText "EMAILS IDENTIFIED"
+    - image
+    - StaticText "3"
+    - StaticText "75.0% match rate"
+    - StaticText "NEW THIS WEEK"
+    - image
+    - StaticText "2"
+    - StaticText "vs. 0 last week"
+    - StaticText "ACTIVE DOMAINS"
+    - image
+    - StaticText "2"
+    - StaticText "1 verified"
+    - heading "Visitor Identification Trend" [level=3, ref=e8]
+    - SvgRoot
+      - StaticText "Sep 3"
+      - StaticText "Sep 4"
+      - StaticText "Sep 5"
+      - StaticText "Sep 6"
+      - StaticText "Sep 7"
+      - StaticText "Sep 8"
+      - StaticText "Sep 9"
+      - StaticText "Sep 10"
+      - StaticText "Sep 11"
+      - StaticText "Sep 12"
+      - StaticText "Sep 13"
+      - StaticText "Sep 14"
+      - StaticText "Sep 16"
+      - StaticText "0"
+      - StaticText "1"
+      - StaticText "2"
+      - StaticText "3"
+      - StaticText "4"
+    - StaticText "Pageviews"
+    - StaticText "Identified"
+    - heading "Top Pages" [level=3, ref=e9]
+    - StaticText "1"
+    - StaticText "/round5-status-test"
+    - StaticText "0"
+    - generic
+      - StaticText "2 views"
+    - StaticText "2"
+    - StaticText "/"
+    - StaticText "1"
+    - generic
+      - StaticText "2 views"
+    - StaticText "3"
+    - StaticText "/anon-check"
+    - StaticText "0"
+    - generic
+      - StaticText "1 views"
+    - StaticText "4"
+    - StaticText "/pricing"
+    - StaticText "1"
+    - generic
+      - StaticText "1 views"
+    - heading "Recent Identifications" [level=3, ref=e10]
+    - link "View all" [ref=e11]
+      - StaticText "View all"
+      - image
+    - table
+      - rowgroup
+        - row
+          - columnheader "EMAIL" [ref=e27]
+          - columnheader "PAGE" [ref=e28]
+          - columnheader "CONFIDENCE" [ref=e29]
+          - columnheader "TIME" [ref=e30]
+      - row
+        - cell "MA marcus.smith@acmecorp.com" [ref=e12]
+        - cell "/pricing" [ref=e13]
+        - cell "85%" [ref=e14]
+        - cell "1d ago" [ref=e15]
+      - row
+        - cell "JA jane.doe@example.com" [ref=e16]
+        - cell "/" [ref=e17]
+        - cell "90%" [ref=e18]
+        - cell "1d ago" [ref=e19]
