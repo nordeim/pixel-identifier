@@ -19,7 +19,6 @@ export default function ForgotPasswordPage() {
     <AuthShell
       title="Reset your password"
       subtitle="Enter your email and we'll send you a reset link"
-      logoClassName="h-16 w-16"
     >
       <ForgotPasswordForm />
 

@@ -119,7 +119,11 @@ export function SignUpForm({
         )}
       </div>
 
-      <Button type="submit" disabled={pending} className="h-11 w-full text-sm font-bold">
+      <Button
+        type="submit"
+        disabled={pending}
+        className="h-10 w-full gradient-primary text-sm font-semibold text-primary-foreground shadow-lg glow-primary transition-all duration-300 hover:opacity-90"
+      >
         {pending ? (
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
         ) : (
@@ -147,9 +151,9 @@ export function SignUpForm({
         .
       </p>
 
-      <p className="pt-1 text-center text-sm text-muted-foreground">
+      <p className="mt-4 text-center text-sm text-muted-foreground">
         Already have an account?{' '}
-        <Link href="/login" className="font-semibold text-amber-600 hover:text-amber-700">
+        <Link href="/login" className="font-medium text-primary hover:underline">
           Sign in
         </Link>
       </p>

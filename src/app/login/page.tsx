@@ -19,11 +19,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     <AuthShell
       title="Welcome back"
       subtitle="Sign in to your Pixelco account"
-      logoClassName="h-10 w-10"
     >
       {registered && (
-        <p className="flex items-start gap-2 rounded-lg bg-teal-500/10 px-3 py-2.5 text-sm text-teal-300" role="status">
-          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+        <p className="flex items-start gap-2 rounded-lg bg-primary/10 px-3 py-2.5 text-sm text-foreground" role="status">
+          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
           Account created — sign in to continue to your dashboard.
         </p>
       )}

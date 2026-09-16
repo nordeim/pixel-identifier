@@ -116,10 +116,10 @@ export function SidebarNav({
 
       {!collapsed && (
         <div className="border-t border-border p-3">
-          {/* R5-H7: live usage card — bordered primary/5 card, gradient FREE
-              badge, muted count, thin gradient-filled custom progress. */}
+          {/* R5-H7/R6-M5: live usage card — bordered primary/5 card, rounded
+              gradient FREE pill, muted count, thin gradient-filled progress. */}
           <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
-            <span className="inline-flex rounded-sm px-1.5 py-0 text-[10px] font-bold uppercase tracking-wider text-primary-foreground gradient-primary">
+            <span className="gradient-primary inline-flex items-center rounded-full border-0 px-1.5 py-0 text-[10px] font-semibold uppercase text-primary-foreground">
               {usage.planName}
             </span>
             <p className="mt-2 text-xs text-muted-foreground">

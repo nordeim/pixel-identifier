@@ -25,7 +25,6 @@ export default async function SignUpPage({ searchParams }: SignUpPageProps) {
     <AuthShell
       title="Create your account"
       subtitle="Start identifying visitors in minutes"
-      logoClassName="h-16 w-16"
     >
       <OAuthButtons />
       <OrDivider />
