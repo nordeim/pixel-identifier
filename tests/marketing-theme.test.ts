@@ -1,0 +1,84 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { describe, expect, it } from 'vitest'
+
+/**
+ * R10-F1 regression test: the live pixelco.io ships TWO palettes — the app
+ * bundle (dashboard/auth, verified aligned with the clone's global tokens)
+ * and the marketing bundle, whose `:root` was extracted off the live landing
+ * page:
+ *
+ *   --background: 0 0% 100%          (#FFFFFF, NOT the app's warm canvas)
+ *   --foreground: 230 25% 12%        (#171A26)
+ *   --card: 40 30% 98%               (warm white, rgb(251,250,248))
+ *   --secondary: 40 30% 96%          (rgb(248,246,242))
+ *   --muted: 230 15% 92%
+ *   --muted-foreground: 230 10% 46%  (rgb(106,109,129))
+ *   --primary: 45 100% 50%           (#FFBF00 — marketing scope)
+ *   --primary-foreground: 0 0% 5%
+ *   --accent: 45 100% 50%            (#FFBF00 — YELLOW, not pale cream)
+ *   --accent-foreground: 0 0% 0%
+ *   --border / --input: 230 15% 90%  (cool gray, rgb(226,227,233))
+ *   --ring: 45 100% 50%
+ *   --radius: .625rem                (10px — the app keeps 12px)
+ *
+ * The clone previously shipped ONE global warm-cream palette matching
+ * neither bundle. The fix scopes the live marketing tokens to the
+ * `(marketing)` route group via a `.marketing-scope` class on the layout
+ * wrapper — the app tree (dashboard, auth) must stay on the global tokens.
+ */
+
+const read = (p: string) => readFileSync(join(process.cwd(), p), 'utf8')
+const css = read('src/app/globals.css')
+const marketingLayout = read('src/app/(marketing)/layout.tsx')
+
+describe('marketing palette scope (R10-F1)', () => {
+  it('defines a .marketing-scope class in globals.css carrying the live marketing tokens', () => {
+    const start = css.indexOf('.marketing-scope')
+    expect(start).toBeGreaterThanOrEqual(0)
+    const block = css.slice(start, start + 1200)
+
+    expect(block).toContain('--background: hsl(0 0% 100%)')
+    expect(block).toContain('--foreground: hsl(230 25% 12%)')
+    expect(block).toContain('--card: hsl(40 30% 98%)')
+    expect(block).toContain('--secondary: hsl(40 30% 96%)')
+    expect(block).toContain('--muted: hsl(230 15% 92%)')
+    expect(block).toContain('--muted-foreground: hsl(230 10% 46%)')
+    expect(block).toContain('--primary: hsl(45 100% 50%)')
+    expect(block).toContain('--primary-foreground: hsl(0 0% 5%)')
+    expect(block).toContain('--accent: hsl(45 100% 50%)')
+    expect(block).toContain('--accent-foreground: hsl(0 0% 0%)')
+    expect(block).toContain('--border: hsl(230 15% 90%)')
+    expect(block).toContain('--input: hsl(230 15% 90%)')
+    expect(block).toContain('--ring: hsl(45 100% 50%)')
+    expect(block).toContain('--radius: 0.625rem')
+  })
+
+  it('applies marketing-scope (plus a white canvas) on the (marketing) layout wrapper', () => {
+    expect(marketingLayout).toContain('marketing-scope')
+    // The wrapper covers min-h-screen, so bg-background resolves the scope's
+    // white — the body's canvas never shows through the marketing tree.
+    expect(marketingLayout).toMatch(/className="[^"]*bg-background/)
+    // The old one-off arbitrary-property override is superseded by the scope.
+    expect(marketingLayout).not.toContain('[--primary:#ffbf00]')
+  })
+
+  it('derives rounded-xl at radius + 2px like the live (12px marketing cards)', () => {
+    // Measured off the live: marketing rounded-xl cards = 12px at the 10px
+    // scope (and the app's rounded-lg chrome stays var(--radius) = 12px).
+    expect(css).toContain('--radius-xl: calc(var(--radius) + 2px)')
+  })
+
+  it('keeps the app palette global and untouched (dashboard/auth stay off the scope)', () => {
+    // The :root block keeps the app-side values the live app bundle uses —
+    // R10 moved the global canvas to white (the old cream #fffcf5 showed as
+    // a warm strip below the footer; each tinted surface paints its own
+    // wrapper: marketing-scope, .bg-app, the auth gradient canvas).
+    const rootStart = css.indexOf(':root')
+    const rootBlock = css.slice(rootStart, css.indexOf('}', rootStart))
+    expect(rootBlock).toContain('--background: #ffffff')
+    expect(rootBlock).toContain('--primary: #ffc105')
+    expect(css).toContain('.bg-app')
+    expect(css.match(/\.bg-app\s*{[^}]*background-color:\s*#f6f7f9/)).toBeTruthy()
+  })
+})

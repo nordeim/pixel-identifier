@@ -46,7 +46,10 @@
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  /* R10: measured off the live — their rounded-xl resolves to radius + 2px
+     (12px marketing cards at the 10px scope; 14px app at the 12px base),
+     not the shadcn default +4. */
+  --radius-xl: calc(var(--radius) + 2px);
   /* Neon green data accent (live #2BD4BD): confidence bars, source badges,
   install banners. Generates bg-/text-/border-neon-green utilities. */
   --color-neon-green: #2bd4bd;
@@ -63,8 +66,13 @@
 
 :root {
   --radius: 0.75rem;
-  /* Pixelco brand: warm amber primary, teal data accent, soft warm canvas. */
-  --background: #fffcf5;
+  /* Pixelco brand: warm amber primary, teal data accent. R10: the global
+     canvas is white — every surface that needs a tinted canvas paints its
+     own wrapper (marketing-scope, .bg-app, .gradient-hero auth canvas), and
+     the body color shows only in overscroll/below-document areas where the
+     live renders white (marketing) or #F6F7F9 (app — a 2-4 channel delta,
+     invisible next to the old cream #fffcf5 strip below the footer). */
+  --background: #ffffff;
   --foreground: #111827;
   --card: #ffffff;
   --card-foreground: #111827;
@@ -143,6 +151,36 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* --- Marketing palette scope (R10-F1) ------------------------------------
+ * The live pixelco.io ships two palettes: the app bundle (dashboard/auth —
+ * the clone's global :root tokens above, verified aligned) and the
+ * marketing bundle, whose `:root` was extracted verbatim off the live
+ * landing page. The marketing tree renders a pure-white canvas, warm-white
+ * cards, cool-gray hairlines, a YELLOW accent (#FFBF00 — dot bullets,
+ * "Save 20%" labels, hovers) and 10px corners, while the app keeps the
+ * warm canvas + 12px corners. Applied on the (marketing) layout wrapper —
+ * never leaks into /dashboard/* or the auth pages. */
+.marketing-scope {
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(230 25% 12%);
+  --card: hsl(40 30% 98%);
+  --card-foreground: hsl(230 25% 12%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(230 25% 12%);
+  --primary: hsl(45 100% 50%);
+  --primary-foreground: hsl(0 0% 5%);
+  --secondary: hsl(40 30% 96%);
+  --secondary-foreground: hsl(230 25% 12%);
+  --muted: hsl(230 15% 92%);
+  --muted-foreground: hsl(230 10% 46%);
+  --accent: hsl(45 100% 50%);
+  --accent-foreground: hsl(0 0% 0%);
+  --border: hsl(230 15% 90%);
+  --input: hsl(230 15% 90%);
+  --ring: hsl(45 100% 50%);
+  --radius: 0.625rem;
 }
 
 @layer utilities {

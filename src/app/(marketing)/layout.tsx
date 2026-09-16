@@ -15,10 +15,12 @@ export default function MarketingLayout({
 }>) {
   return (
     // font-marketing (R5-H1): the live pixelco.io renders DM Sans on every
-    // marketing surface while the app keeps Inter. The arbitrary-property
-    // override re-scopes --primary to the live marketing bundle's measured
-    // hsl(45 100% 50%) = #FFBF00 (R7-V3) — the app bundle keeps #FFC105.
-    <div className="flex min-h-screen flex-col font-marketing [--primary:#ffbf00]">
+    // marketing surface while the app keeps Inter. marketing-scope (R10-F1):
+    // the live's marketing bundle ships its own palette (pure-white canvas,
+    // warm-white cards, cool-gray hairlines, #FFBF00 accent, 10px radius) —
+    // scoped here so the app tree keeps the global tokens. bg-background
+    // paints the wrapper white so the body's warm canvas never shows.
+    <div className="marketing-scope flex min-h-screen flex-col bg-background font-marketing text-foreground">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">{children}</main>
