@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk, DM_Sans, Geist_Mono } from "next/font/google";
+import { Inter, Space_Grotesk, DM_Sans, Geist_Mono, Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { siteUrl } from "@/lib/site-url";
@@ -7,6 +7,8 @@ import { siteUrl } from "@/lib/site-url";
 // Typography parity (R5-H1): the live app renders Inter for body copy and
 // Space Grotesk for display faces (card titles, H1s, KPI values, prices,
 // sidebar brand); the marketing site renders DM Sans; code/paths stay mono.
+// Dancing Script (R7-V4) is the live marketing wordmark's "By Ai Viral"
+// cursive subtext face.
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -24,6 +26,11 @@ const dmSans = DM_Sans({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const dancingScript = Dancing_Script({
+  variable: "--font-dancing-script",
   subsets: ["latin"],
 });
 
@@ -59,7 +66,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${spaceGrotesk.variable} ${dmSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${inter.variable} ${spaceGrotesk.variable} ${dmSans.variable} ${geistMono.variable} ${dancingScript.variable} font-sans antialiased bg-background text-foreground`}
       >
         {children}
         <Toaster />
