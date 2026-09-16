@@ -1,4 +1,4 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.6
+# Pixelco — Master Project Architecture Document (PAD) v1.7
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
@@ -12,6 +12,30 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.7** `[SYN]` Round-8 parity restoration & alignment pass (plan:
+  `docs/plans/2026-09-16-round8-parity-restoration.md`; evidence in
+  `research/round8-audit/`). The repository's git history was re-created via
+  GitHub web uploads after round 7, and a docs-vs-codebase alignment audit
+  found that **part of the round-7 work did not survive the re-creation**
+  even though v1.6 claimed it: the traced logo (R7-V16), the trend-chart
+  legend + pageviews fill (R7-V1/V2) and the input-height fix were absent
+  from the tree, and every binary under `public/` was dropped while the
+  components kept referencing it (hero avatars + benefits screenshot 404).
+  This round re-audited the live surfaces (logged-in DOM extraction, SVG
+  gradient stop reads, input getBoundingClientRect, logo PNG fetch + pixel
+  gradient analysis), restored the lost work, and added a regression test
+  (`tests/marketing-assets.test.ts`) that walks every `/assets/…` component
+  reference and requires a non-empty file on disk — the exact failure mode
+  that shipped 404s now fails CI instead. Assets regenerated as originals:
+  five 96×96 AI-generated avatar photos and a production capture of the
+  clone's own visitors page at the live asset's 1322×867 geometry.
+- `[SR]` v1.7 evidence: `npm run verify` green (lint, typecheck, **190
+  tests across 26 files**, build 35 routes); in-browser verification on
+  /login, /signup, /dashboard and / (inputs 40px, `space-y-2` groups,
+  legend dots rgb(255,193,5)/rgb(43,212,189), `#fillVisitors` 0.15→0 /
+  `#fillIdentified` 0.2→0, 5 avatars naturalWidth 96, screenshot
+  1322×867, traced logo path in header/sidebar/auth) with zero console
+  errors; asset URLs curl-verified 200.
 - **v1.6** `[SYN]` Round-7 parity refinement (plan:
   `docs/plans/2026-09-16-round7-parity-refinement.md`; evidence in
   `research/round7-audit/`): a fresh live re-audit (logged-in DOM
@@ -989,7 +1013,7 @@ speculatively.
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
 | E2E (browser) | manual + opt-in smoke | — | dev server flows; `PIXELCO_STANDALONE_SMOKE=1` boots the standalone server | browser pass |
 
-The suite totals **187 tests across 25 files** (plus 2 opt-in standalone
+The suite totals **190 tests across 26 files** (plus 2 opt-in standalone
 smoke tests), runs in the `node`
 environment against a throwaway SQLite database (`db/test.db`, recreated
 from the schema by `tests/global-setup.ts` on every run), with `TZ=UTC`
@@ -1171,6 +1195,17 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 | LOW | Relative SQLite paths resolve against `prisma/` | Confusing first-run behavior | Documented (README, §9.2) |
 | LOW | E2E is a manual browser pass (no Playwright) | Critical funnel regressions caught late | Open — §8.3 |
 | LOW | `deepmerge-ts` advisory (GHSA-ggr8-5vv4-36mx) pinned away via `overrides` | Override must be revisited when Prisma ships a fixed `@prisma/config` | Managed — `bun audit` clean; verified against db:push/db:seed/tests |
+
+**Restored in v1.7 (round-8):** the web-upload re-creation of the repo
+history silently reverted three round-7 claims (traced logo, trend legend +
+pageviews fill, input h-10) and dropped every `public/` binary (hero
+avatars, benefits screenshot) while the components kept referencing them —
+production would have shipped 404 images. All restored this round from a
+fresh live audit; `tests/marketing-assets.test.ts` now pins every
+`/assets/…` reference to a real file so a lost binary fails CI, not
+production. Evidence discipline note: `research/round7-audit/` was lost
+with the same re-creation; round-8 evidence lives in
+`research/round8-audit/`.
 
 **Fixed in v1.6 (round-7):** the activity feed rewrote pageview history —
 once a visitor was identified, their earlier pageview rows displayed the
