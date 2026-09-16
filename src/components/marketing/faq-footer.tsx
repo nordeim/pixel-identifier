@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight, Linkedin, Mail, Twitter } from 'lucide-react'
+import { ArrowRight, ExternalLink, Globe, Mail } from 'lucide-react'
 import {
   Accordion,
   AccordionContent,
@@ -9,7 +9,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
-import { PixelcoLogo } from '@/components/pixelco-logo'
+import { PixelcoMarketingWordmark } from '@/components/pixelco-logo'
 import { FOOTER_COLUMNS } from '@/lib/marketing-links'
 
 const FAQS = [
@@ -45,28 +45,37 @@ const FAQS = [
 
 export function Faq() {
   return (
-    <section id="faq" aria-labelledby="faq-heading" className="scroll-mt-24 border-t border-border/60 bg-card/50 py-16 lg:py-20">
+    <section id="faq" aria-labelledby="faq-heading" className="scroll-mt-24 border-y border-border bg-card py-20">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <div className="text-center">
           <p className="text-xs font-bold uppercase tracking-widest text-amber-600">FAQ</p>
-          <h2 id="faq-heading" className="mt-2 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          <h2 id="faq-heading" className="mt-2 text-3xl font-bold text-foreground sm:text-4xl">
             Frequently Asked Questions
           </h2>
           <p className="mt-4 text-muted-foreground">Have questions? We&apos;ve got answers.</p>
         </div>
 
-        <Accordion type="single" collapsible className="mt-10">
-          {FAQS.map((faq, index) => (
-            <AccordionItem key={faq.q} value={`item-${index}`}>
-              <AccordionTrigger className="text-left text-[15px] font-semibold text-foreground hover:no-underline">
-                {faq.q}
-              </AccordionTrigger>
-              <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
-                {faq.a}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        {/* R7-V14: the live's FAQ items are cards (bg-background, border,
+            rounded-lg, px-5) that gain a shadow when open — not the default
+            border-b divider rhythm. */}
+        <div className="mt-10 space-y-2.5">
+          <Accordion type="single" collapsible className="space-y-2.5">
+            {FAQS.map((faq, index) => (
+              <AccordionItem
+                key={faq.q}
+                value={`item-${index}`}
+                className="rounded-lg border border-border bg-background px-5 data-[state=open]:shadow-card"
+              >
+                <AccordionTrigger className="py-4 text-left text-sm font-semibold text-foreground hover:no-underline">
+                  {faq.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                  {faq.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
       </div>
     </section>
   )
@@ -74,28 +83,32 @@ export function Faq() {
 
 export function BottomCta() {
   return (
-    <section aria-labelledby="cta-heading" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-400 via-yellow-400 to-orange-500 px-6 py-14 text-center shadow-xl sm:px-12">
-        <h2 id="cta-heading" className="text-balance text-3xl font-extrabold tracking-tight text-amber-950 sm:text-4xl">
-          Stop Losing Anonymous Visitors.
-        </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-amber-950/80">
-          Join 1,200+ businesses already turning invisible website traffic into
-          real, actionable leads with Pixelco.
-        </p>
-        <Button
-          asChild
-          size="lg"
-          className="mt-8 h-12 bg-white px-8 text-base font-bold text-amber-950 shadow-lg hover:bg-amber-50"
-        >
-          <Link href="/signup">
-            Start Identifying Visitors — Free
-            <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
-          </Link>
-        </Button>
-        <p className="mt-5 text-xs font-medium text-amber-950/70">
-          No credit card required • 100 free identifications • Setup in 30 seconds
-        </p>
+    <section aria-labelledby="cta-heading" className="py-20">
+      <div className="container mx-auto px-6">
+        {/* R7-V15: the live's CTA is a centered max-w-4xl card on the yellow
+            marketing gradient with WHITE display text. */}
+        <div className="gradient-hero-light relative mx-auto max-w-4xl overflow-hidden rounded-2xl p-6 text-center sm:p-10 md:p-14">
+          <h2 id="cta-heading" className="mb-3 text-2xl font-bold text-white sm:text-3xl md:text-4xl">
+            Stop Losing Anonymous Visitors.
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-white/80">
+            Join 1,200+ businesses already turning invisible website traffic into
+            real, actionable leads with Pixelco.
+          </p>
+          <Button
+            asChild
+            size="lg"
+            className="mt-8 h-12 bg-white px-8 text-base font-bold text-amber-950 shadow-lg hover:bg-amber-50"
+          >
+            <Link href="/signup">
+              Start Identifying Visitors — Free
+              <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
+            </Link>
+          </Button>
+          <p className="mt-5 text-xs font-medium text-white/70">
+            No credit card required • 100 free identifications • Setup in 30 seconds
+          </p>
+        </div>
       </div>
     </section>
   )
@@ -107,23 +120,22 @@ export function SiteFooter() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
         <div className="grid gap-10 md:grid-cols-[2fr_1fr_1fr_1fr]">
           <div>
-            <span className="inline-flex items-center gap-2">
-              <PixelcoLogo />
-              <span className="text-lg font-extrabold tracking-tight text-foreground">Pixelco</span>
-            </span>
+            <PixelcoMarketingWordmark />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
               The world&apos;s first B2C email identification platform. Know
               who&apos;s visiting your site — by their real email.
             </p>
             <div className="mt-5 flex gap-3">
               {[
-                { icon: Twitter, label: 'Pixelco on X' },
-                { icon: Linkedin, label: 'Pixelco on LinkedIn' },
-                { icon: Mail, label: 'Email Pixelco' },
+                // R7: the live's footer social icons (globe, external-link,
+                // mail); the first two are '#' placeholders on the live too.
+                { icon: Globe, label: 'Pixelco website', href: '#' },
+                { icon: ExternalLink, label: 'Pixelco external links', href: '#' },
+                { icon: Mail, label: 'Email Pixelco', href: 'mailto:support@pixelco.io' },
               ].map((social) => (
                 <a
                   key={social.label}
-                  href="#"
+                  href={social.href}
                   aria-label={social.label}
                   className="flex h-9 w-9 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-primary hover:text-foreground focus-brand"
                 >
