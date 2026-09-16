@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { CheckCircle2 } from 'lucide-react'
 import { AuthShell, OAuthButtons, OrDivider } from '@/components/auth/auth-shell'
 import { LoginForm } from '@/components/auth/login-form'
@@ -29,6 +30,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       <OAuthButtons />
       <OrDivider />
       <LoginForm />
+      {/* R7: the live renders the auth footer link as a sibling AFTER the
+          form, not inside it. */}
+      <p className="text-center text-sm text-muted-foreground">
+        Don&apos;t have an account?{' '}
+        <Link href="/signup" className="font-medium text-primary hover:underline">
+          Sign up free
+        </Link>
+      </p>
     </AuthShell>
   )
 }
