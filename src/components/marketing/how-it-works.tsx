@@ -4,29 +4,30 @@ const AUDIENCES = [
   {
     // R7: icon set verified against the live (building2 for SaaS, rocket for
     // Startups — the clone previously had these two swapped).
+    // R10: descriptions carry no trailing periods on the live.
     icon: Building2,
     title: 'SaaS Companies',
-    text: 'Know which companies are evaluating your product.',
+    text: 'Know which companies are evaluating your product',
   },
   {
     icon: ShoppingCart,
     title: 'E-Commerce Stores',
-    text: 'Recover abandoned browsers with targeted emails.',
+    text: 'Recover abandoned browsers with targeted emails',
   },
   {
     icon: Rocket,
     title: 'Startups',
-    text: 'Turn early traffic into your first paying customers.',
+    text: 'Turn early traffic into your first paying customers',
   },
   {
     icon: Users,
     title: 'Agencies',
-    text: 'Deliver lead intelligence to clients automatically.',
+    text: 'Deliver lead intelligence to clients automatically',
   },
   {
     icon: Megaphone,
     title: 'Marketers',
-    text: 'Measure campaign ROI by seeing who actually visits.',
+    text: 'Measure campaign ROI by seeing who actually visits',
   },
 ]
 
@@ -54,68 +55,79 @@ const STEPS = [
 ]
 
 const STEP_TAGS = [
-  'Real-time Identification',
+  'Real-time identification',
   '100% Cookieless',
   'Works on any platform',
   'No forms needed',
 ]
 
+/** R10-F7: the live audience section — full-bleed `py-20 border-t
+ * border-border` with a `container mx-auto px-6` inner, header
+ * `text-center mb-14`, a `max-w-5xl` 3/5-column grid, and cards carrying
+ * `shadow-card hover:shadow-elevated` with square `bg-secondary` icon
+ * chips (40px, rounded-lg) — not the round amber chips. */
 export function Audience() {
   return (
-    <section id="benefits" aria-labelledby="audience-heading" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:py-20">
-      <div className="text-center">
-        <p className="text-xs font-bold uppercase tracking-widest text-amber-600">Perfect fit</p>
-        <h2 id="audience-heading" className="mt-2 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-          Who Is Pixelco For?
-        </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-          Designed for anyone who wants to turn anonymous website traffic into
-          actionable leads.
-        </p>
-      </div>
+    <section id="benefits" aria-labelledby="audience-heading" className="py-20 border-t border-border">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-14">
+          <p className="text-xs font-semibold text-primary uppercase tracking-widest">Perfect fit</p>
+          <h2 id="audience-heading" className="text-3xl sm:text-4xl font-bold mt-2 text-foreground">
+            Who Is Pixelco For?
+          </h2>
+          <p className="text-muted-foreground mt-3 max-w-lg mx-auto">
+            Designed for anyone who wants to turn anonymous website traffic into
+            actionable leads.
+          </p>
+        </div>
 
-      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-        {AUDIENCES.map((audience) => (
-          <div
-            key={audience.title}
-            className="rounded-xl border border-border bg-card p-5 text-center shadow-sm transition-shadow hover:shadow-md"
-          >
-            <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-primary/15" aria-hidden="true">
-              <audience.icon className="h-5 w-5 text-amber-600" />
-            </span>
-            <h3 className="mt-4 text-sm font-bold text-foreground">{audience.title}</h3>
-            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{audience.text}</p>
-          </div>
-        ))}
+        <div className="grid sm:grid-cols-3 lg:grid-cols-5 gap-4 max-w-5xl mx-auto">
+          {AUDIENCES.map((audience) => (
+            <div
+              key={audience.title}
+              className="bg-card rounded-xl border border-border p-5 text-center shadow-card hover:shadow-elevated transition-shadow"
+            >
+              <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center mx-auto mb-3" aria-hidden="true">
+                <audience.icon className="w-5 h-5 text-primary" />
+              </div>
+              <h3 className="font-semibold text-sm text-foreground mb-1">{audience.title}</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">{audience.text}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )
 }
 
+/** R10-F5: the live process section — full `bg-card` tint with full-strength
+ * borders, flat py-20, `bg-background` cards with `shadow-card`, and the
+ * feature points as plain yellow-dot rows (`w-2 h-2 rounded-full bg-accent`)
+ * in a `gap-6 mt-12` wrapper — not bordered pills. */
 export function HowItWorks() {
   return (
-    <section id="how-it-works" aria-labelledby="how-heading" className="scroll-mt-24 border-y border-border/60 bg-card/50 py-16 lg:py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="text-center">
-          <p className="text-xs font-bold uppercase tracking-widest text-amber-600">Our process</p>
-          <h2 id="how-heading" className="mt-2 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+    <section id="how-it-works" aria-labelledby="how-heading" className="py-20 bg-card border-y border-border">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-14">
+          <p className="text-xs font-semibold text-primary uppercase tracking-widest">Our process</p>
+          <h2 id="how-heading" className="text-3xl sm:text-4xl font-bold mt-2 text-foreground">
             How We Identify Your Visitors
             <br />
             <span className="text-gradient-hero">In 4 Simple Steps</span>
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+          <p className="text-muted-foreground mt-3 max-w-lg mx-auto">
             Most identifications happen within seconds of a visitor landing on your site.
           </p>
         </div>
 
-        <ol className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
           {STEPS.map((step, index) => (
             <li
               key={step.title}
-              className="relative overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm"
+              className="relative bg-background rounded-xl border border-border p-6 shadow-card"
             >
               {/* R7-V8: the live's step chrome — a big faint background
-                  number top-right and an icon in a gradient-hero box; no
+                  number top-right and an icon in a gradient box; no
                   number-in-circle badge. */}
               <span
                 aria-hidden="true"
@@ -135,12 +147,11 @@ export function HowItWorks() {
           ))}
         </ol>
 
-        <ul className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        {/* R10-F5: yellow-dot feature rows like the live — no pill borders. */}
+        <ul className="flex flex-wrap items-center justify-center gap-6 mt-12 text-sm text-muted-foreground">
           {STEP_TAGS.map((tag) => (
-            <li
-              key={tag}
-              className="rounded-full border border-border bg-background px-4 py-1.5 text-xs font-semibold text-foreground"
-            >
+            <li key={tag} className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-accent" aria-hidden="true" />
               {tag}
             </li>
           ))}
