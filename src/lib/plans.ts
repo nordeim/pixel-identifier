@@ -13,6 +13,13 @@ export interface Plan {
   monthlyPrice: number
   /** Annual discount applied to the monthly base (0.2 = 20% off). */
   annualDiscount: number
+  /**
+   * The live dashboard's hardcoded annual monthly price in cents
+   * ($65/$199/$639) — round-dollar values that are NOT a pure 20%
+   * derivation (R6-H7; the live marketing site instead floors the
+   * discount — see marketingAnnualMonthlyCents).
+   */
+  annualMonthlyPrice: number
   description: string
   /** Identification allowance. `null` lifetime means a rolling monthly quota. */
   identificationLimit: number
@@ -31,6 +38,7 @@ export const PLANS: Record<PlanId, Plan> = {
     name: 'Free',
     monthlyPrice: 0,
     annualDiscount: 0,
+    annualMonthlyPrice: 0,
     description: 'Test the waters — see what Pixelco can do',
     identificationLimit: 100,
     limitPeriod: 'lifetime',
@@ -47,6 +55,7 @@ export const PLANS: Record<PlanId, Plan> = {
     name: 'Starter',
     monthlyPrice: 7900,
     annualDiscount: 0.2,
+    annualMonthlyPrice: 6500,
     description: 'For small teams ready to convert more traffic',
     identificationLimit: 300,
     limitPeriod: 'monthly',
@@ -65,6 +74,7 @@ export const PLANS: Record<PlanId, Plan> = {
     name: 'Growth',
     monthlyPrice: 24900,
     annualDiscount: 0.2,
+    annualMonthlyPrice: 19900,
     description: 'For growing businesses that need serious lead gen',
     identificationLimit: 1500,
     limitPeriod: 'monthly',
@@ -84,6 +94,7 @@ export const PLANS: Record<PlanId, Plan> = {
     name: 'Scale',
     monthlyPrice: 79900,
     annualDiscount: 0.2,
+    annualMonthlyPrice: 63900,
     description: 'For high-traffic sites and agencies',
     identificationLimit: 7500,
     limitPeriod: 'monthly',
@@ -108,14 +119,24 @@ export function getPlan(id: string): Plan {
 /** Effective monthly price for a cycle, in cents. */
 export function effectiveMonthlyPrice(plan: Plan, cycle: BillingCycle): number {
   if (cycle === 'annual') {
-    return Math.round(plan.monthlyPrice * (1 - plan.annualDiscount))
+    return plan.annualMonthlyPrice
   }
   return plan.monthlyPrice
 }
 
-/** Annual billed-once total for a plan, in cents (discount applied, rounded). */
+/** Annual billed-once total for a plan, in cents (12 × annual monthly). */
 export function annualTotalCents(plan: Plan): number {
-  return Math.round(plan.monthlyPrice * 12 * (1 - plan.annualDiscount))
+  return plan.annualMonthlyPrice * 12
+}
+
+/**
+ * The live MARKETING site's annual display price in cents: the 20%-off
+ * monthly price floored to a whole dollar ($63/$199/$639 — R6-M6). The
+ * dashboard uses the catalogue's hardcoded `annualMonthlyPrice` instead
+ * ($65/$199/$639); both surfaces stay integer-cent and single-sourced here.
+ */
+export function marketingAnnualMonthlyCents(plan: Plan): number {
+  return Math.floor((plan.monthlyPrice * (1 - plan.annualDiscount)) / 100) * 100
 }
 
 /** Badge label derived from the catalogue, e.g. "Save 20%". */

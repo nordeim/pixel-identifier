@@ -7,6 +7,7 @@ import {
   effectiveMonthlyPrice,
   formatPrice,
   getPlan,
+  marketingAnnualMonthlyCents,
 } from '@/lib/plans'
 
 describe('plans catalogue', () => {
@@ -26,16 +27,29 @@ describe('plans catalogue', () => {
 })
 
 describe('money math (F-37: floats never reach the renderer)', () => {
-  it('effectiveMonthlyPrice rounds annual discounts to whole cents', () => {
+  it('effectiveMonthlyPrice returns the live dashboard’s hardcoded annual prices (R6-H7)', () => {
     expect(effectiveMonthlyPrice(PLANS.starter, 'monthly')).toBe(7900)
-    expect(effectiveMonthlyPrice(PLANS.starter, 'annual')).toBe(Math.round(7900 * 0.8))
-    expect(effectiveMonthlyPrice(PLANS.growth, 'annual')).toBe(19920)
+    // The live dashboard renders $65/$199/$639 in annual mode — round-dollar
+    // prices that are NOT a pure 20% derivation (Starter would be $63.20).
+    expect(effectiveMonthlyPrice(PLANS.starter, 'annual')).toBe(6500)
+    expect(effectiveMonthlyPrice(PLANS.growth, 'annual')).toBe(19900)
+    expect(effectiveMonthlyPrice(PLANS.scale, 'annual')).toBe(63900)
+    expect(effectiveMonthlyPrice(PLANS.free, 'annual')).toBe(0)
   })
 
-  it('annualTotalCents returns the rounded billed-once amount', () => {
-    expect(annualTotalCents(PLANS.starter)).toBe(Math.round(7900 * 12 * 0.8))
-    expect(annualTotalCents(PLANS.growth)).toBe(239040)
+  it('annualTotalCents derives from the annual monthly price (12×)', () => {
+    expect(annualTotalCents(PLANS.starter)).toBe(78000)
+    expect(annualTotalCents(PLANS.growth)).toBe(238800)
     expect(annualTotalCents(PLANS.free)).toBe(0)
+  })
+
+  it('marketingAnnualMonthlyCents floors the 20%-off price to a whole dollar (R6-M6)', () => {
+    // The live marketing site renders $63/$199/$639 — floored discounts,
+    // unlike the dashboard’s hardcoded $65 table.
+    expect(marketingAnnualMonthlyCents(PLANS.starter)).toBe(6300)
+    expect(marketingAnnualMonthlyCents(PLANS.growth)).toBe(19900)
+    expect(marketingAnnualMonthlyCents(PLANS.scale)).toBe(63900)
+    expect(marketingAnnualMonthlyCents(PLANS.free)).toBe(0)
   })
 
   it('derives the save badge from the catalogue instead of hardcoding', () => {
