@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Check, Zap } from 'lucide-react'
+import { ArrowRight, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PLANS, PLAN_ORDER, annualDiscountLabel, marketingAnnualMonthlyCents, formatPrice, type BillingCycle } from '@/lib/plans'
 
@@ -14,7 +14,7 @@ export function PricingSection() {
       <div className="text-center">
         <p className="text-xs font-bold uppercase tracking-widest text-amber-600">Pricing</p>
         <h2 id="pricing-heading" className="mt-2 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-          Start Free. <span className="bg-primary px-2 [box-decoration-break:clone]">Scale as You Grow.</span>
+          Start Free. <span className="text-gradient-hero">Scale as You Grow.</span>
         </h2>
         <p className="mt-4 text-muted-foreground">
           No credit card required • Cancel anytime • Results in minutes
@@ -91,7 +91,26 @@ export function PricingSection() {
                 <p className="mb-4 text-xs text-muted-foreground">Free forever</p>
               )}
 
-              <ul className="mt-6 flex-1 space-y-2.5">
+              {/* R7-V12: the live's CTA treatment — Free and Growth carry the
+                  gradient, Starter and Scale are muted bg-secondary, and the
+                  CTA sits ABOVE the feature list (mb-5 / mt-6 on Free). */}
+              <Button
+                asChild
+                className={
+                  plan.id === 'free'
+                    ? 'gradient-cta mt-6 w-full border-0 font-semibold text-primary-foreground hover:opacity-90'
+                    : plan.popular
+                      ? 'gradient-cta mb-5 w-full border-0 font-semibold text-primary-foreground hover:opacity-90'
+                      : 'mb-5 w-full bg-secondary font-semibold text-secondary-foreground hover:bg-secondary/80'
+                }
+              >
+                <Link href={plan.id === 'free' ? '/signup' : `/signup?plan=${plan.id}&cycle=${cycle}`}>
+                  {plan.id === 'free' ? 'Start Free' : 'Get Started'}
+                  <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
+                </Link>
+              </Button>
+
+              <ul className="flex-1 space-y-2.5">
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2.5 text-sm text-muted-foreground">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
@@ -99,36 +118,9 @@ export function PricingSection() {
                   </li>
                 ))}
               </ul>
-
-              <Button
-                asChild
-                variant={plan.id === 'free' ? 'outline' : 'default'}
-                className="mt-6 w-full font-semibold"
-              >
-                <Link href={plan.id === 'free' ? '/signup' : `/signup?plan=${plan.id}&cycle=${cycle}`}>
-                  {plan.id === 'free' ? 'Free Tier' : 'Get Started'}
-                  <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
-                </Link>
-              </Button>
             </div>
           )
         })}
-      </div>
-
-      <div className="mt-10 flex flex-col items-center justify-between gap-4 rounded-xl border border-border bg-card p-6 shadow-sm sm:flex-row sm:p-8">
-        <div>
-          <h3 className="text-lg font-bold text-foreground">Need 7,500+ identifications?</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Custom pricing with volume discounts, SLA, dedicated infrastructure,
-            and white-glove onboarding.
-          </p>
-        </div>
-        <Button variant="outline" className="border-primary font-semibold text-foreground hover:bg-primary/10 sm:shrink-0" asChild>
-          <Link href="mailto:sales@pixelco.example">
-            <Zap className="mr-2 h-4 w-4 text-amber-600" aria-hidden="true" />
-            Contact Sales
-          </Link>
-        </Button>
       </div>
     </section>
   )
