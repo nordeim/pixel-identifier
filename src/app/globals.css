@@ -49,6 +49,8 @@
   install banners. Generates bg-/text-/border-neon-green utilities. */
   --color-neon-green: #2bd4bd;
   --color-neon-green-foreground: #073b32;
+  /* Live hot-pink accent (rgb(236,70,153)): bell dot, auth-page glow. */
+  --color-hot-pink: #ec4699;
 }
 
 :root {
@@ -171,6 +173,33 @@
     -webkit-background-clip: text;
     color: transparent;
   }
+  /* --- Round-6 live utilities ------------------------------------------ */
+  /* Auth canvas (live app .gradient-hero): dark navy-to-warm-brown sweep
+     behind the login/signup cards. */
+  .gradient-hero {
+    background-image: linear-gradient(135deg, #0f111a, #2b2312);
+  }
+  /* Marketing announcement bar (the live marketing bundle defines its own
+     .gradient-hero in yellow — one bundle, two names). */
+  .gradient-hero-light {
+    background-image: linear-gradient(135deg, #ffaa00 0%, #ffd91a 50%, #f58f00 100%);
+  }
+  /* Marketing POPULAR pill + hero CTA sweep (live .gradient-cta). */
+  .gradient-cta {
+    background-image: linear-gradient(135deg, #ffaa00, #ffce0a);
+  }
+  /* Amber elevation shadow for featured marketing cards (live
+     .shadow-elevated). */
+  .shadow-elevated {
+    box-shadow:
+      0 8px 30px 0 rgba(255, 191, 0, 0.15),
+      0 2px 8px 0 rgba(255, 191, 0, 0.06);
+  }
+  /* Soft breathing glow for the auth-page blurred orbs (live
+     .animate-pulse-glow). */
+  .animate-pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
 }
 
 /* Landing hero mockup "live feed" animation — respects reduced motion. */
@@ -187,8 +216,19 @@
 .feed-row {
   animation: feed-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+/* Auth-page orb breathing (live pulse-glow keyframes). */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .feed-row {
+  .feed-row,
+  .animate-pulse-glow {
     animation: none;
   }
 }
