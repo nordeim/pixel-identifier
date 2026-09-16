@@ -227,6 +227,20 @@
 .feed-row {
   animation: feed-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+/* Logo marquee (R9-F1: live .animate-scroll-left). The track holds two
+   copies of the 10-name set; translate(-50%) = exactly one copy, so the
+   30s linear loop is seamless. */
+@keyframes scroll-left {
+  0% {
+    transform: translate(0px);
+  }
+  100% {
+    transform: translate(-50%);
+  }
+}
+.animate-scroll-left {
+  animation: scroll-left 30s linear infinite;
+}
 /* Auth-page orb breathing (live pulse-glow keyframes). */
 @keyframes pulse-glow {
   0%,
@@ -239,7 +253,8 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .feed-row,
-  .animate-pulse-glow {
+  .animate-pulse-glow,
+  .animate-scroll-left {
     animation: none;
   }
 }

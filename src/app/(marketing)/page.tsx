@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { CheckCircle2 } from 'lucide-react'
 import { Hero } from '@/components/marketing/hero'
-import { LogoStrip, Testimonials, StatsBar } from '@/components/marketing/social-proof'
+import { SocialProof, StatsBar } from '@/components/marketing/social-proof'
 import { Audience, HowItWorks } from '@/components/marketing/how-it-works'
 import { Features, Comparison } from '@/components/marketing/features'
 import { PricingSection } from '@/components/marketing/pricing-section'
@@ -33,8 +33,7 @@ export default async function LandingPage({ searchParams }: LandingPageProps) {
         </p>
       )}
       <Hero />
-      <LogoStrip />
-      <Testimonials />
+      <SocialProof />
       <StatsBar />
       <Audience />
       <HowItWorks />

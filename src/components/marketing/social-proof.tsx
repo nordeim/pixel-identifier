@@ -32,18 +32,59 @@ const STATS = [
   { value: 'Real-Time', label: 'Identification' },
 ]
 
-export function LogoStrip() {
+/**
+ * R9-F1/F2: the live hosts the logo marquee AND the testimonial cards in
+ * one `py-16 border-b border-border` section — the marquee is an animated
+ * `animate-scroll-left` track (two copies of the 10-name set for the
+ * seamless -50% loop, `text-lg` muted names), and the testimonials sit in
+ * a `max-w-4xl mx-auto` grid of `shadow-card` cards below it. The clone
+ * previously shipped a static tinted strip plus a separate wider
+ * testimonials section; both are gone in favour of the live DOM verbatim.
+ */
+export function SocialProof() {
   return (
-    <section aria-label="Businesses that trust Pixelco" className="border-y border-border/60 bg-card/50 py-8">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
-          {LOGOS.map((logo) => (
-            <span
-              key={logo}
-              className="text-sm font-bold uppercase tracking-widest text-muted-foreground/60 grayscale"
+    <section aria-labelledby="testimonials-heading" className="py-16 border-b border-border">
+      <h2 id="testimonials-heading" className="sr-only">
+        Customer testimonials
+      </h2>
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-12">
+          <div className="overflow-hidden" aria-hidden="true">
+            {/* Two copies of the name set directly on the track (the live
+                DOM ships 20 span children; -50% translate = one copy). */}
+            <div className="flex items-center gap-12 animate-scroll-left">
+              {[...LOGOS, ...LOGOS].map((logo, i) => (
+                <span
+                  key={`${logo}-${i}`}
+                  className="text-lg font-bold text-muted-foreground/40 whitespace-nowrap select-none"
+                >
+                  {logo}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          {TESTIMONIALS.map((t) => (
+            <figure
+              key={t.name}
+              className="border border-border rounded-xl p-6 bg-card shadow-card"
             >
-              {logo}
-            </span>
+              {/* R7-V7: the live renders the author as plain stacked text
+                  (no avatar circles). */}
+              <div className="flex gap-0.5 mb-3" aria-label="Rated 5 out of 5 stars">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-primary text-primary" aria-hidden="true" />
+                ))}
+              </div>
+              <p className="text-sm text-foreground leading-relaxed mb-4">
+                “{t.quote}”
+              </p>
+              <div>
+                <p className="text-sm font-semibold text-foreground">{t.name}</p>
+                <p className="text-xs text-muted-foreground">{t.role}</p>
+              </div>
+            </figure>
           ))}
         </div>
       </div>
@@ -51,44 +92,9 @@ export function LogoStrip() {
   )
 }
 
-export function Testimonials() {
-  return (
-    <section aria-labelledby="testimonials-heading" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
-      <h2 id="testimonials-heading" className="sr-only">
-        Customer testimonials
-      </h2>
-      <div className="grid gap-6 md:grid-cols-3">
-        {TESTIMONIALS.map((t) => (
-          <figure
-            key={t.name}
-            className="flex flex-col justify-between rounded-xl border border-border bg-card p-6 shadow-sm"
-          >
-            <div>
-              <div className="flex gap-0.5" aria-label="Rated 5 out of 5 stars">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-primary text-primary" aria-hidden="true" />
-                ))}
-              </div>
-              <blockquote className="mt-4 text-[15px] leading-relaxed text-foreground">
-                “{t.quote}”
-              </blockquote>
-            </div>
-            {/* R7-V7: the live renders the author as plain stacked text
-                (no avatar circles). */}
-            <figcaption className="mt-6">
-              <p className="text-sm font-semibold text-foreground">{t.name}</p>
-              <p className="text-xs text-muted-foreground">{t.role}</p>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
-    </section>
-  )
-}
-
 export function StatsBar() {
   return (
-    <section aria-label="Product statistics" className="border-y border-border/60 bg-card/50 py-12">
+    <section aria-label="Product statistics" className="py-14 border-y border-border">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 sm:px-6 lg:grid-cols-4">
         {STATS.map((stat) => (
           <div key={stat.label} className="text-center">
