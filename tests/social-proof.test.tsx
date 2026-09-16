@@ -68,4 +68,10 @@ describe('StatsBar (R9-F5 chrome)', () => {
     expect(stats).toContain('Real-Time')
     expect(stats).toContain('text-gradient-hero')
   })
+
+  it('goes 4-column at md inside the live container wrapper (R10-F12)', () => {
+    expect(stats).toContain('container mx-auto px-6')
+    expect(stats).toContain('grid grid-cols-2 md:grid-cols-4 gap-8')
+    expect(stats).not.toContain('lg:grid-cols-4')
+  })
 })

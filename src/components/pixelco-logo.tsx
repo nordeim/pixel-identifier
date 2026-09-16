@@ -51,14 +51,19 @@ export function PixelcoWordmark({
   )
 }
 
-/** Marketing wordmark: Pixelco lockup + "By Ai Viral" cursive subtext (live header/footer, R7-V4). */
+/** Marketing wordmark: logo + "Pixelco" + the "By Ai Viral" cursive subtext
+ * INLINE beside the wordmark (live header/footer, R7-V4; un-stacked R10 —
+ * the live renders it as a sibling span with translate-y-[3px], not a
+ * flex-col sub-line). */
 export function PixelcoMarketingWordmark({ className }: { className?: string }) {
   return (
     <span className={cn('inline-flex items-center gap-2', className)}>
       <PixelcoLogo />
-      <span className="flex flex-col leading-none">
-        <span className="font-display text-lg font-bold tracking-tight text-foreground">Pixelco</span>
-        <span className="font-script text-xs italic text-muted-foreground translate-y-[3px]">By Ai Viral</span>
+      <span className="text-lg font-bold text-foreground tracking-tight">
+        Pixelco
+      </span>
+      <span className="font-script text-xs italic text-muted-foreground translate-y-[3px]">
+        By Ai Viral
       </span>
     </span>
   )

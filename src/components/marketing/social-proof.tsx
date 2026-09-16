@@ -95,19 +95,23 @@ export function SocialProof() {
 export function StatsBar() {
   return (
     <section aria-label="Product statistics" className="py-14 border-y border-border">
-      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 sm:px-6 lg:grid-cols-4">
-        {STATS.map((stat) => (
-          <div key={stat.label} className="text-center">
-            {/* R7-V11: the live's stat values carry the gradient-hero text
-                treatment with mb-1 (not text-primary + tracking-tight). */}
-            <p className="mb-1 text-gradient-hero text-3xl font-extrabold sm:text-4xl">
-              {stat.value}
-            </p>
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {stat.label}
-            </p>
-          </div>
-        ))}
+      {/* R10-F12: the live's 4-column layout kicks in at md, inside a
+          container wrapper. */}
+      <div className="container mx-auto px-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {STATS.map((stat) => (
+            <div key={stat.label} className="text-center">
+              {/* R7-V11: the live's stat values carry the gradient-hero text
+                  treatment with mb-1 (not text-primary + tracking-tight). */}
+              <p className="mb-1 text-gradient-hero text-3xl font-extrabold sm:text-4xl">
+                {stat.value}
+              </p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )
