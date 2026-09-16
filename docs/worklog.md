@@ -115,3 +115,51 @@ Stage Summary:
   pinned by tests (asset guard prevents the lost-binary 404 mode)
 - PAD v1.7 / README / plan / worklog aligned with the restored tree
 - Repository pushed to git@github.com:nordeim/pixel-identifier.git (main)
+
+---
+Task ID: 5
+Agent: main (Super Z)
+Task: Round-9 fresh pairwise audit — remediation, verify, docs, push
+
+Work Log:
+- Replaced docs/ssh_git_wrapper_v3.py (v3.1: ssh preflight, post-push
+  verification, tracking-ref sync, redacted-BEGIN normalization) and the
+  runbook (paramiko shim recipe) per operator upload; committed ab708bb
+- Fresh live audit: pixelco.io scroll-stimulated (10 landing sections) +
+  app.pixelco.io logged-in (login + 7 dashboard pages, auth-state saved);
+  DOM ground truth incl. live marquee keyframes
+  (@keyframes scroll-left 0->-50% @ 30s linear, 20 track children) and
+  testimonial grid geometry (896px @ x=272, 283px cards)
+- Captured identical local surfaces on a production build; pairwise
+  comparison triaged every drift against DOM (hero/audience/process/
+  benefits/compare/pricing/faq/cta/footer + all dashboard pages matched)
+- Findings: R9-F1 static strip vs live animated marquee (Medium),
+  R9-F2 testimonials section structure (Medium), R9-F3 login signup link
+  rendered twice (High), R9-F4 domains error boundary (INVALIDATED -
+  stale next-start server serving a swapped build; fresh server clean),
+  R9-F5 stats bar tint/padding (Low)
+- Wrote docs/plans/2026-09-16-round9-fresh-pairwise-audit.md; validated
+  every referenced file/seam against the codebase before executing
+- A1+A2 (7c11409): RED tests/login-footer.test.ts (link count guard) ->
+  GREEN by deleting the in-form copy (login-form.tsx) and adding mt-4 to
+  the page-level copy (live structure)
+- B1-B3 (ca590d5): RED tests/social-proof.test.tsx (renderToStaticMarkup)
+  -> GREEN: SocialProof = marquee (2x name set, text-lg muted/40,
+  gap-12, animate-scroll-left) + testimonial cards in ONE py-16
+  border-b section (max-w-4xl grid, shadow-card, text-sm quotes);
+  StatsBar py-14 border-y border-border untinted; live-exact
+  @keyframes scroll-left in globals.css + reduced-motion opt-out;
+  vitest include extended to *.test.tsx
+- E gate: npm run verify GREEN - 198 tests / 28 files, build 35 routes;
+  browser: marquee transform advancing, grid x=272/w=896 live-exact,
+  stats untinted, login single link, zero console errors
+- C2: PAD v1.8 revision block + suite count 198/28; README test count;
+  round-9 plan execution log; this entry
+- C3: pushed via wrapper v3.1 + paramiko shim (runbook Appendix A),
+  post-push remote verified, key shredded
+
+Stage Summary:
+- All actionable Round-9 findings remediated; F4 documented as
+  environment artifact, no code change
+- Suite grew 190/26 -> 198/28 (8 new guard tests)
+- Repository pushed to git@github.com:nordeim/pixel-identifier.git (main)

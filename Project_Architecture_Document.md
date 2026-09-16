@@ -1,4 +1,4 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.7
+# Pixelco — Master Project Architecture Document (PAD) v1.8
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
@@ -12,6 +12,31 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.8** `[SYN]` Round-9 fresh pairwise audit & remediation (plan:
+  `docs/plans/2026-09-16-round9-fresh-pairwise-audit.md`; evidence in
+  `research/round9-audit/`). A new scroll-stimulated capture pass of
+  pixelco.io (10 landing sections) and app.pixelco.io (logged-in, 7
+  dashboard pages + login), pairwise-compared against the production
+  build, caught three real drifts the Round-8 static claims missed: the
+  logo "marquee" was a static tinted strip while the live runs an
+  animated `animate-scroll-left` track (2× name copies, 30s linear) that
+  shares one `py-16 border-b` section with the testimonial cards
+  (`max-w-4xl` grid, `shadow-card`, `text-sm` quotes) — the clone had a
+  separate 1232px testimonials section; the login card rendered the
+  signup footer link TWICE (a leftover in-form copy plus the R7 page-level
+  one); and the stats bar carried a `bg-card/50` tint + `py-12` the live
+  doesn't have. All three rebuilt to the live DOM verbatim and pinned by
+  new tests (`tests/social-proof.test.tsx` renders the components
+  server-side; `tests/login-footer.test.ts` guards the link count).
+  A fourth capture-time anomaly (domains page error boundary) was
+  invalidated as a stale-server artifact — a `next start` process serving
+  a build that was swapped underneath it — and is recorded here so the
+  audit trail stays honest.
+- `[SR]` v1.8 evidence: `npm run verify` green (lint, typecheck, **198
+  tests across 28 files**, build 35 routes); browser verification: marquee
+  transform advancing (20 track children), testimonial grid measured
+  x=272/w=896 with 283px cards (live-exact), stats strip untinted, login
+  card shows exactly one signup link; zero console errors.
 - **v1.7** `[SYN]` Round-8 parity restoration & alignment pass (plan:
   `docs/plans/2026-09-16-round8-parity-restoration.md`; evidence in
   `research/round8-audit/`). The repository's git history was re-created via
@@ -1013,7 +1038,7 @@ speculatively.
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
 | E2E (browser) | manual + opt-in smoke | — | dev server flows; `PIXELCO_STANDALONE_SMOKE=1` boots the standalone server | browser pass |
 
-The suite totals **190 tests across 26 files** (plus 2 opt-in standalone
+The suite totals **198 tests across 28 files** (plus 2 opt-in standalone
 smoke tests), runs in the `node`
 environment against a throwaway SQLite database (`db/test.db`, recreated
 from the schema by `tests/global-setup.ts` on every run), with `TZ=UTC`
