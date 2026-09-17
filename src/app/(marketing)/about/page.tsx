@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, ArrowRight, Globe, Lightbulb, Shield, Target } from 'lucide-react'
+import { Globe, Lightbulb, Shield, Target, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export const metadata: Metadata = {
@@ -9,107 +9,127 @@ export const metadata: Metadata = {
     'Pixelco is the first and only platform that lets websites identify anonymous visitors by their email address — not just their company.',
 }
 
+/**
+ * R13-F4: rebuilt on the live DOM (research/round13-audit/content/
+ * page-about.json) — container max-w-4xl chrome, `← Back to Home` link,
+ * gradient-span H1, mb-16 section rhythm, border+shadow value cards,
+ * the stats band and the hiring note.
+ */
 const VALUES = [
   {
     icon: Lightbulb,
     title: 'Innovation First',
-    desc: "We built the world's first email-level visitor identification — because IP lookups weren't good enough.",
+    text: "We built the world's first email-level visitor identification — because IP lookups weren't good enough.",
   },
   {
     icon: Shield,
     title: 'Privacy by Design',
-    desc: 'Our technology is 100% cookieless. We respect user privacy while delivering actionable insights.',
+    text: 'Our technology is 100% cookieless. We respect user privacy while delivering actionable insights.',
   },
   {
     icon: Globe,
     title: 'Global Scale',
-    desc: 'We serve businesses in 50+ countries, identifying visitors across every continent.',
+    text: 'We serve businesses in 50+ countries, identifying visitors across every continent.',
   },
   {
     icon: Target,
     title: 'Results-Driven',
-    desc: 'Every feature we ship is measured by one metric: does it help our customers convert more leads?',
+    text: 'Every feature we ship is measured by one metric: does it help our customers convert more leads?',
   },
+]
+
+const STATS = [
+  { value: '50+', label: 'Countries Served' },
+  { value: '10M+', label: 'Visitors Identified' },
+  { value: '2,000+', label: 'Businesses Trust Us' },
 ]
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-14 sm:px-6 lg:py-20">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-600 transition-colors hover:text-amber-700 focus-brand"
-      >
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        Back to Home
+    <div className="container mx-auto px-6 py-16 max-w-4xl">
+      <Link href="/" className="text-sm text-primary hover:underline mb-6 inline-block">
+        ← Back to Home
       </Link>
 
-      <h1 className="mt-8 text-4xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl">
-        We&apos;re building the future of{' '}
-        <span className="bg-primary px-2 [box-decoration-break:clone]">visitor intelligence</span>.
-      </h1>
-      <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-        Pixelco is the first and only platform that lets websites identify
-        anonymous visitors by their email address — not just their company.
-        We&apos;re turning unknown traffic into real, actionable leads for
-        businesses worldwide.
-      </p>
+      <div className="mb-16">
+        <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
+          We&apos;re building the future of <span className="text-gradient-hero">visitor intelligence.</span>
+        </h1>
+        <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
+          Pixelco is the first and only platform that lets websites identify anonymous
+          visitors by their email address — not just their company. We&apos;re turning
+          unknown traffic into real, actionable leads for businesses worldwide.
+        </p>
+      </div>
 
-      <section aria-labelledby="mission-heading" className="mt-16">
-        <h2 id="mission-heading" className="text-2xl font-extrabold tracking-tight text-foreground">
-          Our Mission
-        </h2>
-        <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-          97% of website visitors leave without ever filling out a form.
-          That&apos;s thousands of potential customers, gone forever. We
-          started Pixelco to solve this problem — to give every business,
-          from startups to enterprises, the ability to know exactly
-          who&apos;s visiting their site and reach out before the
-          opportunity disappears.
+      <section className="mb-16">
+        <h2 className="text-2xl font-bold text-foreground mb-3">Our Mission</h2>
+        <p className="text-muted-foreground leading-relaxed text-base">
+          97% of website visitors leave without ever filling out a form. That&apos;s
+          thousands of potential customers, gone forever. We started Pixelco to solve
+          this problem — to give every business, from startups to enterprises, the
+          ability to know exactly who&apos;s visiting their site and reach out before
+          the opportunity disappears.
         </p>
       </section>
 
-      <section aria-labelledby="values-heading" className="mt-16">
-        <h2 id="values-heading" className="text-2xl font-extrabold tracking-tight text-foreground">
-          What We Stand For
-        </h2>
-        <div className="mt-6 grid gap-5 sm:grid-cols-2">
+      <section className="mb-16">
+        <h2 className="text-2xl font-bold text-foreground mb-6">What We Stand For</h2>
+        <div className="grid sm:grid-cols-2 gap-5">
           {VALUES.map((value) => (
-            <div
-              key={value.title}
-              className="rounded-xl border border-border bg-card p-7 shadow-sm"
-            >
-              <span
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15"
-                aria-hidden="true"
-              >
-                <value.icon className="h-5 w-5 text-amber-600" />
-              </span>
-              <h3 className="mt-4 text-base font-bold text-foreground">{value.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{value.desc}</p>
+            <div key={value.title} className="border border-border rounded-xl p-6 bg-card shadow-card">
+              <value.icon className="w-8 h-8 text-primary mb-3" aria-hidden="true" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">{value.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{value.text}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="mt-16 rounded-2xl bg-gradient-to-br from-amber-400 via-yellow-400 to-orange-500 px-6 py-12 text-center shadow-xl sm:px-12">
-        <h2 className="text-balance text-2xl font-extrabold tracking-tight text-amber-950 sm:text-3xl">
-          See who&apos;s visiting your site.
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl text-amber-950/80">
-          Join the businesses turning anonymous traffic into real, actionable
-          leads — starting with your next visitor.
+      <section className="mb-16">
+        <div className="grid grid-cols-3 gap-6 text-center py-10 border border-border rounded-xl bg-card shadow-card">
+          {STATS.map((stat) => (
+            <div key={stat.label}>
+              <p className="text-3xl font-extrabold text-gradient-hero">{stat.value}</p>
+              <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mb-16">
+        <h2 className="text-2xl font-bold text-foreground mb-3">Our Team</h2>
+        <p className="text-muted-foreground leading-relaxed mb-6">
+          We&apos;re a lean, global team of engineers, data scientists, and growth
+          experts obsessed with turning anonymous traffic into revenue. Based
+          everywhere, building for everyone.
         </p>
+        <div className="flex items-center gap-3">
+          <Users className="w-5 h-5 text-primary" aria-hidden="true" />
+          <p className="text-sm text-muted-foreground">
+            We&apos;re hiring! Interested in joining us? Reach out at{' '}
+            <a href="mailto:support@pixelco.io" className="text-primary hover:underline">
+              support@pixelco.io
+            </a>
+          </p>
+        </div>
+      </section>
+
+      <div className="text-center py-10 border-t border-border">
+        <h2 className="text-2xl font-bold text-foreground mb-3">Ready to see who&apos;s visiting your site?</h2>
+        <p className="text-muted-foreground mb-6">Start identifying anonymous visitors today — it&apos;s free.</p>
+        {/* The live anchors to the app subdomain and wraps a gradient
+            button; the clone is a single deployment — /signup is the same
+            destination, so the classes land on the anchor via asChild. */}
         <Button
           asChild
-          size="lg"
-          className="mt-7 h-12 bg-white px-8 text-base font-bold text-amber-950 shadow-lg hover:bg-amber-50"
+          variant={null}
+          size={null}
+          className="bg-primary hover:bg-primary/90 h-10 gradient-cta text-primary-foreground border-0 hover:opacity-90 font-semibold px-8 py-3 text-base"
         >
-          <Link href="/signup">
-            Start Identifying Visitors — Free
-            <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
-          </Link>
+          <Link href="/signup">Get Started Free</Link>
         </Button>
-      </section>
+      </div>
     </div>
   )
 }
