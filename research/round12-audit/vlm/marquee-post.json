@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"DIFFERENT\",\n  \"confidence\": 0.99,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"claim\": \"The horizontal scrolling list of company logos (LeadGen Pro, CloudBase, etc.) is in a different position in the clone compared to the reference, indicating a difference in initial scroll state or content ordering.\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"A partial character 's' is visible at the far left edge of the logo marquee in the clone image, which is not present in the reference image.\"\n    },\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"The ordering and visibility of items within the scrolling logo strip differ between the two images (e.g., 'ScaleUp' and 'DataFlow' appear at the start of the list in the clone but are at the end in the reference).\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789615431,
+  "id": "20260917112346a70a0e497e324187",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260917112346a70a0e497e324187",
+  "usage": {
+    "completion_tokens": 205,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2127
+  }
+}

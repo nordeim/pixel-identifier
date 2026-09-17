@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"DIFFERENT\",\n  \"confidence\": 0.95,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"claim\": \"The 'Live Visitor Feed' component on the right side displays different data states. Image 1 shows a list of unidentified visitors (generic user icons), while Image 2 shows a mix of identified users (yellow envelope icons with email addresses and 'Identified' status) and unknown users.\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The avatars in the 'Trusted by 1,200+ businesses worldwide' section at the bottom left are different between the two images, indicating dynamic content or randomized placeholder images.\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789615411,
+  "id": "202609171123241fffcd5ed7974d17",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "202609171123241fffcd5ed7974d17",
+  "usage": {
+    "completion_tokens": 162,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2084
+  }
+}

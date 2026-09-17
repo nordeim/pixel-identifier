@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"DIFFERENT\",\n  \"confidence\": 0.95,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"claim\": \"The icon for the 'Privacy Compliant' feature is different. Image 1 uses a shield icon, while Image 2 uses an open circle/outline icon.\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The dashboard UI component (the screenshot-in-screenshot) shows significant layout and data differences, including different row counts, column widths, and status badge styles (e.g., 'active' vs 'verify').\"\n    },\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"The logo inside the dashboard sidebar differs: Image 1 shows 'PixelID' while Image 2 shows the standard 'Pixelco' branding.\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789615451,
+  "id": "2026091711240654fa17e3a4444fc9",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "2026091711240654fa17e3a4444fc9",
+  "usage": {
+    "completion_tokens": 187,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2109
+  }
+}

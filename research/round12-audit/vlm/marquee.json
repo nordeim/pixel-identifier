@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"CLOSE_MATCH\",\n  \"confidence\": 0.95,\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The horizontal scrolling list of integration names (e.g., 'LeadGen Pro', 'CloudBase') is in a different position. In the reference image, it starts with 'LeadGen Pro', while in the clone image, it starts with 'ScaleUp' and includes 'DataFlow' as a new entry, indicating a difference in scroll state or initial rendering of the carousel.\"\n    },\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"There is a minor discrepancy in text wrapping for the job title in the middle testimonial card ('Head of Sales, ScaleUp'). The reference image shows the text on one line, whereas the clone image shows it wrapping to a second line.\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789613525,
+  "id": "20260917105158cff39dc7106e4d45",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260917105158cff39dc7106e4d45",
+  "usage": {
+    "completion_tokens": 190,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 4
+    },
+    "total_tokens": 2112
+  }
+}

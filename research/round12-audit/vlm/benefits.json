@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"DIFFERENT\",\n  \"confidence\": 0.95,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"claim\": \"The icon for the 'Privacy Compliant' feature is different. Image 1 uses a shield icon, while Image 2 uses a circular outline/lock-style icon.\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The content within the dashboard screenshot (the UI mockup on the right) is completely different, showing different visitor data, company names, and confidence scores. While data differences are usually ignored, the structural layout of the table rows and the specific status badges (e.g., 'active' vs 'pending') represent a visual deviation in the component's rendered state.\"\n    },\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"The sidebar in the dashboard mockup shows slightly different text or highlighting states (e.g., 'PixelID' vs 'Pixelco' branding at the top of the mockup).\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789613537,
+  "id": "202609171052107dce71c8221a4479",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "202609171052107dce71c8221a4479",
+  "usage": {
+    "completion_tokens": 226,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2148
+  }
+}

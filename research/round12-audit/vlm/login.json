@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"EXACT_MATCH\",\n  \"confidence\": 0.98,\n  \"findings\": [\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"The Google 'G' icon in the 'Continue with Google' button appears to have a slightly different color saturation or rendering between the two images, likely due to image compression or sub-pixel rendering differences.\"\n    },\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"The Apple logo in the 'Continue with Apple' button appears marginally bolder or darker in the second image compared to the first.\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789613848,
+  "id": "20260917105725acedc0250f7341f1",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260917105725acedc0250f7341f1",
+  "usage": {
+    "completion_tokens": 134,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2056
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"EXACT_MATCH\",\n  \"confidence\": 0.95,\n  \"findings\": [\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"The second image includes a yellow 'Create account' button at the bottom of the form, which is not present in the first image (likely due to scrolling or viewport height differences).\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789614533,
+  "id": "20260917110849b768957ceae54cab",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260917110849b768957ceae54cab",
+  "usage": {
+    "completion_tokens": 87,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 2
+    },
+    "total_tokens": 2009
+  }
+}

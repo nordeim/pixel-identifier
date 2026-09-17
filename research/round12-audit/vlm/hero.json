@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"CLOSE_MATCH\",\n  \"confidence\": 0.95,\n  \"findings\": [\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"The 'Live Visitor Feed' component displays different data (visitor names, email addresses, and identification status) between the two images, which is expected for a dynamic feed but represents a visual state difference.\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The icon in the 'Avg match rate: 20%' badge appears to be a bar chart icon in the reference image (Image 1), whereas it looks like a slightly different variation or line chart icon in the clone image (Image 2).\"\n    },\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"The bottom section showing 'Trusted by 1,200+ businesses worldwide' and its associated avatars is partially cut off or positioned differently at the bottom edge of the frame in Image 2 compared to Image 1.\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789613518,
+  "id": "20260917105152606d7d29b99b4c22",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260917105152606d7d29b99b4c22",
+  "usage": {
+    "completion_tokens": 218,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2140
+  }
+}
