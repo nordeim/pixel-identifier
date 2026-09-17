@@ -30,9 +30,10 @@ describe('root 404 boundary (R11-F15 live parity)', () => {
     expect(html).toMatch(
       /<p[^>]*class="mb-4 text-xl text-muted-foreground">Oops! Page not found<\/p>/,
     )
-    expect(html).toMatch(
-      /<a[^>]*href="\/"[^>]*class="text-primary underline hover:text-primary\/90[^"]*">Return to Home<\/a>/,
-    )
+    // class precedes href in Next's Link output — pin both pieces.
+    expect(html).toContain('class="text-primary underline hover:text-primary/90 focus-brand rounded"')
+    expect(html).toContain('href="/"')
+    expect(html).toContain('>Return to Home</a>')
   })
 
   it('ships none of the old Compass/two-button chrome', () => {
