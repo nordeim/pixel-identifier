@@ -532,3 +532,57 @@ Work Log:
 Stage Summary:
 - Round-13 closed and shipped: main @ d68e25f on GitHub, PAD v1.12,
   380 tests / 48 files, sub-page parity EXACT across the board
+
+---
+Task ID: R14
+Agent: main (Super Z)
+Task: Round-14 — drift re-audit, metadata & SEO-surface parity, E2E
+functional pass, docs, ship
+
+Work Log:
+- Workspace refreshed (git pull brought the user's session-log commit
+  57e51c3); core docs re-read; session_9 + round12/13 plans reviewed;
+  baseline gate GREEN (380/48).
+- Round-14 audit: landing sections byte-identical to R12/R13 pins
+  ([762,403,174,526,708,610,650,814,756,500]); banner scoping, sub-page
+  H1/H2 counts, blog slugs, dashboard structure, sitemap URL sets all
+  verified stable — no DOM drift. Remaining gaps all on the document
+  head: 15 findings (R14-F1..F15) — landing description, sub-page
+  titles/descriptions/og, og:image/url/locale, twitter card, canonical,
+  app-bundle og block, 404 title, sitemap/robots formatting, favicon,
+  keywords. Evidence: research/round14-audit/ (live-meta-all.jsonl +
+  byte captures).
+- Plan written (docs/plans/2026-09-17-round14-metadata-seo-parity.md)
+  with 6 documented parity rulings (self-hosted social images, no
+  @Lovable artifact, per-page app tab titles, og=desc, route handlers
+  for crawl docs, metaDescription field).
+- TDD execution: RED tests/seo-parity.test.ts (23 failing) + blog-posts
+  metaDescription guard → GREEN: marketing-seo.ts + app-seo.ts helpers;
+  root layout (live-verbatim description, | template, robots meta, og
+  url/locale/image, large card, canonical, keywords dropped); 7
+  sub-pages + article generateMetadata on live strings; 10 post
+  metaDescriptions (scripts/r14-patch-blog-meta.py); app og on
+  login/signup/forgot + dashboard layout.
+- 404 title: catch-all metadata approach disproven (Next ignores a
+  throwing page's metadata; browser-verified) → NotFoundTitle client
+  island; discovered Next's metadata controller overwrites plain title
+  assignments after hydration → MutationObserver re-assertion. Verified
+  on both 404 paths + nav-restore. Live's HTTP 200 SPA fallback NOT
+  replicated (correct 404 kept). Announcement bar <a> → <Link>
+  (DOM-identical).
+- robots.txt/sitemap.xml → Route Handlers emitting the live bytes
+  (comments, namespaces, 1.0 priorities, pinned post order); old
+  convention files deleted; seo-routes.test.ts rewritten.
+- Gate GREEN: 402 tests / 49 files, build 36 routes. Standalone browser
+  pass: 18/18 head-meta match, sitemap/robots byte-clean, favicon live
+  bytes, 404 + app og verified. E2E pipeline green (sign-up → domain →
+  25 beacons → dashboard → CSV export, 2/25 identified).
+- Docs: PAD v1.13, README (402/36 + SEO surface + hierarchy + coverage),
+  AGENTS.md (3 fact blocks + whitelist amendment), CLAUDE.md (v1.13
+  principle + whitelist amendment), plan execution log, evidence README.
+
+Stage Summary:
+- Round-14 closed: the <head> — the last unaudited parity surface — is
+  now live-exact on every route (marketing, app bundle, 404, crawl docs,
+  favicon). Suite 380/48 → 402/49; PAD v1.13.
+- Next: atomic commits + push (Task R14-ship)

@@ -93,6 +93,25 @@ and stable per visitor.
   containers) and the legacy accordion strings are pinned by
   `tests/marketing-{subpages,blog-parity,legal-parity,faq-accordion,
   banner-scope}.test.*` — treat those pins as the contract.
+- **Document heads are part of the parity surface (v1.13):** the live
+  is CSR — its raw HTML ships one static shell but its router sets
+  per-page title/description/og/twitter/canonical on navigation, and
+  the live app bundle ships its OWN og block. The clone reproduces the
+  live-verbatim head on the server: `marketingMetadata()` (R14) builds
+  every marketing page's head (title.absolute, per-page og/canonical,
+  `og:locale en_US`, the self-hosted social image, large twitter card)
+  and `appSeoMetadata()` carries the app bundle's og block. Rulings:
+  social images are self-hosted copies (never hotlink the live's builder
+  storage), `twitter:site @Lovable` is a build artifact and is NOT
+  replicated, the title-template suffix is the live's `|`, blog
+  `metaDescription` ≠ card excerpt, robots.txt/sitemap.xml are Route
+  Handlers reproducing the live bytes (the Next conventions cannot emit
+  comments or "1.0" priorities), the favicon is the live's
+  `public/favicon.ico` with no link tag, and the 404 tab title is the
+  client-side `NotFoundTitle` swap (the MutationObserver is REQUIRED —
+  Next's metadata controller overwrites plain title assignments after
+  hydration) while the HTTP status stays a correct 404. Pinned by
+  `tests/seo-parity.test.ts` + `tests/seo-routes.test.ts`.
 
 ## Implementation Standards
 
@@ -299,7 +318,8 @@ Four layers, strictly top-down:
    (`identification.ts`, `plans.ts`, `validation.ts`), server-only for data
    (`analytics.ts`).
 4. **Route handlers** — fixed whitelist: `api/track`, `api/activity`,
-   `api/export`, `api/health`, `api/auth/[...nextauth]`, `pixel.js`.
+   `api/export`, `api/health`, `api/auth/[...nextauth]`, `pixel.js`, plus
+   the GET-only SEO document routes `robots.txt`/`sitemap.xml` (R14).
 
 ### API Design
 

@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 380 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 402 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -115,7 +115,8 @@ reads. Errors anywhere in the DB section are contained to a silent 204.
 │   │   ├── 📂 track/              ← Pixel ingestion (hostname-gated beacon endpoint)
 │   │   ├── 📂 activity/ · 📂 export/ · 📂 health/
 │   │   └── 📂 auth/[...nextauth]/ ← NextAuth handler
-│   ├── 📄 robots.ts · sitemap.ts · icon.svg ← SEO metadata routes + favicon
+│   ├── 📄 robots.txt/ · sitemap.xml/  ← SEO route handlers (live-exact bytes)
+│   │   └── 📄 route.ts             ← R14: comments, namespaces, 1.0 priorities
 │   └── 📂 pixel.js/               ← Collector script route
 ├── 📂 actions/                      ← Server Actions (auth, domains, settings)
 ├── 📂 components/
@@ -256,8 +257,9 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
 - **Content & SEO data modules** — the footer/nav link map (every link
   targets a real route; the only dead link is Careers, which is dead on
   the original too), the blog catalogue (10 posts, unique URL-safe slugs,
-  date ordering, required fields), and the robots/sitemap route modules
-  (16-URL set, `/api/` disallowed, app routes excluded).
+  date ordering, required fields incl. the live's `metaDescription`), and
+  the robots/sitemap route handlers (18-URL set in the live's order,
+  `/api/` disallowed, app routes excluded, byte-exact formatting).
 - **Pure helpers** — plan/money math (IEEE-754 robustness), domain
   normalisation, snippet hardening (host validation, JS-string escaping),
   CSV escaping + formula guard, relative-time boundaries.
@@ -284,6 +286,17 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   sections/icons and per-page subtitles match the live app verbatim,
   visitors-subtitle formatting, the 7-day unread-activity rule behind the
   bell dot, and the collapsible-sidebar state reducer.
+- **Metadata & SEO parity (round-14)** — the live-verbatim head on every
+  surface: the root description/title template (`|` suffix), the
+  per-page marketing metadata builder (`marketing-seo.ts` — title,
+  description, og/twitter, canonical, self-hosted 1200×630 social
+  image), the app-bundle og block (`app-seo.ts` — "Pixelco" /
+  "Visitor identification platform dashboard", deliberately NO
+  `@Lovable` twitter:site artifact), the 404 title island
+  (`NotFoundTitle` — MutationObserver re-assertion past Next's
+  post-hydration metadata patch), the byte-exact robots.txt/sitemap.xml
+  route handlers (live order incl. the pinned post-slug array), and the
+  favicon convention (`public/favicon.ico`, no link tag).
 - **Queries** — top pages via SQL `groupBy` (ordering, tie-breaks,
   cross-user isolation), profile action (name never clobbered), the
   bell's recent-identification flag, the identified-only visitors scope,
@@ -296,14 +309,23 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
 npm run lint        # ESLint 9 flat config (strict: no-explicit-any is an error)
 npm run typecheck   # tsc --noEmit
 npm run test        # Vitest suite
-npm run build       # next build (34 routes; standalone output)
+npm run build       # next build (36 routes; standalone output)
 npm run verify      # all four in order
 ```
 
-SEO surface: `/robots.txt` and `/sitemap.xml` are generated from
-`src/app/robots.ts` / `sitemap.ts` (the 16 marketing URLs — app routes
-excluded), the favicon is `src/app/icon.svg`, and `metadataBase` derives
-from `NEXTAUTH_URL` so canonical/OG URLs are absolute in production.
+SEO surface: `/robots.txt` and `/sitemap.xml` are served by Route
+Handlers (`src/app/{robots.txt,sitemap.xml}/route.ts`) that reproduce the
+original's documents byte-for-byte — comments, `xmlns:news`/`xmlns:image`
+namespaces, "1.0"-style priorities, lowercase `User-agent:`, the live's
+hand-authored URL order (18 marketing URLs — app routes excluded) — with
+the origin substituted from `NEXTAUTH_URL`. Every marketing page ships
+the live's verbatim head (title, description, og/twitter tags, canonical)
+via `src/lib/marketing-seo.ts`; app surfaces ship the live app-bundle's og
+block via `src/lib/app-seo.ts`; the favicon is the original's
+`public/favicon.ico` (auto-discovered, no link tag — like the live); and
+`metadataBase` derives from `NEXTAUTH_URL` so canonical/OG URLs are
+absolute in production. The blog posts also carry the live's meta
+descriptions (`metaDescription` — distinct from the card excerpts).
 
 Manual browser flows (sign-up → domain → beacon → dashboard → export)
 complement the automated suite.

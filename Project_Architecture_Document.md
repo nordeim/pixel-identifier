@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.12
+# Pixelco — Master Project Architecture Document (PAD) v1.13
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-17 (v1.12)
+**Last Updated:** 2026-09-17 (v1.13)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,60 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.13** `[SYN]` Round-14 metadata & SEO-surface parity (plan:
+  `docs/plans/2026-09-17-round14-metadata-seo-parity.md`; evidence in
+  `research/round14-audit/`). The drift re-audit found the rendered DOM
+  stable on every surface (landing section heights byte-identical, banner
+  scoping intact, sub-page H1/H2 counts equal, blog slugs identical,
+  dashboard structure equal, sitemap URL sets equal) — the remaining
+  parity surface was the document `<head>`, which no prior round had
+  audited end-to-end. Method: head-meta extraction from all 18 live
+  marketing routes AFTER hydration (the live is CSR — its raw HTML ships
+  one static shell, but its router sets per-page title/description/
+  og/twitter/canonical on navigation), the same fields from the clone,
+  plus raw-HTTP probes of sitemap/robots/favicon and the app subdomain's
+  head. **Marketing metadata (R14-F1..F8):** the root description and
+  og/twitter descriptions are now the live copy verbatim; the title
+  template suffix is the live's `|` (was `·`); every marketing page sets
+  the full live-shaped head via `src/lib/marketing-seo.ts`
+  (`marketingMetadata({title, description, path})` — title.absolute,
+  per-page og:url/og:title/og:description, `og:locale en_US`, the
+  self-hosted 1200×630 social image, `summary_large_image` card, and a
+  per-page canonical); blog posts gained a `metaDescription` field (the
+  live's meta description is distinct from the card excerpt) and render
+  "{title} | Pixelco". **App-bundle head (R14-F9):** the live
+  app.pixelco.io ships its own og block — og:title "Pixelco",
+  "Visitor identification platform dashboard", a 1920×1080 image, large
+  twitter card, and NO canonical/og:url/og:locale — reproduced by
+  `src/lib/app-seo.ts` (`appSeoMetadata()`) on login/signup/forgot-
+  password and the dashboard layout; `twitter:site @Lovable` (the live's
+  build-platform artifact) is deliberately NOT replicated. **404 title
+  (R14-F10):** the live swaps its tab title to "Page Not Found | Pixelco"
+  client-side; the clone reproduces the swap via a `NotFoundTitle` client
+  island (a MutationObserver re-asserts past Next's post-hydration
+  metadata patch — a plain assignment gets overwritten) while keeping the
+  correct HTTP 404 the live's 200-SPA-fallback cannot offer. **Crawl
+  surface (R14-F11/F12):** `robots.txt` and `sitemap.xml` moved from the
+  Next metadata conventions to Route Handlers
+  (`src/app/{robots.txt,sitemap.xml}/route.ts`) reproducing the live
+  documents byte-for-byte — comments, `xmlns:news`/`xmlns:image`
+  namespaces, "1.0"-style priorities, lowercase `User-agent:`, the live's
+  hand-authored URL order (posts pinned as a literal slug array — it is
+  not a date sort) — with the origin substituted from `site-url`.
+  **Favicon (R14-F14):** the live ships `/favicon.ico` (256×256
+  PNG-in-ICO) with no `<link>` tag; the clone now serves the live's bytes
+  from `public/favicon.ico` (the injected `app/icon.svg` link tag is
+  gone). **Robots meta (R14-F13):** `robots: {index, follow}` added to
+  the root; the clone-authored `keywords` meta dropped (the live ships
+  none). Verified on the standalone build: 18/18 marketing surfaces match
+  the live head-meta field-for-field (og:image self-hosted by ruling);
+  sitemap/robots byte-diff clean (origin-substituted); the 404 title
+  swaps on both unmatched routes and `notFound()` calls and restores on
+  navigation; a full E2E pipeline pass (sign-up → domain → 25 beacons →
+  dashboard → CSV export) ran green. Suite 380/48 → **402 tests / 49
+  files** (+22; `tests/seo-parity.test.ts` new, `tests/seo-routes.test.ts`
+  rewritten against the route handlers, `blog-posts.test.ts` gained the
+  metaDescription guard).
 - **v1.12** `[SYN]` Round-13 sub-page parity (plan:
   `docs/plans/2026-09-17-round13-subpage-parity.md`; evidence in
   `research/round13-audit/`). The first pairwise audit of the surfaces no

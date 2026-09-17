@@ -101,6 +101,39 @@ make it pass — fix the code.
   shared block format (`## `/`### `/lists/tables) with a `blog` variant
   (classless elements styled by the prose wrapper's arbitrary variants)
   and a `legal` variant (direct classes + `<section>` grouping).
+- **Document heads are live-parity (R14).** Every marketing page builds
+  its full `<head>` via `src/lib/marketing-seo.ts`
+  (`marketingMetadata({title, description, path})` — title.absolute with
+  the live's own suffix pattern, per-page og:url/og:title/og:description,
+  `og:locale en_US`, the self-hosted `/og-image.webp`, large twitter
+  card, per-page canonical). App surfaces (login, signup, forgot,
+  dashboard) use `src/lib/app-seo.ts` — the live app bundle's OWN og
+  block ("Pixelco" / "Visitor identification platform dashboard" /
+  `/app-og-image.png`, NO canonical/og:url/og:locale). The root title
+  template suffix is `|` (the live's convention — `·` was clone-
+  authored). Blog posts carry a `metaDescription` (the live's meta
+  description, DISTINCT from the card excerpt). The social images are
+  self-hosted copies of the live's (never hotlink its builder storage),
+  and the live's `twitter:site @Lovable` build artifact is deliberately
+  NOT replicated.
+- **robots.txt/sitemap.xml are Route Handlers, not conventions (R14).**
+  `src/app/{robots.txt,sitemap.xml}/route.ts` emit the live's documents
+  byte-for-byte (comments, `xmlns:news`/`xmlns:image`, "1.0" priorities,
+  lowercase `User-agent:`, the live's hand-authored URL order — the post
+  order is a PINNED slug array in the sitemap route, not a date sort).
+  Do not convert them back to `app/robots.ts`/`app/sitemap.ts` — the
+  metadata conventions cannot emit comments or trailing-zero priorities.
+  The favicon is `public/favicon.ico` (the live's bytes, auto-discovered
+  — there is no `app/icon.svg` and no injected link tag).
+- **The 404 tab title is a client-side swap (R14).** The live (CSR)
+  serves its shell title and swaps to "Page Not Found | Pixelco" in the
+  client router; the clone reproduces this via the `NotFoundTitle`
+  island in `not-found.tsx` — a MutationObserver re-asserts the title
+  because Next's client metadata controller re-applies the resolved
+  root `<title>` AFTER hydration (a plain `document.title` assignment in
+  an effect gets overwritten). Unmount disconnects the observer so
+  client navigation restores normal metadata. The HTTP status stays a
+  correct 404 (the live's 200 SPA fallback is not replicated).
 - **Typography is live-parity (v1.4).** App body = **Inter**; **Space
   Grotesk** is the `font-display` utility (card titles, page H1s, KPI values,
   prices, sidebar wordmark); marketing = **DM Sans**; mono stays mono. Brand
@@ -117,8 +150,9 @@ make it pass — fix the code.
 - **Mutations are Server Actions only** (`src/actions/*`), each returning the
   `ActionResult<T>` envelope from `src/lib/validation.ts`. Route handlers are
   a fixed whitelist: `api/track`, `api/activity`, `api/export`, `api/health`,
-  `api/auth/[...nextauth]`, `pixel.js`. Don't add REST endpoints for UI
-  mutations.
+  `api/auth/[...nextauth]`, `pixel.js`, plus the two SEO document routes
+  `robots.txt`/`sitemap.xml` (R14 — GET-only, live-byte reproducers, see
+  above). Don't add REST endpoints for UI mutations.
 - **Quota has one mutation path.** `src/lib/quota.ts` is the only module that
   writes `identificationsUsed` — consumption is a single conditional UPDATE
   (free plans hard-stop; paid monthly plans increment unconditionally and
