@@ -54,7 +54,7 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+    <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
         <p role="alert" className="text-sm text-red-600">
           {error}

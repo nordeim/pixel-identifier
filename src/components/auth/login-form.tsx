@@ -49,7 +49,7 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+    <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
         <p role="alert" className="flex items-start gap-2 rounded-lg bg-red-50 px-3 py-2.5 text-sm text-red-700">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
@@ -58,9 +58,7 @@ export function LoginForm() {
       )}
 
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="email">Email</Label>
-        </div>
+        <Label htmlFor="email">Email</Label>
         <Input
           id="email"
           name="email"

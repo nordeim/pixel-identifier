@@ -37,7 +37,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           inside LoginForm shipped the link twice). */}
       <p className="mt-4 text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{' '}
-        <Link href="/signup" className="font-medium text-primary hover:underline">
+        <Link href="/signup" className="text-primary font-medium hover:underline">
           Sign up free
         </Link>
       </p>

@@ -63,7 +63,7 @@ export function SignUpForm({
   const fieldError = (field: string): string | undefined => fieldErrors?.[field]?.[0]
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+    <form onSubmit={handleSubmit} className="space-y-4">
       {/* Plan intent captured from the pricing page (?plan=…&cycle=…) */}
       <input type="hidden" name="plan" value={intentPlan} />
       <input type="hidden" name="cycle" value={intentCycle} />
