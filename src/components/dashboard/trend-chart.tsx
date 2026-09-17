@@ -35,12 +35,14 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
               <stop offset="100%" stopColor="hsl(172 66% 50%)" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#E7E5DF" vertical />
+          {/* R11: grid/axis strokes use the live's cool border token
+              (hsl(220 13% 91%) = #E5E7EB), not the pre-R11 warm #E7E5DF. */}
+          <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical />
           <XAxis
             dataKey="label"
             tick={{ fontSize: 11, fill: '#6B7280' }}
             tickLine={false}
-            axisLine={{ stroke: '#E7E5DF' }}
+            axisLine={{ stroke: '#E5E7EB' }}
             interval="preserveStartEnd"
           />
           <YAxis
@@ -52,7 +54,7 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
           <Tooltip
             contentStyle={{
               borderRadius: '0.75rem',
-              border: '1px solid #E7E5DF',
+              border: '1px solid #E5E7EB',
               boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
               fontSize: '12px',
             }}

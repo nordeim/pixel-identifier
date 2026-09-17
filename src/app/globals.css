@@ -56,6 +56,8 @@
   --color-neon-green-foreground: #073b32;
   /* Live hot-pink accent (rgb(236,70,153)): bell dot, auth-page glow. */
   --color-hot-pink: #ec4699;
+  /* R11: live --electric-blue (199 89% 48%) — accent-gradient stop. */
+  --color-electric-blue: hsl(199 89% 48%);
   /* Live highlight yellow (R7-V6, rgb(255,217,26)): Zap icon on the hero
   trust pills. Generates text-highlight / bg-highlight utilities. */
   --color-highlight: #ffd91a;
@@ -66,48 +68,52 @@
 
 :root {
   --radius: 0.75rem;
-  /* Pixelco brand: warm amber primary, teal data accent. R10: the global
-     canvas is white — every surface that needs a tinted canvas paints its
-     own wrapper (marketing-scope, .bg-app, .gradient-hero auth canvas), and
-     the body color shows only in overscroll/below-document areas where the
-     live renders white (marketing) or #F6F7F9 (app — a 2-4 channel delta,
-     invisible next to the old cream #fffcf5 strip below the footer). */
-  --background: #ffffff;
-  --foreground: #111827;
-  --card: #ffffff;
-  --card-foreground: #111827;
-  --popover: #ffffff;
-  --popover-foreground: #111827;
-  /* R7-V3: measured off the live bundles — the app's --primary is
-  hsl(45 100% 51%) = #FFC105 (the gradient-primary start color); the
-  marketing tree overrides it to hsl(45 100% 50%) = #FFBF00 in its
-  layout wrapper. Black-on-primary contrast stays ≥ 12:1. */
-  --primary: #ffc105;
-  --primary-foreground: #1c1917;
-  --secondary: #f5f0e6;
-  --secondary-foreground: #1c1917;
-  --muted: #f4f4f5;
-  --muted-foreground: #6b7280;
-  --accent: #fef9c3;
-  --accent-foreground: #1c1917;
+  /* R11-F1: the live app bundle migrated to cool-gray neutrals (hue 220/230,
+     navy foreground, teal accent) — extracted verbatim off app.pixelco.io.
+     The marketing tree overrides these via .marketing-scope; every tinted
+     canvas still paints its own wrapper (.bg-app == #f6f7f9 == the new
+     --background, kept for semantic clarity; auth keeps .gradient-hero). */
+  --background: hsl(220 20% 97%);
+  --foreground: hsl(230 25% 10%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(230 25% 10%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(230 25% 10%);
+  /* Primary stays the brand amber #FFC105 (hsl 45 100% 51% — the live's
+     gradient-primary start color); foreground is now the navy token. */
+  --primary: hsl(45 100% 51%);
+  --primary-foreground: hsl(230 25% 10%);
+  --secondary: hsl(220 14% 96%);
+  --secondary-foreground: hsl(230 25% 10%);
+  --muted: hsl(220 14% 96%);
+  --muted-foreground: hsl(220 9% 46%);
+  /* R11: the live's --accent is the TEAL data accent (hovers on ghost
+     buttons, select items and dropdowns render teal — verified live). */
+  --accent: hsl(172 66% 50%);
+  --accent-foreground: hsl(230 25% 10%);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #e7e5df;
-  --input: #e7e5df;
-  --ring: #eab308;
-  /* Data palette: chart-1 pageviews (amber), chart-2 identified (teal). */
-  --chart-1: #f59e0b;
+  --border: hsl(220 13% 91%);
+  --input: hsl(220 13% 91%);
+  --ring: hsl(45 100% 51%);
+  /* Data palette: chart-1 pageviews (purple — the live trend line), chart-2
+     identified (teal). Both are hardcoded in trend-chart.tsx; tokens kept
+     for any future chart surfaces. */
+  --chart-1: #7c3aed;
   --chart-2: #2dd4bf;
   --chart-3: #a3a3a3;
   --chart-4: #fb923c;
   --chart-5: #fde047;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* R11: live sidebar token set — the active pill tint is the warm
+     hsl(45 30% 96%) (#F8F6F2) with golden hsl(45 100% 40%) (#CC9900)
+     text; sidebar canvas is white with cool hairlines. */
+  --sidebar: hsl(0 0% 100%);
+  --sidebar-foreground: hsl(230 25% 10%);
+  --sidebar-primary: hsl(45 100% 51%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(45 30% 96%);
+  --sidebar-accent-foreground: hsl(45 100% 40%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(45 100% 51%);
 }
 
 .dark {
@@ -199,17 +205,29 @@
   /* --- Live-app brand utilities (round-5, R5-M5) ---------------------- */
   /* Primary amber gradient — buttons, badges, avatars (live .gradient-primary). */
   .gradient-primary {
-    background-image: linear-gradient(135deg, #ffc105, #ffb200);
+    background-image: linear-gradient(135deg, #ffc105, #ffb300);
   }
   /* Soft amber halo for elevated CTAs (live .glow-primary, measured
      rgba(255,193,5,0.3) 0 0 40px — a diffuse zero-offset glow). */
   .glow-primary {
     box-shadow: 0 0 40px 0 rgba(255, 193, 5, 0.3);
   }
+  /* R11: live accent utilities (app bundle) — teal accent gradient, card
+     gradient, teal glow. Currently unreferenced by components but defined
+     by the live :root; kept so future surfaces resolve to live tokens. */
+  .gradient-accent {
+    background-image: linear-gradient(135deg, hsl(172 66% 50%), hsl(199 89% 48%));
+  }
+  .gradient-card {
+    background-image: linear-gradient(135deg, hsl(0 0% 100%), hsl(40 30% 97%));
+  }
+  .glow-accent {
+    box-shadow: 0 0 40px 0 hsl(172 66% 50% / 0.3);
+  }
   /* Gradient-clipped amber text — plan names, usage percentages (live
   .text-gradient-primary). */
   .text-gradient-primary {
-    background-image: linear-gradient(135deg, #ffc105, #ffb200);
+    background-image: linear-gradient(135deg, #ffc105, #ffb300);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;

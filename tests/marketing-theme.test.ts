@@ -34,9 +34,11 @@ const marketingLayout = read('src/app/(marketing)/layout.tsx')
 
 describe('marketing palette scope (R10-F1)', () => {
   it('defines a .marketing-scope class in globals.css carrying the live marketing tokens', () => {
-    const start = css.indexOf('.marketing-scope')
-    expect(start).toBeGreaterThanOrEqual(0)
-    const block = css.slice(start, start + 1200)
+    // Anchor on the class definition, not a bare indexOf — the token-block
+    // comments also mention .marketing-scope (R11).
+    const defStart = css.search(/\.marketing-scope\s*\{/)
+    expect(defStart).toBeGreaterThanOrEqual(0)
+    const block = css.slice(defStart, defStart + 1200)
 
     expect(block).toContain('--background: hsl(0 0% 100%)')
     expect(block).toContain('--foreground: hsl(230 25% 12%)')
@@ -71,13 +73,14 @@ describe('marketing palette scope (R10-F1)', () => {
 
   it('keeps the app palette global and untouched (dashboard/auth stay off the scope)', () => {
     // The :root block keeps the app-side values the live app bundle uses —
-    // R10 moved the global canvas to white (the old cream #fffcf5 showed as
-    // a warm strip below the footer; each tinted surface paints its own
-    // wrapper: marketing-scope, .bg-app, the auth gradient canvas).
+    // R11 migrated them to the live cool-neutral set (teal accent, cool
+    // hairlines, navy foreground; app-theme.test.ts pins the full set).
+    // Each tinted surface still paints its own wrapper: marketing-scope,
+    // .bg-app, the auth gradient canvas.
     const rootStart = css.indexOf(':root')
     const rootBlock = css.slice(rootStart, css.indexOf('}', rootStart))
-    expect(rootBlock).toContain('--background: #ffffff')
-    expect(rootBlock).toContain('--primary: #ffc105')
+    expect(rootBlock).toContain('--background: hsl(220 20% 97%)')
+    expect(rootBlock).toContain('--primary: hsl(45 100% 51%)')
     expect(css).toContain('.bg-app')
     expect(css.match(/\.bg-app\s*{[^}]*background-color:\s*#f6f7f9/)).toBeTruthy()
   })
