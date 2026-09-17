@@ -69,7 +69,7 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
         <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/15" aria-hidden="true">
           <Globe className="h-6 w-6 text-amber-600" />
         </span>
-        <h2 className="mt-4 text-lg font-bold text-foreground">Add a domain first</h2>
+        <h2 className="mt-4 text-lg font-bold">Add a domain first</h2>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           Your pixel snippet is generated per domain. Register the website you
           want to track, then come back here to install the snippet.
@@ -89,7 +89,7 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
       {/* Page header + domain switcher, mirroring the live install page. */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-2xl font-bold text-foreground">Install Your Pixel</h1>
+          <h1 className="font-display text-2xl font-bold">Install Your Pixel</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             One snippet in your <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">&lt;head&gt;</code> tag — works on every page automatically.
           </p>

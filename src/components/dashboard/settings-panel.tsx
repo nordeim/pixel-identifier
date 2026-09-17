@@ -55,7 +55,7 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
       {/* R5-H2: in-page title — the live settings page renders its H1 inside
           the content area, not in the topbar. */}
       <div>
-        <h1 className="font-display text-2xl font-bold text-foreground">Settings</h1>
+        <h1 className="font-display text-2xl font-bold">Settings</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Manage your account and pixel configuration.
         </p>

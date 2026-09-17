@@ -31,7 +31,7 @@ export default function DashboardError({
       >
         <AlertTriangle className="h-6 w-6 text-red-600" />
       </span>
-      <h2 className="mt-4 text-lg font-bold text-foreground">Something went wrong</h2>
+      <h2 className="mt-4 text-lg font-bold">Something went wrong</h2>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
         We couldn&apos;t load this page. This is usually temporary — try again,
         and if it persists, check the server logs.

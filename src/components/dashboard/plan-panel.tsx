@@ -76,7 +76,7 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
               <p className="text-sm font-semibold text-foreground">
                 You&apos;re on the <span className="text-gradient-primary capitalize">{PLANS[shownPlan].name}</span> plan
               </p>
-              <p className="mt-0.5 text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground mt-0.5">
                 {used} of {limit.toLocaleString()} identifications used ({period})
               </p>
               {overage > 0 && (
@@ -134,65 +134,62 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
               key={plan.id}
               className={
                 plan.popular
-                  ? 'relative flex h-full flex-col overflow-hidden rounded-lg border border-primary bg-card shadow-md ring-1 ring-primary/20 scale-[1.02] transition-all hover:shadow-lg'
-                  : 'relative flex h-full flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all hover:border-primary/20 hover:shadow-lg'
+                  ? 'rounded-lg border bg-card text-card-foreground relative overflow-hidden transition-all hover:shadow-lg flex flex-col h-full border-primary shadow-md ring-1 ring-primary/20 scale-[1.02]'
+                  : 'rounded-lg border bg-card text-card-foreground shadow-sm relative overflow-hidden transition-all hover:shadow-lg flex flex-col h-full hover:border-primary/20'
               }
             >
-              {plan.popular && <div className="absolute left-0 right-0 top-0 h-1 gradient-primary" aria-hidden="true" />}
+              {plan.popular && <div className="absolute top-0 left-0 right-0 h-1 gradient-primary" aria-hidden="true" />}
               <div className="flex flex-col space-y-1.5 p-6 pb-2">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">{plan.name}</h3>
-                  {plan.popular && (
-                    <span className="gradient-primary rounded-full border-0 px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">
-                      POPULAR
-                    </span>
-                  )}
+                  <h3 className="font-semibold tracking-tight font-display text-lg">{plan.name}</h3>
                 </div>
-                <div className="mt-2 flex items-baseline gap-1">
-                  <span className="font-display text-3xl font-bold text-foreground xl:text-4xl">
+                <div className="flex items-baseline gap-1 mt-2">
+                  <span className="font-display text-3xl xl:text-4xl font-bold">
                     {formatPrice(monthly)}
                   </span>
-                  {plan.monthlyPrice > 0 && <span className="text-sm text-muted-foreground">/mo</span>}
+                  {plan.monthlyPrice > 0 && <span className="text-muted-foreground text-sm">/mo</span>}
                 </div>
-                <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{plan.description}</p>
+                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{plan.description}</p>
 
                 {/* Live quota block: number + label inline under a hairline. */}
-                <div className="mt-3 border-t border-border pt-3">
-                  <span className="text-sm font-semibold text-foreground">
+                <div className="mt-3 pt-3 border-t border-border">
+                  <span className="text-sm font-semibold">
                     {plan.identificationLimit.toLocaleString()}
                   </span>
-                  <span className="ml-1 text-xs text-muted-foreground">
+                  <span className="text-xs text-muted-foreground ml-1">
                     {plan.limitPeriod === 'lifetime'
                       ? 'lifetime identifications'
                       : 'identifications / mo'}
                   </span>
                   {plan.overagePrice > 0 && (
-                    <p className="mt-0.5 text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       then <span className="font-semibold text-foreground">{formatPrice(plan.overagePrice)}</span> per extra identification
                     </p>
                   )}
                 </div>
               </div>
 
-              <div className="flex flex-1 flex-col p-6 pt-0">
+              <div className="p-6 flex flex-col flex-1 pt-0">
                 <form action={formAction} className="mb-4">
                   <input type="hidden" name="plan" value={plan.id} />
                   <input type="hidden" name="cycle" value={cycle} />
                   {isCurrent ? (
-                    <Button type="button" disabled variant="secondary" className="h-10 w-full font-semibold">
+                    <Button type="button" disabled variant="outline" size={null} className="h-10 px-4 py-2 w-full mb-4">
                       Current Plan
                     </Button>
                   ) : (
                     <Button
                       type="submit"
                       disabled={pending}
-                      className="h-10 w-full gradient-primary font-semibold text-primary-foreground shadow-lg glow-primary transition-all duration-300 hover:opacity-90"
+                      variant={null}
+                      size={null}
+                      className="gradient-primary text-primary-foreground shadow-lg glow-primary hover:opacity-90 transition-all duration-300 font-semibold h-10 px-4 py-2 w-full mb-4"
                     >
                       {pending ? (
                         <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                       ) : (
                         <>
-                          <Zap className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
+                          <Zap className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" />
                           Get Started
                         </>
                       )}
@@ -200,14 +197,16 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
                   )}
                 </form>
 
-                <ul className="flex-1 space-y-2.5">
+                <div className="space-y-2.5 flex-1">
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
-                      <Check className="mt-0.5 h-2.5 w-2.5 shrink-0 text-primary" aria-hidden="true" />
-                      {feature}
-                    </li>
+                    <div key={feature} className="flex items-start gap-2">
+                      <div className="h-4 w-4 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <Check className="h-2.5 w-2.5 text-primary" aria-hidden="true" />
+                      </div>
+                      <span className="text-xs text-muted-foreground leading-relaxed">{feature}</span>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             </div>
           )
@@ -218,7 +217,7 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
       <Card className="border-border shadow-sm">
         <CardContent className="flex flex-col items-center justify-between gap-4 p-6 pt-6 md:flex-row">
           <div>
-            <h3 className="font-display text-lg font-bold text-foreground">Need 7,500+ identifications?</h3>
+            <h3 className="font-display text-lg font-bold">Need 7,500+ identifications?</h3>
             <p className="mt-0.5 text-sm text-muted-foreground">
               Custom pricing with volume discounts, SLA, dedicated infrastructure,
               and white-glove onboarding.
@@ -237,7 +236,7 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
       {/* FAQ — six static question cards like the live (R6-H6), not an
           accordion. */}
       <div>
-        <h2 className="mb-6 text-center font-display text-xl font-bold text-foreground">
+        <h2 className="font-display text-xl font-bold text-center mb-6">
           Frequently Asked Questions
         </h2>
         <div className="grid gap-4 md:grid-cols-2">
