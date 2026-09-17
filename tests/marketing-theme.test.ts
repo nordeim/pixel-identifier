@@ -31,7 +31,8 @@ import { describe, expect, it } from 'vitest'
 
 const read = (p: string) => readFileSync(join(process.cwd(), p), 'utf8')
 const css = read('src/app/globals.css')
-const marketingLayout = read('src/app/(marketing)/layout.tsx')
+// R13-F3: the scope wrapper moved into the shared MarketingFrame.
+const marketingLayout = read('src/components/marketing/marketing-frame.tsx')
 
 describe('marketing palette scope (R10-F1)', () => {
   it('defines a .marketing-scope class in globals.css carrying the live marketing tokens', () => {
@@ -65,7 +66,7 @@ describe('marketing palette scope (R10-F1)', () => {
     expect(block).toContain('--radius: 0.625rem')
   })
 
-  it('applies marketing-scope (plus a white canvas) on the (marketing) layout wrapper', () => {
+  it('applies marketing-scope (plus a white canvas) on the marketing frame wrapper', () => {
     expect(marketingLayout).toContain('marketing-scope')
     // The wrapper covers min-h-screen, so bg-background resolves the scope's
     // white — the body's canvas never shows through the marketing tree.

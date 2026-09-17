@@ -112,7 +112,9 @@ describe('scroll-reveal attributes (R12-F1)', () => {
 
 describe('scroll-reveal machinery (R12-F1)', () => {
   const css = read('src/app/globals.css')
-  const layout = read('src/app/(marketing)/layout.tsx')
+  // R13-F3: the chrome (script + observer mount) moved into the shared
+  // MarketingFrame used by both the (landing) and (marketing) groups.
+  const layout = read('src/components/marketing/marketing-frame.tsx')
   // The observer lands with the GREEN pass; tolerate its absence so the
   // RED run reports failures instead of crashing the module load.
   let observer = ''
@@ -145,7 +147,7 @@ describe('scroll-reveal machinery (R12-F1)', () => {
     )
   })
 
-  it('the (marketing) layout mounts the observer + the pre-paint js-reveal script', () => {
+  it('the marketing frame mounts the observer + the pre-paint js-reveal script', () => {
     expect(layout).toContain('RevealObserver')
     expect(layout).toContain('js-reveal')
     // The inline script must be parser-blocking and tiny (pre-paint).
