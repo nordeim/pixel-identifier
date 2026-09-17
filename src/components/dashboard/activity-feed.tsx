@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { ArrowUpRight, ChevronDown, Eye, Globe, Loader2, Mail } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { relativeTime } from '@/lib/format'
 
 export interface ActivityEvent {
@@ -91,7 +91,7 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
       {/* R6-M2: one card like the live — header + p-0 divide list. */}
       <Card className="shadow-sm">
         <CardHeader className="pb-2">
-          <p className="font-display text-base font-semibold tracking-tight text-foreground">Live Feed</p>
+          <CardTitle className="text-base">Live Feed</CardTitle>
           <p className="text-sm text-muted-foreground">All events across your domains</p>
         </CardHeader>
         <CardContent className="p-0">

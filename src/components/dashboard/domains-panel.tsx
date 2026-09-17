@@ -78,7 +78,7 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
             <Input
               name="domain"
               placeholder="yoursite.com"
-              className="h-10 flex-1"
+              className="flex-1"
               aria-label="Domain to register"
               autoComplete="off"
               required

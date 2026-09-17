@@ -37,18 +37,18 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <div className="flex min-h-screen bg-app">
+    <div className="min-h-screen flex w-full bg-muted/30">
       {/* Desktop sidebar (collapsible to an icon rail) */}
       <SidebarShell usage={usageProps} />
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex-1 flex flex-col">
         <Topbar
           email={user.email}
           usage={usageProps}
           unread={unread}
           initialVisitorsCounts={visitorsCounts}
         />
-        <main className="flex-1 overflow-auto p-6">{children}</main>
+        <main className="flex-1 p-6 overflow-auto">{children}</main>
       </div>
     </div>
   )

@@ -64,7 +64,7 @@ export default async function OverviewPage() {
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {kpis.map((kpi) => (
-          <Card key={kpi.label} className="shadow-sm transition-shadow hover:shadow-md">
+          <Card key={kpi.label} className="shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6 pt-5 pb-4 px-5">
               <div className="mb-3 flex items-center justify-between">
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
