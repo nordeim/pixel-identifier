@@ -8,7 +8,10 @@ import { PricingSection } from '@/components/marketing/pricing-section'
 import { Faq, BottomCta } from '@/components/marketing/faq-footer'
 
 export const metadata: Metadata = {
-  title: 'Pixelco — Identify Anonymous Website Visitors By Their Email',
+  // R13-F10: the live landing ships exactly this title (and the same one
+  // on every marketing route — its CSR shell never swaps it). absolute
+  // bypasses the root template, which would double-suffix the brand.
+  title: { absolute: 'Pixelco — Identify Anonymous Website Visitors by Email' },
 }
 
 interface LandingPageProps {

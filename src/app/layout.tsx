@@ -32,7 +32,9 @@ const dancingScript = Dancing_Script({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
   title: {
-    default: "Pixelco — Identify Anonymous Website Visitors By Their Email",
+    // R13-F10: the live's exact brand title (marketing routes render this
+    // verbatim; the live's CSR shell never swaps it per route).
+    default: "Pixelco — Identify Anonymous Website Visitors by Email",
     template: "%s · Pixelco",
   },
   description:
@@ -45,7 +47,7 @@ export const metadata: Metadata = {
     "anonymous visitor reveal",
   ],
   openGraph: {
-    title: "Pixelco — Identify Anonymous Website Visitors By Their Email",
+    title: "Pixelco — Identify Anonymous Website Visitors by Email",
     description:
       "One pixel snippet reveals who's browsing your site — by their real email address.",
     siteName: "Pixelco",

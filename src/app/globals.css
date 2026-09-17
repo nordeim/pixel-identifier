@@ -10,9 +10,13 @@
   font-display utility), DM Sans marketing. R11: mono is the live's
   declared-not-loaded stack — "JetBrains Mono" resolves to the system
   mono on both sides (the live ships no mono webfont either). */
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-space-grotesk);
-  --font-marketing: var(--font-dm-sans);
+  /* R13-F11: every stack ends with the live's system tail — next/font's
+  generated "… Fallback" family has no arrow glyphs (the ← in the sub-page
+  back-links rendered as a dash), and the live chains system-ui/sans-serif
+  (app: "Inter, sans-serif" / marketing: "DM Sans", system-ui, sans-serif). */
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), system-ui, sans-serif;
+  --font-marketing: var(--font-dm-sans), system-ui, sans-serif;
   /* R7-V4: cursive face for the marketing wordmark's "By Ai Viral" subtext. */
   --font-script: var(--font-dancing-script);
   --font-mono: "JetBrains Mono", monospace;
