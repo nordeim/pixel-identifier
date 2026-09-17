@@ -74,11 +74,16 @@
 
 :root {
   --radius: 0.75rem;
+  /* R15-F1: shadcn Sidebar geometry (the live's current dashboard shell —
+     16rem expanded rail, 3rem icon rail; the mobile sheet overrides the
+     width inline at 18rem exactly like the live). */
+  --sidebar-width: 16rem;
+  --sidebar-width-icon: 3rem;
   /* R11-F1: the live app bundle migrated to cool-gray neutrals (hue 220/230,
      navy foreground, teal accent) — extracted verbatim off app.pixelco.io.
-     The marketing tree overrides these via .marketing-scope; every tinted
-     canvas still paints its own wrapper (.bg-app == #f6f7f9 == the new
-     --background, kept for semantic clarity; auth keeps .gradient-hero). */
+     The marketing tree overrides these via .marketing-scope; the layout
+     canvas paints bg-muted/30 over --background like the live (R15-F4);
+     auth keeps .gradient-hero. */
   --background: hsl(220 20% 97%);
   --foreground: hsl(230 25% 10%);
   --card: hsl(0 0% 100%);
@@ -202,10 +207,29 @@
 }
 
 @layer utilities {
-  /* App shell canvas: cool gray like the original dashboard (#F6F7F9). */
-  .bg-app {
-    background-color: #f6f7f9;
+  /* R15-F4: the layout root paints the live canvas (bg-muted/30 over the
+     body background — computed rgba(243,244,246,.3) like the live); the
+     opaque bg-app canvas utility retired with the old shell. */
+
+  /* R15-D10: shadcn Sidebar geometry. Tailwind v4 emits INVALID css for
+     the live's TW3-style bare-var brackets (w-[--sidebar-width] compiles
+     to `width:--sidebar-width`), so the two affected utilities are
+     hand-defined — the DOM ships the live's byte-identical class strings
+     while these rules carry the actual layout. The vars live on :root
+     (the live hosts them on the provider via a stylesheet rule; the
+     computed geometry is identical: 16rem rail, 3rem icon rail). */
+  .w-\[--sidebar-width\] {
+    width: var(--sidebar-width);
   }
+  .w-\[--sidebar-width-icon\] {
+    width: var(--sidebar-width-icon);
+  }
+  .group-data-\[collapsible\=icon\]\:w-\[--sidebar-width-icon\]:is(
+      :where(.group)[data-collapsible='icon'] *
+    ) {
+    width: var(--sidebar-width-icon);
+  }
+
   .text-balance {
     text-wrap: balance;
   }

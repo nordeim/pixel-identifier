@@ -23,7 +23,10 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
       "docs/**",
-      "skills/**",      
+      "skills/**",
+      // Captured live/clone audit artifacts (research/round*/) are evidence,
+      // not source — third-party JS captures must not be linted.
+      "research/**",
       "scripts/**",
     ],
   },
