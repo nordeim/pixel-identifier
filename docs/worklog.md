@@ -506,3 +506,29 @@ Stage Summary:
   EXACT/CLOSE level with only inherent data residuals
 - Suite 308/43 → 380/48; repo at PAD v1.12
 - Next: atomic commits + push (Task 5)
+
+---
+Task ID: 5
+Agent: main (Super Z)
+Task: Round-13 ship — atomic commits + push
+
+Work Log:
+- Eight atomic Conventional Commits on main only, in workstream order:
+  613bf73 fix(marketing) accordion+FAQ (R13-F1..F2); 80473b8
+  feat(marketing) MarketingFrame banner scoping (R13-F3); ac82dbc
+  feat(marketing) about+docs (R13-F4..F5); 7b5cc6c feat(marketing)
+  blog parity + live copy (R13-F6..F9,D3); e59066d feat(marketing)
+  legal live copy (R13-F8,E2); 035f0c2 fix(marketing) font tails +
+  titles (R13-F10..F11); d9ea4c7 test(evidence) round-13 captures;
+  d68e25f docs PAD v1.12 set.
+- Pre-push: working tree clean, secret scan across all commits clean,
+  full npm run verify GREEN (lint, typecheck, 380/48 tests, build).
+- Pushed via docs/ssh_git_wrapper_v3.py (operator key, 0600 file
+  outside the repo, paramiko shim on PATH) after a green --dry-run.
+  Wrapper verified refs/heads/main @ d68e25f == local HEAD and synced
+  the remote-tracking ref.
+- Operator key shredded (random overwrite + remove) after the push.
+
+Stage Summary:
+- Round-13 closed and shipped: main @ d68e25f on GitHub, PAD v1.12,
+  380 tests / 48 files, sub-page parity EXACT across the board
