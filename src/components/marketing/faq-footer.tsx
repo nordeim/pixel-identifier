@@ -12,34 +12,38 @@ import { Button } from '@/components/ui/button'
 import { PixelcoMarketingWordmark } from '@/components/pixelco-logo'
 import { FOOTER_COLUMNS } from '@/lib/marketing-links'
 
-const FAQS = [
+// R13-F2: the seven Q&A pairs are the live pixelco.io copy, verbatim
+// (extracted in research/round13-audit/content/faq-answers.json). Exported
+// for the copy-parity test — Radix does not SSR closed content, so the
+// answers are not in the static markup.
+export const FAQS = [
   {
     q: 'How does Pixelco identify visitors by email?',
-    a: 'When someone visits your site, our pixel collects encrypted, privacy-safe signals (no cookies, no forms). Our identity graph cross-references those signals against deterministic first-party data partners to resolve the visitor to a real, verified email address — in real time, on average within seconds of the pageview.',
+    a: 'Pixelco uses a proprietary matching engine that cross-references anonymized visitor signals against our global identity graph. We match visitors to their real email address — no forms, no popups, no cookies required.',
   },
   {
     q: 'Does it really work for B2C (individual) visitors?',
-    a: 'Yes. Traditional visitor-identification tools only resolve the company behind an IP address. Pixelco is the first platform built for individual-level identification: we resolve the actual person — their personal Gmail, Outlook, or iCloud address — not just where they work.',
+    a: 'Yes! Unlike every other tool that only identifies companies via IP lookup, Pixelco is the first platform globally to identify individual consumers by personal email address — both B2B and B2C.',
   },
   {
     q: 'How do I install the pixel?',
-    a: 'Paste one line of JavaScript into the <head> section of your site. It works on hand-coded HTML, WordPress, Shopify, Webflow, React, and virtually any platform that lets you add a script tag. Setup takes about 30 seconds and requires no developer skills.',
+    a: "Just paste one line of JavaScript into your website's <head> tag. It works on any platform — HTML, WordPress, Shopify, React, Webflow, and more. Setup takes under 30 seconds.",
   },
   {
     q: 'Is this legal and privacy-compliant?',
-    a: 'Pixelco is fully cookieless — we never set tracking cookies or collect form data. Our identification is built on deterministic, consented first-party data from our partner network, and we operate in compliance with GDPR and CCPA. We publish a DPA, honor opt-out requests within 24 hours, and never resell your data.',
+    a: 'Pixelco only identifies publicly matchable data and is built with GDPR and CCPA awareness. We do not sell or share your data. All matched emails are first-party data for your use only.',
   },
   {
     q: "What's the typical match rate?",
-    a: 'Most customers see a 15–25% match rate, meaning we can identify the email of roughly 1 in 4–7 anonymous visitors. Match rates vary by traffic source and geography.',
+    a: 'Most customers see a 15-25% match rate, meaning we can identify the email of roughly 1 in 4-7 anonymous visitors. Match rates vary by traffic source and geography.',
   },
   {
     q: 'Can I export leads or integrate with my CRM?',
-    a: 'Yes. Every identified visitor can be exported as CSV with one click, or streamed into your CRM, email sequencer, or webhook endpoint. Push leads to HubSpot, Salesforce, or Zapier and trigger outreach automatically.',
+    a: 'Absolutely. Pixelco integrates with HubSpot, Salesforce, popular email platforms, Zapier, and webhooks. You can also export CSV files directly from the dashboard.',
   },
   {
     q: "What happens if I exceed my plan's identification limit?",
-    a: 'On paid plans you never stop collecting data: once your monthly allowance is used up, additional identifications are billed at a low per-identification rate ($0.10–$0.20 depending on plan). On the Free plan, tracking continues but identification pauses until you upgrade.',
+    a: "You'll be charged per extra identification at your plan's overage rate ($0.20, $0.15, or $0.10 depending on your tier). We'll notify you when you're approaching your limit so you can upgrade if needed.",
   },
 ]
 
@@ -58,19 +62,21 @@ export function Faq() {
         {/* R7-V14: the live's FAQ items are cards (bg-background, border,
             rounded-lg, px-5) that gain a shadow when open — not the default
             border-b divider rhythm. R12-F1: the whole list reveals as one
-            wrapper (y16) like the live. */}
-        <div data-reveal="16" data-reveal-delay="100" className="mt-10 space-y-2.5">
+            wrapper (y16) like the live. R13-F1: the wrapper itself is
+            classless on the live (the accordion root carries the
+            space-y-2.5); item/trigger/content strings are live-exact. */}
+        <div data-reveal="16" data-reveal-delay="100">
           <Accordion type="single" collapsible className="space-y-2.5">
             {FAQS.map((faq, index) => (
               <AccordionItem
                 key={faq.q}
                 value={`item-${index}`}
-                className="rounded-lg border border-border bg-background px-5 data-[state=open]:shadow-card"
+                className="bg-background border border-border rounded-lg px-5 data-[state=open]:shadow-card"
               >
-                <AccordionTrigger className="py-4 text-left text-sm font-semibold text-foreground hover:no-underline">
+                <AccordionTrigger className="text-left font-semibold text-sm text-foreground hover:no-underline py-4">
                   {faq.q}
                 </AccordionTrigger>
-                <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                <AccordionContent className="text-sm text-muted-foreground pb-4 leading-relaxed">
                   {faq.a}
                 </AccordionContent>
               </AccordionItem>
