@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk, DM_Sans, Geist_Mono, Dancing_Script } from "next/font/google";
+import { Inter, Space_Grotesk, DM_Sans, Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { siteUrl } from "@/lib/site-url";
@@ -21,11 +21,6 @@ const spaceGrotesk = Space_Grotesk({
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -66,7 +61,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${spaceGrotesk.variable} ${dmSans.variable} ${geistMono.variable} ${dancingScript.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${inter.variable} ${spaceGrotesk.variable} ${dmSans.variable} ${dancingScript.variable} font-sans antialiased bg-background text-foreground`}
       >
         {children}
         <Toaster />

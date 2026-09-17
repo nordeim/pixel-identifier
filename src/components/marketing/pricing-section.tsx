@@ -20,8 +20,8 @@ export function PricingSection() {
   return (
     <section id="pricing" aria-labelledby="pricing-heading" className="py-20">
       <div className="container mx-auto px-6">
-        <div className="text-center">
-          <p className="text-xs font-semibold text-primary uppercase tracking-widest">Pricing</p>
+        <div className="text-center mb-14">
+          <span className="text-xs font-semibold text-primary uppercase tracking-widest">Pricing</span>
           <h2 id="pricing-heading" className="text-3xl sm:text-4xl font-bold mt-2 text-foreground">
             Start Free. <span className="text-gradient-hero">Scale as You Grow.</span>
           </h2>

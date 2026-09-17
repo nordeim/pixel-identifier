@@ -56,11 +56,13 @@ const PIXELCO_WINS = [
 
 export function Features() {
   return (
-    <section aria-labelledby="features-heading" className="py-20">
+    <section id="benefits" aria-labelledby="features-heading" className="py-20">
       <div className="container mx-auto px-6">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div>
-            <p className="text-xs font-semibold text-primary uppercase tracking-widest">Benefits</p>
+            {/* R11: the live's kickers are inline spans (a block <p> adds
+                a full line box — the recurring -8px section delta). */}
+            <span className="text-xs font-semibold text-primary uppercase tracking-widest">Benefits</span>
             <h2 id="features-heading" className="text-3xl sm:text-4xl font-bold mt-2 mb-10 text-foreground">
               Everything you need to
               <br />
@@ -144,7 +146,12 @@ export function Comparison() {
                 </li>
               ))}
             </ul>
-            <Button asChild className="mt-6 w-full font-semibold">
+            {/* R11: the live's Compare CTA — gradient-cta on the default
+                h-10 size with hover:opacity-90. */}
+            <Button
+              asChild
+              className="w-full mt-6 gradient-cta text-primary-foreground border-0 hover:opacity-90 font-semibold"
+            >
               <Link href="/signup">
                 Start Free
                 <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />

@@ -47,8 +47,8 @@ export function Faq() {
   return (
     <section id="faq" aria-labelledby="faq-heading" className="py-20 bg-card border-y border-border">
       <div className="container mx-auto px-6 max-w-3xl">
-        <div className="text-center">
-          <p className="text-xs font-semibold text-primary uppercase tracking-widest">FAQ</p>
+        <div className="text-center mb-12">
+          <span className="text-xs font-semibold text-primary uppercase tracking-widest">FAQ</span>
           <h2 id="faq-heading" className="text-3xl sm:text-4xl font-bold mt-2 text-foreground">
             Frequently Asked Questions
           </h2>
@@ -137,7 +137,10 @@ export function SiteFooter() {
         <div className="container mx-auto px-6 py-14">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10">
             <div className="col-span-2 md:col-span-4 lg:col-span-1 mb-4 lg:mb-0">
-              <PixelcoMarketingWordmark />
+              {/* R11: the live wraps the wordmark in a home link (gap-2 mb-4). */}
+              <Link href="/" className="flex items-center gap-2 mb-4 focus-brand rounded-lg" aria-label="Pixelco home">
+                <PixelcoMarketingWordmark />
+              </Link>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mb-5">
                 The world&apos;s first B2C email identification platform. Know
                 who&apos;s visiting your site — by their real email.
@@ -175,10 +178,11 @@ export function SiteFooter() {
                           {link.label}
                         </a>
                       ) : link.href === '#' ? (
-                        // Careers: dead on the original pixelco.io footer too (parity).
-                        <span aria-disabled="true" className="cursor-default text-sm text-muted-foreground/70">
+                        // Careers: dead on the original pixelco.io footer too —
+                        // but it still renders a real anchor there (parity).
+                        <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors focus-brand">
                           {link.label}
-                        </span>
+                        </a>
                       ) : (
                         <Link href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors focus-brand">
                           {link.label}

@@ -68,10 +68,10 @@ const STEP_TAGS = [
  * chips (40px, rounded-lg) — not the round amber chips. */
 export function Audience() {
   return (
-    <section id="benefits" aria-labelledby="audience-heading" className="py-20 border-t border-border">
+    <section aria-labelledby="audience-heading" className="py-20 border-t border-border">
       <div className="container mx-auto px-6">
         <div className="text-center mb-14">
-          <p className="text-xs font-semibold text-primary uppercase tracking-widest">Perfect fit</p>
+          <span className="text-xs font-semibold text-primary uppercase tracking-widest">Perfect fit</span>
           <h2 id="audience-heading" className="text-3xl sm:text-4xl font-bold mt-2 text-foreground">
             Who Is Pixelco For?
           </h2>
@@ -109,7 +109,7 @@ export function HowItWorks() {
     <section id="how-it-works" aria-labelledby="how-heading" className="py-20 bg-card border-y border-border">
       <div className="container mx-auto px-6">
         <div className="text-center mb-14">
-          <p className="text-xs font-semibold text-primary uppercase tracking-widest">Our process</p>
+          <span className="text-xs font-semibold text-primary uppercase tracking-widest">Our process</span>
           <h2 id="how-heading" className="text-3xl sm:text-4xl font-bold mt-2 text-foreground">
             How We Identify Your Visitors
             <br />

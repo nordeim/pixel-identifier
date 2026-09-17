@@ -123,7 +123,9 @@ export function Hero() {
                 variant="outline"
                 className="w-full border-border bg-background px-7 text-base font-medium hover:bg-card sm:w-auto h-12"
               >
-                <Link href="#live-demo">See Live Demo</Link>
+                {/* R11: the live's demo CTA goes to the app (which serves
+                    login when signed out) — not a local anchor. */}
+                <Link href="/login">See Live Demo</Link>
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
@@ -131,7 +133,7 @@ export function Hero() {
             </p>
           </div>
 
-          <div id="live-demo" className="relative scroll-mt-24 lg:pl-4" aria-label="Live demo of the visitor feed">
+          <div className="relative lg:pl-4" aria-label="Live demo of the visitor feed">
             <LiveFeedMockup />
           </div>
         </div>

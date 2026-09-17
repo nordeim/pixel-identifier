@@ -31,10 +31,16 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
-          <Button variant="ghost" asChild>
+          {/* R11: the live's header CTAs are both size sm — ghost + muted
+              text for Log In, gradient-cta for Start Identifying. */}
+          <Button variant="ghost" size="sm" asChild className="text-muted-foreground font-medium">
             <Link href="/login">Log In</Link>
           </Button>
-          <Button asChild className="font-semibold">
+          <Button
+            size="sm"
+            asChild
+            className="gradient-cta text-primary-foreground border-0 hover:opacity-90 font-semibold"
+          >
             <Link href="/signup">Start Identifying</Link>
           </Button>
         </div>
@@ -65,12 +71,15 @@ export function SiteHeader() {
               </Link>
             ))}
             <div className="mt-3 flex flex-col gap-2">
-              <Button variant="outline" asChild>
+              <Button variant="ghost" asChild className="text-muted-foreground font-medium">
                 <Link href="/login" onClick={() => setOpen(false)}>
                   Log In
                 </Link>
               </Button>
-              <Button asChild className="font-semibold">
+              <Button
+                asChild
+                className="gradient-cta text-primary-foreground border-0 hover:opacity-90 font-semibold"
+              >
                 <Link href="/signup" onClick={() => setOpen(false)}>
                   Start Identifying
                 </Link>
