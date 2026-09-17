@@ -8,27 +8,20 @@ import { cn } from '@/lib/utils'
  * NextAuth v4 exposes signOut only as a client API, so the sidebar and the
  * account menu both delegate to this button.
  */
-export function SignOutButton({
-  className,
-  collapsed = false,
-}: {
-  className?: string
-  collapsed?: boolean
-}) {
+export function SignOutButton({ className }: { className?: string }) {
   return (
     <button
       type="button"
       onClick={() => void signOut({ callbackUrl: '/' })}
-      title={collapsed ? 'Sign out' : undefined}
       className={cn(
-        // R5-H7: live sign-out — text-xs, gap-2, px-1, LogOut h-3.5.
-        'flex w-full items-center rounded-lg py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-brand',
-        collapsed ? 'justify-center px-2' : 'gap-2 px-1',
+        // R11: live sign-out — text-xs, gap-2, px-1, LogOut h-3.5; a plain
+        // text button (no pill chrome, no hover tint).
+        'flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors w-full px-1 focus-brand',
         className,
       )}
     >
       <LogOut className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-      {collapsed ? <span className="sr-only">Sign out</span> : 'Sign out'}
+      Sign out
     </button>
   )
 }

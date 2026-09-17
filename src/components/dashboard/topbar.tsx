@@ -1,8 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { Bell, Download, Menu, PanelLeft } from 'lucide-react'
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { Bell, Download, PanelLeft } from 'lucide-react'
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { SidebarNav, type UsageProps } from '@/components/dashboard/sidebar-nav'
 import { toggleSidebar, useChromeState } from '@/components/dashboard/chrome-store'
@@ -31,6 +32,7 @@ export function Topbar({
 }) {
   const pathname = usePathname()
   const meta = pageMeta(pathname)
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const { visitorsCounts, selectedVisitorIds } = useChromeState()
   const isVisitors = pathname === '/dashboard/visitors'
 
@@ -42,6 +44,17 @@ export function Topbar({
       ? `/api/export?ids=${selectedVisitorIds.join(',')}`
       : '/api/export'
 
+  /** R11: the live ships ONE PanelLeft toggle (ghost h-7 w-7, icon at 16px
+   * via the button's [&_svg]:size-4) — it collapses the desktop rail at
+   * lg+ and opens the mobile sheet below. */
+  function onToggleClick() {
+    if (window.matchMedia('(min-width: 1024px)').matches) {
+      toggleSidebar()
+    } else {
+      setMobileNavOpen(true)
+    }
+  }
+
   let subtitle = meta.subtitle
   if (isVisitors) {
     subtitle = visitorsSubtitle(visitorsCounts ?? initialVisitorsCounts)
@@ -50,29 +63,22 @@ export function Topbar({
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-card px-6">
       <div className="flex min-w-0 items-center gap-4">
-        {/* Mobile nav */}
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open navigation menu">
-              <Menu className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
+        <Button
+          variant="ghost"
+          onClick={onToggleClick}
+          className="h-7 w-7"
+          aria-label="Toggle Sidebar"
+        >
+          <PanelLeft />
+        </Button>
+
+        {/* Controlled mobile sheet (the same PanelLeft button opens it). */}
+        <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
           <SheetContent side="left" className="w-72 bg-card p-0">
             <SheetTitle className="sr-only">Dashboard navigation</SheetTitle>
             <SidebarNav usage={usage} />
           </SheetContent>
         </Sheet>
-
-        {/* Desktop sidebar toggle (collapse to icon rail) */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="hidden lg:inline-flex"
-          onClick={toggleSidebar}
-          aria-label="Toggle Sidebar"
-        >
-          <PanelLeft className="h-5 w-5" />
-        </Button>
 
         {/* R5-H2: Install and Settings render their title in-page (H1) —
             the live topbar shows no title block on those routes. */}
@@ -111,7 +117,7 @@ export function Topbar({
           <Bell className="h-4 w-4" />
           {unread && (
             <span
-              className="absolute right-2 top-2 h-2 w-2 rounded-full"
+              className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full"
               style={{ backgroundColor: NOTIFICATION_DOT_COLOR }}
               aria-hidden="true"
             />

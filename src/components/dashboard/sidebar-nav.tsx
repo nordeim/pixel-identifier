@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 import { NAV_SECTIONS, type NavItem } from '@/lib/dashboard-nav'
 import { PixelcoWordmark } from '@/components/pixelco-logo'
 import { SignOutButton } from '@/components/dashboard/sign-out-button'
+import { Badge } from '@/components/ui/badge'
 
 const ICONS: Record<NavItem['icon'], React.ComponentType<{ className?: string }>> = {
   'chart-column': ChartColumn,
@@ -37,6 +38,14 @@ export interface UsageProps {
   overageCostLabel: string
 }
 
+/**
+ * R11-F3/F4: rebuilt to the live sidebar chrome (the live ships the shadcn
+ * Sidebar suite; these are its effective classes — see
+ * research/round11-audit/live-ground-truth.md §4): gap-2 section stack,
+ * p-2 groups, h-8 px-2 labels, h-8 rounded-md menu buttons with the warm
+ * sidebar-accent active pill, and a borderless p-4 footer whose plan badge
+ * is the Badge component rendering the literal uppercase plan name.
+ */
 export function SidebarNav({
   usage,
   collapsed = false,
@@ -48,13 +57,8 @@ export function SidebarNav({
 
   return (
     <div className="flex h-full flex-col">
-      {/* R5-H7: live header is p-4 with no border, logo h-8 w-8 + display face. */}
-      <div
-        className={cn(
-          'flex items-center p-4',
-          collapsed && 'justify-center',
-        )}
-      >
+      {/* Live header: p-4, logo h-8 + font-display text-lg wordmark. */}
+      <div className="flex items-center gap-2 p-4">
         <Link
           href="/dashboard"
           className="focus-brand rounded-lg"
@@ -69,42 +73,38 @@ export function SidebarNav({
 
       <nav
         className={cn(
-          'flex-1 space-y-6 overflow-y-auto py-4 brand-scroll',
-          collapsed ? 'px-2' : 'px-3',
+          'flex min-h-0 flex-1 flex-col gap-2 overflow-auto',
+          collapsed && 'overflow-hidden',
         )}
         aria-label="Dashboard navigation"
       >
         {NAV_SECTIONS.map((section) => (
-          <div key={section.title}>
+          <div key={section.title} className="relative flex w-full min-w-0 flex-col p-2">
             {!collapsed && (
-              <p className="px-3 pb-2 text-xs font-medium text-muted-foreground">
+              <p className="flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70">
                 {section.title}
               </p>
             )}
-            <ul className="space-y-0.5">
+            <ul className="flex w-full min-w-0 flex-col gap-1">
               {section.items.map((item) => {
                 const active = isActive(item)
                 const Icon = ICONS[item.icon]
                 return (
-                  <li key={item.href}>
+                  <li key={item.href} className="relative">
                     <Link
                       href={item.href}
                       aria-current={active ? 'page' : undefined}
                       title={collapsed ? item.label : undefined}
                       className={cn(
-                        'flex items-center rounded-[10px] text-sm font-medium transition-colors focus-brand',
-                        collapsed ? 'justify-center px-2 py-2' : 'gap-3 px-3 py-2',
+                        'flex w-full items-center gap-2 rounded-md p-2 text-sm outline-none transition-colors focus-brand [&>span:last-child]:truncate [&_svg]:size-4 [&_svg]:shrink-0',
+                        collapsed && 'size-8 justify-center p-2',
                         active
-                          ? // Live tokens: warm off-white pill + golden text/icon (#CC9900).
-                            'bg-[#F8F6F2] text-[#CC9900]'
-                          : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                          ? 'hover:bg-sidebar-accent/50 bg-sidebar-accent text-sidebar-accent-foreground font-medium hover:text-sidebar-accent-foreground'
+                          : 'h-8 text-sm text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground',
                       )}
                     >
-                      <Icon
-                        className={cn('h-4 w-4 shrink-0', active && 'text-[#CC9900]')}
-                        aria-hidden="true"
-                      />
-                      {!collapsed && item.label}
+                      <Icon aria-hidden="true" />
+                      {!collapsed && <span>{item.label}</span>}
                     </Link>
                   </li>
                 )
@@ -114,15 +114,19 @@ export function SidebarNav({
         ))}
       </nav>
 
+      {/* Live footer: borderless p-4 stack; hidden in the icon rail. */}
       {!collapsed && (
-        <div className="border-t border-border p-3">
-          {/* R5-H7/R6-M5: live usage card — bordered primary/5 card, rounded
-              gradient FREE pill, muted count, thin gradient-filled progress. */}
+        <div className="flex flex-col gap-2 p-4 space-y-3">
           <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
-            <span className="gradient-primary inline-flex items-center rounded-full border-0 px-1.5 py-0 text-[10px] font-semibold uppercase text-primary-foreground">
-              {usage.planName}
-            </span>
-            <p className="mt-2 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 mb-1">
+              <Badge
+                variant="secondary"
+                className="text-[10px] px-1.5 py-0 gradient-primary text-primary-foreground border-0"
+              >
+                {usage.planName.toUpperCase()}
+              </Badge>
+            </div>
+            <p className="text-xs text-muted-foreground leading-snug">
               {usage.used} / {usage.limit.toLocaleString()} identifications
             </p>
             {usage.overage > 0 && (
@@ -131,7 +135,7 @@ export function SidebarNav({
               </p>
             )}
             <div
-              className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted"
+              className="h-1.5 w-full rounded-full bg-muted mt-2 overflow-hidden"
               role="progressbar"
               aria-valuemin={0}
               aria-valuemax={100}
@@ -145,11 +149,6 @@ export function SidebarNav({
             </div>
           </div>
           <SignOutButton />
-        </div>
-      )}
-      {collapsed && (
-        <div className="border-t border-border p-2">
-          <SignOutButton collapsed />
         </div>
       )}
     </div>

@@ -19,9 +19,11 @@ export function SidebarShell({ usage }: { usage: UsageProps }) {
   }, [])
 
   return (
+    // R11: the live rail collapses to 48px (w-12) with the footer hidden
+    // and the logo still visible (see live-ground-truth.md §4).
     <aside
-      className={`hidden shrink-0 border-r border-border bg-card transition-[width] duration-200 lg:block ${
-        sidebar === 'rail' ? 'w-16' : 'w-64'
+      className={`hidden shrink-0 border-r border-sidebar-border bg-sidebar transition-[width] duration-200 lg:block ${
+        sidebar === 'rail' ? 'w-12' : 'w-64'
       }`}
       data-sidebar={sidebar}
     >

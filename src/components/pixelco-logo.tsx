@@ -43,9 +43,9 @@ export function PixelcoWordmark({
     <span className={cn('inline-flex items-center', collapsed ? 'gap-0' : 'gap-2', className)}>
       <PixelcoLogo />
       {!collapsed && (
-        <span className="font-display text-lg font-bold tracking-tight text-foreground">
-          Pixelco
-        </span>
+        // R11: the live sidebar wordmark text — font-display text-lg
+        // font-bold, no tracking/foreground utilities.
+        <span className="font-display text-lg font-bold">Pixelco</span>
       )}
     </span>
   )
