@@ -38,7 +38,8 @@ make it pass — fix the code.
   Never hand-roll per-component approximations of either palette — `var()`
   chains inside `@theme` are silently dropped by the build. `--radius-xl`
   derives at radius + 2px (measured off the live, R10).
-- **The UI primitives are LEGACY shadcn (R11).** The live app ships the
+- **The UI primitives are LEGACY shadcn (R11; Badge/Label re-extracted in
+  R15).** The live app ships the
   legacy generation — `src/components/ui/{button,badge,card,tabs,select,
   input,checkbox}.tsx` carry the live's exact class strings (no data-slot
   attrs, `ring-offset-background` 2px focus rings, h-10 default / h-9 sm
@@ -101,6 +102,46 @@ make it pass — fix the code.
   shared block format (`## `/`### `/lists/tables) with a `blog` variant
   (classless elements styled by the prose wrapper's arbitrary variants)
   and a `legal` variant (direct classes + `<section>` grouping).
+- **The dashboard shell is the shadcn Sidebar primitive (R15).** The live
+  migrated its app bundle: `sidebar-shell.tsx` renders the provider
+  (`data-state`/`data-collapsible=icon`/`data-variant=sidebar`/
+  `data-side=left`, `group peer hidden … md:block` — the sidebar appears
+  at **768px**, not lg) > a transparent gap div + a fixed container >
+  `sidebar-nav.tsx`'s `div[data-sidebar=sidebar]` tree (header = the PNG
+  logo `public/assets/logo-BxfT-ZTZ.png` + an UNLINKED font-display
+  wordmark; groups carry `data-sidebar={group,group-label,group-content,
+  menu,menu-item}`; menu buttons are `a[data-sidebar=menu-button]` with
+  the full `peer/menu-button …` string + `h-8 text-sm
+  hover:bg-sidebar-accent/50` tail and, on the active route, the appended
+  `bg-sidebar-accent text-sidebar-accent-foreground font-medium` tail —
+  `data-active` stays `"false"` (the live's own wiring quirk) and
+  `aria-current="page"` marks the active item; icons carry
+  `mr-2 h-4 w-4`). Collapse = the data-state flip only (the geometry
+  rides `group-data-[collapsible=icon]` variants: 3rem rail, `!size-8
+  !p-2` buttons, labels at opacity-0). The topbar is a NON-sticky `h-14`
+  header whose toggle is `data-sidebar="trigger"` (no size fragment, an
+  sr-only span); the mobile Sheet (below 768px) is the live's 288px
+  Radix dialog (`--sidebar-width: 18rem` inline). The desktop sidebar
+  stays CSS-hidden below md (SSR cannot know the viewport; the live's
+  CSR unmounts it) — visually identical.
+- **`w-[--sidebar-width]` is hand-defined in globals (R15).** Tailwind v4
+  compiles the live's TW3-style bare-var brackets to INVALID CSS
+  (`width:--sidebar-width`); the two affected utilities (+ the
+  icon-collapsible variant) are hand-written in `globals.css` so the DOM
+  ships the live's byte-identical class strings with working CSS. The
+  vars (`--sidebar-width: 16rem`, `--sidebar-width-icon: 3rem`) live on
+  `:root`. Do not "fix" the class strings to `w-(--sidebar-width)`.
+- **The app bundle's logos/headings/badges follow the live's R15
+  conventions.** The sidebar header + auth cards use the PNG asset (the
+  marketing wordmark keeps the inline SVG); auth-card headings are h3s on
+  the CardTitle pattern (`font-semibold tracking-tight font-display` +
+  size) and NO heading in the app bundle carries `text-foreground` (the
+  color inherits); the Badge primitive is a DIV root without the base
+  `border` (secondary has no own foreground); the Label primitive is the
+  new-gen string (no data-slot/flex chrome); the pricing plan cards are
+  Card-base-first with chip-row feature lists and NO popular badge; the
+  bell dot is the `bg-hot-pink` utility; the layout root paints
+  `bg-muted/30` over `--background` (`.bg-app` is retired).
 - **Document heads are live-parity (R14).** Every marketing page builds
   its full `<head>` via `src/lib/marketing-seo.ts`
   (`marketingMetadata({title, description, path})` — title.absolute with
@@ -244,6 +285,9 @@ Never commit keys; `.gitignore` rejects `*.key` and `ssh-key.txt`. Run the
 verification gate before pushing.
 
 ## Known quirks
+
+- `eslint` ignores `research/**` (captured live/clone audit artifacts are
+  evidence, not source — third-party JS captures must not be linted).
 
 - OAuth buttons (Google/Apple) on the auth pages are intentionally disabled
   placeholders — no OAuth providers are configured.

@@ -586,3 +586,51 @@ Stage Summary:
   now live-exact on every route (marketing, app bundle, 404, crawl docs,
   favicon). Suite 380/48 → 402/49; PAD v1.13.
 - Next: atomic commits + push (Task R14-ship)
+
+---
+Task ID: R15
+Agent: main (Super Z)
+Task: Round-15 — live drift audit, dashboard shell & auth-card realignment, TDD remediation, docs, ship
+
+Work Log:
+- Post-reset rebuild: fresh clone @ 2a1d732, npm install, reseeded demo
+  DB, rebuilt the paramiko ssh shim (venv python 3.12 vs pip 3.13
+  mismatch solved with `python3 -m pip install paramiko`).
+- Baseline gate GREEN (402/49, 36 routes) — codebase matched PAD v1.13.
+- Round-15 audit: marketing bundle STABLE (landing sections byte-identical,
+  sub-pages/blog/legal content byte-identical — the about/docs "+69 words"
+  signals were header/footer measurement artifacts of the live's main-less
+  SPA body, robots/sitemap byte-equal origin-sub, favicon byte-identical,
+  og images byte-identical — the live only moved their URLs to gpt-engineer
+  + R2 storage). KEY DISCOVERY: the live shipped a new app build — the
+  dashboard sidebar migrated to the shadcn Sidebar primitive (dominant on
+  11/13 loads across all 7 pages; the stale edge variant == the clone's
+  DOM). Extracted the full live shell (provider/gap/fixed, data-sidebar
+  tree, PNG logo, group mapping, topbar, auth cards, mobile Sheet,
+  collapse behavior) + the TW4 bare-var compile quirk (w-[--sidebar-width]
+  → invalid `width:--sidebar-width`).
+- TDD remediation (RED 33 → GREEN): sidebar-shell + sidebar-nav rewritten
+  to the primitive DOM; topbar realigned (non-sticky h-14, trigger button,
+  font-display h1, hot-pink dot utility, avatar chrome); layout root
+  bg-muted/30 + main class orders; auth cards realigned (h3 CardTitle
+  pattern, PNG logo, new-gen Label, OAuth on Button primitive — disabled
+  placeholders per D3, native validation); Badge → div root; snippet
+  2-space indent; social-proof sr-only H2 removed; KPI/domains class
+  orders. Verification-sweep extras: pricing plan cards rebuilt
+  Card-base-first with chip features + no POPULAR badge, in-page H1s
+  dropped text-foreground.
+- Gate GREEN: 432 tests / 50 files, 36 routes. Browser-verified: shell DOM
+  byte-equal to the live captures, collapse 48px rail, mobile Sheet 288px,
+  E2E flow green (login → dashboard → visitors → export 200 → domains →
+  install snippet). Screenshot pixel-diff: sidebar chrome pixel-identical;
+  remaining deltas data-only.
+- Docs: PAD v1.14 (revision + §5 body), README (432 count + R15 coverage
+  bullet), AGENTS.md (3 new fact blocks + eslint-research note + Badge/
+  Label amendment), CLAUDE.md (v1.14 principle), plan execution log,
+  evidence README.
+
+Stage Summary:
+- Round-15 complete: the dashboard shell, topbar, auth cards, pricing
+  cards and UI primitives now match the live's current build byte-for-byte
+  at the DOM level; suite 402/49 → 432/50; PAD v1.13 → v1.14.
+- Next: atomic commits + push (Task R15-ship)

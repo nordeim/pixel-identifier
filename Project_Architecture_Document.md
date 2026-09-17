@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.13
+# Pixelco — Master Project Architecture Document (PAD) v1.14
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-17 (v1.13)
+**Last Updated:** 2026-09-17 (v1.14)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -11,6 +11,41 @@
 ---
 
 #### Revision Block (Tracked Changes)
+
+- **v1.14** `[SYN]` Round-15 dashboard shell & auth-card realignment (plan:
+  `docs/plans/2026-09-17-round15-shell-realignment.md`; evidence in
+  `research/round15-audit/`). The live shipped a new app build: the
+  dashboard sidebar migrated from a custom `aside` to the **shadcn Sidebar
+  primitive** (verified the dominant variant — 11/13 loads; the clone had
+  matched the stale edge variant exactly). The shell was rebuilt
+  verbatim: provider/gap/fixed-container DOM (`data-state`,
+  `data-collapsible=icon` rail, **md** breakpoints — the sidebar now
+  appears at 768px, the mobile Sheet is a 288px/18rem Radix dialog below
+  it), `data-sidebar={header,group,group-label,group-content,menu,
+  menu-item,menu-button,footer}` tree, the self-hosted PNG logo asset
+  (`public/assets/logo-BxfT-ZTZ.png`) with an unlinked font-display
+  wordmark, the full `peer/menu-button` class string with appended
+  active tails and `mr-2 h-4 w-4` icons (the active item was 36px, now
+  the live's 32px), and a non-sticky `h-14` topbar with a
+  `data-sidebar="trigger"` toggle, font-display h1 and `bg-hot-pink`
+  bell dot. The auth cards realigned to the same build (h3 headings on
+  the CardTitle pattern, PNG logo, new-gen Label primitive, OAuth
+  buttons on the Button primitive — still disabled placeholders, ruling
+  D3: the live's Google button does real OAuth — native validation, no
+  `noValidate`). The Badge primitive is now a DIV root without the base
+  `border` (the live's badges are divs in both bundles); the pricing
+  plan cards were rebuilt Card-base-first with chip-row features and no
+  POPULAR badge; headings across the app dropped `text-foreground` (the
+  live's convention). TW4 quirk solved en route: `w-[--sidebar-width]`
+  compiles to INVALID CSS (`width:--sidebar-width`) — the two affected
+  utilities are hand-defined in globals so the DOM ships the live's
+  byte-identical class strings with working CSS (ruling D10). The
+  install snippet gained the live's 2-space indentation; the landing
+  social-proof section lost its clone-authored sr-only H2 (landing H2
+  count 8 → 7). Suite 402/49 → **432/50**; PAD sections §5 (shell) and
+  §9 (testing) updated. Known micro-divergences documented: lucide's
+  default `aria-hidden` stays (D11); the desktop sidebar stays
+  CSS-hidden below md on SSR (the live's CSR unmounts it).
 
 - **v1.13** `[SYN]` Round-14 metadata & SEO-surface parity (plan:
   `docs/plans/2026-09-17-round14-metadata-seo-parity.md`; evidence in
@@ -1136,7 +1171,7 @@ layout wrapper and never leaks into `/dashboard/*` or the auth pages.
 
 | Token | App (global `:root`) | Marketing (`.marketing-scope`) | Usage | Notes |
 |-------|----------------------|-------------------------------|-------|-------|
-| `--background` | `hsl(220 20% 97%)` = `#F6F7F9` (v1.10: the live app bundle migrated to cool neutrals) | `hsl(0 0% 100%)` | Canvas | The old warm canvas `#FFFCF5` was retired in R10; v1.10 promotes the cool app-gray to the token (`.bg-app` keeps the same value) |
+| `--background` | `hsl(220 20% 97%)` = `#F6F7F9` (v1.10: the live app bundle migrated to cool neutrals) | `hsl(0 0% 100%)` | Canvas | The old warm canvas `#FFFCF5` was retired in R10; v1.10 promotes the cool app-gray to the token; v1.14 paints the layout root `bg-muted/30` over it like the live |
 | `--primary` | `#FFC105` (`hsl(45 100% 51%)`) | `hsl(45 100% 50%)` = `#FFBF00` | CTAs, active nav, badges, avatar fill | v1.6 measured off the live app bundle; the marketing scope carries the marketing bundle's 50% variant |
 | `--card` | `#ffffff` | `hsl(40 30% 98%)` (rgb(251,250,248) warm white) | Cards, chips | R10: the marketing tree's cards are warm-white on the white canvas |
 | `--secondary` | `hsl(220 14% 96%)` (v1.10: cool, was warm `#f5f0e6`) | `hsl(40 30% 96%)` (rgb(248,246,242)) | Icon chips, muted CTAs | Marketing secondary verified against the live's icon-chip fill |
@@ -1158,7 +1193,7 @@ layout wrapper and never leaks into `/dashboard/*` or the auth pages.
 | `.shadow-elevated` | amber elevation | same | Featured marketing cards, compare/popular pricing cards | v1.5 |
 | `.glow-primary` | `rgba(255,193,5,0.3) 0 0 40px` | — | Elevated CTAs | v1.6: realigned to the live's diffuse zero-offset glow |
 | `.animate-pulse-glow` | 3s opacity breathing | — | Auth-page blurred orbs | v1.5; disabled under `prefers-reduced-motion` |
-| `.bg-app` | `#F6F7F9` | — | Dashboard canvas | v1.10: identical to the new `--background` — kept for semantic clarity |
+| `bg-muted/30` (layout root) | `rgba(243,244,246,.3)` over `--background` | — | Dashboard canvas | v1.14 (R15): the live's layout root paints muted/30; the opaque `.bg-app` wrapper retired with the old shell |
 | `--muted-foreground` (text contrast) | `#6B7280` | `hsl(230 10% 46%)` | Secondary text | 4.8:1 on white |
 | `--destructive` | red (oklch) | — | Danger zone, delete, compare X icons | |
 | `--font-script` | Dancing Script | — | "By Ai Viral" wordmark subtext | v1.6 (R7-V4); rendered INLINE beside the wordmark (R10 — was stacked) |
@@ -1180,8 +1215,26 @@ LEFT-side select indicators, `bg-background` inputs). Do not "upgrade"
 these to the new-generation shadcn defaults — the SSR tests pin the live
 class strings.
 Composites live beside their feature (`components/dashboard/*`), never in
-`ui/`. Icons: lucide-react outline style; the brand mark is inline SVG
-(`pixelco-logo.tsx`) so it inherits color and needs no asset requests.
+`ui/`. Icons: lucide-react outline style; the marketing brand mark is
+inline SVG (`pixelco-logo.tsx`) so it inherits color and needs no asset
+requests — but the APP bundle uses the live's PNG asset
+(`public/assets/logo-BxfT-ZTZ.png`) in the sidebar header (h-8, unlinked)
+and the auth cards (h-16), per the R15 shell realignment. **R15 primitive
+updates:** Badge is a DIV root without the base `border` (secondary has no
+own foreground — the live's badges are divs in both bundles); Label is the
+new-generation string (`text-sm font-medium leading-none
+peer-disabled:…`, no data-slot/flex chrome); CardTitle's
+`font-semibold tracking-tight font-display` base also styles the auth h3
+and every dashboard card/heading — headings across the app carry NO
+`text-foreground` (the live's convention). The dashboard shell itself is
+the shadcn Sidebar primitive DOM (R15): provider
+(`data-state`/`data-collapsible=icon`/`data-variant`/`data-side`,
+`group peer hidden … md:block`) > gap div + fixed container
+(`w-[--sidebar-width]`, hand-defined in globals because TW4 miscompiles
+the TW3 bare-var form) > `div[data-sidebar=sidebar]` with the
+header/content/group/menu/footer tree; the topbar is a NON-sticky `h-14`
+header with a `data-sidebar="trigger"` toggle; the mobile Sheet is a
+288px (`--sidebar-width: 18rem` inline) Radix dialog below 768px.
 
 ### 5.4 Motion / Animation
 

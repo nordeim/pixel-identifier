@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 402 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 432 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -254,6 +254,15 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   scoped marketing palette (`.marketing-scope` — the live ships separate
   app/marketing palettes; the marketing tree renders a white canvas,
   warm-white cards, cool borders, a yellow accent and 10px corners).
+- **Dashboard shell parity (round-15)** — the shadcn Sidebar primitive DOM
+  (provider/gap/fixed-container, the `data-sidebar` tree, the full
+  `peer/menu-button` class string with appended active tails, the PNG logo
+  asset), the topbar chrome (trigger button, font-display h1, hot-pink
+  bell dot), the auth cards (h3 headings, new-gen Label, OAuth buttons on
+  the Button primitive), the pricing plan cards (Card-base-first roots,
+  chip-row features) and the Badge/Label primitives — all pinned against
+  the live's current build (`tests/sidebar-chrome.test.tsx` +
+  `tests/shell-parity.test.tsx`).
 - **Content & SEO data modules** — the footer/nav link map (every link
   targets a real route; the only dead link is Careers, which is dead on
   the original too), the blog catalogue (10 posts, unique URL-safe slugs,

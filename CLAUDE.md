@@ -93,6 +93,23 @@ and stable per visitor.
   containers) and the legacy accordion strings are pinned by
   `tests/marketing-{subpages,blog-parity,legal-parity,faq-accordion,
   banner-scope}.test.*` — treat those pins as the contract.
+- **The dashboard shell tracks the live's CURRENT build (v1.14):** the
+  live migrated its app bundle to the shadcn Sidebar primitive (the
+  rolling-deploy window served the old build — which the clone had
+  matched exactly — on a minority of edge loads; the clone tracks the
+  dominant variant). The shell DOM is the contract: the provider/gap/
+  fixed-container structure, the `data-sidebar` tree, the full
+  `peer/menu-button` class string with appended active tails, the PNG
+  logo asset, the non-sticky h-14 topbar with its trigger button, the
+  md breakpoints, the 288px mobile Sheet, the Badge div root, the
+  new-gen Label, the CardTitle-pattern headings (no `text-foreground`),
+  and the Card-base-first pricing cards are pinned by
+  `tests/sidebar-chrome.test.tsx` + `tests/shell-parity.test.tsx` —
+  treat those pins as the contract. The `w-[--sidebar-width]` utilities
+  are hand-defined in globals.css (TW4 miscompiles the TW3 bare-var
+  form — do not "modernize" the class strings). lucide's default
+  `aria-hidden` and the SSR-required CSS-hidden (not unmounted) mobile
+  sidebar are the two documented micro-divergences.
 - **Document heads are part of the parity surface (v1.13):** the live
   is CSR — its raw HTML ships one static shell but its router sets
   per-page title/description/og/twitter/canonical on navigation, and
