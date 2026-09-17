@@ -421,3 +421,39 @@ Stage Summary:
   residuals closed; the twice-deferred scroll-reveal shipped
 - Suite 291/41 -> 308/43 (+17 guard tests)
 - Next: atomic commits + push via the SSH wrapper (Task 3)
+
+---
+Task ID: 3
+Agent: main (Super Z)
+Task: Round-12 ship — atomic commits, verification, push to origin main
+
+Work Log:
+- Atomic Conventional Commits on main only, in workstream order:
+  e79c966 feat(marketing): scroll-reveal entrances + live-exact
+  precision (R12-F1..F5); fd7575e fix(dashboard,auth): variant-free
+  gradient CTA class strings (R12-F6); 67ba3b4 test(evidence):
+  round-12 audit captures; 9f9f10b docs: PAD v1.11, README,
+  AGENTS/CLAUDE alignment, round-12 plan log + worklog.
+- Pre-push gate green before shipping (D workstream): lint, typecheck,
+  308 tests / 43 files (2 skipped), build + build:standalone.
+- Pushed via docs/ssh_git_wrapper_v3.py (key from operator, 0600 file
+  outside the repo) with the Appendix A paramiko ssh shim on PATH
+  (sandbox has no OpenSSH binary); wrapper verified
+  refs/heads/main @ 9f9f10bdc95d04df284125f778447b3b0aa2aef6
+  == local HEAD and synced refs/remotes/origin/main.
+- Post-push re-verification (fresh session): `git ls-remote origin main`
+  == 9f9f10bdc95d04df284125f778447b3b0aa2aef6 == local HEAD; full
+  `npm run verify` re-run on the pushed tree: lint + typecheck +
+  308/43 tests + 35-route build, all green.
+- Operator deploy key (Ed25519, SHA256:HpVRkv3e8k0HgD6SKijmGSmjs/
+  ZRRJxrZaAm6y6/Rns) shredded with random bytes + removed after the
+  push, per the runbook's no-residue rule; no key material inside the
+  repo tree (gitignore `*.key` / `ssh-key.txt` intact).
+
+Stage Summary:
+- Round-12 closed and shipped: repo at PAD v1.11, 308 tests / 43
+  files, 35 routes; pixelco.io parity holds at 6 EXACT dashboards,
+  aligned landing sections live-exact on hero/marquee/CTA with
+  data-only residuals elsewhere
+- main @ 9f9f10b pushed to git@github.com:nordeim/pixel-identifier.git
+  and remote-verified; this entry is the Round-12 closing record
