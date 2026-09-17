@@ -287,3 +287,28 @@ Stage Summary:
   entrance animations) remains the only deferred item
 - Suite grew 241/34 -> 291/41 (+50 guard tests across 7 new files)
 - Next: push via docs/ssh_git_wrapper_v3.py + paramiko shim (Task 2)
+
+---
+Task ID: 2
+Agent: main (Super Z)
+Task: Round-11 ship — push via the SSH wrapper
+
+Work Log:
+- Pre-push secret scan over the 70-file push set (no key material, no
+  auth-state files; only .env.example template references)
+- Deployed the Appendix A paramiko ssh shim to /home/z/my-project/bin
+  (outside the repo, per rule 5) — the sandbox has no OpenSSH binary
+- Operator key staged to a 0600 file outside the repo; ed25519
+  fingerprint verified via paramiko (SHA256:HpVRkv3e8k0HgD6SKijmGSmjs/ZRRJxrZaAm6y6/Rns)
+- Wrapper dry-run: first attempt hit the wrapper's default remote
+  (task-management) and was rejected non-fast-forward — re-run with the
+  explicit --remote git@github.com:nordeim/pixel-identifier.git: auth OK,
+  remote main at 902facf, fast-forward confirmed
+- Real push via docs/ssh_git_wrapper_v3.py: 902facf..41d309a
+  HEAD -> main; post-push remote verification passed (refs/heads/main @
+  41d309a == local HEAD); tracking ref synced
+- Operator key shredded; wrapper's temp key material shredded by design
+
+Stage Summary:
+- 9 Conventional Commits pushed to git@github.com:nordeim/pixel-identifier.git
+  main (no new branches); Round-11 complete
