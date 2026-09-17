@@ -31,7 +31,7 @@ describe('root 404 boundary (R11-F15 live parity)', () => {
       /<p[^>]*class="mb-4 text-xl text-muted-foreground">Oops! Page not found<\/p>/,
     )
     expect(html).toMatch(
-      /<a[^>]*href="\/"[^>]*class="text-primary underline hover:text-primary\/90">Return to Home<\/a>/,
+      /<a[^>]*href="\/"[^>]*class="text-primary underline hover:text-primary\/90[^"]*">Return to Home<\/a>/,
     )
   })
 
