@@ -49,7 +49,9 @@ export function SocialProof() {
       </h2>
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
-          <div className="overflow-hidden" aria-hidden="true">
+          {/* R12-F1: the live's marquee wrapper reveals at y12 (the track
+              itself is busy running animate-scroll-left's transform). */}
+          <div data-reveal="12" data-reveal-delay="0" className="overflow-hidden" aria-hidden="true">
             {/* Two copies of the name set directly on the track (the live
                 DOM ships 20 span children; -50% translate = one copy). */}
             <div className="flex items-center gap-12 animate-scroll-left">
@@ -65,9 +67,11 @@ export function SocialProof() {
           </div>
         </div>
         <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          {TESTIMONIALS.map((t) => (
+          {TESTIMONIALS.map((t, i) => (
             <figure
               key={t.name}
+              data-reveal="20"
+              data-reveal-delay={String((i + 1) * 100)}
               className="border border-border rounded-xl p-6 bg-card shadow-card"
             >
               {/* R7-V7: the live renders the author as plain stacked text
@@ -77,8 +81,11 @@ export function SocialProof() {
                   <Star key={i} className="h-4 w-4 fill-primary text-primary" aria-hidden="true" />
                 ))}
               </div>
+              {/* R12-F3: the live ships ASCII straight quotes — the curly
+                  glyphs are wider and pushed the second quote onto a 4th
+                  line (+23px on the section). */}
               <p className="text-sm text-foreground leading-relaxed mb-4">
-                “{t.quote}”
+                &quot;{t.quote}&quot;
               </p>
               <div>
                 <p className="text-sm font-semibold text-foreground">{t.name}</p>
@@ -99,8 +106,8 @@ export function StatsBar() {
           container wrapper. */}
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {STATS.map((stat) => (
-            <div key={stat.label} className="text-center">
+          {STATS.map((stat, i) => (
+            <div key={stat.label} data-reveal="16" data-reveal-delay={String(i * 100)} className="text-center">
               {/* R7-V11: the live's stat values carry the gradient-hero text
                   treatment with mb-1 (not text-primary + tracking-tight). */}
               <p className="mb-1 text-gradient-hero text-3xl font-extrabold sm:text-4xl">

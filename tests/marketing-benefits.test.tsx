@@ -31,6 +31,19 @@ describe('Features / benefits (R10-F3 live DOM parity)', () => {
     expect(html).toContain('text-xs text-muted-foreground leading-relaxed')
   })
 
+  it('renders the live custom B2B building icon (R12-F4)', () => {
+    // The live's "B2B Company Reveal" glyph is a custom 5-path SVG
+    // (tower + two window bars + U-door + merged side annexes) — verified
+    // absent from lucide-react 0.525 and six older versions. Pin its
+    // signature paths; lucide Building2 (4 window rows, no door) is gone.
+    expect(html).toContain('M10 12h4')
+    expect(html).toContain('M10 8h4')
+    expect(html).toContain('M14 21v-3a2 2 0 0 0-4 0v3')
+    expect(html).toContain('M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16')
+    // Building2's 4th window row (M10 18h4) must not appear anywhere.
+    expect(html).not.toContain('M10 18h4')
+  })
+
   it('renders the live h2 rhythm (font-bold, mt-2 mb-10)', () => {
     expect(html).toContain('font-bold')
     expect(html).toContain('mt-2 mb-10')

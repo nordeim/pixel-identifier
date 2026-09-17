@@ -172,15 +172,21 @@
  * never leaks into /dashboard/* or the auth pages. */
 .marketing-scope {
   --background: hsl(0 0% 100%);
-  --foreground: hsl(230 25% 12%);
+  /* R12-F5: the foreground family ships as literal hex — the exact value
+     browsers compute from the live's hsl(230 25% 12%) (rgb 23, 26, 38).
+     Authoring the HSL lets Tailwind v4's Lightning CSS minifier floor-round
+     the 25.5 green channel to #171926, 1/255 off the live. Every other
+     token in this block rounds identically either way (verified
+     channel-by-channel). */
+  --foreground: #171a26;
   --card: hsl(40 30% 98%);
-  --card-foreground: hsl(230 25% 12%);
+  --card-foreground: #171a26;
   --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(230 25% 12%);
+  --popover-foreground: #171a26;
   --primary: hsl(45 100% 50%);
   --primary-foreground: hsl(0 0% 5%);
   --secondary: hsl(40 30% 96%);
-  --secondary-foreground: hsl(230 25% 12%);
+  --secondary-foreground: #171a26;
   --muted: hsl(230 15% 92%);
   --muted-foreground: hsl(230 10% 46%);
   --accent: hsl(45 100% 50%);
@@ -314,6 +320,36 @@
   .animate-pulse-glow,
   .animate-scroll-left {
     animation: none;
+  }
+}
+
+/* Scroll-reveal entrance animations (R12-F1, the deferred R10-F14).
+   The live animates 39 marketing elements in — opacity 0 + translateY
+   (12/16/20/24px) → visible — on viewport entry, once, ~100ms sibling
+   stagger. Machinery: RevealObserver arms each [data-reveal] element
+   (--reveal-y from the attribute + the reveal-armed class below) and
+   flips it to .is-revealed via ONE shared IntersectionObserver.
+   Progressive enhancement: the hidden state is scoped to .js-reveal —
+   a pre-paint inline script class on <html> (marketing layout) — so
+   no-JS readers and crawlers see the full page. */
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(var(--reveal-y, 0px));
+}
+.js-reveal [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+/* The transition activates only once the observer arms the element, so
+   the initial hidden offset never animates into place. */
+[data-reveal].reveal-armed {
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal].reveal-armed {
+    transition: none;
   }
 }
 

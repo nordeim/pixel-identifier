@@ -9,7 +9,8 @@ import { describe, expect, it } from 'vitest'
  * page:
  *
  *   --background: 0 0% 100%          (#FFFFFF, NOT the app's warm canvas)
- *   --foreground: 230 25% 12%        (#171A26)
+ *   --foreground: 230 25% 12%        (#171A26 — shipped as literal hex, see
+ *                                     the R12-F5 note below)
  *   --card: 40 30% 98%               (warm white, rgb(251,250,248))
  *   --secondary: 40 30% 96%          (rgb(248,246,242))
  *   --muted: 230 15% 92%
@@ -41,7 +42,15 @@ describe('marketing palette scope (R10-F1)', () => {
     const block = css.slice(defStart, defStart + 1200)
 
     expect(block).toContain('--background: hsl(0 0% 100%)')
-    expect(block).toContain('--foreground: hsl(230 25% 12%)')
+    // R12-F5: the foreground family ships as literal #171a26 — the exact
+    // value browsers compute from the live's hsl(230 25% 12%). Authoring
+    // the HSL lets Tailwind v4's Lightning CSS minifier floor-round the
+    // 25.5 green channel to #171926 (1/255 off the live).
+    expect(block).toContain('--foreground: #171a26')
+    expect(block).toContain('--card-foreground: #171a26')
+    expect(block).toContain('--popover-foreground: #171a26')
+    expect(block).toContain('--secondary-foreground: #171a26')
+    expect(block).not.toContain('--foreground: hsl(230 25% 12%)')
     expect(block).toContain('--card: hsl(40 30% 98%)')
     expect(block).toContain('--secondary: hsl(40 30% 96%)')
     expect(block).toContain('--muted: hsl(230 15% 92%)')

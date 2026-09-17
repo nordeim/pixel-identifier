@@ -70,7 +70,7 @@ export function Audience() {
   return (
     <section aria-labelledby="audience-heading" className="py-20 border-t border-border">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-14">
+        <div data-reveal="16" data-reveal-delay="0" className="text-center mb-14">
           <span className="text-xs font-semibold text-primary uppercase tracking-widest">Perfect fit</span>
           <h2 id="audience-heading" className="text-3xl sm:text-4xl font-bold mt-2 text-foreground">
             Who Is Pixelco For?
@@ -82,9 +82,11 @@ export function Audience() {
         </div>
 
         <div className="grid sm:grid-cols-3 lg:grid-cols-5 gap-4 max-w-5xl mx-auto">
-          {AUDIENCES.map((audience) => (
+          {AUDIENCES.map((audience, i) => (
             <div
               key={audience.title}
+              data-reveal="20"
+              data-reveal-delay={String((i + 1) * 100)}
               className="bg-card rounded-xl border border-border p-5 text-center shadow-card hover:shadow-elevated transition-shadow"
             >
               <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center mx-auto mb-3" aria-hidden="true">
@@ -108,7 +110,7 @@ export function HowItWorks() {
   return (
     <section id="how-it-works" aria-labelledby="how-heading" className="py-20 bg-card border-y border-border">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-14">
+        <div data-reveal="16" data-reveal-delay="0" className="text-center mb-14">
           <span className="text-xs font-semibold text-primary uppercase tracking-widest">Our process</span>
           <h2 id="how-heading" className="text-3xl sm:text-4xl font-bold mt-2 text-foreground">
             How We Identify Your Visitors
@@ -124,6 +126,8 @@ export function HowItWorks() {
           {STEPS.map((step, index) => (
             <li
               key={step.title}
+              data-reveal="24"
+              data-reveal-delay={String((index + 1) * 100)}
               className="relative bg-background rounded-xl border border-border p-6 shadow-card"
             >
               {/* R7-V8: the live's step chrome — a big faint background
@@ -148,7 +152,7 @@ export function HowItWorks() {
         </ol>
 
         {/* R10-F5: yellow-dot feature rows like the live — no pill borders. */}
-        <ul className="flex flex-wrap items-center justify-center gap-6 mt-12 text-sm text-muted-foreground">
+        <ul data-reveal="16" data-reveal-delay="500" className="flex flex-wrap items-center justify-center gap-6 mt-12 text-sm text-muted-foreground">
           {STEP_TAGS.map((tag) => (
             <li key={tag} className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-accent" aria-hidden="true" />

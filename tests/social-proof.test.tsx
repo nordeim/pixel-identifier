@@ -50,6 +50,15 @@ describe('SocialProof (R9-F1 marquee + R9-F2 testimonials)', () => {
     expect(marquee).not.toContain('text-[15px]')
   })
 
+  it('wraps quotes in ASCII straight quotes like the live (R12-F3)', () => {
+    // The live ships "Pixelco identified… — the curly glyphs are wider
+    // and pushed the second quote onto a 4th line (+23px on the section).
+    expect(marquee).toContain('&quot;We went from guessing who visits our site')
+    expect(marquee).toContain('Game changer for outbound.&quot;')
+    expect(marquee).not.toContain('“')
+    expect(marquee).not.toContain('”')
+  })
+
   it('keeps the section chrome the live ships (border-b, no card tint)', () => {
     expect(marquee).toContain('py-16 border-b border-border')
   })

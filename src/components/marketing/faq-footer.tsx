@@ -47,7 +47,7 @@ export function Faq() {
   return (
     <section id="faq" aria-labelledby="faq-heading" className="py-20 bg-card border-y border-border">
       <div className="container mx-auto px-6 max-w-3xl">
-        <div className="text-center mb-12">
+        <div data-reveal="16" data-reveal-delay="0" className="text-center mb-12">
           <span className="text-xs font-semibold text-primary uppercase tracking-widest">FAQ</span>
           <h2 id="faq-heading" className="text-3xl sm:text-4xl font-bold mt-2 text-foreground">
             Frequently Asked Questions
@@ -57,8 +57,9 @@ export function Faq() {
 
         {/* R7-V14: the live's FAQ items are cards (bg-background, border,
             rounded-lg, px-5) that gain a shadow when open — not the default
-            border-b divider rhythm. */}
-        <div className="mt-10 space-y-2.5">
+            border-b divider rhythm. R12-F1: the whole list reveals as one
+            wrapper (y16) like the live. */}
+        <div data-reveal="16" data-reveal-delay="100" className="mt-10 space-y-2.5">
           <Accordion type="single" collapsible className="space-y-2.5">
             {FAQS.map((faq, index) => (
               <AccordionItem
@@ -87,8 +88,9 @@ export function BottomCta() {
       <div className="container mx-auto px-6">
         {/* R7-V15/R10-F8: the live's CTA is a centered max-w-4xl card on the
             yellow marketing gradient with WHITE display text, a radial sheen
-            overlay, and a check-icon trust row in white/70 text-xs. */}
-        <div className="relative max-w-4xl mx-auto rounded-2xl gradient-hero-light p-6 sm:p-10 md:p-14 text-center overflow-hidden">
+            overlay, and a check-icon trust row in white/70 text-xs. R12-F1:
+            the card reveals at y24 like the live. */}
+        <div data-reveal="24" data-reveal-delay="0" className="relative max-w-4xl mx-auto rounded-2xl gradient-hero-light p-6 sm:p-10 md:p-14 text-center overflow-hidden">
           <div
             aria-hidden="true"
             className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_60%)]"

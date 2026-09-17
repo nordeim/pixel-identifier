@@ -44,7 +44,14 @@ export function Hero() {
       <div className="container mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-card border border-border mb-6">
+            {/* R12-F1: the hero staggers in on mount like the live
+                (badge → h1 → p → pills → avatars → CTAs → takes-line; the
+                feed column enters in parallel at d200). */}
+            <div
+              data-reveal="20"
+              data-reveal-delay="0"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-card border border-border mb-6"
+            >
               <span className="flex items-center gap-1 text-xs font-semibold text-highlight" aria-hidden="true">
                 ★★★★★
               </span>
@@ -56,16 +63,18 @@ export function Hero() {
             </div>
             <h1
               id="hero-heading"
-              className="text-4xl sm:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] mb-5"
+              data-reveal="20"
+              data-reveal-delay="100"
+              className="text-4xl sm:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] sm:leading-none mb-5"
             >
               Identify Anonymous Website Visitors <span className="text-gradient-hero italic">— By Their Email</span>
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+            <p data-reveal="20" data-reveal-delay="200" className="text-lg text-muted-foreground leading-relaxed mb-8">
               One pixel snippet reveals who&apos;s browsing your site. B2B companies <em>and</em> individual
               consumers — identified by their real email address. No forms. No popups. No cookies.
             </p>
 
-            <div className="mb-8 flex flex-wrap gap-3">
+            <div data-reveal="20" data-reveal-delay="300" className="mb-8 flex flex-wrap gap-3">
               {TRUST_POINTS.map((point) => (
                 <div
                   key={point.strong}
@@ -84,7 +93,7 @@ export function Hero() {
             {/* R7-V5/R10: 5 photo avatars overlapping, then the stacked
                 (flex-col) stars + "Trusted by" block — directly after the
                 pills with no extra top margin. */}
-            <div className="flex items-center gap-4 mb-6">
+            <div data-reveal="20" data-reveal-delay="400" className="flex items-center gap-4 mb-6">
               <div className="flex -space-x-2.5 shrink-0" aria-hidden="true">
                 {[1, 2, 3, 4, 5].map((n) => (
                   // eslint-disable-next-line @next/next/no-img-element -- decorative 96px JPEGs; next/image adds nothing at 32px display
@@ -108,7 +117,7 @@ export function Hero() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            <div data-reveal="20" data-reveal-delay="500" className="flex flex-col sm:flex-row gap-3 mb-4">
               <Button
                 asChild
                 className="gradient-cta border-0 px-7 h-12 text-base font-semibold text-primary-foreground hover:opacity-90 w-full sm:w-auto"
@@ -128,12 +137,14 @@ export function Hero() {
                 <Link href="/login">See Live Demo</Link>
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">
+            {/* The live's takes-line animates opacity only (its inline
+                style keeps `opacity: 1;` with no transform) — y=0. */}
+            <p data-reveal="0" data-reveal-delay="600" className="text-xs text-muted-foreground">
               Takes less than 2 minutes · Free plan available · No credit card required
             </p>
           </div>
 
-          <div className="relative lg:pl-4" aria-label="Live demo of the visitor feed">
+          <div data-reveal="20" data-reveal-delay="200" className="relative lg:pl-4" aria-label="Live demo of the visitor feed">
             <LiveFeedMockup />
           </div>
         </div>

@@ -16,8 +16,15 @@ import { Hero } from '@/components/marketing/hero'
  *                   (text-xs font-medium text-muted-foreground; NOT uppercase,
  *                   no emoji)
  *           h1:     text-4xl sm:text-5xl lg:text-[3.5rem] font-bold
- *                   tracking-tight leading-[1.1] mb-5 — the em-dash lives
- *                   INSIDE the italic text-gradient-hero span
+ *                   tracking-tight leading-[1.1] sm:leading-none mb-5 —
+ *                   the em-dash lives INSIDE the italic gradient span.
+ *                   (R12-F2: the live's Tailwind v3 pairs sm:text-5xl
+ *                   with line-height:1, and variant rules cascade AFTER
+ *                   plain utilities — so at >=sm the H1 renders ratio 1.0
+ *                   despite leading-[1.1]. The clone's v4 --tw-leading
+ *                   machinery lets leading-[1.1] win everywhere, +17px on
+ *                   the hero; sm:leading-none reproduces the live's
+ *                   effective metrics. Sub-sm keeps 1.1 like the live.)
  *           p:      text-lg text-muted-foreground leading-relaxed mb-8 with
  *                   italic <em>and</em>
  *           pills:  rounded-lg bg-card border border-border (mb-8) ✓
@@ -53,8 +60,8 @@ describe('Hero (R10-F2 live DOM parity)', () => {
     expect(html).not.toContain('🌟')
   })
 
-  it('renders the live h1 (bold, 3.5rem, leading-[1.1], italic gradient span holding the dash)', () => {
-    expect(html).toContain('lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] mb-5')
+  it('renders the live h1 (bold, 3.5rem, leading-[1.1] sm:leading-none, italic gradient span holding the dash)', () => {
+    expect(html).toContain('lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] sm:leading-none mb-5')
     expect(html).not.toContain('font-extrabold')
     // The dash lives inside the italic gradient span, verbatim live markup.
     expect(html).toContain('<span class="text-gradient-hero italic">— By Their Email</span>')
