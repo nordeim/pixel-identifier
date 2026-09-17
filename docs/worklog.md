@@ -634,3 +634,32 @@ Stage Summary:
   cards and UI primitives now match the live's current build byte-for-byte
   at the DOM level; suite 402/49 → 432/50; PAD v1.13 → v1.14.
 - Next: atomic commits + push (Task R15-ship)
+
+---
+Task ID: R15-ship
+Agent: main (Super Z)
+Task: Round-15 ship — atomic commits, wrapper push, key hygiene
+
+Work Log:
+- Final gate re-run GREEN (432 tests / 50 files, 36 routes).
+- Secret scan: all matches pre-existing pushed history (operator docs);
+  no key material in the tree.
+- 9 atomic commits on main (a90e5f3..9072951): evidence, foundation
+  (vars/utilities/logo), sidebar primitive shell, topbar+layout+small DOM,
+  auth cards + Label/Badge, pricing sweep, snippet+social-proof, test
+  pins, docs.
+- Push via docs/ssh_git_wrapper_v3.py + paramiko shim (PATH prepended),
+  --remote git@github.com:nordeim/pixel-identifier.git: dry-run green
+  (2a1d732..9072951), real push verified (remote refs/heads/main @
+  9072951 == local HEAD), remote-tracking ref synced.
+- Deploy key fingerprint verified (SHA256:HpVRkv3e8k0HgD6SKijmGSmjs/
+  ZRRJxrZaAm6y6/Rns) before use; wrapper shredded it post-push, residue
+  double-shredded (random overwrite ×3 + remove). No key material on disk.
+
+Stage Summary:
+- Round-15 fully closed and shipped: main @ 9072951 on GitHub, PAD v1.14,
+  432/50 tests. pixelco.io parity now holds across marketing (byte-exact),
+  heads/SEO (byte-exact), and the app bundle's current-build shell
+  (byte-exact DOM). Residuals are data-only + the 2 documented
+  micro-divergences (lucide aria-hidden default, SSR-hidden mobile
+  sidebar).
