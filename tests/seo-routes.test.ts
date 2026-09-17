@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest'
-import { default as sitemapFn } from '@/app/sitemap'
-import { robots } from '@/app/robots'
+
+/**
+ * SEO surface guards. R14 moved robots.txt and sitemap.xml from the Next
+ * metadata conventions (app/robots.ts, app/sitemap.ts) to Route Handlers
+ * that reproduce the live pixelco.io documents verbatim — comments,
+ * namespaces, casing and "1.0"-style priorities the conventions cannot
+ * emit. The per-page head parity lives in tests/seo-parity.test.ts; this
+ * file guards the crawl surface: the URL set, the exclusions and the
+ * auth routes.
+ */
 
 const MARKETING_URLS = [
   '/',
@@ -23,48 +31,47 @@ const MARKETING_URLS = [
   '/blog/gdpr-compliant-visitor-tracking',
 ]
 
-describe('robots.ts', () => {
-  it('allows everything but /api/ for the wildcard agent', () => {
-    const rules = Array.isArray(robots.rules) ? robots.rules : [robots.rules]
-    const wildcard = rules.find(
-      (rule) => !Array.isArray(rule.userAgent) || rule.userAgent.includes('*'),
-    )
-    expect(wildcard).toBeDefined()
-    expect(wildcard?.allow).toContain('/')
-    expect(wildcard?.disallow).toEqual(['/api/'])
+async function sitemapPaths(): Promise<string[]> {
+  const mod = await import('@/app/sitemap.xml/route')
+  const xml = await (await mod.GET()).text()
+  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) =>
+    new URL(m[1]).pathname,
+  )
+}
+
+describe('robots.txt route', () => {
+  it('allows everything but /api/ for the wildcard agent', async () => {
+    const mod = await import('@/app/robots.txt/route')
+    const text = await (await mod.GET()).text()
+    expect(text).toContain('User-agent: *\nAllow: /\nDisallow: /api/')
   })
 
-  it('declares the sitemap with an absolute /sitemap.xml URL', () => {
-    expect(robots.sitemap).toMatch(/^https?:\/\/.+\/sitemap\.xml$/)
+  it('declares the sitemap with an absolute /sitemap.xml URL', async () => {
+    const mod = await import('@/app/robots.txt/route')
+    const text = await (await mod.GET()).text()
+    expect(text).toMatch(/Sitemap: https?:\/\/.+\/sitemap\.xml/)
   })
 })
 
-describe('sitemap.ts', () => {
+describe('sitemap.xml route', () => {
   it('lists every marketing URL the live site advertises', async () => {
-    const entries = await sitemapFn()
-    const paths = entries.map((entry) => new URL(entry.url).pathname)
+    const paths = await sitemapPaths()
     for (const url of MARKETING_URLS) {
       expect(paths, `sitemap must include ${url}`).toContain(url)
     }
+    expect(paths).toHaveLength(MARKETING_URLS.length)
   })
 
   it('never exposes app routes (login, signup, dashboard)', async () => {
-    const entries = await sitemapFn()
-    const paths = entries.map((entry) => new URL(entry.url).pathname)
-    for (const forbidden of ['/login', '/signup', '/dashboard']) {
+    const paths = await sitemapPaths()
+    for (const forbidden of [
+      '/login',
+      '/signup',
+      '/dashboard',
+      '/forgot-password',
+    ]) {
       expect(paths, `sitemap must NOT include ${forbidden}`).not.toContain(forbidden)
     }
-  })
-
-  it('emits absolute URLs with priorities like the live sitemap', async () => {
-    const entries = await sitemapFn()
-    for (const entry of entries) {
-      expect(entry.url).toMatch(/^https?:\/\//)
-      expect(entry.priority).toBeGreaterThan(0)
-      expect(entry.priority).toBeLessThanOrEqual(1)
-    }
-    const home = entries.find((e) => new URL(e.url).pathname === '/')
-    expect(home?.priority).toBe(1)
   })
 })
 
@@ -78,8 +85,7 @@ describe('auth surfaces', () => {
   })
 
   it('keeps /forgot-password out of the sitemap (auth surface)', async () => {
-    const entries = await sitemapFn()
-    const paths = entries.map((entry) => new URL(entry.url).pathname)
+    const paths = await sitemapPaths()
     expect(paths).not.toContain('/forgot-password')
   })
 })

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { ArrowRight, X } from 'lucide-react'
 
 /**
@@ -20,13 +21,13 @@ export function AnnouncementBar() {
         <span className="font-medium">
           🚀 Launch Offer — Get 100 free visitor identifications when you sign up today
         </span>
-        <a
+        <Link
           href="/signup"
           className="inline-flex items-center gap-1 font-semibold underline underline-offset-2 transition-opacity hover:opacity-80"
         >
           Claim Now{' '}
           <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-        </a>
+        </Link>
       </div>
       <button
         type="button"
