@@ -147,13 +147,15 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
                         <p className="flex flex-wrap items-center gap-2">
                           <span className="truncate text-sm font-semibold text-foreground">{domain.domain}</span>
                           {domain.status === 'verified' ? (
-                            <Badge variant="secondary" className="gradient-primary gap-1 border-0 px-1.5 py-0 text-[10px] text-primary-foreground hover:opacity-90">
-                              <CircleCheckBig className="h-2.5 w-2.5" aria-hidden="true" />
+                            /* R11: Verified rides the DEFAULT variant + the
+                                live's gradient overrides. */
+                            <Badge variant="default" className="text-[10px] px-1.5 py-0 gradient-primary text-primary-foreground border-0">
+                              <CircleCheckBig className="h-2.5 w-2.5 mr-0.5" aria-hidden="true" />
                               Verified
                             </Badge>
                           ) : (
-                            <Badge variant="secondary" className="gap-1 px-1.5 py-0 text-[10px] text-secondary-foreground hover:bg-secondary">
-                              <CircleAlert className="h-2.5 w-2.5" aria-hidden="true" />
+                            <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                              <CircleAlert className="h-2.5 w-2.5 mr-0.5" aria-hidden="true" />
                               Pending
                             </Badge>
                           )}

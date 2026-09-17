@@ -358,11 +358,12 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                     </td>
                     <td className="p-3">
                       {visitor.type === 'company' ? (
-                        <Badge variant="secondary" className="border-amber-500/20 bg-amber-500/10 px-1.5 py-0 text-[10px] text-amber-600 hover:bg-amber-500/10">
+                        /* R11: px-2 badges keeping the variant hover. */
+                        <Badge variant="secondary" className="border-amber-500/20 bg-amber-500/10 px-2 py-0 text-[10px] text-amber-600">
                           Company
                         </Badge>
                       ) : (
-                        <Badge variant="secondary" className="border-neon-green/20 bg-neon-green/10 px-1.5 py-0 text-[10px] text-neon-green hover:bg-neon-green/10">
+                        <Badge variant="secondary" className="border-neon-green/20 bg-neon-green/10 px-2 py-0 text-[10px] text-neon-green">
                           {SOURCE_LABELS[visitor.source] ?? visitor.source}
                         </Badge>
                       )}
@@ -403,11 +404,11 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                     </td>
                     <td className="p-3">
                       {isVisitorActive(new Date(visitor.lastSeen)) ? (
-                        <Badge variant="secondary" className="bg-primary px-1.5 py-0 text-[10px] text-primary-foreground hover:bg-primary">
+                        <Badge variant="default" className="text-[10px] px-2 py-0">
                           active
                         </Badge>
                       ) : (
-                        <Badge variant="secondary" className="border-transparent bg-secondary px-1.5 py-0 text-[10px] text-secondary-foreground hover:bg-secondary">
+                        <Badge variant="secondary" className="text-[10px] px-2 py-0">
                           inactive
                         </Badge>
                       )}

@@ -128,9 +128,10 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
           </div>
 
           {receiving ? (
-            <div className="mt-4 rounded-lg border border-neon-green/20 bg-neon-green/10 p-3">
+            /* R11: live banners — verified bg-neon-green/10 border-/30. */
+            <div className="mt-4 p-3 bg-neon-green/10 border-neon-green/30 border rounded-lg">
               <div className="flex gap-2">
-                <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                <CircleCheck className="h-4 w-4 shrink-0 mt-0.5 text-muted-foreground" aria-hidden="true" />
                 <div className="text-sm text-muted-foreground">
                   <span className="font-medium text-foreground">Pixel verified!</span>{' '}
                   We&apos;re receiving data from{' '}
@@ -140,9 +141,9 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
               </div>
             </div>
           ) : (
-            <div className="mt-4 rounded-lg border border-neon-green/20 bg-neon-green/5 p-3">
+            <div className="mt-4 p-3 bg-neon-green/5 border-neon-green/20 border rounded-lg">
               <div className="flex gap-2">
-                <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                <CircleCheck className="h-4 w-4 shrink-0 mt-0.5 text-muted-foreground" aria-hidden="true" />
                 <div className="text-sm text-muted-foreground">
                   <span className="font-medium text-foreground">Waiting for first event...</span>{' '}
                   Paste the snippet on your site and visit a page. This status will update
