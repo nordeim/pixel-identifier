@@ -67,7 +67,7 @@ Pixelco" — the clone cannot set not-found metadata in Next.js, documented).
 
 ## Remediation ToDo (TDD — RED first at every seam)
 
-- [ ] **A. App token migration (R11-F1, F14, F19)**
+- [x] **A. App token migration (R11-F1, F14, F19)**
   - A1 RED — `tests/app-theme.test.ts`: parse `src/app/globals.css`; require
     the app `:root` to define the live's cool-neutral set (background
     hsl(220 20% 97%), foreground hsl(230 25% 10%), secondary/muted
@@ -85,7 +85,7 @@ Pixelco" — the clone cannot set not-found metadata in Next.js, documented).
   - A3 — update the superseded app-palette assertions in
     `tests/marketing-theme.test.ts` (they pin the R10 app palette).
   - A4 — trend-chart grid/axis/tooltip strokes `#E7E5DF` → `hsl(220, 13%, 91%)`.
-- [ ] **B. Legacy primitives (R11-F2)**
+- [x] **B. Legacy primitives (R11-F2)**
   - B1 RED — `tests/ui-primitives.test.tsx`: renderToStaticMarkup each
     primitive; pin the live's legacy class strings (Button base + variants +
     sizes; Badge base + variants; Card family; Tabs family; Select family;
@@ -98,7 +98,7 @@ Pixelco" — the clone cannot set not-found metadata in Next.js, documented).
     (keep only size/color overrides) so rendered strings match the live;
     the recent-identifications header becomes a raw div
     (`space-y-1.5 p-6 flex flex-row items-center justify-between pb-2`).
-- [ ] **C. Sidebar chrome (R11-F3, F4, F18)**
+- [x] **C. Sidebar chrome (R11-F3, F4, F18)**
   - C1 RED — `tests/sidebar-chrome.test.tsx`: pin the footer wrapper, plan
     badge (Badge component, secondary variant, "FREE" literal), usage line,
     progress classes, sign-out classes; pin the nav chrome (header gap-2,
@@ -107,14 +107,14 @@ Pixelco" — the clone cannot set not-found metadata in Next.js, documented).
     (w-12, footer hidden, logo rendered).
   - C2 GREEN — rewrite `sidebar-nav.tsx` + `sidebar-shell.tsx` to the live
     chrome; topbar toggle → ghost h-7 w-7 with size-less PanelLeft.
-- [ ] **D. Badge consumers + install banners (R11-F6, F7)**
+- [x] **D. Badge consumers + install banners (R11-F6, F7)**
   - D1 RED — extend the visitors/domains SSR tests (or add
     `tests/badge-consumers.test.tsx`): px-2 on visitors badges, variant
     hovers retained (no custom hover overrides), Verified badge on the
     default variant, install verified banner `border-neon-green/30`.
   - D2 GREEN — sweep `visitors-table.tsx`, `domains-panel.tsx`,
     `install/page.tsx`.
-- [ ] **E. Marketing parity (R11-F5, F8-F13, F16, F17)**
+- [x] **E. Marketing parity (R11-F5, F8-F13, F16, F17)**
   - E1 RED — extend the marketing SSR tests: kickers render as `<span>`;
     pricing header `mb-14`; FAQ header `mb-12`; `#benefits` on the Features
     section (and absent from Audience); hero secondary CTA href `/login`;
@@ -126,10 +126,10 @@ Pixelco" — the clone cannot set not-found metadata in Next.js, documented).
     but renders an anchor).
   - E3 — font-mono: drop the Geist Mono webfont; `--font-mono: "JetBrains
     Mono", monospace` (declared-not-loaded = system mono, like the live).
-- [ ] **F. 404 rebuild (R11-F15)**
+- [x] **F. 404 rebuild (R11-F15)**
   - F1 RED — `tests/not-found.test.tsx`: pin the live's minimal DOM.
   - F2 GREEN — rebuild `src/app/not-found.tsx`.
-- [ ] **G. Verification gate**
+- [x] **G. Verification gate**
   - G1 — `npm run verify` (lint → typecheck → test → build) must be green.
   - G2 — fresh production server + fresh browser session (no stale-chunk
     artifacts): verify computed tokens (canvas #F6F7F9, borders #E5E7EB,
@@ -137,13 +137,13 @@ Pixelco" — the clone cannot set not-found metadata in Next.js, documented).
     select trigger/dropdown, sidebar footer + rail w-12, install banners,
     marketing kicker/anchor/margin/CTA/footer fixes, 404; zero console
     errors. Evidence: `research/round11-audit/local/` + verification log.
-- [ ] **H. Documentation**
+- [x] **H. Documentation**
   - H1 — PAD → v1.10 (revision block; §5.2 token table update to the
     cool-neutral app palette + new utilities; §8 suite counts).
   - H2 — README (test counts + typography note), AGENTS.md + CLAUDE.md
     (app-palette fact, legacy-primitives convention, font-mono).
   - H3 — plan execution log + worklog entry.
-- [ ] **I. Ship**
+- [x] **I. Ship**
   - I1 — atomic Conventional Commits on main only.
   - I2 — secret scan; push via `docs/ssh_git_wrapper_v3.py` + paramiko shim
     (runbook Appendix A); post-push verification; key shredded.
@@ -163,3 +163,75 @@ Pixelco" — the clone cannot set not-found metadata in Next.js, documented).
 - The vitest SSR tests pin class STRINGS; tailwind-merge collapses
   duplicates, so assertions must be written against the merged output
   (the R10 lesson — pin what renders, not what's authored).
+
+## Execution Log (completed 2026-09-17)
+
+- **A (5b6e23a)** — RED `tests/app-theme.test.ts` (6 failing) → GREEN:
+  app `:root` rewritten to the live cool-neutral set (13 neutrals/accent
+  + 8 sidebar tokens), new utilities `.gradient-accent`/`.gradient-card`/
+  `.glow-accent` + `--color-electric-blue`, gradient-primary end stop
+  #FFB300, trend-chart grid/axis/tooltip strokes #E5E7EB; the superseded
+  R10 app-palette assertions in marketing-theme.test.ts updated (and its
+  `.marketing-scope` anchor hardened to the class definition).
+- **B (b1b0206)** — RED `tests/ui-primitives.test.tsx` (11 failing) →
+  GREEN: button/badge/card/tabs/select/input/checkbox rebuilt to the
+  legacy chrome; CardTitle → `h3.font-display`; CardTitle consumers swept
+  to minimal per-use overrides; the recent-identifications header became
+  the live's raw div; View-all link → text-primary hover:underline gap-1.
+  Plus the live's selection UX: chrome-store `selectedVisitorIds`, topbar
+  Export swap (Export (N), ids-scoped href, gradient sm chrome), "N
+  selected" filter-row count, source filter w-40, Delete/Export sizes,
+  standalone Export-Selected row removed (RED
+  `tests/visitors-selection.test.tsx`, 3).
+- **C (5292443)** — RED `tests/sidebar-chrome.test.tsx` (7 failing) →
+  GREEN: sidebar rebuilt to the live shadcn-Sidebar geometry (gap-2
+  stack, p-2 groups, h-8 labels, h-8 menu buttons with the warm
+  sidebar-accent pill via tokens — hardcoded hex removed), footer
+  borderless p-4 with the Badge FREE pill + live usage/progress/sign-out
+  classes, rail 48px with footer hidden + logo visible, ONE PanelLeft
+  toggle (ghost h-7 w-7) driving desktop rail + mobile sheet, bell dot
+  top-1.5 right-1.5.
+- **D (0f98ad6)** — RED `tests/badge-consumers.test.tsx` (7 failing) →
+  GREEN: visitors badges px-2 with variant hovers (status badges on the
+  plain default/secondary variants), domains Verified → default variant +
+  gradient overrides + mr-0.5 icons, Pending plain secondary; install
+  verified banner border-/30 with both banners in the live class order.
+- **E (a6a834b + e58a1e3)** — RED
+  `tests/marketing-r11-parity.test.tsx` (9 failing) → GREEN: all kickers
+  inline `<span>`, pricing mb-14 / FAQ mb-12, `#benefits` on Features,
+  hero demo CTA → /login (no #live-demo anchor), footer wordmark home
+  link + Careers anchor, Compare CTA gradient-cta h-10, header CTAs size
+  sm, font-mono → declared-not-loaded system stack (Geist Mono webfont
+  dropped from the root layout).
+- **F (a28c6e7 + 8486492)** — RED `tests/not-found.test.tsx` → GREEN:
+  minimal live 404 (bg-muted canvas, text-4xl 404, Oops! Page not found,
+  underlined home link).
+- **G** — `npm run verify` GREEN: lint ✓, typecheck ✓, **291 tests /
+  41 files** ✓, build 35 routes ✓. Fresh-server browser pass (fresh
+  session, port 3100, zero console errors): computed tokens live-exact
+  (bg #f6f7f9, border #e5e7eb, teal accent #2bd4bd, sidebar-accent
+  #f8f6f2); KPI cards 138px with `p-6 pt-5 pb-4 px-5` children; sidebar
+  footer/badge verbatim; rail 48px footer-hidden logo-visible; install
+  tablist + verified banner /30; domains Verified default-variant badge;
+  visitors px-2 badges + h-10 tabs; marketing section heights live-exact
+  (526/708/610/650/814/755 vs live 526/708/610/650/814/756), kickers
+  SPAN, #benefits correct, demo CTA /login, footer wordmark <a href="/">;
+  404 verbatim. Pairwise VLM (8 pairs): pricing + settings EXACT MATCH,
+  dashboard/visitors/activity/domains/install/landing CLOSE MATCH
+  (residuals data-only: account initials, demo-DB rows, snippet URLs,
+  feed-widget placeholders; the VLM eye-icon and Add-Domain-color claims
+  were triaged against DOM ground truth — byte-identical icons, identical
+  class strings — known false-positive patterns). Hero 779 vs live 762
+  and marquee 426 vs 403 are pre-existing R9-era residuals (data/avatar
+  photo heights), not R11 regressions. Evidence:
+  `research/round11-audit/{live,local,vlm}/` +
+  `live-ground-truth.md`. One live capture retry: the first live
+  dash-dashboard.png caught an expired session (404) — re-captured after
+  re-login and re-diffed.
+- **H (this commit)** — PAD v1.10 (revision block + §5.2 token table +
+  §5.3 legacy-primitives note + §8 counts), README 291 + round-11
+  coverage note, AGENTS.md (cool-neutral/two-palette + legacy-shadcn +
+  font-mono facts), CLAUDE.md (typography + primitives guidance), this
+  log, worklog entry.
+- **I** — atomic Conventional Commits on main only; push via
+  `docs/ssh_git_wrapper_v3.py` + paramiko shim (runbook Appendix A).

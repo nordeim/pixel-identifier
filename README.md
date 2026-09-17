@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 241 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 291 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -258,6 +258,16 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
 - **Pure helpers** — plan/money math (IEEE-754 robustness), domain
   normalisation, snippet hardening (host validation, JS-string escaping),
   CSV escaping + formula guard, relative-time boundaries.
+- **UI primitives + app theme (round-11)** — the live app ships the
+  LEGACY shadcn generation and a cool-neutral palette: the primitive
+  class strings (button/badge/card/tabs/select/input/checkbox), the
+  app `:root` token set (teal accent, cool hairlines, navy foreground,
+  sidebar tokens), the sidebar chrome (footer, rail, menu buttons),
+  the badge consumers, the visitors selection UX (topbar Export (N)
+  swap), the 404 boundary, and the round-11 marketing seams (inline
+  span kickers, `#benefits` placement, header margins, footer anchors,
+  Compare/header CTA chrome, the system mono stack) are all pinned by
+  SSR/source tests against the live DOM.
 - **Dashboard chrome data seam** (`src/lib/dashboard-nav.ts`) — sidebar
   sections/icons and per-page subtitles match the live app verbatim,
   visitors-subtitle formatting, the 7-day unread-activity rule behind the

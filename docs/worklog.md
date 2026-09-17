@@ -242,3 +242,48 @@ Stage Summary:
   animations) deferred per audit rules + CSS-only motion convention
 - Suite grew 198/28 -> 241/34 (43 new guard tests across 7 files)
 - Repository pushed to git@github.com:nordeim/pixel-identifier.git (main)
+
+---
+Task ID: 1
+Agent: main (Super Z)
+Task: Round-11 re-execution — live audit, remediation plan, TDD fixes, verify, docs
+
+Work Log:
+- Context: the previous Round-11 session was interrupted before
+  committing; its workspace was lost, so this session re-executed the
+  round from a fresh clone at 902facf (Round-10 complete). Baseline
+  gate GREEN (241 tests / 34 files) before any change.
+- Fresh live audit (agent-browser, logged in as
+  sepnetflix2023@outlook.com): full app+marketing :root dumps, every
+  primitive's class strings (button/badge/card/tabs/select/input/
+  checkbox), complete sidebar chrome (expanded + collapsed rail),
+  page-level ground truth (trend chart, View-all link, badge variants
+  across visitors/activity/domains, install tabs + banners, topbar
+  buttons, dashboard pricing cards, the 404 boundary), marketing seams
+  (kickers, header margins, anchors, CTA hrefs, footer, Compare CTA).
+  Documented in research/round11-audit/live-ground-truth.md; PNG
+  evidence in research/round11-audit/live/.
+- Wrote docs/plans/2026-09-17-round11-app-bundle-realignment.md (20
+  findings R11-F1..F20, R10-F14 still deferred) and validated every
+  referenced seam against the tree before executing.
+- Executed workstreams A-F TDD (every one RED-first): app token
+  migration to the live cool-neutral bundle (A), legacy shadcn
+  primitives + consumer sweep + selection UX (B), sidebar chrome +
+  footer + 48px rail + one-button toggle (C), badge consumers + install
+  banners (D), marketing parity sweep incl. font-mono system stack (E),
+  minimal live 404 (F).
+- G gate: npm run verify GREEN — lint, typecheck, 291 tests / 41 files
+  (2 skipped), build 35 routes. Fresh-server browser pass with zero
+  console errors: tokens, KPI card geometry (138px), sidebar, badges,
+  tabs, banners, marketing section heights (live-exact: 526/708/610/
+  650/814/755), 404. Pairwise VLM diffs on 8 surface pairs: 2 EXACT
+  MATCH, 6 CLOSE MATCH (data-only residuals; VLM misreads triaged
+  against DOM).
+- H docs: PAD v1.10, README, AGENTS.md, CLAUDE.md, plan execution log,
+  this entry.
+
+Stage Summary:
+- All actionable Round-11 findings remediated; R10-F14 (scroll-reveal
+  entrance animations) remains the only deferred item
+- Suite grew 241/34 -> 291/41 (+50 guard tests across 7 new files)
+- Next: push via docs/ssh_git_wrapper_v3.py + paramiko shim (Task 2)

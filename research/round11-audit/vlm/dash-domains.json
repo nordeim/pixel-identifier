@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "CLOSE MATCH\n- The \"Add Domain\" button color is a darker, more saturated yellow in the clone compared to the original.\n- The user avatar initials in the top right corner are \"DE\" in the clone instead of \"SE\".\n- The domain list content differs (the original shows two domains including a \"Pending\" one, while the clone shows only one \"Verified\" domain).",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789608034,
+  "id": "202609170920312bbe1678b22d4399",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "202609170920312bbe1678b22d4399",
+  "usage": {
+    "completion_tokens": 79,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1848,
+    "prompt_tokens_details": {
+      "cached_tokens": 2
+    },
+    "total_tokens": 1927
+  }
+}

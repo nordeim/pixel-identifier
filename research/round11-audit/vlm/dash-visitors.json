@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "DIFFERENT\n- The \"Visitors\" sidebar icon is an eye in the original but a generic circle in the clone.\n- The user avatar initials in the top right corner are \"SE\" in the original but \"DE\" in the clone.\n- The order and content of the visitor list rows are different (e.g., the first row is a Company in the original but an Individual in the clone).",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789608027,
+  "id": "20260917092024c3034e9991e74ddb",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260917092024c3034e9991e74ddb",
+  "usage": {
+    "completion_tokens": 84,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1848,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1932
+  }
+}

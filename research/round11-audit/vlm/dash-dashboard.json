@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "CLOSE MATCH\n- The \"Visitor Identification Trend\" chart data/shape is different (single peak vs. multi-peak).\n- The user avatar initials in the top right corner are different (\"SE\" vs. \"DE\").",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789608114,
+  "id": "20260917092130642d43c05c1e4ae1",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260917092130642d43c05c1e4ae1",
+  "usage": {
+    "completion_tokens": 46,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1847,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1893
+  }
+}

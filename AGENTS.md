@@ -28,14 +28,27 @@ make it pass — fix the code.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle
-  uses the global `:root` tokens (brand `--primary: #FFC105`); the
-  marketing bundle's palette lives in the `.marketing-scope` class and is
-  applied on the `(marketing)` layout wrapper (white canvas, warm-white
-  cards `hsl(40 30% 98%)`, cool borders `hsl(230 15% 90%)`, a YELLOW
-  accent `#FFBF00`, `--radius: 0.625rem`). Never hand-roll per-component
-  approximations of either palette — `var()` chains inside `@theme` are
-  silently dropped by the build. `--radius-xl` derives at radius + 2px
-  (measured off the live, R10).
+  uses the global `:root` tokens (brand `--primary: #FFC105`; since R11
+  the app neutrals are COOL — background `hsl(220 20% 97%)`, borders
+  `hsl(220 13% 91%)`, navy foreground, and `--accent` is the TEAL data
+  accent that hovers render); the marketing bundle's palette lives in the
+  `.marketing-scope` class and is applied on the `(marketing)` layout
+  wrapper (white canvas, warm-white cards `hsl(40 30% 98%)`, cool borders
+  `hsl(230 15% 90%)`, a YELLOW accent `#FFBF00`, `--radius: 0.625rem`).
+  Never hand-roll per-component approximations of either palette — `var()`
+  chains inside `@theme` are silently dropped by the build. `--radius-xl`
+  derives at radius + 2px (measured off the live, R10).
+- **The UI primitives are LEGACY shadcn (R11).** The live app ships the
+  legacy generation — `src/components/ui/{button,badge,card,tabs,select,
+  input,checkbox}.tsx` carry the live's exact class strings (no data-slot
+  attrs, `ring-offset-background` 2px focus rings, h-10 default / h-9 sm
+  buttons, rounded-full badges, `flex flex-col space-y-1.5 p-6` card
+  headers, LEFT-side select indicators, `bg-background` inputs). Do NOT
+  regenerate them with the shadcn CLI — the SSR tests pin the rendered
+  strings.
+- **font-mono is a declared-not-loaded stack (R11).** `--font-mono` is
+  `"JetBrains Mono", monospace` with NO webfont — mono surfaces render in
+  the system mono exactly like the live. Do not re-add a mono webfont.
 - **Typography is live-parity (v1.4).** App body = **Inter**; **Space
   Grotesk** is the `font-display` utility (card titles, page H1s, KPI values,
   prices, sidebar wordmark); marketing = **DM Sans**; mono stays mono. Brand

@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "CLOSE MATCH\n- The \"Live Visitor Feed\" widget in the hero section displays different data (emails vs. \"Anonymous Visitor\" placeholders).\n- The list of partner logos below the hero section is different (e.g., Flow/LeadGen Pro vs. .abs/ScaleUp).\n- The dashboard screenshot in the \"Everything you need\" section shows a completely different UI layout and data.\n- The footer navigation links are arranged differently (e.g., the CTA button and link order).",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789608045,
+  "id": "202609170920408b81c5717df444be",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "202609170920408b81c5717df444be",
+  "usage": {
+    "completion_tokens": 99,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 11624,
+    "prompt_tokens_details": {
+      "cached_tokens": 2
+    },
+    "total_tokens": 11723
+  }
+}

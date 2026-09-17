@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "CLOSE MATCH\n- The user avatar in the top-right corner shows \"DE\" instead of \"SE\".",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789608031,
+  "id": "202609170920270c80a5fc9937410a",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "202609170920270c80a5fc9937410a",
+  "usage": {
+    "completion_tokens": 22,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1848,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1870
+  }
+}

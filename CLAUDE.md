@@ -111,6 +111,13 @@ approximations: `.gradient-primary` (135deg #FFC105→#FFB200), `.glow-primary`,
 token (`bg-neon-green/10`-style utilities) — use them instead of hand-rolled
 amber/teal approximations.
 
+**UI primitives (R11)** — the live app ships the LEGACY shadcn
+  generation; `src/components/ui/*` must keep the legacy chrome (2px
+  ring-offset focus rings, h-10/h-9 sizes, rounded-full badges, LEFT-side
+  select indicators, `bg-background` inputs, `space-y-1.5 p-6` card
+  headers). The SSR tests pin the rendered class strings — don't
+  regenerate primitives with the shadcn CLI.
+
 **Server Actions** — every mutation returns `ActionResult<T>`
 (`{ ok: true, data } | { ok: false, error: { code, message, fieldErrors? } }`).
 Validate with Zod at the boundary; catch once; never throw across the action

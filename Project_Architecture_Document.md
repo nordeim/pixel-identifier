@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.9
+# Pixelco — Master Project Architecture Document (PAD) v1.10
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-16
+**Last Updated:** 2026-09-17
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -11,6 +11,46 @@
 ---
 
 #### Revision Block (Tracked Changes)
+
+- **v1.10** `[SYN]` Round-11 app-bundle realignment (plan:
+  `docs/plans/2026-09-17-round11-app-bundle-realignment.md`; evidence in
+  `research/round11-audit/`). A fresh live audit found the app bundle had
+  MIGRATED to cool-gray neutrals — `--background` is now
+  `hsl(220 20% 97%)` (#F6F7F9, the old `.bg-app` value promoted to the
+  token), the foreground is navy `hsl(230 25% 10%)`, `--secondary`/
+  `--muted` are `hsl(220 14% 96%)`, borders/inputs are cool
+  `hsl(220 13% 91%)` (#E5E7EB), and **`--accent` is the teal data accent**
+  (ghost/select/dropdown hovers render teal now); the sidebar ships a
+  proper token set (accent `hsl(45 30% 96%)` = #F8F6F2 warm pill, accent
+  foreground `hsl(45 100% 40%)` = #CC9900 golden). New utilities:
+  `.gradient-accent`, `.gradient-card`, `.glow-accent`,
+  `--color-electric-blue`. The trend chart's grid/axis/tooltip strokes
+  moved to the cool border color. **The live app ships the LEGACY
+  generation of the shadcn primitives** — the clone's new-generation set
+  added +48px to every Card (py-6/gap-6 root), square badges, right-side
+  select indicators, 3px focus rings and h-9 default buttons; all seven
+  primitives (button/badge/card/tabs/select/input/checkbox) were rebuilt
+  to the live's exact class strings, CardTitle now renders an
+  `h3.font-display` and the sidebar chrome was rebuilt to the live's
+  shadcn-Sidebar geometry (8px section stack, h-8 menu buttons with the
+  warm active pill, borderless p-4 footer with the Badge-component FREE
+  pill, 48px icon rail with the footer hidden, one PanelLeft toggle at
+  h-7 w-7 for both desktop rail and mobile sheet). Selection UX: the
+  topbar Export button swaps to "Export (N)" (ids-scoped href) with a
+  muted "N selected" count in the filter row — the standalone
+  Export-Selected row is gone. Marketing: every section kicker is an
+  inline `<span>` (the recurring -8px line-box delta), pricing/FAQ
+  headers regained mb-14/mb-12, `#benefits` moved to the "Everything you
+  need" section, the hero's demo CTA targets `/login` (the live's goes to
+  the app), the footer wordmark is a home link and Careers a real anchor,
+  the Compare CTA carries gradient-cta, both header CTAs are size sm, and
+  font-mono drops the Geist Mono webfont for the live's
+  declared-not-loaded `"JetBrains Mono", monospace` stack (system mono on
+  both sides). The 404 boundary was rebuilt to the live's minimal
+  centered block. Deferred (unchanged): R10-F14 scroll-reveal entrance
+  animations. Suite 241/34 → **291 tests / 41 files** (+50: app-theme 7,
+  ui-primitives 12, visitors-selection 3, sidebar-chrome 9,
+  badge-consumers 7, marketing-r11-parity 9, not-found 3).
 
 - **v1.9** `[SYN]` Round-10 marketing parity deep-dive (plan:
   `docs/plans/2026-09-16-round10-marketing-parity-deep-dive.md`; evidence in
@@ -45,7 +85,7 @@
   the stats grid at md, and audience descriptions without trailing
   periods. Scroll-reveal entrance animations are deferred (F14 — at-rest
   parity holds; the repo's motion convention is CSS-only).
-- `[SR]` v1.9 evidence: `npm run verify` green (lint, typecheck, **241
+- `[SR]` v1.10 evidence: `npm run verify` green (lint, typecheck, **291
   tests across 34 files**, build 35 routes); browser verification:
   pairwise VLM re-diffs at CLOSE MATCH on all 10 landing sections
   (residuals are data/screenshot-content only), computed tokens verified
@@ -962,13 +1002,13 @@ layout wrapper and never leaks into `/dashboard/*` or the auth pages.
 
 | Token | App (global `:root`) | Marketing (`.marketing-scope`) | Usage | Notes |
 |-------|----------------------|-------------------------------|-------|-------|
-| `--background` | `#ffffff` (R10: white; body shows only below-document/overscroll) | `hsl(0 0% 100%)` | Canvas | The old warm canvas `#FFFCF5` was retired in R10 — each tinted surface paints its own wrapper (`.bg-app`, auth gradient canvas) |
-| `--primary` | `#FFC105` | `hsl(45 100% 50%)` = `#FFBF00` | CTAs, active nav, badges, avatar fill | v1.6 measured off the live app bundle (hsl(45 100% 51%)); the marketing scope carries the marketing bundle's 50% variant |
+| `--background` | `hsl(220 20% 97%)` = `#F6F7F9` (v1.10: the live app bundle migrated to cool neutrals) | `hsl(0 0% 100%)` | Canvas | The old warm canvas `#FFFCF5` was retired in R10; v1.10 promotes the cool app-gray to the token (`.bg-app` keeps the same value) |
+| `--primary` | `#FFC105` (`hsl(45 100% 51%)`) | `hsl(45 100% 50%)` = `#FFBF00` | CTAs, active nav, badges, avatar fill | v1.6 measured off the live app bundle; the marketing scope carries the marketing bundle's 50% variant |
 | `--card` | `#ffffff` | `hsl(40 30% 98%)` (rgb(251,250,248) warm white) | Cards, chips | R10: the marketing tree's cards are warm-white on the white canvas |
-| `--secondary` | `#f5f0e6` | `hsl(40 30% 96%)` (rgb(248,246,242)) | Icon chips, muted CTAs | Marketing secondary verified against the live's icon-chip fill |
-| `--border` / `--input` | `#e7e5df` (warm) | `hsl(230 15% 90%)` (cool, rgb(226,227,233)) | Hairlines | R10: the marketing bundle's borders are cool-gray |
+| `--secondary` | `hsl(220 14% 96%)` (v1.10: cool, was warm `#f5f0e6`) | `hsl(40 30% 96%)` (rgb(248,246,242)) | Icon chips, muted CTAs | Marketing secondary verified against the live's icon-chip fill |
+| `--border` / `--input` | `hsl(220 13% 91%)` = `#E5E7EB` (v1.10: cool, was warm `#e7e5df`) | `hsl(230 15% 90%)` (cool, rgb(226,227,233)) | Hairlines | Both bundles ship cool hairlines now |
 | `--muted-foreground` | `#6b7280` | `hsl(230 10% 46%)` (rgb(106,109,129)) | Secondary text | |
-| `--accent` | `#fef9c3` (pale) | `hsl(45 100% 50%)` = **yellow** | Process dot bullets, "Save 20%", hovers | R10: the live marketing accent IS the brand yellow with black foreground |
+| `--accent` | `hsl(172 66% 50%)` = **teal** (v1.10: the live app accent migrated from pale cream to the data accent) | `hsl(45 100% 50%)` = **yellow** | Hovers (ghost buttons, select items, dropdowns) / process dots, "Save 20%" | The APP accent is teal; the MARKETING accent is the brand yellow |
 | `--radius` | `0.75rem` (12px) | `0.625rem` (10px) | Corner base | `--radius-xl` derives at radius + 2px (R10, measured) — marketing cards resolve 12px |
 | `--chart-1` | `hsl(262 83% 58%)` | — | Pageviews series | Purple (v1.4 live palette) |
 | `--chart-2` | `hsl(172 66% 50%)` | — | Identified series, confidence bars | Teal (v1.4 live palette) |
@@ -976,14 +1016,14 @@ layout wrapper and never leaks into `/dashboard/*` or the auth pages.
 | `--color-hot-pink` | `#EC4699` | — | Bell dot, auth-page orb glow | v1.5 token (R6-M8) |
 | `--color-highlight` | `#FFD91A` | — | Hero Zap icon, badge stars | v1.6 token (R7-V6, live `--highlight`) |
 | `--shadow-card` | amber two-layer elevation | same | Open FAQ items, marketing cards | v1.6 token (R7-V14) — the live uses it on testimonial/audience/pricing cards too (R10) |
-| `.gradient-primary` | `135deg #FFC105→#FFB200` | — | CTAs, FREE badge, avatars, icon chips | v1.4 utility (live class of the same name) |
+| `.gradient-primary` | `135deg #FFC105→#FFB300` (v1.10: end stop aligned to the live `hsl(42 100% 50%)`) | — | CTAs, FREE badge, avatars, icon chips | v1.4 utility (live class of the same name) |
 | `.gradient-hero` | `135deg #0F111A→#2B2312` | — | Auth canvas (login/signup/forgot) | v1.5 — the live APP bundle's dark variant |
 | `.gradient-hero-light` | `135deg #FFAA00→#FFD91A→#F58F00` | same | Announcement bar, process icon boxes, bottom CTA card | v1.5 — the live MARKETING bundle reuses the name `gradient-hero` in yellow; one bundle needs two names |
 | `.gradient-cta` | `135deg #FFAA00→#FFCE0A` | same | Marketing POPULAR pill, hero/Growth CTAs | v1.5 |
 | `.shadow-elevated` | amber elevation | same | Featured marketing cards, compare/popular pricing cards | v1.5 |
 | `.glow-primary` | `rgba(255,193,5,0.3) 0 0 40px` | — | Elevated CTAs | v1.6: realigned to the live's diffuse zero-offset glow |
 | `.animate-pulse-glow` | 3s opacity breathing | — | Auth-page blurred orbs | v1.5; disabled under `prefers-reduced-motion` |
-| `.bg-app` | `#F6F7F9` | — | Dashboard canvas | The live app body is `220 20% 97%` = #F6F7F9 |
+| `.bg-app` | `#F6F7F9` | — | Dashboard canvas | v1.10: identical to the new `--background` — kept for semantic clarity |
 | `--muted-foreground` (text contrast) | `#6B7280` | `hsl(230 10% 46%)` | Secondary text | 4.8:1 on white |
 | `--destructive` | red (oklch) | — | Danger zone, delete, compare X icons | |
 | `--font-script` | Dancing Script | — | "By Ai Viral" wordmark subtext | v1.6 (R7-V4); rendered INLINE beside the wordmark (R10 — was stacked) |
@@ -997,6 +1037,13 @@ decision, not a styling preference.
 shadcn/ui (New York style) source-owned in `src/components/ui/` — 15
 primitives in use (accordion, alert-dialog, badge, button, card, checkbox,
 dropdown-menu, input, label, progress, select, sheet, tabs, toast, toaster).
+**The live ships the LEGACY shadcn generation (v1.10)** — button/badge/
+card/tabs/select/input/checkbox carry the legacy chrome (no data-slot
+attrs, `ring-offset-background` 2px focus rings, h-10/h-9 sizes, rounded-md
+buttons, rounded-full badges, `flex flex-col space-y-1.5 p-6` card headers,
+LEFT-side select indicators, `bg-background` inputs). Do not "upgrade"
+these to the new-generation shadcn defaults — the SSR tests pin the live
+class strings.
 Composites live beside their feature (`components/dashboard/*`), never in
 `ui/`. Icons: lucide-react outline style; the brand mark is inline SVG
 (`pixelco-logo.tsx`) so it inherits color and needs no asset requests.
@@ -1091,7 +1138,7 @@ speculatively.
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
 | E2E (browser) | manual + opt-in smoke | — | dev server flows; `PIXELCO_STANDALONE_SMOKE=1` boots the standalone server | browser pass |
 
-The suite totals **241 tests across 34 files** (plus 2 opt-in standalone
+The suite totals **291 tests across 41 files** (plus 2 opt-in standalone
 smoke tests), runs in the `node`
 environment against a throwaway SQLite database (`db/test.db`, recreated
 from the schema by `tests/global-setup.ts` on every run), with `TZ=UTC`

@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "CLOSE MATCH\n*   The dropdown value in the top right differs (\"second-test...\" vs \"demo-...\").\n*   The JavaScript snippet content differs (URLs and unique IDs).\n*   The status message text and icon at the bottom differ (waiting vs verified).",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789608038,
+  "id": "20260917092035df1759a1bfde46ce",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260917092035df1759a1bfde46ce",
+  "usage": {
+    "completion_tokens": 55,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1848,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1903
+  }
+}
