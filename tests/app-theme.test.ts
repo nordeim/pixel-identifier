@@ -79,9 +79,29 @@ describe('app palette migration to the live cool-neutral set (R11-F1)', () => {
     expect(css).toContain('--color-electric-blue: hsl(199 89% 48%)')
   })
 
-  it('keeps .bg-app at the live app canvas (#f6f7f9 == the new --background)', () => {
-    expect(css).toContain('.bg-app')
-    expect(css.match(/\.bg-app\s*{[^}]*background-color:\s*#f6f7f9/)).toBeTruthy()
+  it('ships the R15 sidebar geometry vars + the hand-defined TW3 bare-var utilities', () => {
+    // R15-D10: Tailwind v4 emits invalid CSS for the live's TW3-style
+    // w-[--sidebar-width]; the utilities are hand-defined so the DOM ships
+    // the live's byte-identical class strings with working CSS.
+    expect(css).toContain('--sidebar-width: 16rem')
+    expect(css).toContain('--sidebar-width-icon: 3rem')
+    expect(
+      css.match(/\.w-\\\[\--sidebar-width\\\]\s*{[^}]*width:\s*var\(--sidebar-width\)/),
+    ).toBeTruthy()
+    expect(
+      css.match(
+        /group-data-\\\[collapsible\\=icon\\\]\\:w-\\\[--sidebar-width-icon\\\][^{]*{[^}]*width:\s*var\(--sidebar-width-icon\)/,
+      ),
+    ).toBeTruthy()
+  })
+
+  it('renders the dashboard layout on the live canvas (bg-muted/30, R15-F4)', () => {
+    const layout = read("src/app/dashboard/layout.tsx")
+    expect(layout).toContain('min-h-screen flex w-full bg-muted/30')
+    expect(layout).toContain('flex-1 flex flex-col')
+    expect(layout).toContain('className="flex-1 p-6 overflow-auto"')
+    expect(layout).not.toContain('bg-app')
+    expect(layout).not.toContain('min-w-0')
   })
 
   it('aligns the gradient-primary end stop to the live (#FFB300)', () => {

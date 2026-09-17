@@ -85,13 +85,13 @@ describe('marketing palette scope (R10-F1)', () => {
     // The :root block keeps the app-side values the live app bundle uses —
     // R11 migrated them to the live cool-neutral set (teal accent, cool
     // hairlines, navy foreground; app-theme.test.ts pins the full set).
-    // Each tinted surface still paints its own wrapper: marketing-scope,
-    // .bg-app, the auth gradient canvas.
+    // R15: the app canvas paints bg-muted/30 on the layout root like the
+    // live (the opaque .bg-app wrapper retired with the old shell); the
+    // marketing tree keeps .marketing-scope and auth keeps gradient-hero.
     const rootStart = css.indexOf(':root')
     const rootBlock = css.slice(rootStart, css.indexOf('}', rootStart))
     expect(rootBlock).toContain('--background: hsl(220 20% 97%)')
     expect(rootBlock).toContain('--primary: hsl(45 100% 51%)')
-    expect(css).toContain('.bg-app')
-    expect(css.match(/\.bg-app\s*{[^}]*background-color:\s*#f6f7f9/)).toBeTruthy()
+    expect(css).not.toContain('.bg-app')
   })
 })

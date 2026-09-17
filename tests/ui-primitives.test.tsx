@@ -68,24 +68,26 @@ describe('Button (legacy live chrome)', () => {
   })
 })
 
-describe('Badge (legacy live chrome)', () => {
-  it('renders the legacy pill: rounded-full border font-semibold', () => {
+describe('Badge (live chrome, R15 re-extraction)', () => {
+  it('renders the live pill: a DIV root, rounded-full font-semibold (no base border)', () => {
     const html = renderToStaticMarkup(<Badge>FREE</Badge>)
-    expect(html).toContain(
-      'inline-flex items-center rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+    expect(html).toMatch(
+      /^<div class="inline-flex items-center rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2/,
     )
     expect(html).toContain(
       'border-transparent bg-primary text-primary-foreground hover:bg-primary/80',
     )
     expect(html).not.toContain('rounded-md')
     expect(html).not.toContain('data-slot')
+    expect(html).toContain('FREE</div>')
   })
 
-  it('ships the secondary variant with its own hover', () => {
+  it('ships the secondary variant with its own hover (no own foreground)', () => {
     const html = renderToStaticMarkup(<Badge variant="secondary">Pending</Badge>)
     expect(html).toContain(
-      'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
+      'border-transparent bg-secondary hover:bg-secondary/80',
     )
+    expect(html).not.toContain('text-secondary-foreground')
   })
 
   it('ships the outline variant the activity feed uses', () => {

@@ -119,10 +119,10 @@ describe('visitors badges (R11-F7)', () => {
 
   it('renders the inactive status badge as the plain secondary variant at px-2', () => {
     expect(visitorsHtml).toContain(
-      'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 text-[10px] px-2 py-0',
+      'border-transparent bg-secondary hover:bg-secondary/80 text-[10px] px-2 py-0',
     )
     expect(visitorsHtml).not.toContain('hover:bg-secondary"')
-    expect(visitorsHtml).toContain('>inactive</span>')
+    expect(visitorsHtml).toContain('>inactive</div>')
   })
 })
 
@@ -138,7 +138,7 @@ describe('domains badges (R11-F7)', () => {
 
   it('renders Pending as the plain secondary variant', () => {
     expect(domainsHtml).toContain(
-      'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 text-[10px] px-1.5 py-0',
+      'border-transparent bg-secondary hover:bg-secondary/80 text-[10px] px-1.5 py-0',
     )
   })
 })
