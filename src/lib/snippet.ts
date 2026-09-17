@@ -27,12 +27,14 @@ export function buildSnippet(siteKey: string, collectorUrl: string): string {
   // `document` is passed as the OBJECT (not a string literal): the IIFE calls
   // i.createElement on it. Round-5 regression-tested in node:vm — a quoted
   // 'document' throws before the collector ever loads (R5-C1).
+  // R15-F6: the live indents the loader body two spaces (its docs-page
+  // sample uses the same convention).
   return `<script>
-(function(p,i,x,e,l){p._pxq=p._pxq||[];
-var s=i.createElement('script');s.async=1;
-s.src='${url}';
-s.setAttribute('data-site',e);
-i.head.appendChild(s);})(window,document,'px','${key}');
+  (function(p,i,x,e,l){p._pxq=p._pxq||[];
+  var s=i.createElement('script');s.async=1;
+  s.src='${url}';
+  s.setAttribute('data-site',e);
+  i.head.appendChild(s);})(window,document,'px','${key}');
 </script>`
 }
 

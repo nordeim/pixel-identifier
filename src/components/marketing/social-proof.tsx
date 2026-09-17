@@ -43,10 +43,7 @@ const STATS = [
  */
 export function SocialProof() {
   return (
-    <section aria-labelledby="testimonials-heading" className="py-16 border-b border-border">
-      <h2 id="testimonials-heading" className="sr-only">
-        Customer testimonials
-      </h2>
+    <section className="py-16 border-b border-border">
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           {/* R12-F1: the live's marquee wrapper reveals at y12 (the track
