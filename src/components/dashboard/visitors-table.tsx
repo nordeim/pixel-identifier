@@ -7,7 +7,6 @@ import {
   Building2,
   ChevronLeft,
   ChevronRight,
-  Download,
   Mail,
   MapPin,
   Search,
@@ -32,7 +31,10 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import { publishVisitorsCounts } from '@/components/dashboard/chrome-store'
+import {
+  publishSelectedVisitorIds,
+  publishVisitorsCounts,
+} from '@/components/dashboard/chrome-store'
 import { isVisitorActive } from '@/lib/dashboard-nav'
 import { formatDate, initialsForEmail, relativeTime } from '@/lib/format'
 
@@ -108,6 +110,12 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
     publishVisitorsCounts({ individual: counts.individual, company: counts.company })
   }, [counts.individual, counts.company])
 
+  // R11: publish the row selection so the topbar's Export button swaps to
+  // "Export (N)" with an ids-scoped href (the live has no bulk-action row).
+  useEffect(() => {
+    publishSelectedVisitorIds([...selectedIds])
+  }, [selectedIds])
+
   /** Push new filter values into the URL (single source of truth). */
   function navigate(overrides: Partial<VisitorFilters> & { page?: number }) {
     const next: Record<string, string> = {}
@@ -169,21 +177,8 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
     { key: 'company', label: 'Companies', count: counts.company, icon: Building2 },
   ]
 
-  const exportSelectedUrl =
-    selectedIds.size > 0 ? `/api/export?ids=${[...selectedIds].join(',')}` : null
-
   return (
     <div className="space-y-4">
-      {exportSelectedUrl && (
-        <div className="flex justify-end">
-          <Button asChild variant="outline" className="border-primary font-semibold hover:bg-primary/10">
-            <a href={exportSelectedUrl} download>
-              <Download className="mr-1.5 h-4 w-4" aria-hidden="true" />
-              Export Selected ({selectedIds.size})
-            </a>
-          </Button>
-        </div>
-      )}
 
       {/* Segment tabs — shadcn pill tabs with count badges like the live
           app (R6-H2); Radix owns the arrow-key roving focus. */}
@@ -237,7 +232,7 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
         </Select>
 
         <Select value={filters.source} onValueChange={(value) => navigate({ source: value })}>
-          <SelectTrigger className="h-10 w-44" aria-label="Filter by source">
+          <SelectTrigger className="h-10 w-40" aria-label="Filter by source">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -249,6 +244,14 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
             ))}
           </SelectContent>
         </Select>
+
+        {/* R11: the live appends a muted "N selected" count to the filter
+            row; the export action lives in the topbar (Export (N)). */}
+        {selectedIds.size > 0 && (
+          <span className="text-xs text-muted-foreground">
+            {selectedIds.size} selected
+          </span>
+        )}
       </div>
 
       {/* Table — live chrome: muted/30 header strip, 11px uppercase columns

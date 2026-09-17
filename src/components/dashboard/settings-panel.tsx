@@ -63,7 +63,7 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
 
       <Card className="shadow-sm">
         <CardHeader>
-          <CardTitle className="font-display text-lg font-semibold tracking-tight text-foreground">
+          <CardTitle className="text-lg">
             Profile
           </CardTitle>
         </CardHeader>
@@ -130,7 +130,7 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
 
       <Card className="border-destructive/20 shadow-sm">
         <CardHeader>
-          <CardTitle className="font-display text-lg font-semibold tracking-tight text-destructive">
+          <CardTitle className="text-lg text-destructive">
             Danger Zone
           </CardTitle>
         </CardHeader>
@@ -145,7 +145,8 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
 
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="destructive" className="font-semibold">
+                {/* R11: live Delete = destructive size sm (h-9), no extra weight. */}
+                <Button variant="destructive" size="sm">
                   Delete
                 </Button>
               </AlertDialogTrigger>

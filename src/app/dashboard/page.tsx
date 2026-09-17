@@ -88,7 +88,7 @@ export default async function OverviewPage() {
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="shadow-sm lg:col-span-2">
           <CardHeader className="pb-2">
-            <CardTitle className="font-display text-base font-semibold tracking-tight text-foreground">
+            <CardTitle className="text-base">
               Visitor Identification Trend
             </CardTitle>
           </CardHeader>
@@ -99,7 +99,7 @@ export default async function OverviewPage() {
 
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="font-display text-base font-semibold tracking-tight text-foreground">Top Pages</CardTitle>
+            <CardTitle className="text-base">Top Pages</CardTitle>
           </CardHeader>
           <CardContent>
             {topPages.length === 0 ? (
@@ -140,20 +140,21 @@ export default async function OverviewPage() {
       </div>
 
       <Card className="shadow-sm">
-        <CardHeader className="pb-2">
-          <CardTitle className="font-display text-base font-semibold tracking-tight text-foreground">
+        {/* R11: the live's table-card header is a raw div (not CardHeader) —
+            space-y-1.5 p-6 + flex-row justify-between, with the View-all
+            link as a direct child (text-primary hover:underline gap-1). */}
+        <div className="space-y-1.5 p-6 flex flex-row items-center justify-between pb-2">
+          <CardTitle className="text-base">
             Recent Identifications
           </CardTitle>
-          <div data-slot="card-action" className="self-center">
-            <Link
-              href="/dashboard/visitors"
-              className="flex items-center gap-0.5 text-xs font-semibold text-amber-600 hover:text-amber-700 focus-brand"
-            >
-              View all
-              <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
-            </Link>
-          </div>
-        </CardHeader>
+          <Link
+            href="/dashboard/visitors"
+            className="flex items-center gap-1 text-xs text-primary hover:underline focus-brand"
+          >
+            View all
+            <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
+          </Link>
+        </div>
         <CardContent>
           {recent.length === 0 ? (
             <p className="py-12 text-center text-sm text-muted-foreground">

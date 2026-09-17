@@ -101,7 +101,7 @@ export function PlatformInstructions() {
             <PanelsTopLeft className="h-4 w-4 text-muted-foreground" />
           </span>
           <div>
-            <CardTitle className="font-display text-lg font-semibold tracking-tight text-foreground">
+            <CardTitle className="text-lg">
               Platform Instructions
             </CardTitle>
             <p className="mt-1 text-sm text-muted-foreground">

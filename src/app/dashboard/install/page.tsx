@@ -108,7 +108,7 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
               <Zap className="h-4 w-4" />
             </span>
             <div>
-              <CardTitle className="font-display text-lg font-semibold tracking-tight text-foreground">
+              <CardTitle className="text-lg">
                 Quick Start
               </CardTitle>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -167,7 +167,7 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
               <CircleAlert className="h-4 w-4 text-muted-foreground" />
             </span>
             <div>
-              <CardTitle className="font-display text-lg font-semibold tracking-tight text-foreground">
+              <CardTitle className="text-lg">
                 How It Works
               </CardTitle>
               <p className="mt-1 text-sm text-muted-foreground">

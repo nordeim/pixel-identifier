@@ -68,7 +68,7 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
     <div className="max-w-3xl space-y-6">
       <Card className="shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="font-display text-base font-semibold tracking-tight text-foreground">Add a Domain</CardTitle>
+          <CardTitle className="text-base">Add a Domain</CardTitle>
           <p className="text-sm text-muted-foreground">
             Register a new domain to start tracking visitors.
           </p>
@@ -112,7 +112,7 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
         {domains.length === 0 ? (
           <Card className="shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="font-display text-base font-semibold tracking-tight text-foreground" id="domains-heading">
+              <CardTitle className="text-base" id="domains-heading">
                 Your Domains
               </CardTitle>
             </CardHeader>
@@ -125,7 +125,7 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
         ) : (
           <Card className="shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="font-display text-base font-semibold tracking-tight text-foreground" id="domains-heading">
+              <CardTitle className="text-base" id="domains-heading">
                 Your Domains
               </CardTitle>
             </CardHeader>

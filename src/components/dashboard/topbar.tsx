@@ -31,8 +31,16 @@ export function Topbar({
 }) {
   const pathname = usePathname()
   const meta = pageMeta(pathname)
-  const { visitorsCounts } = useChromeState()
+  const { visitorsCounts, selectedVisitorIds } = useChromeState()
   const isVisitors = pathname === '/dashboard/visitors'
+
+  // R11: with rows selected, the live swaps the topbar Export button to
+  // "Export (N)" with an ids-scoped href (no separate bulk-action row).
+  const selectedCount = selectedVisitorIds.length
+  const exportHref =
+    isVisitors && selectedCount > 0
+      ? `/api/export?ids=${selectedVisitorIds.join(',')}`
+      : '/api/export'
 
   let subtitle = meta.subtitle
   if (isVisitors) {
@@ -80,10 +88,16 @@ export function Topbar({
 
       <div className="flex items-center gap-2">
         {isVisitors && (
-          <Button asChild className="hidden font-semibold shadow-sm sm:inline-flex">
-            <a href="/api/export" download>
-              <Download className="mr-1.5 h-4 w-4" aria-hidden="true" />
-              Export All
+          /* R11: live Export = sm gradient button (h-9, glow, 300ms) that
+              swaps to "Export (N)" while rows are selected. */
+          <Button
+            asChild
+            size="sm"
+            className="hidden gradient-primary text-primary-foreground shadow-lg glow-primary hover:opacity-90 transition-all duration-300 font-semibold sm:inline-flex"
+          >
+            <a href={exportHref} download>
+              <Download className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
+              {selectedCount > 0 ? `Export (${selectedCount})` : 'Export All'}
             </a>
           </Button>
         )}

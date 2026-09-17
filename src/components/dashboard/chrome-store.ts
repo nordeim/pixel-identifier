@@ -24,9 +24,15 @@ export interface VisitorsCounts {
 interface ChromeState {
   sidebar: SidebarState
   visitorsCounts: VisitorsCounts | null
+  /** R11: selected visitor row ids (visitors page → topbar Export (N)). */
+  selectedVisitorIds: string[]
 }
 
-let state: ChromeState = { sidebar: 'expanded', visitorsCounts: null }
+let state: ChromeState = {
+  sidebar: 'expanded',
+  visitorsCounts: null,
+  selectedVisitorIds: [],
+}
 const listeners = new Set<() => void>()
 
 function emit() {
@@ -81,5 +87,12 @@ function persistSidebar(value: SidebarState) {
 
 export function publishVisitorsCounts(counts: VisitorsCounts) {
   state = { ...state, visitorsCounts: counts }
+  emit()
+}
+
+/** R11: the visitors table publishes its row selection; the topbar's
+ * Export button swaps to "Export (N)" with an ids-scoped href. */
+export function publishSelectedVisitorIds(ids: string[]) {
+  state = { ...state, selectedVisitorIds: ids }
   emit()
 }
