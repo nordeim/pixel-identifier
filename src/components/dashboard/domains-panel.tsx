@@ -83,11 +83,16 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
               autoComplete="off"
               required
             />
-            {/* Live CTA: gradient-primary + glow with a Plus glyph (R6-M3). */}
+            {/* Live CTA: gradient-primary + glow with a Plus glyph (R6-M3).
+                R12-F6: the live builds this as Button base + overrides only
+                (no variant fragment — their DOM shows no bg-primary); cva
+                treats variant={null} size={null} as an explicit skip. */}
             <Button
               type="submit"
               disabled={pending}
-              className="h-10 gradient-primary font-semibold text-primary-foreground shadow-lg glow-primary transition-all duration-300 hover:opacity-90"
+              variant={null}
+              size={null}
+              className="gradient-primary text-primary-foreground shadow-lg glow-primary hover:opacity-90 transition-all duration-300 font-semibold h-10 px-4 py-2"
             >
               {pending ? (
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />

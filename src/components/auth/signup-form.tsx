@@ -119,10 +119,15 @@ export function SignUpForm({
         )}
       </div>
 
+      {/* R12-F6: the live's Start Free Trial is Button base + overrides
+          only (no variant fragment) — variant={null} size={null} skips the
+          cva variants so the merged string matches the live DOM. */}
       <Button
         type="submit"
         disabled={pending}
-        className="h-10 w-full gradient-primary text-sm font-semibold text-primary-foreground shadow-lg glow-primary transition-all duration-300 hover:opacity-90"
+        variant={null}
+        size={null}
+        className="gradient-primary text-primary-foreground shadow-lg glow-primary hover:opacity-90 transition-all duration-300 font-semibold h-10 px-4 py-2 w-full"
       >
         {pending ? (
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
