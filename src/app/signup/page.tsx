@@ -2,9 +2,11 @@ import type { Metadata } from 'next'
 import { AuthShell, OAuthButtons, OrDivider } from '@/components/auth/auth-shell'
 import { SignUpForm } from '@/components/auth/signup-form'
 import { PLANS, type BillingCycle, type PlanId } from '@/lib/plans'
+import { appSeoMetadata } from '@/lib/app-seo'
 
 export const metadata: Metadata = {
   title: 'Create Your Account',
+  ...appSeoMetadata(),
 }
 
 interface SignUpPageProps {

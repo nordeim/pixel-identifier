@@ -5,6 +5,13 @@ import { formatPrice } from '@/lib/plans'
 import { requireUser } from '@/lib/analytics'
 import { SidebarShell } from '@/components/dashboard/sidebar-shell'
 import { Topbar } from '@/components/dashboard/topbar'
+import { appSeoMetadata } from '@/lib/app-seo'
+
+// R14-F9: the live app bundle ships its own og block (og:title "Pixelco",
+// "Visitor identification platform dashboard", its 1920×1080 social image,
+// large twitter card, no canonical/og:url/og:locale) — distinct from the
+// marketing head. Tab titles stay per-page via the root template (R13).
+export const metadata = appSeoMetadata()
 
 /**
  * Dashboard chrome. The session check here is a UX redirect; every server

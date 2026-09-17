@@ -21,6 +21,8 @@ export interface BlogPost {
   /** ISO date (YYYY-MM-DD) — publication date shown on cards. */
   dateISO: string
   excerpt: string
+  /** The live's meta description (R14-F3) — distinct from the card excerpt. */
+  metaDescription: string
   /** Article body — see the header comment for the block syntax. */
   content: string
 }
@@ -33,6 +35,7 @@ export const BLOG_POSTS: BlogPost[] = [
     readMinutes: 7,
     dateISO: '2026-09-10',
     excerpt: "FLC Markets lets traders start a free $100,000 qualification challenge. Hit the profit target and manage funded capital with a 50/50 split. Here's why it matters for fintech marketers.",
+    metaDescription: 'Discover FLC Markets, the prop trading firm where you can start a free qualification challenge and manage funded capital. Learn how visitor identification helps fintech brands convert traders.',
     content: `Prop trading has become one of the fastest-growing corners of fintech. Every day, thousands of aspiring traders search for funded account challenges so they can prove their skills without risking their own capital. The problem? Most traditional prop firms charge upfront evaluation fees before traders can even take a shot at a funded account.
 
 [FLC Markets](https://flcmarkets.com) is changing that model. Instead of asking traders to pay before they prove themselves, FLC Markets lets you **start a free $100,000 qualification challenge**. Hit the profit target and you qualify to manage funded capital — essentially running your own book like a small hedge fund — with a 50/50 profit split.
@@ -89,6 +92,7 @@ For marketers running fintech or trading offers, the lesson is clear: remove fri
     readMinutes: 7,
     dateISO: '2026-05-10',
     excerpt: "TalkToMe.bio is a link-in-bio tool that lets influencers charge followers for guaranteed replies. Here's how creators monetize direct attention and what marketers can learn from it.",
+    metaDescription: 'Discover TalkToMe.bio, the link-in-bio tool that lets influencers charge followers for guaranteed replies. Learn how creators monetize direct attention and warm leads.',
     content: `Attention is the most valuable asset in marketing. Brands spend billions every year trying to capture it, and creators spend years building it. But turning attention into revenue is still surprisingly hard for most influencers. Sponsorships are unreliable, affiliate commissions are thin, and platform algorithms can change overnight.
 
 That's where [TalkToMe.bio](https://talktome.bio) comes in. It's a link-in-bio tool designed to help creators, influencers, and public figures monetize their audience directly — by letting followers pay to send a message and receive a guaranteed reply.
@@ -144,6 +148,7 @@ If you have an audience — even a small one — and people regularly ask you qu
     readMinutes: 6,
     dateISO: '2026-05-02',
     excerpt: "PersonPages is a global people search engine that lets you look up almost anyone — their estimated salary, net worth, addresses, contact info, and public records — from one clean dashboard.",
+    metaDescription: 'Discover PersonPages, the global people search engine to look up anyone\'s salary, net worth, addresses, and public records in seconds.',
     content: `Whether you're reconnecting with an old friend, vetting a new business partner, checking a potential tenant, or just curious about a name that came up in conversation, finding accurate information about a real person on the open web is surprisingly hard. Google gives you scattered social profiles, LinkedIn hides everything behind a paywall, and traditional "people search" sites are cluttered with ads and outdated records.
 
 [PersonPages](https://personpages.com) is a modern people search engine built to fix exactly that. It lets you look up almost anyone in the world and instantly see a clean, consolidated profile — including estimated salary, net worth, addresses, contact information, and public records — all in one place.
@@ -193,6 +198,7 @@ If you've ever wished you could just type a name and get a real answer, give it 
     readMinutes: 7,
     dateISO: '2026-04-18',
     excerpt: "Meet AIViral — our sister platform that lets you scrape unlimited B2B leads in any niche with AI, then send hyper-personalized outreach campaigns automatically. A smarter, faster alternative to legacy",
+    metaDescription: 'Discover AIViral, the AI-powered B2B lead generation and cold outreach platform. Scrape leads in any niche and run automated email campaigns at scale.',
     content: `If you've ever spent hours scraping LinkedIn, cleaning CSVs, verifying emails, and stitching together cold outreach sequences, you already know that B2B lead generation is mostly grunt work. Most tools promise automation but still leave you doing 80% of the heavy lifting manually.
 
 That's exactly why we built [AIViral](https://aiviral.com) — our sister platform to Pixelco. While Pixelco identifies the anonymous visitors already on your website, [AIViral](https://aiviral.com) goes one step further: it generates brand-new B2B leads in any niche using AI, and then runs personalized outreach campaigns to them on autopilot.
@@ -245,6 +251,7 @@ If lead generation and cold outreach are eating up your week, it's worth seeing 
     readMinutes: 8,
     dateISO: '2026-04-10',
     excerpt: "97% of website visitors leave without converting. Learn how modern visitor identification technology reveals who's browsing your site — even if they never fill out a form.",
+    metaDescription: 'Learn how to identify anonymous website visitors using pixel technology. Discover how to turn unknown traffic into actionable leads with email-level identification.',
     content: `Every day, thousands of potential customers visit your website, browse your products or services, and leave without a trace. Industry data consistently shows that **97% of website visitors never fill out a form, sign up for a newsletter, or make a purchase** on their first visit. For most businesses, that means the vast majority of their marketing budget is driving traffic that disappears into the void.
 
 But what if you could identify those anonymous visitors? What if, instead of waiting for someone to voluntarily hand over their email address, you could know exactly who visited your site, what pages they viewed, and how to reach them?
@@ -303,6 +310,7 @@ Ready to see who's visiting your website? [Try Pixelco free](/signup) and start 
     readMinutes: 7,
     dateISO: '2026-04-05',
     excerpt: "Google Analytics tells you what happened on your site. Visitor tracking tells you who did it. Here's why the distinction matters for revenue-focused teams.",
+    metaDescription: 'Compare website visitor tracking with Google Analytics. Learn what analytics tools miss and how identity resolution fills the gap for B2C marketers.',
     content: `If you're a marketer, you probably live in Google Analytics. You know your bounce rate, your top pages, your traffic sources. You can tell your boss exactly how many sessions your site got last month and which campaign drove the most clicks. But here's the uncomfortable truth: **Google Analytics tells you what happened. It doesn't tell you who did it.**
 
 That distinction — between aggregate analytics and individual identity — is the difference between data that informs and data that drives revenue.
@@ -381,6 +389,7 @@ Stop settling for anonymous data. [Start identifying your visitors with Pixelco]
     readMinutes: 12,
     dateISO: '2026-03-28',
     excerpt: "From Pixelco to Clearbit to Leadfeeder — we break down the top visitor identification platforms, their strengths, pricing, and which is right for your business.",
+    metaDescription: 'Compare the best website visitor identification tools of 2026 including Pixelco, Clearbit, Leadfeeder, and more. Features, pricing, and honest reviews.',
     content: `The website visitor identification space has exploded in the last few years. What was once a niche B2B tool has evolved into a must-have for any serious marketing team — especially as third-party cookies disappear and traditional retargeting becomes less effective.
 
 But with more options comes more confusion. Which platform is right for your business? We've tested and compared the leading visitor identification tools of 2026 to help you decide.
@@ -485,6 +494,7 @@ Whatever tool you choose, the important thing is to stop letting 97% of your tra
     readMinutes: 9,
     dateISO: '2026-03-20',
     excerpt: "Stop relying solely on opt-in forms. Discover how visitor identification technology can supercharge your email list growth while staying compliant.",
+    metaDescription: 'Grow your email list faster using website visitor identification. Learn ethical strategies to capture leads beyond traditional opt-in forms.',
     content: `Growing an email list has always been one of the most important — and most frustrating — jobs in marketing. Email remains the highest-ROI channel available, returning an average of $36 for every $1 spent. But building that list? That's where most marketers hit a wall.
 
 The traditional approach — pop-ups, lead magnets, gated content, discount codes — works, but it's hitting diminishing returns. Consumers are savvier than ever. They use disposable email addresses, close pop-ups reflexively, and increasingly resist handing over their real contact information. The result: most websites convert less than 3% of visitors into email subscribers.
@@ -561,6 +571,7 @@ The bottom line: if you're only growing your email list through forms and pop-up
     readMinutes: 10,
     dateISO: '2026-03-12',
     excerpt: "With third-party cookies dying, marketers need new strategies. Learn how first-party identity resolution is replacing cookie-based retargeting.",
+    metaDescription: 'Discover how to retarget website visitors without third-party cookies using identity resolution technology. Future-proof your marketing strategy.',
     content: `The digital advertising industry is in the middle of its biggest disruption in decades. Third-party cookies — the invisible trackers that have powered online advertising since the late 1990s — are finally going away. Safari and Firefox blocked them years ago. Google Chrome, which controls 65% of the browser market, has been phasing them out. And even where cookies still technically work, ad blockers and privacy regulations have made them increasingly unreliable.
 
 For marketers who've relied on cookie-based retargeting to bring visitors back to their sites, this is a serious problem. Retargeting has been one of the most effective digital advertising tactics — showing ads to people who already visited your site produces conversion rates 10x higher than cold prospecting. But without cookies to track those visitors, traditional retargeting is dying.
@@ -641,6 +652,7 @@ The marketers who make this transition now will have a significant competitive a
     readMinutes: 11,
     dateISO: '2026-03-05',
     excerpt: "Yes, you can identify website visitors and stay compliant. Here's exactly how to set up visitor tracking that respects privacy laws in the EU, UK, and beyond.",
+    metaDescription: 'Complete guide to GDPR-compliant website visitor tracking. Learn how to identify visitors legally with consent frameworks and privacy-first technology.',
     content: `One of the most common questions we hear from marketers interested in visitor identification is: "Is this legal under GDPR?" It's a fair question — the General Data Protection Regulation has fundamentally changed how businesses handle personal data in the EU and UK, and the penalties for non-compliance are severe (up to €20 million or 4% of global revenue).
 
 The good news is that **GDPR-compliant visitor tracking is absolutely possible.** But it requires understanding the regulation, implementing proper consent mechanisms, and choosing a technology partner that takes compliance seriously.

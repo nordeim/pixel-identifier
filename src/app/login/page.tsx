@@ -3,9 +3,11 @@ import Link from 'next/link'
 import { CheckCircle2 } from 'lucide-react'
 import { AuthShell, OAuthButtons, OrDivider } from '@/components/auth/auth-shell'
 import { LoginForm } from '@/components/auth/login-form'
+import { appSeoMetadata } from '@/lib/app-seo'
 
 export const metadata: Metadata = {
   title: 'Sign In',
+  ...appSeoMetadata(),
 }
 
 interface LoginPageProps {

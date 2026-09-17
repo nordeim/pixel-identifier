@@ -2,12 +2,15 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Globe, Lightbulb, Shield, Target, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { marketingMetadata } from '@/lib/marketing-seo'
 
-export const metadata: Metadata = {
-  title: 'About',
+// R14-F2/F3: title + description are the live copy verbatim.
+export const metadata: Metadata = marketingMetadata({
+  title: 'About Pixelco — The Team Behind B2C Visitor Identification',
   description:
-    'Pixelco is the first and only platform that lets websites identify anonymous visitors by their email address — not just their company.',
-}
+    "Learn about Pixelco by Aiviral. We built the world's first B2C email identification platform to help businesses turn anonymous website visitors into leads.",
+  path: '/about',
+})
 
 /**
  * R13-F4: rebuilt on the live DOM (research/round13-audit/content/

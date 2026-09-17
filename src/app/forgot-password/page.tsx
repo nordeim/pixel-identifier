@@ -2,9 +2,11 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { AuthShell, OrDivider } from '@/components/auth/auth-shell'
 import { ForgotPasswordForm } from '@/components/auth/forgot-password-form'
+import { appSeoMetadata } from '@/lib/app-seo'
 
 export const metadata: Metadata = {
   title: 'Forgot Password',
+  ...appSeoMetadata(),
 }
 
 /**

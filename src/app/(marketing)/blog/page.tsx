@@ -3,12 +3,15 @@ import Link from 'next/link'
 import { ArrowRight, Clock, Tag } from 'lucide-react'
 import { sortedPosts } from '@/data/blog-posts'
 import { formatDateLong } from '@/lib/format'
+import { marketingMetadata } from '@/lib/marketing-seo'
 
-export const metadata: Metadata = {
-  title: 'Blog',
+// R14-F2/F3: title + description are the live copy verbatim.
+export const metadata: Metadata = marketingMetadata({
+  title: 'Blog — Visitor Identification & Lead Generation Insights | Pixelco',
   description:
-    'Insights on visitor identification, lead generation, and modern marketing — from the team building the future of identity resolution.',
-}
+    'Expert insights on website visitor identification, lead generation, retargeting, and marketing strategy. Learn how to turn anonymous traffic into revenue.',
+  path: '/blog',
+})
 
 /**
  * R13-F6: cards rebuilt on the live DOM (research/round13-audit/content/

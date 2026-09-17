@@ -3,11 +3,15 @@ import Link from 'next/link'
 import { ChartColumn, Code, Settings, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { DocsCopyButton } from '@/components/marketing/docs-copy-button'
+import { marketingMetadata } from '@/lib/marketing-seo'
 
-export const metadata: Metadata = {
-  title: 'Documentation',
-  description: 'Get started with Pixelco in under 5 minutes.',
-}
+// R14-F2/F3: title + description are the live copy verbatim.
+export const metadata: Metadata = marketingMetadata({
+  title: 'Documentation — Install the Pixelco Pixel in 5 Minutes',
+  description:
+    'Step-by-step guide to install the Pixelco tracking pixel on your website. Works with WordPress, Shopify, Next.js, and more. Start identifying visitors today.',
+  path: '/docs',
+})
 
 /**
  * R13-F5: rebuilt on the live DOM (research/round13-audit/content/

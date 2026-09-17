@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { BLOG_POSTS, getPostBySlug } from '@/data/blog-posts'
 import { ArticleBody } from '@/components/marketing/article-body'
 import { formatDateLong } from '@/lib/format'
+import { marketingMetadata } from '@/lib/marketing-seo'
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>
@@ -17,7 +18,13 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const { slug } = await params
   const post = getPostBySlug(slug)
   if (!post) return { title: 'Blog' }
-  return { title: post.title, description: post.excerpt }
+  // R14-F2/F3: the live ships "{title} | Pixelco" (template suffix) and
+  // its own meta description — distinct from the card excerpt.
+  return marketingMetadata({
+    title: `${post.title} | Pixelco`,
+    description: post.metaDescription,
+    path: `/blog/${post.slug}`,
+  })
 }
 
 /**
