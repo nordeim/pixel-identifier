@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 291 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 308 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -268,6 +268,15 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   span kickers, `#benefits` placement, header margins, footer anchors,
   Compare/header CTA chrome, the system mono stack) are all pinned by
   SSR/source tests against the live DOM.
+- **Precision parity + scroll reveal (round-12)** — the live's entrance
+  motion (46 `data-reveal` coordinates, translateY 12/16/20/24 px, ~100 ms
+  stagger, once-only, reduced-motion-safe, no-JS visible) reproduced with
+  ONE shared IntersectionObserver + CSS transitions; the hero H1's v3
+  cascade quirk (`sm:leading-none` — the live renders ratio 1.0 at ≥sm),
+  ASCII testimonial quotes, the live's custom 5-path B2B building icon,
+  the marketing `--foreground` family as pre-rounded `#171a26` (Lightning
+  CSS floor-rounds half-channel HSL), and the live's variant-free
+  gradient CTA class strings are all pinned by SSR/source tests.
 - **Dashboard chrome data seam** (`src/lib/dashboard-nav.ts`) — sidebar
   sections/icons and per-page subtitles match the live app verbatim,
   visitors-subtitle formatting, the 7-day unread-activity rule behind the

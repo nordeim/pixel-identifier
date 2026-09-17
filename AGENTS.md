@@ -49,6 +49,30 @@ make it pass — fix the code.
 - **font-mono is a declared-not-loaded stack (R11).** `--font-mono` is
   `"JetBrains Mono", monospace` with NO webfont — mono surfaces render in
   the system mono exactly like the live. Do not re-add a mono webfont.
+- **Scroll reveal is attribute-driven (R12).** Marketing entrance motion
+  lives in `data-reveal="<y>"` + `data-reveal-delay` attributes consumed
+  by ONE shared IntersectionObserver (`src/components/marketing/
+  reveal-observer.tsx`, mounted in the `(marketing)` layout). The hidden
+  state is scoped to `.js-reveal` — a pre-paint inline-script class on
+  `<html>` — so no-JS readers see everything. Never hide reveal content
+  in component CSS; add the attributes and the observer handles the rest
+  (`tests/marketing-reveal.test.tsx` pins the coordinates).
+- **The hero H1 renders ratio 1.0 at ≥sm (R12).** The live's Tailwind v3
+  pairs `sm:text-5xl` with `line-height: 1`, and variant rules cascade
+  after plain utilities — so `leading-[1.1]` LOSES at ≥sm on the live.
+  The clone reproduces this with `leading-[1.1] sm:leading-none`; do not
+  "clean up" the sm: override.
+- **Marketing foreground tokens ship as pre-rounded hex (R12).** Tailwind
+  v4's Lightning CSS minifier floor-rounds half-channel HSL: authoring
+  `hsl(230 25% 12%)` silently builds `#171926` while browsers compute
+  `#171A26`. The `.marketing-scope` foreground family therefore ships as
+  literal `#171a26`. When porting live HSL tokens, check for `.5`
+  channel boundaries and pre-round.
+- **Gradient CTAs render without a variant fragment (R12).** The live's
+  gradient submit buttons (Add-Domain, Sign In, Start Free Trial) are
+  Button base + consumer classes only; the consumers pass
+  `variant={null} size={null}` (cva treats null as an explicit skip) so
+  the merged string matches the live DOM byte-for-byte.
 - **Typography is live-parity (v1.4).** App body = **Inter**; **Space
   Grotesk** is the `font-display` utility (card titles, page H1s, KPI values,
   prices, sidebar wordmark); marketing = **DM Sans**; mono stays mono. Brand

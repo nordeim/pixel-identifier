@@ -1,4 +1,4 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.10
+# Pixelco — Master Project Architecture Document (PAD) v1.11
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
@@ -12,6 +12,44 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.11** `[SYN]` Round-12 precision parity & scroll reveal (plan:
+  `docs/plans/2026-09-17-round12-precision-parity.md`; evidence in
+  `research/round12-audit/`). A fresh live audit (aligned per-section
+  captures — `scrollIntoView` does not stick on the live; both sides use
+  `window.scrollTo(section.offsetTop)`) closed the last standing
+  section-height residuals and shipped the twice-deferred scroll-reveal
+  entrance animations. **Scroll reveal (R12-F1, the deferred R10-F14):**
+  46 `data-reveal` / `data-reveal-delay` coordinates across the ten
+  landing sections (translateY 12/16/20/24 px, ~100 ms sibling stagger,
+  once-only) consumed by ONE shared IntersectionObserver client island
+  (`src/components/marketing/reveal-observer.tsx`); the hidden state is
+  scoped to `.js-reveal` — a pre-paint inline script class on `<html>` in
+  the marketing layout — so no-JS readers see everything (progressive
+  enhancement the live's CSR shell cannot offer); reduced-motion drops
+  the transition, keeping content visible on reveal. **Hero H1 metrics
+  (R12-F2):** the live's Tailwind v3 pairs `sm:text-5xl` with
+  `line-height: 1` and variant rules cascade AFTER plain utilities — so
+  the live H1 renders ratio 1.0 at ≥sm despite `leading-[1.1]`; the
+  clone's v4 `--tw-leading` machinery let 1.1 win everywhere (+17 px on
+  the hero). Fixed with `leading-[1.1] sm:leading-none` — hero now
+  measures 762 px live-exact (was 779). **Testimonial glyphs (R12-F3):**
+  the live ships ASCII `"…"`; the clone's curly `“…”` glyphs are wider
+  and pushed the second quote onto a 4th line (+23 px on the section).
+  ASCII quotes restore the marquee section to 403 px live-exact (was
+  426). **Custom B2B icon (R12-F4):** the live's "B2B Company Reveal"
+  glyph is a custom 5-path building SVG (absent from lucide-react 0.525
+  and six older versions — all 5,466 exports scanned); shipped verbatim
+  as `CompanyBuildingIcon` in `features.tsx`. **Token rounding (R12-F5):**
+  Tailwind v4's Lightning CSS minifier floor-rounds half-channel HSL —
+  the marketing `--foreground` family now ships as literal `#171a26`
+  (the browser-computed value of the live's `hsl(230 25% 12%)`);
+  authoring HSL silently produced `#171926`, 1/255 off. **Gradient
+  buttons (R12-F6):** the live's three gradient CTAs (Add-Domain, Sign
+  In, Start Free Trial) render Button base + consumer classes with NO
+  variant fragment; the consumers now pass `variant={null} size={null}`
+  (cva null = explicit skip) for byte-identical merged strings. Suite
+  291/41 → **308 tests / 43 files** (+17: reveal 11, gradient-buttons 4,
+  quotes 1, icon 1).
 - **v1.10** `[SYN]` Round-11 app-bundle realignment (plan:
   `docs/plans/2026-09-17-round11-app-bundle-realignment.md`; evidence in
   `research/round11-audit/`). A fresh live audit found the app bundle had
@@ -1008,6 +1046,7 @@ layout wrapper and never leaks into `/dashboard/*` or the auth pages.
 | `--secondary` | `hsl(220 14% 96%)` (v1.10: cool, was warm `#f5f0e6`) | `hsl(40 30% 96%)` (rgb(248,246,242)) | Icon chips, muted CTAs | Marketing secondary verified against the live's icon-chip fill |
 | `--border` / `--input` | `hsl(220 13% 91%)` = `#E5E7EB` (v1.10: cool, was warm `#e7e5df`) | `hsl(230 15% 90%)` (cool, rgb(226,227,233)) | Hairlines | Both bundles ship cool hairlines now |
 | `--muted-foreground` | `#6b7280` | `hsl(230 10% 46%)` (rgb(106,109,129)) | Secondary text | |
+| `--foreground` family | `hsl(230 25% 10%)` | **`#171a26` literal hex** (v1.11) | Text | R12-F5: Tailwind v4's Lightning CSS minifier floor-rounds half-channel HSL — authoring the live's `hsl(230 25% 12%)` silently builds `#171926` while browsers compute `#171A26`; the marketing foreground family (`--foreground`, `--card-foreground`, `--popover-foreground`, `--secondary-foreground`) therefore ships as the pre-rounded literal. Every other marketing token rounds identically either way (verified channel-by-channel); the app set has no `.5`-boundary values |
 | `--accent` | `hsl(172 66% 50%)` = **teal** (v1.10: the live app accent migrated from pale cream to the data accent) | `hsl(45 100% 50%)` = **yellow** | Hovers (ghost buttons, select items, dropdowns) / process dots, "Save 20%" | The APP accent is teal; the MARKETING accent is the brand yellow |
 | `--radius` | `0.75rem` (12px) | `0.625rem` (10px) | Corner base | `--radius-xl` derives at radius + 2px (R10, measured) — marketing cards resolve 12px |
 | `--chart-1` | `hsl(262 83% 58%)` | — | Pageviews series | Purple (v1.4 live palette) |
@@ -1056,6 +1095,20 @@ hover transitions ≤200ms. All motion collapses under
 `prefers-reduced-motion: reduce` (the `feed-in` rule disables itself).
 No JS animation library — Framer Motion was deliberately not added for two
 animations.
+
+**Scroll-reveal entrances (R12-F1, v1.11):** the live's entrance motion is
+reproduced with CSS transitions + ONE shared IntersectionObserver —
+elements carry `data-reveal="<y>"` (translateY px, 0 = fade-only) and
+optional `data-reveal-delay="<ms>"` (~100 ms sibling stagger);
+`src/components/marketing/reveal-observer.tsx` arms them on mount
+(`--reveal-y` var + the `reveal-armed` class that activates the
+transition) and flips them to `.is-revealed` once on viewport entry
+(never un-revealing, like the live). The hidden state lives in
+`.js-reveal [data-reveal]` — a class a pre-paint inline script adds to
+`<html>` in the marketing layout — so no-JS readers and crawlers see the
+full page (progressive enhancement the live's CSR shell cannot offer).
+Reduced-motion drops the transition (content still reveals). Pinned by
+`tests/marketing-reveal.test.tsx` (SSR coordinates + machinery).
 
 ---
 
@@ -1138,7 +1191,7 @@ speculatively.
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
 | E2E (browser) | manual + opt-in smoke | — | dev server flows; `PIXELCO_STANDALONE_SMOKE=1` boots the standalone server | browser pass |
 
-The suite totals **291 tests across 41 files** (plus 2 opt-in standalone
+The suite totals **308 tests across 43 files** (plus 2 opt-in standalone
 smoke tests), runs in the `node`
 environment against a throwaway SQLite database (`db/test.db`, recreated
 from the schema by `tests/global-setup.ts` on every run), with `TZ=UTC`

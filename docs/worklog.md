@@ -312,3 +312,112 @@ Work Log:
 Stage Summary:
 - 9 Conventional Commits pushed to git@github.com:nordeim/pixel-identifier.git
   main (no new branches); Round-11 complete
+
+---
+Task ID: 1
+Agent: main (Super Z)
+Task: Round-12 audit — fresh live captures, pairwise VLM diffs, DOM triage, remediation plan
+
+Work Log:
+- Context: repo at Round-11-complete state (11061cb = R11 push + session_8
+  upload). Baseline gate GREEN on the fresh clone: lint, typecheck,
+  291 tests / 41 files (2 skipped), build 35 routes — matches PAD v1.10.
+- Environment note (documented for future sessions): the sandbox shell
+  exports a leftover DATABASE_URL=file:/home/z/my-project/db/custom.db
+  which overrides .env for both prisma CLI and PrismaClient — db:push
+  and db:seed landed there; the standalone server must point at the same
+  file (a first boot against the empty prisma/db/pixelco.db produced
+  "table main.users does not exist" via the NextAuth error URL).
+- Fresh live audit (agent-browser): landing (10 sections, heights match
+  R11 exactly), 7 dashboard pages logged in as sepnetflix2023@outlook.com,
+  login, signup, 404. Aligned per-section captures use
+  window.scrollTo(section.offsetTop) on both sides (scrollIntoView does
+  not stick on the live; first capture round was misaligned +40px).
+- Pairwise VLM diffs (17 pairs, z-ai vision): dashboards 6 EXACT (incl.
+  login) + 2 CLOSE (domains, install — data-only); landing aligned 8
+  EXACT + 2 CLOSE (hero, marquee) + 1 DIFFERENT (benefits); signup EXACT
+  (low-flag triaged to a wrong-button DOM comparison — see F6 note);
+  404 DOM-verified (VLM rate-limited).
+- DOM triage invalidated: hero badge icons (byte-identical), benefits
+  Privacy-Compliant icon (ShieldCheck both sides), Add-Domain color
+  (identical computed gradient), pricing toggle/CTA matrix, CTA card
+  (340x896 identical), tokens both bundles.
+- Real findings (all DOM-verified, see plan): R12-F1 scroll-reveal
+  entrance animations (39 elements, y 12/16/20/24, ~100ms stagger, once,
+  map+timing sampled); R12-F2 hero H1 line-height (live renders 1.0 at
+  >=sm via the v3 sm:text-5xl line-height:1 cascade quirk; clone 1.1
+  everywhere -> +17px hero); R12-F3 testimonial quote glyphs (ASCII vs
+  curly -> 4th line on quote 2 -> +23px marquee); R12-F4 benefits B2B
+  icon (live custom 5-path building SVG, absent from lucide 0.525 + 6
+  older versions; clone Building2); R12-F5 marketing --foreground family
+  mangled by Lightning CSS floor-rounding (hsl(230 25% 12%) ->
+  #171926, live computes #171A26); R12-F6 gradient submit buttons carry
+  variant bg classes (live = base+customs via twMerge; cva null-variant
+  escape hatch verified in-node).
+- Wrote docs/plans/2026-09-17-round12-precision-parity.md and validated
+  every referenced seam against the tree (features.tsx, hero.tsx:59,
+  social-proof.tsx:81, globals.css .marketing-scope, domains-panel.tsx,
+  login-form.tsx, signup-form.tsx, marketing layout) and the existing
+  test pins (marketing-hero.test.tsx:57, marketing-theme.test.ts:44,
+  social-proof.test.tsx).
+
+Stage Summary:
+- Round-12 plan ready: workstreams A (scroll-reveal), B (marketing
+  precision: F2/F3/F4/F5), C (gradient button class alignment F6),
+  D (verify), E (docs), F (ship)
+- Evidence in research/round12-audit/{live,live-aligned,local,
+  local-aligned,vlm}/
+- Next: execute A1 RED
+
+---
+Task ID: 2
+Agent: main (Super Z)
+Task: Round-12 remediation — TDD execution, verification, docs
+
+Work Log:
+- B (marketing precision) RED->GREEN: hero H1
+  `leading-[1.1] sm:leading-none mb-5` (the live's v3 cascade quirk —
+  hero now 762px live-exact, was 779); testimonial quotes ASCII
+  `&quot;` glyphs (marquee section now 403px live-exact, was 426 — the
+  curly glyphs pushed quote 2 onto a 4th line); CompanyBuildingIcon
+  (the live's custom 5-path B2B SVG, verified absent from lucide 0.525
+  + 6 older versions, drawn with lucide conventions); .marketing-scope
+  foreground family -> literal #171a26 (Lightning CSS floor-rounds the
+  25.5 green channel to #171926; browsers compute #171A26).
+- C (gradient buttons) RED->GREEN: domains Add-Domain, login Sign In,
+  signup Start Free Trial now render variant={null} size={null} + the
+  live's exact class string — merged output byte-identical to the live
+  DOM (no bg-primary fragment; twMerge drops base font-medium/
+  transition-colors against the consumer's font-semibold/transition-all,
+  exactly like the live).
+- A (scroll reveal, the deferred R10-F14) RED->GREEN: reveal-observer
+  .tsx (ONE shared IntersectionObserver; arms --reveal-y + reveal-armed
+  + transition-delay, flips to .is-revealed once on entry); globals.css
+  reveal block (.js-reveal scoped hidden state, .5s ease transitions,
+  reduced-motion guard); (marketing) layout pre-paint js-reveal script +
+  observer mount; 46 data-reveal coordinates across the 10 landing
+  sections mapped from the live (incl. the hero's 8 mount-staggered
+  elements, the fade-only takes-line/screenshot at y0, the marquee
+  WRAPPER at y12 so the track keeps its scroll-left transform, the
+  compare/FAQ single-grid wrappers, and the live's classless
+  kicker+h2 wrapper in Features).
+- D gate: npm run verify GREEN — lint, typecheck, 308 tests / 43 files
+  (2 skipped), build + build:standalone. Fresh-server browser pass:
+  js-reveal on <html>, 46/46 armed, mount + scroll reveals fire once
+  and stay; hero 762 / marquee 403 (both live-exact); H1 56px; --foreground
+  #171a26; zero console errors. VLM re-diffs: CTA EXACT MATCH; hero/
+  marquee/benefits carry only known data residuals (feed-rotation
+  timing, own avatar/screenshot assets) + the triaged shield-icon
+  misread (all six benefit icon paths re-verified byte-identical on the
+  fresh build).
+- E docs: PAD v1.11 (revision block, §5.2 foreground-family row,
+  §5.4 scroll-reveal convention, §8 counts), README 308 + round-12
+  coverage note, AGENTS.md (reveal/H1/token/gradient-button facts),
+  CLAUDE.md (v1.11 reveal seam principle), plan execution log, this
+  entry.
+
+Stage Summary:
+- All six Round-12 findings remediated; the two long-standing section
+  residuals closed; the twice-deferred scroll-reveal shipped
+- Suite 291/41 -> 308/43 (+17 guard tests)
+- Next: atomic commits + push via the SSH wrapper (Task 3)

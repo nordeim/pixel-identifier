@@ -69,6 +69,20 @@ and stable per visitor.
   fetches `getVisitorSegmentCounts` into the Topbar. `PAGE_META` subtitles
   must never be brace templates (pinned by a chrome test), and the count
   line never singularizes — the live renders "1 companies".
+- **Entrance motion is the reveal seam (v1.11):** marketing elements
+  animate in via `data-reveal="<y>"` + `data-reveal-delay` attributes and
+  ONE shared IntersectionObserver (`src/components/marketing/reveal-
+  observer.tsx`); the hidden state is scoped to the `.js-reveal` html
+  class set by a pre-paint inline script (progressive enhancement —
+  no-JS readers see everything). The hero H1's
+  `leading-[1.1] sm:leading-none` reproduces the live's Tailwind v3
+  cascade quirk (its `sm:text-5xl` carries `line-height: 1` and wins at
+  ≥sm) — don't remove the `sm:` override. Marketing `--foreground`-family
+  tokens ship as pre-rounded hex (`#171a26`): Lightning CSS floor-rounds
+  half-channel HSL, so porting live HSL values requires checking for
+  `.5` channel boundaries. Gradient submit CTAs pass
+  `variant={null} size={null}` so the merged class string carries no
+  variant fragment, like the live DOM.
 
 ## Implementation Standards
 
