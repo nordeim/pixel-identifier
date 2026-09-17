@@ -1,91 +1,30 @@
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { getLegalPage } from '@/data/legal-pages'
+import { ArticleBody } from '@/components/marketing/article-body'
 
 /**
- * Shared frame for the four legal pages (/privacy, /terms, /gdpr, /ccpa):
- * back link, H1, last-updated line, and a prose column. Section content is
- * composed by each page with the LegalSection / LegalList helpers so the
- * typography stays uniform.
+ * Shared frame for the four legal pages (/privacy, /terms, /gdpr, /ccpa).
+ *
+ * R13-F8: rebuilt on the live DOM (research/round13-audit/content/
+ * page-*.json) — container max-w-3xl, the `← Back to Home` primary link,
+ * H1 + "Last updated" line, and the prose-sm/ space-y-8 body whose
+ * sections carry direct classes. The policy text comes from
+ * src/data/legal-pages.ts (the live copy, converted in the round-13
+ * audit — it names the operator Aiviral).
  */
-export function LegalPage({
-  title,
-  lastUpdated,
-  children,
-}: {
-  title: string
-  lastUpdated: string
-  children: React.ReactNode
-}) {
+export function LegalPage({ slug }: { slug: string }) {
+  const page = getLegalPage(slug)
+  if (!page) throw new Error(`unknown legal page: ${slug}`)
+
   return (
-    <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:py-20">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-600 transition-colors hover:text-amber-700 focus-brand"
-      >
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        Back to Home
+    <div className="container mx-auto px-6 py-16 max-w-3xl">
+      <Link href="/" className="text-sm text-primary hover:underline mb-6 inline-block">
+        ← Back to Home
       </Link>
-      <h1 className="mt-8 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-        {title}
-      </h1>
-      <p className="mt-3 text-sm text-muted-foreground">Last updated: {lastUpdated}</p>
-      <div className="mt-10 space-y-10">{children}</div>
+      <h1 className="text-4xl font-bold text-foreground mb-2">{page.title}</h1>
+      <p className="text-muted-foreground mb-10">Last updated: {page.lastUpdated}</p>
+      <ArticleBody content={page.content} variant="legal" />
     </div>
-  )
-}
-
-export function LegalSection({
-  id,
-  heading,
-  children,
-}: {
-  id?: string
-  heading: string
-  children: React.ReactNode
-}) {
-  return (
-    <section id={id} aria-labelledby={id ? `${id}-heading` : undefined}>
-      <h2
-        id={id ? `${id}-heading` : undefined}
-        className="text-lg font-bold text-foreground"
-      >
-        {heading}
-      </h2>
-      <div className="mt-3 space-y-3 text-[15px] leading-relaxed text-muted-foreground">
-        {children}
-      </div>
-    </section>
-  )
-}
-
-export function LegalSub({ heading, children }: { heading: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <h3 className="mt-2 text-[15px] font-semibold text-foreground">{heading}</h3>
-      <div className="mt-1.5 space-y-2 text-[15px] leading-relaxed text-muted-foreground">
-        {children}
-      </div>
-    </div>
-  )
-}
-
-export function LegalList({ items }: { items: React.ReactNode[] }) {
-  return (
-    <ul className="ml-5 list-disc space-y-1.5">
-      {items.map((item, index) => (
-        <li key={index}>{item}</li>
-      ))}
-    </ul>
-  )
-}
-
-export function LegalOrderedList({ items }: { items: React.ReactNode[] }) {
-  return (
-    <ol className="ml-5 list-decimal space-y-1.5">
-      {items.map((item, index) => (
-        <li key={index}>{item}</li>
-      ))}
-    </ol>
   )
 }
 
