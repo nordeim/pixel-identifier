@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowLeft, Clock } from 'lucide-react'
 import { BLOG_POSTS, getPostBySlug } from '@/data/blog-posts'
 import { ArticleBody } from '@/components/marketing/article-body'
-import { formatDate } from '@/lib/format'
+import { formatDateLong } from '@/lib/format'
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>
@@ -21,43 +20,47 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   return { title: post.title, description: post.excerpt }
 }
 
+/**
+ * R13-F7: chrome rebuilt on the live DOM (research/round13-audit/content/
+ * meta-*.json) — a Home / Blog / title breadcrumb, the text-only
+ * metadata row (chip + full date + read time, no icons), the live H1
+ * treatment, and the prose body whose arbitrary-variant wrapper styles
+ * classless elements.
+ */
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params
   const post = getPostBySlug(slug)
   if (!post) notFound()
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:py-20">
-      <Link
-        href="/blog"
-        className="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-600 transition-colors hover:text-amber-700 focus-brand"
-      >
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        Back to Blog
-      </Link>
+    <article className="container mx-auto px-6 py-16 max-w-3xl">
+      <nav className="mb-4" aria-label="Breadcrumb">
+        <ol className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <li>
+            <Link href="/" className="hover:text-foreground transition-colors focus-brand">Home</Link>
+          </li>
+          <li>/</li>
+          <li>
+            <Link href="/blog" className="hover:text-foreground transition-colors focus-brand">Blog</Link>
+          </li>
+          <li>/</li>
+          <li className="text-foreground truncate max-w-[200px]">{post.title}</li>
+        </ol>
+      </nav>
 
-      <header className="mt-6">
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+      <div>
+        <div className="flex items-center gap-3 mb-4 mt-4">
+          <span className="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-full">
             {post.category}
           </span>
-          <span className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-            {post.readMinutes} min read
-          </span>
-          <time dateTime={post.dateISO} className="text-xs text-muted-foreground">
-            {formatDate(post.dateISO)}
-          </time>
+          <span className="text-xs text-muted-foreground">{formatDateLong(post.dateISO)}</span>
+          <span className="text-xs text-muted-foreground">{post.readMinutes} min read</span>
         </div>
-        <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-4xl">
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6 leading-tight">
           {post.title}
         </h1>
-        <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{post.excerpt}</p>
-      </header>
-
-      <div className="mt-10">
-        <ArticleBody content={post.content} />
+        <ArticleBody content={post.content} variant="blog" />
       </div>
-    </div>
+    </article>
   )
 }

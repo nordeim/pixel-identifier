@@ -21,6 +21,16 @@ export function formatDate(date: Date | string): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
+/**
+ * Full-month date for marketing surfaces (R13-F9): the live blog cards
+ * and article pages render "September 10, 2026" while the dashboard
+ * keeps the short "Sep 15, 2026" form (formatDate above).
+ */
+export function formatDateLong(date: Date | string): string {
+  const d = typeof date === 'string' ? new Date(date) : date
+  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+}
+
 /** Avatar initials for an email address, e.g. "marcus.smith@…" -> "MA". */
 export function initialsForEmail(email: string): string {
   const local = email.split('@')[0]
