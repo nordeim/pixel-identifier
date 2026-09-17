@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 308 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 380 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -27,7 +27,9 @@ firmographics when the visitor is B2B. The product has four parts:
 2. **Marketing sub-pages** — `/about`, `/blog` (ten posts, the same set
    the original advertises), `/docs` quickstart, and the four legal pages
    (`/privacy`, `/terms`, `/gdpr`, `/ccpa`). All share the site chrome via
-   the `(marketing)` route group and appear in `sitemap.xml`.
+   the `(marketing)` route group and appear in `sitemap.xml` (R13: all
+   sub-page copy — blog posts and legal texts — is the live content,
+   converted verbatim).
 3. **Dashboard** (`/dashboard`) — visitor analytics with server-side search,
    filters and pagination; a cursor-paged activity log; per-domain pixel
    installation; domain management; plan settings with overage accounting.
@@ -101,7 +103,8 @@ reads. Errors anywhere in the DB section are contained to a silent 204.
 ```
 📂 src/
 ├── 📂 app/
-│   ├── 📂 (marketing)/             ← Route group: shared chrome (header/footer) for all public pages
+│   ├── 📂 (landing)/               ← Route group: landing page (chrome + announcement bar)
+│   ├── 📂 (marketing)/             ← Route group: sub-pages (chrome only)
 │   │   ├── 📄 page.tsx            ← Marketing landing page
 │   │   ├── 📂 about/ · 📂 docs/   ← Content pages
 │   │   ├── 📂 blog/ + blog/[slug]/ ← Blog index + 10 SSG article pages

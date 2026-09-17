@@ -32,7 +32,7 @@ make it pass — fix the code.
   the app neutrals are COOL — background `hsl(220 20% 97%)`, borders
   `hsl(220 13% 91%)`, navy foreground, and `--accent` is the TEAL data
   accent that hovers render); the marketing bundle's palette lives in the
-  `.marketing-scope` class and is applied on the `(marketing)` layout
+  `.marketing-scope` class and is applied on the marketing frame
   wrapper (white canvas, warm-white cards `hsl(40 30% 98%)`, cool borders
   `hsl(230 15% 90%)`, a YELLOW accent `#FFBF00`, `--radius: 0.625rem`).
   Never hand-roll per-component approximations of either palette — `var()`
@@ -52,7 +52,7 @@ make it pass — fix the code.
 - **Scroll reveal is attribute-driven (R12).** Marketing entrance motion
   lives in `data-reveal="<y>"` + `data-reveal-delay` attributes consumed
   by ONE shared IntersectionObserver (`src/components/marketing/
-  reveal-observer.tsx`, mounted in the `(marketing)` layout). The hidden
+  reveal-observer.tsx`, mounted in the marketing frame). The hidden
   state is scoped to `.js-reveal` — a pre-paint inline-script class on
   `<html>` — so no-JS readers see everything. Never hide reveal content
   in component CSS; add the attributes and the observer handles the rest
@@ -73,6 +73,34 @@ make it pass — fix the code.
   Button base + consumer classes only; the consumers pass
   `variant={null} size={null}` (cva treats null as an explicit skip) so
   the merged string matches the live DOM byte-for-byte.
+- **The announcement bar is LANDING-ONLY (R13).** The live pixelco.io
+  renders the "🚀 Launch Offer" bar on `/` and nowhere else — sub-pages
+  start directly with the sticky header. The chrome lives in
+  `src/components/marketing/marketing-frame.tsx`; two sibling route
+  groups mount it (`(landing)` with `showBanner`, `(marketing)`
+  without). Do not move the bar back into a shared layout.
+- **The accordion is LEGACY shadcn (R13).** Like the other UI
+  primitives, `ui/accordion.tsx` carries the live's legacy strings (no
+  data-slot, `items-center` trigger, `h-4 w-4` chevron, content
+  `transition-all`, inner `pt-0` base). The item's consumer classes
+  must keep `border` (the primitive base `border-b` merges away) —
+  `last:border-b-0` was a 1 px section-height bug.
+- **Sub-pages share one chrome recipe (R13).** about/docs: `container
+  mx-auto px-6 py-16 max-w-4xl`; blog index: `max-w-5xl`; blog posts +
+  legal: `max-w-3xl`. Every sub-page opens with `← Back to Home`
+  (`text-sm text-primary hover:underline mb-6 inline-block`) — the ← is
+  a TEXT character (U+2190), not an icon; the font tokens end with
+  `system-ui, sans-serif` precisely so that glyph resolves (next/font's
+  generated fallback family has no arrows).
+- **Blog + legal copy is LIVE content (R13).** `src/data/blog-posts.ts`
+  (10 posts) and `src/data/legal-pages.ts` (4 pages) carry the live's
+  verbatim copy, converted by `scripts/r13-convert-{blog,legal}.py`
+  from `research/round13-audit/content/` extractions. The legal text
+  names the operator **Aiviral** — keep it. Blog `app.pixelco.io` CTA
+  links map to `/signup` (single deployment). `ArticleBody` renders the
+  shared block format (`## `/`### `/lists/tables) with a `blog` variant
+  (classless elements styled by the prose wrapper's arbitrary variants)
+  and a `legal` variant (direct classes + `<section>` grouping).
 - **Typography is live-parity (v1.4).** App body = **Inter**; **Space
   Grotesk** is the `font-display` utility (card titles, page H1s, KPI values,
   prices, sidebar wordmark); marketing = **DM Sans**; mono stays mono. Brand
@@ -139,9 +167,10 @@ make it pass — fix the code.
 
 ## Conventions
 
-- **Marketing pages live in the `(marketing)` route group**
-  (`src/app/(marketing)/…`) and inherit the shared chrome (announcement
-  bar, header, footer) from its layout. Nav/footer links come only from
+- **Marketing pages live in two sibling route groups** — the landing in
+  `(landing)` (chrome + announcement bar) and every sub-page in
+  `(marketing)` (`src/app/(marketing)/…`, chrome only) — both mounting
+  the shared `MarketingFrame` (header, footer, reveal machinery). Nav/footer links come only from
   `src/lib/marketing-links.ts`; blog posts only from
   `src/data/blog-posts.ts` (append a post there — index, article pages and
   sitemap pick it up automatically). Both modules are unit-tested for

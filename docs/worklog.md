@@ -457,3 +457,52 @@ Stage Summary:
   data-only residuals elsewhere
 - main @ 9f9f10b pushed to git@github.com:nordeim/pixel-identifier.git
   and remote-verified; this entry is the Round-12 closing record
+
+---
+Task ID: 4
+Agent: main (Super Z)
+Task: Round-13 — sub-page parity audit, remediation, docs, ship
+
+Work Log:
+- Audited the never-diffed surfaces: marketing sub-pages (about, blog
+  index, 10 blog posts, docs, 4 legal pages), mobile 375 px, and an R12
+  drift re-check. Mobile PASSED (the live is a fixed 1280 px layout at
+  every viewport; the clone matches — landing/dashboards EXACT). R12
+  landing pins hold except one new 1 px FAQ delta.
+- Findings F1-F11 (all DOM-verified, see
+  docs/plans/2026-09-17-round13-subpage-parity.md): legacy-vs-new
+  accordion generation + last:border-b-0 (the 1 px); 7/7 FAQ answers
+  were paraphrases; announcement bar rendered on all marketing pages
+  (live: landing only); about/docs structure drift; blog index card
+  structure; blog posts missing breadcrumb/prose/live copy; legal pages
+  paraphrased (live names operator Aiviral); short dates; double-
+  suffixed titles; missing font-system tail broke the ← glyph.
+- TDD execution (all RED→GREEN): 5 new test files, +72 tests.
+  ui/accordion.tsx rewritten to the live legacy generation; FAQ answers
+  + consumer classes aligned (FAQ section 756 px live-exact); chrome
+  extracted to MarketingFrame with (landing)/(marketing) sibling route
+  groups (banner scoped); about + docs rebuilt on the extracted live
+  DOM (incl. the sample-snippet box + copy button); blog index cards +
+  article chrome rebuilt (breadcrumb, metadata row, prose wrapper with
+  arbitrary variants, max-w-5xl container); ArticleBody gained ##/###,
+  a legal variant, bare-string runs and live-exact tables; blog-posts.ts
+  + new legal-pages.ts regenerated from the live copy by
+  scripts/r13-convert-{blog,legal}.py; formatDateLong; font tails;
+  title fixes.
+- Gate: npm run verify GREEN — lint, typecheck, 380 tests / 48 files
+  (2 skipped), build + build:standalone. Fresh-server browser pass:
+  landing sections all live-exact incl. FAQ 756; banner scoping
+  verified on 8 routes; ← glyph renders post-fix.
+- VLM: intermediate diffs triaged (card-footer claim = misread,
+  DOM-disproven; container-width delta real, fixed). Final verdicts:
+  all 8 sub-page pairs EXACT_MATCH (0.99-1.0).
+- Docs: PAD v1.12, README (380 + structure + content note), AGENTS.md
+  (5 new fact blocks + route-group convention), CLAUDE.md (v1.12
+  principle), plan execution log, this entry.
+
+Stage Summary:
+- Round-13 closed: sub-page parity complete — landing, dashboards,
+  auth, about, blog index + 10 posts, docs, 4 legal pages all at
+  EXACT/CLOSE level with only inherent data residuals
+- Suite 308/43 → 380/48; repo at PAD v1.12
+- Next: atomic commits + push (Task 5)

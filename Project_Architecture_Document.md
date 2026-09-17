@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.11
+# Pixelco — Master Project Architecture Document (PAD) v1.12
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-17
+**Last Updated:** 2026-09-17 (v1.12)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,48 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.12** `[SYN]` Round-13 sub-page parity (plan:
+  `docs/plans/2026-09-17-round13-subpage-parity.md`; evidence in
+  `research/round13-audit/`). The first pairwise audit of the surfaces no
+  prior round had diffed — the marketing sub-pages (about, blog index, 10
+  blog posts, docs, 4 legal pages), mobile 375 px behavior, and an R12
+  drift re-check. Mobile verdict: the live is a fixed 1280 px layout at
+  every viewport and the clone matches (landing full, dashboards EXACT).
+  All remaining gaps were sub-page content and chrome, all closed:
+  **FAQ accordion (R13-F1):** the primitive was the NEW shadcn generation
+  (data-slot attrs, focus-ring suite, `items-start gap-4`, `size-4`
+  chevron) while the live ships LEGACY — rewritten to the live strings;
+  the item's `last:border-b-0` was the last 1 px of the FAQ section
+  (755 → 756 live-exact). **FAQ copy (R13-F2):** all seven answers were
+  paraphrases — replaced with the live copy verbatim (ASCII hyphens in
+  the match-rate answer). **Banner scoping (R13-F3):** the live renders
+  the "🚀 Launch Offer" bar on `/` ONLY — the chrome moved out of the
+  shared layout into a `MarketingFrame` used by two sibling route
+  groups, `(landing)` (banner) and `(marketing)` (no banner). **About &
+  docs (R13-F4/F5):** rebuilt on the live DOM — `container max-w-4xl`
+  chrome, `← Back to Home` link, gradient-span H1, border+shadow cards,
+  stats band, the sample-snippet warning box + SAMPLE code block with a
+  copy button, platform cards, common questions. **Blog (R13-F6/F7/F9):**
+  index cards on the live `A.group` recipe (tag/clock chips, Read →
+  row, `max-w-5xl` container); article pages gain the Home/Blog/title
+  breadcrumb, the text-only metadata row, and a `prose prose-sm` body
+  whose arbitrary-variant wrapper styles classless elements;
+  `ArticleBody` gained `## `/`### ` heading support and a legal variant
+  (direct classes + `<section>` grouping); `formatDateLong` renders
+  "September 10, 2026" while the dashboard keeps short dates. **Content
+  ports (R13-D3/E2):** all 10 blog posts and all 4 legal pages now carry
+  the LIVE copy (converted from round-13 extractions by
+  `scripts/r13-convert-{blog,legal}.py`; the legal text names the
+  operator Aiviral, kept verbatim; `app.pixelco.io` CTAs map to
+  `/signup`). **Font tails (R13-F11):** next/font's generated
+  "…Fallback" family has no arrow glyph — the `←` in the sub-page
+  back-links rendered as a dash; every font token now ends with the
+  live's `system-ui, sans-serif` tail. **Titles (R13-F10):** the landing
+  ships the live's exact brand title via `title.absolute` (the root
+  template was double-suffixing it); about/docs titles de-duplicated.
+  Final VLM: all 8 sub-page pairs EXACT_MATCH (0.99–1.0). Suite
+  308/43 → **380 tests / 48 files** (+72: accordion 16, banner 4,
+  subpages 14, blog 26, legal 13 minus relocations).
 - **v1.11** `[SYN]` Round-12 precision parity & scroll reveal (plan:
   `docs/plans/2026-09-17-round12-precision-parity.md`; evidence in
   `research/round12-audit/`). A fresh live audit (aligned per-section
@@ -1191,7 +1233,7 @@ speculatively.
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
 | E2E (browser) | manual + opt-in smoke | — | dev server flows; `PIXELCO_STANDALONE_SMOKE=1` boots the standalone server | browser pass |
 
-The suite totals **308 tests across 43 files** (plus 2 opt-in standalone
+The suite totals **380 tests across 48 files** (plus 2 opt-in standalone
 smoke tests), runs in the `node`
 environment against a throwaway SQLite database (`db/test.db`, recreated
 from the schema by `tests/global-setup.ts` on every run), with `TZ=UTC`
