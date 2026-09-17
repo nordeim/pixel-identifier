@@ -1,0 +1,121 @@
+DIV.mx-auto.max-w-3xl.px-4.py-14
+  A.inline-flex.items-center.gap-1.5.text-sm
+    SVG
+  H1.mt-8.text-3xl.font-extrabold.tracking-tight "GDPR Compliance"
+  P.mt-3.text-sm.text-muted-foreground "Last updated: April 14, 2026"
+  DIV.mt-10.space-y-10
+    SECTION
+      H2.text-lg.font-bold.text-foreground "1. Our Commitment to GDPR"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "The General Data Protection Regulation (GDPR) sets the world's highest bar for personal-da"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "2. Roles & Responsibilities"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "GDPR assigns responsibilities based on who determines the purpose and means of processing."
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Pixelco as Data Controller"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "For our own marketing site, account registrations, billing, and platform operations, Pixel"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Pixelco as Data Processor"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "For visit signals collected from a Customer's website and the resulting identity resolutio"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Joint Controller Scenarios"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Because the identity-resolution match decision is made by Pixelco's engine at the Customer"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "3. Lawful Basis for Processing"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "We process Personal Data under one or more of the following legal bases:"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Consent (Art. 6(1)(a))"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Where a Visitor or Customer has given explicit consent, and where member-state law or ePri"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Contractual Performance (Art. 6(1)(b))"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Processing Customer account data and delivering the Services the Customer subscribed to."
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Legitimate Interest (Art. 6(1)(f))"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Enabling Customers to conduct relevant, proportionate B2B outreach based on visits to thei"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Legal Obligation (Art. 6(1)(c))"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Retaining records and responding to lawful requests where required by law."
+    SECTION
+      H2.text-lg.font-bold.text-foreground "4. Data Subject Rights"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P
+          A.font-semibold.text-amber-700.underline.underline-offset-2 "support@pixelco.io"
+        UL.ml-5.list-disc.space-y-1.5
+          LI
+            STRONG.text-foreground "Right of Access (Art. 15)"
+          LI
+            STRONG.text-foreground "Right to Rectification (Art. 16)"
+          LI
+            STRONG.text-foreground "Right to Erasure (Art. 17)"
+          LI
+            STRONG.text-foreground "Right to Restriction (Art. 18)"
+          LI
+            STRONG.text-foreground "Right to Data Portability (Art. 20)"
+          LI
+            STRONG.text-foreground "Right to Object (Art. 21)"
+          LI
+            STRONG.text-foreground "Rights Related to Automated Decision-Making (Art. 22)"
+          LI
+            STRONG.text-foreground "Right to Withdraw Consent (Art. 7(3))"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "5. Data Processing Agreement (DPA)"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "We offer a GDPR-compliant Data Processing Agreement to all Customers. The DPA covers:"
+        UL.ml-5.list-disc.space-y-1.5
+          LI "Nature and purpose of processing"
+          LI "Types of Personal Data and categories of data subjects"
+          LI "Obligations and rights of the controller and processor"
+          LI "Sub-processor management and notification"
+          LI "Data breach notification procedures"
+          LI "Data deletion and return upon termination"
+          LI "Audit and inspection rights"
+        P
+          A.font-semibold.text-amber-700.underline.underline-offset-2 "support@pixelco.io"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "6. International Data Transfers"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "Where Personal Data leaves the EEA/UK, transfers rely on:"
+        UL.ml-5.list-disc.space-y-1.5
+          LI "Adequacy decisions where applicable"
+          LI "Standard Contractual Clauses adopted by the European Commission"
+          LI "Supplementary technical and organizational measures as recommended by the EDPB"
+          LI "Transfer Impact Assessments (TIAs) for each transfer destination"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "7. Data Protection Impact Assessments (DPIA)"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "Where our processing is likely to result in high risk to data subjects, we conduct — and a"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "8. Sub-Processors"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "Pixelco engages a limited set of sub-processors (cloud hosting, payment processing, email "
+    SECTION
+      H2.text-lg.font-bold.text-foreground "9. Data Breach Notification"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "In the event of a Personal Data breach, we will:"
+        UL.ml-5.list-disc.space-y-1.5
+          LI "Notify affected Customers without undue delay, and within 72 hours where we act as process"
+          LI "Document all breaches in our internal breach register"
+          LI "Provide the information Article 33 requires: nature of the breach, categories and approxim"
+          LI "Communicate to supervisory authorities and, where required, to affected individuals"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "10. Data Protection Officer"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "We have appointed a Data Protection Officer (DPO) who can be contacted at:"
+        P
+          A.font-semibold.text-amber-700.underline.underline-offset-2 "support@pixelco.io"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "11. Supervisory Authority"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P
+          A.font-semibold.text-amber-700.underline.underline-offset-2 "European Data Protection Board website"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "12. Customer Responsibilities Under GDPR"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "If you are a Customer using Pixelco on a website that receives EEA/UK visitors, you must:"
+        UL.ml-5.list-disc.space-y-1.5
+          LI "Include clear disclosure of Pixelco and its purposes in your privacy policy."
+          LI "Maintain records of processing activities as required under Art. 30."
+          LI "Ensure you have a lawful basis for any outreach to identified visitors."
+          LI "Honor data subject requests forwarded by us or received directly."

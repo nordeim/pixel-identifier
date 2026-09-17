@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"DIFFERENT\",\n  \"confidence\": 0.98,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"claim\": \"Image 2 contains a prominent yellow promotional banner at the top of the viewport ('Launch Offer — Get 100 free visitor identifications...') which is completely absent in Image 1.\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The background color of the documentation cards differs between images: Image 1 uses a very light gray/off-white, while Image 2 uses a pale cream/yellow tint.\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The icon colors inside the cards differ: Image 1 features bright, saturated yellow icons (gear and code brackets), whereas Image 2 displays muted orange/gold versions of the same icons.\"\n    },\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"The 'Back to Home' link arrow icon appears slightly different in weight or shade between the two images (brighter yellow in Image 1 vs darker orange in Image 2).\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789620407,
+  "id": "20260917124643ac582051eeb943e5",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260917124643ac582051eeb943e5",
+  "usage": {
+    "completion_tokens": 246,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 2
+    },
+    "total_tokens": 2168
+  }
+}

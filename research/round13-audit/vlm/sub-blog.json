@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"DIFFERENT\",\n  \"confidence\": 1.0,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"claim\": \"Image 2 contains a prominent yellow promotional banner at the top of the viewport ('Launch Offer — Get 100 free visitor identifications...') that is completely absent in Image 1.\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The vertical positioning of the main content (header, title, and blog cards) is shifted downwards in Image 2 due to the presence of the extra banner, altering the overall page layout relative to the viewport edges.\"\n    },\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"The background color of the category tags (e.g., 'Fintech', 'Creator Economy') appears slightly more saturated or darker in Image 2 compared to the lighter cream/yellow shade in Image 1.\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789620396,
+  "id": "20260917124628d201ccb4f66c48b0",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260917124628d201ccb4f66c48b0",
+  "usage": {
+    "completion_tokens": 206,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2128
+  }
+}

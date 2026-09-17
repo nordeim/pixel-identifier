@@ -1,0 +1,92 @@
+A.text-sm.text-primary.hover:underline.mb-6 "← Back to Home"
+H1.text-4xl.font-bold.text-foreground.mb-2 "Terms of Service"
+P.text-muted-foreground.mb-10 "Last updated: April 14, 2026"
+DIV.prose.prose-sm.max-w-none.space-y-8
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "1. Acceptance of Terms"
+    P.text-muted-foreground.leading-relaxed "By accessing or using Pixelco's website, platform, or services (collectively, the "Service"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "2. Description of Service"
+    P.text-muted-foreground.leading-relaxed "Pixelco provides a JavaScript-based tracking pixel that website owners ("Customers") insta"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "3. Eligibility"
+    P.text-muted-foreground.leading-relaxed "You must be at least 18 years old and have the legal capacity to enter into a binding agre"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "4. Account Registration & Security"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI "You must provide accurate, complete, and current registration information."
+      LI "You are solely responsible for maintaining the confidentiality of your account credentials"
+      LI
+        A.text-primary.hover:underline "support@pixelco.io"
+      LI "You are responsible for all activities that occur under your account."
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "5. Acceptable Use Policy"
+    P.text-muted-foreground.leading-relaxed "You agree to use Pixelco only for lawful purposes. You shall NOT:"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI "Use identified data for harassment, stalking, or discrimination."
+      LI "Send spam in violation of CAN-SPAM, CASL, or equivalent laws."
+      LI "Use the Services on websites you don't own or have authorization to instrument."
+      LI "Reverse-engineer our proprietary algorithms or database."
+      LI "Resell or redistribute identified visitor data without written consent."
+      LI "Violate applicable data protection laws (GDPR, CCPA, PIPEDA, etc.)."
+      LI "Deploy the pixel on websites directed at children under 16."
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "6. Customer Compliance Obligations"
+    P.text-muted-foreground.leading-relaxed "As a Customer, you are responsible for:"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI
+        A.text-primary.hover:underline "privacy policy"
+      LI "Obtaining required consents from visitors as mandated by applicable laws."
+      LI "Ensuring your use of data complies with all applicable anti-spam and data protection laws."
+      LI "Honoring opt-out, deletion, and access requests from identified individuals."
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "7. Intellectual Property & Data Ownership"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI
+        STRONG.text-foreground "Your Data:"
+      LI
+        STRONG.text-foreground "Our Technology:"
+      LI
+        STRONG.text-foreground "Identified Data:"
+      LI
+        STRONG.text-foreground "Aggregated Data:"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "8. Payment, Billing & Refunds"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI "Paid plans are billed monthly or annually as selected."
+      LI "All fees are in USD and exclusive of applicable taxes."
+      LI "All fees are non-refundable except as required by law."
+      LI "Pricing changes require at least 30 days' notice."
+      LI "Failure to pay may result in account suspension after a 7-day grace period."
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "9. Service Level & Availability"
+    P.text-muted-foreground.leading-relaxed "We strive for 99.9% uptime but do not guarantee uninterrupted service. We are not liable f"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "10. Data Processing & Privacy"
+    P.text-muted-foreground.leading-relaxed
+      A.text-primary.hover:underline "Privacy Policy"
+      A.text-primary.hover:underline "GDPR"
+      A.text-primary.hover:underline "CCPA"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "11. Disclaimers & Limitation of Liability"
+    P.text-muted-foreground.leading-relaxed.uppercase.text-xs "THE SERVICES ARE PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND. WE DO NOT GUARANTEE THE "
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "12. Indemnification"
+    P.text-muted-foreground.leading-relaxed "You agree to indemnify and hold harmless Pixelco from claims arising from your use of the "
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "13. Termination"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI "You may cancel your account at any time."
+      LI "We may suspend or terminate for violation of these Terms or non-payment."
+      LI "Data is retained for 30 days post-termination for export, then deleted."
+      LI "Sections 7, 11, 12, 14, and 15 survive termination."
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "14. Governing Law"
+    P.text-muted-foreground.leading-relaxed "These Terms are governed by the laws of the State of Delaware, United States, without rega"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "15. Dispute Resolution"
+    P.text-muted-foreground.leading-relaxed "Disputes shall first be resolved through good-faith negotiation. If unresolved within 30 d"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "16. Contact"
+    P.text-muted-foreground.leading-relaxed
+      A.text-primary.hover:underline "support@pixelco.io"

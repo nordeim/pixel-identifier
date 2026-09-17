@@ -1,0 +1,125 @@
+DIV.mx-auto.max-w-7xl.px-4.py-14
+  DIV.mx-auto.max-w-2xl.text-center
+    H1.text-4xl.font-extrabold.tracking-tight.text-foreground "The Pixelco Blog"
+    P.mt-4.text-lg.leading-relaxed.text-muted-foreground "Insights on visitor identification, lead generation, and modern marketing — from the team "
+  DIV.mt-14.grid.gap-6.sm:grid-cols-2
+    ARTICLE.flex.flex-col.rounded-xl.border
+      DIV.flex.items-center.gap-3
+        SPAN.inline-flex.items-center.rounded-full.bg-amber-100 "Fintech"
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.mt-4.text-lg.font-bold.leading-snug
+        A.transition-colors.hover:text-amber-700.focus-brand "FLC Markets: Start a Free Prop Trading Challenge and Manage Funded Capital"
+      P.mt-3.flex-1.text-sm.leading-relaxed "FLC Markets lets traders start a free $100,000 qualification challenge. Hit the profit tar"
+      DIV.mt-5.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "Sep 10, 2026"
+        A.flex.items-center.gap-1.text-sm
+          SVG
+    ARTICLE.flex.flex-col.rounded-xl.border
+      DIV.flex.items-center.gap-3
+        SPAN.inline-flex.items-center.rounded-full.bg-amber-100 "Creator Economy"
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.mt-4.text-lg.font-bold.leading-snug
+        A.transition-colors.hover:text-amber-700.focus-brand "TalkToMe.bio: How Influencers Turn Their Link in Bio Into a Paid Lead Magnet"
+      P.mt-3.flex-1.text-sm.leading-relaxed "TalkToMe.bio is a link-in-bio tool that lets influencers charge followers for guaranteed r"
+      DIV.mt-5.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "May 10, 2026"
+        A.flex.items-center.gap-1.text-sm
+          SVG
+    ARTICLE.flex.flex-col.rounded-xl.border
+      DIV.flex.items-center.gap-3
+        SPAN.inline-flex.items-center.rounded-full.bg-amber-100 "People Search"
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.mt-4.text-lg.font-bold.leading-snug
+        A.transition-colors.hover:text-amber-700.focus-brand "PersonPages: Look Up Anyone’s Salary, Net Worth, Address & Public Records"
+      P.mt-3.flex-1.text-sm.leading-relaxed "PersonPages is a global people search engine that lets you look up almost anyone — their e"
+      DIV.mt-5.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "May 2, 2026"
+        A.flex.items-center.gap-1.text-sm
+          SVG
+    ARTICLE.flex.flex-col.rounded-xl.border
+      DIV.flex.items-center.gap-3
+        SPAN.inline-flex.items-center.rounded-full.bg-amber-100 "Lead Generation"
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.mt-4.text-lg.font-bold.leading-snug
+        A.transition-colors.hover:text-amber-700.focus-brand "AIViral: Generate B2B Leads and Run AI Outreach Campaigns on Autopilot"
+      P.mt-3.flex-1.text-sm.leading-relaxed "Meet AIViral — our sister platform that scrapes unlimited B2B leads in any niche, then sen"
+      DIV.mt-5.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "Apr 18, 2026"
+        A.flex.items-center.gap-1.text-sm
+          SVG
+    ARTICLE.flex.flex-col.rounded-xl.border
+      DIV.flex.items-center.gap-3
+        SPAN.inline-flex.items-center.rounded-full.bg-amber-100 "Lead Generation"
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.mt-4.text-lg.font-bold.leading-snug
+        A.transition-colors.hover:text-amber-700.focus-brand "How to Identify Anonymous Website Visitors and Turn Them Into Leads"
+      P.mt-3.flex-1.text-sm.leading-relaxed "97% of website visitors leave without converting. Learn how modern visitor identification "
+      DIV.mt-5.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "Mar 27, 2026"
+        A.flex.items-center.gap-1.text-sm
+          SVG
+    ARTICLE.flex.flex-col.rounded-xl.border
+      DIV.flex.items-center.gap-3
+        SPAN.inline-flex.items-center.rounded-full.bg-amber-100 "Analytics"
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.mt-4.text-lg.font-bold.leading-snug
+        A.transition-colors.hover:text-amber-700.focus-brand "Website Visitor Tracking vs. Google Analytics: What You’re Missing"
+      P.mt-3.flex-1.text-sm.leading-relaxed "Google Analytics tells you what happened on your site. Visitor tracking tells you who did "
+      DIV.mt-5.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "Mar 14, 2026"
+        A.flex.items-center.gap-1.text-sm
+          SVG
+    ARTICLE.flex.flex-col.rounded-xl.border
+      DIV.flex.items-center.gap-3
+        SPAN.inline-flex.items-center.rounded-full.bg-amber-100 "Reviews"
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.mt-4.text-lg.font-bold.leading-snug
+        A.transition-colors.hover:text-amber-700.focus-brand "The Best Visitor Identification Tools in 2026 (Compared)"
+      P.mt-3.flex-1.text-sm.leading-relaxed "Clearbit, RB2B, Leadfeeder, Albacross, Pixelco — we compare the leading visitor identifica"
+      DIV.mt-5.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "Feb 20, 2026"
+        A.flex.items-center.gap-1.text-sm
+          SVG
+    ARTICLE.flex.flex-col.rounded-xl.border
+      DIV.flex.items-center.gap-3
+        SPAN.inline-flex.items-center.rounded-full.bg-amber-100 "Email Marketing"
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.mt-4.text-lg.font-bold.leading-snug
+        A.transition-colors.hover:text-amber-700.focus-brand "How to Grow Your Email List Without Forms, Popups, or Discounts"
+      P.mt-3.flex-1.text-sm.leading-relaxed "Forms convert 3% of visitors at best. Visitor identification quietly builds your email lis"
+      DIV.mt-5.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "Feb 5, 2026"
+        A.flex.items-center.gap-1.text-sm
+          SVG
+    ARTICLE.flex.flex-col.rounded-xl.border
+      DIV.flex.items-center.gap-3
+        SPAN.inline-flex.items-center.rounded-full.bg-amber-100 "Marketing"
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.mt-4.text-lg.font-bold.leading-snug
+        A.transition-colors.hover:text-amber-700.focus-brand "Retargeting Without Cookies: What Still Works After the Cookie Purge"
+      P.mt-3.flex-1.text-sm.leading-relaxed "Third-party cookies are functionally dead, and cookie-based retargeting died with them. He"
+      DIV.mt-5.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "Jan 22, 2026"
+        A.flex.items-center.gap-1.text-sm
+          SVG
+    ARTICLE.flex.flex-col.rounded-xl.border
+      DIV.flex.items-center.gap-3
+        SPAN.inline-flex.items-center.rounded-full.bg-amber-100 "Privacy"
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.mt-4.text-lg.font-bold.leading-snug
+        A.transition-colors.hover:text-amber-700.focus-brand "GDPR-Compliant Visitor Tracking: A Practical Guide"
+      P.mt-3.flex-1.text-sm.leading-relaxed "Can you identify website visitors under GDPR? Yes — if you understand lawful basis, data m"
+      DIV.mt-5.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "Jan 8, 2026"
+        A.flex.items-center.gap-1.text-sm
+          SVG

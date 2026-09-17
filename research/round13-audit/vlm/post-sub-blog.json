@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"DIFFERENT\",\n  \"confidence\": 0.95,\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The clone (image 2) includes a footer section within each blog card that is missing from the reference (image 1). This footer contains the publication date (e.g., 'September 10, 2026') on the left and a 'Read →' link on the right.\"\n    },\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"Due to the addition of the card footer in image 2, the vertical height of the blog post cards has increased, and the text content within the cards (body and title) appears slightly more compressed or shifted upwards compared to image 1.\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789622123,
+  "id": "20260917131519863314a100824d82",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260917131519863314a100824d82",
+  "usage": {
+    "completion_tokens": 175,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2097
+  }
+}

@@ -1,0 +1,149 @@
+DIV
+  DIV
+    OL.fixed.top-0.z-[100].flex
+  SECTION
+  DIV.min-h-screen.bg-background
+    NAV.sticky.top-0.z-50.bg-background/90
+      DIV.container.mx-auto.flex.items-center
+        A.flex.items-center.gap-2.5
+          IMG.w-8.h-8
+          SPAN.text-lg.font-bold.text-foreground.tracking-tight "Pixelco"
+          SPAN.text-xs.text-muted-foreground.italic.translate-y-[3px] "By Ai Viral"
+        DIV.hidden.md:flex.items-center.gap-7
+          A.text-sm.font-medium.text-muted-foreground.hover:text-foreground "Benefits"
+          A.text-sm.font-medium.text-muted-foreground.hover:text-foreground "How It Works"
+          A.text-sm.font-medium.text-muted-foreground.hover:text-foreground "Pricing"
+          A.text-sm.font-medium.text-muted-foreground.hover:text-foreground "FAQ"
+        DIV.hidden.md:flex.items-center.gap-3
+          A
+            BUTTON.inline-flex.items-center.justify-center.gap-2 "Log In"
+          A
+            BUTTON.inline-flex.items-center.justify-center.gap-2 "Start Identifying"
+        BUTTON.md:hidden.text-foreground
+          SVG
+    ARTICLE.container.mx-auto.px-6.py-16
+      NAV.mb-4
+        OL.flex.items-center.gap-1.5.text-xs
+          LI
+            A.hover:text-foreground.transition-colors "Home"
+          LI "/"
+          LI
+            A.hover:text-foreground.transition-colors "Blog"
+          LI "/"
+          LI.text-foreground.truncate.max-w-[200px] "FLC Markets: Start a Free Prop Trading Challenge and Manage Funded Capital"
+      DIV
+        DIV.flex.items-center.gap-3.mb-4
+          SPAN.text-xs.font-medium.text-primary.bg-primary/10 "Fintech"
+          SPAN.text-xs.text-muted-foreground "September 10, 2026"
+          SPAN.text-xs.text-muted-foreground "7 min read"
+        H1.text-3xl.md:text-4xl.font-bold.text-foreground "FLC Markets: Start a Free Prop Trading Challenge and Manage Funded Capital"
+        DIV.prose.prose-sm.max-w-none.text-muted-foreground
+          P "Prop trading has become one of the fastest-growing corners of fintech. Every day, thousand"
+          P
+            A "FLC Markets"
+            STRONG "start a free $100,000 qualification challenge"
+          H2 "How the FLC Markets Challenge Works"
+          P
+            A "FLC Markets"
+          UL
+            LI
+              STRONG "Free qualification:"
+            LI
+              STRONG "Clear target:"
+            LI
+              STRONG "Funded capital:"
+            LI
+              STRONG "Profit split:"
+          P "By removing the pay-to-play barrier, FLC Markets attracts serious traders who might otherw"
+          H2 "Why This Model Works for Trader Acquisition"
+          P "In a crowded prop-trading market, the biggest friction point is trust. Aspiring traders ar"
+          P "For marketers, that creates a high-intent audience. Anyone who lands on a challenge page, "
+          H2 "Where Visitor Identification Fits In"
+          P
+            A "FLC Markets"
+          P "With website visitor identification, a prop firm can match those anonymous browsing sessio"
+          UL
+            LI
+              STRONG "Abandoned challenge recovery:"
+            LI
+              STRONG "Smart retargeting:"
+            LI
+              STRONG "Sales follow-up:"
+            LI
+              STRONG "Lower acquisition costs:"
+          P "Prop trading is a high-competition, high-lifetime-value niche. The firms that can identify"
+          H2 "Who FLC Markets Is For"
+          P "The free challenge model is ideal for several groups:"
+          UL
+            LI
+              STRONG "Aspiring traders"
+            LI
+              STRONG "Experienced traders"
+            LI
+              STRONG "Fintech marketers"
+            LI
+              STRONG "Prop firm operators"
+          H2 "Start Your Free Challenge"
+          P
+            A
+              STRONG "FLC Markets"
+          P "For marketers running fintech or trading offers, the lesson is clear: remove friction at t"
+        DIV.border-t.border-border.mt-14.pt-8
+          P.text-sm.text-muted-foreground.mb-4
+            STRONG.text-foreground "Pixelco Team"
+          A
+            BUTTON.inline-flex.items-center.justify-center.gap-2 "Start Identifying Visitors →"
+    FOOTER.mt-20
+      DIV.border-t.border-border.bg-background
+        DIV.container.mx-auto.px-6.py-14
+          DIV.grid.grid-cols-1.sm:grid-cols-2.md:grid-cols-4
+            DIV.col-span-2.md:col-span-4.lg:col-span-1.mb-4
+              A.flex.items-center.gap-2.mb-4
+                IMG.w-8.h-8
+                SPAN.text-lg.font-bold.text-foreground "Pixelco"
+                SPAN.text-xs.text-muted-foreground.italic.translate-y-[3px] "By Ai Viral"
+              P.text-sm.text-muted-foreground.leading-relaxed.max-w-xs "The world's first B2C email identification platform. Know who's visiting your site — by th"
+              DIV.flex.items-center.gap-3
+                A.w-8.h-8.rounded-md.bg-card
+                  SVG
+                A.w-8.h-8.rounded-md.bg-card
+                  SVG
+                A.w-8.h-8.rounded-md.bg-card
+                  SVG
+            DIV
+              H4.text-sm.font-semibold.text-foreground.mb-4 "Product"
+              UL.space-y-2.5
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Features"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Pricing"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "How It Works"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Documentation"
+            DIV
+              H4.text-sm.font-semibold.text-foreground.mb-4 "Company"
+              UL.space-y-2.5
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "About"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Contact"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Careers"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Blog"
+            DIV
+              H4.text-sm.font-semibold.text-foreground.mb-4 "Legal"
+              UL.space-y-2.5
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Privacy Policy"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Terms of Service"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "GDPR"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "CCPA"
+      DIV.border-t.border-border.bg-card/50
+        DIV.container.mx-auto.px-6.py-5
+          P.text-xs.text-muted-foreground "© 2026 Pixelco. All rights reserved."
+          P.text-xs.text-muted-foreground "Made with precision for marketers who want results."

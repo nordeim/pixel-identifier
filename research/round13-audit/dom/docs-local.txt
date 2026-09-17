@@ -1,0 +1,44 @@
+DIV.mx-auto.max-w-4xl.px-4.py-14
+  A.inline-flex.items-center.gap-1.5.text-sm
+    SVG
+  H1.mt-8.text-4xl.font-extrabold.tracking-tight "Documentation"
+  P.mt-4.text-lg.text-muted-foreground "Get started with Pixelco in under 5 minutes."
+  DIV.mt-12.grid.gap-5.sm:grid-cols-2
+    DIV.rounded-xl.border.border-amber-200/70.bg-amber-50/50
+      DIV.flex.items-center.gap-3
+        SPAN.flex.h-10.w-10.items-center
+          SVG
+        H2.text-base.font-bold.text-foreground
+          SPAN.text-amber-700 "1."
+      P.mt-3.text-sm.leading-relaxed.text-muted-foreground "Sign up for a free Pixelco account and add your website domain in the dashboard."
+    DIV.rounded-xl.border.border-amber-200/70.bg-amber-50/50
+      DIV.flex.items-center.gap-3
+        SPAN.flex.h-10.w-10.items-center
+          SVG
+        H2.text-base.font-bold.text-foreground
+          SPAN.text-amber-700 "2."
+      P.mt-3.text-sm.leading-relaxed.text-muted-foreground "Copy the pixel code snippet and paste it into the <head> section of your website, just bef"
+    DIV.rounded-xl.border.border-amber-200/70.bg-amber-50/50
+      DIV.flex.items-center.gap-3
+        SPAN.flex.h-10.w-10.items-center
+          SVG
+        H2.text-base.font-bold.text-foreground
+          SPAN.text-amber-700 "3."
+      P.mt-3.text-sm.leading-relaxed.text-muted-foreground "Visit your website and check the Pixelco dashboard — you should see a green 'Active' statu"
+    DIV.rounded-xl.border.border-amber-200/70.bg-amber-50/50
+      DIV.flex.items-center.gap-3
+        SPAN.flex.h-10.w-10.items-center
+          SVG
+        H2.text-base.font-bold.text-foreground
+          SPAN.text-amber-700 "4."
+      P.mt-3.text-sm.leading-relaxed.text-muted-foreground "That's it! Pixelco will begin identifying anonymous visitors and populating your dashboard"
+  SECTION.mt-14
+    H2.text-2xl.font-extrabold.tracking-tight.text-foreground "Example Pixel Code"
+    DIV.mt-5.rounded-lg.border.border-border
+      PRE.overflow-x-auto.p-4.text-xs.leading-relaxed
+        CODE "<script src="https://your-pixelco-domain.com/pixel.js" data-site="px_0000000000000000" def"
+    P.mt-4.flex.items-start.gap-2.5
+      SPAN.text-base.leading-none "⚠️"
+      SPAN
+        STRONG.font-semibold "This is a sample snippet for illustration only."
+        A.font-semibold.underline.underline-offset-2.hover:text-amber-800 "Pixelco dashboard"

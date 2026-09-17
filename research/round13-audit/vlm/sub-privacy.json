@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"DIFFERENT\",\n  \"confidence\": 0.98,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"claim\": \"Image 2 contains a prominent yellow promotional banner at the top of the viewport ('Launch Offer...') that is completely absent in Image 1, causing a vertical shift in all subsequent content.\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"claim\": \"The text content of the '1. Introduction' section is significantly different between the two images (e.g., Image 1 mentions 'Aiviral' and third-party websites, while Image 2 mentions 'Pixelco' and its dashboard).\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The 'Back to Home' link color appears to be a darker shade of orange/yellow in Image 2 compared to the lighter yellow in Image 1, likely due to the different background context or styling updates.\"\n    },\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"Due to the added banner in Image 2, the vertical positioning of the main heading and body content is lower relative to the top edge of the image compared to Image 1.\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789620413,
+  "id": "202609171246471347a1cb7e0a4ae7",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "202609171246471347a1cb7e0a4ae7",
+  "usage": {
+    "completion_tokens": 266,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2188
+  }
+}

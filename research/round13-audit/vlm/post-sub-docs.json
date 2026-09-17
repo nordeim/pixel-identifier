@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"CLOSE_MATCH\",\n  \"confidence\": 0.95,\n  \"findings\": [\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"The 'Back to Home' link icon in the second image appears to be a simple horizontal dash, whereas in the first image it is clearly a left-pointing arrow.\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789622127,
+  "id": "2026091713152516ad4b12ea644940",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "2026091713152516ad4b12ea644940",
+  "usage": {
+    "completion_tokens": 83,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2005
+  }
+}

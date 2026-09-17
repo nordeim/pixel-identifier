@@ -1,0 +1,103 @@
+DIV.mx-auto.max-w-3xl.px-4.py-14
+  A.inline-flex.items-center.gap-1.5.text-sm
+    SVG
+  H1.mt-8.text-3xl.font-extrabold.tracking-tight "CCPA / CPRA Compliance"
+  P.mt-3.text-sm.text-muted-foreground "Last updated: April 14, 2026"
+  DIV.mt-10.space-y-10
+    SECTION
+      H2.text-lg.font-bold.text-foreground "1. Overview"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P
+          A.font-semibold.text-amber-700.underline.underline-offset-2 "Privacy Policy"
+        P "Nothing in this page limits rights you have under other laws. Where another framework (suc"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "2. Categories of Personal Information Collected"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "In the preceding 12 months, we have collected the following categories of Personal Informa"
+        DIV.overflow-x-auto.rounded-lg.border.border-border
+          TABLE.w-full.text-sm
+            THEAD
+              TR.border-b.border-border.bg-muted/50.text-left
+                TH.px-4.py-2.5.font-semibold.text-foreground "Category"
+                TH.px-4.py-2.5.font-semibold.text-foreground "Examples"
+                TH.px-4.py-2.5.font-semibold.text-foreground "Collected"
+            TBODY
+              TR.border-b.border-border/60.last:border-0
+                TD.px-4.py-2.5.font-medium.text-foreground "Identifiers"
+                TD.px-4.py-2.5.text-muted-foreground "Name, email, IP address, account ID"
+                TD.px-4.py-2.5.text-muted-foreground "Yes"
+              TR.border-b.border-border/60.last:border-0
+                TD.px-4.py-2.5.font-medium.text-foreground "Commercial Information"
+                TD.px-4.py-2.5.text-muted-foreground "Subscription plans, billing history, usage records"
+                TD.px-4.py-2.5.text-muted-foreground "Yes"
+              TR.border-b.border-border/60.last:border-0
+                TD.px-4.py-2.5.font-medium.text-foreground "Internet/Network Activity"
+                TD.px-4.py-2.5.text-muted-foreground "Browsing history, pages visited, referral sources, click data"
+                TD.px-4.py-2.5.text-muted-foreground "Yes"
+              TR.border-b.border-border/60.last:border-0
+                TD.px-4.py-2.5.font-medium.text-foreground "Geolocation Data"
+                TD.px-4.py-2.5.text-muted-foreground "Approximate location derived from IP address"
+                TD.px-4.py-2.5.text-muted-foreground "Yes"
+              TR.border-b.border-border/60.last:border-0
+                TD.px-4.py-2.5.font-medium.text-foreground "Professional/Employment Info"
+                TD.px-4.py-2.5.text-muted-foreground "Company name, job title (from identity resolution)"
+                TD.px-4.py-2.5.text-muted-foreground "Yes"
+              TR.border-b.border-border/60.last:border-0
+                TD.px-4.py-2.5.font-medium.text-foreground "Inferences"
+                TD.px-4.py-2.5.text-muted-foreground "Visitor intent, interest profiles, lead scoring"
+                TD.px-4.py-2.5.text-muted-foreground "Yes"
+        P "We do not collect or process sensitive Personal Information (as defined by CPRA) such as s"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "3. Sources of Personal Information"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Directly from you"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Account registration details, billing information, and support communications."
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Automatically"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Visit signals collected via the pixel installed on Customer websites, and log data from ou"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Third-party sources"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Deterministic, consented first-party data partners used for identity resolution."
+    SECTION
+      H2.text-lg.font-bold.text-foreground "4. Business Purposes for Collection"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        UL.ml-5.list-disc.space-y-1.5
+          LI "Providing, operating, and improving our identity resolution services"
+          LI "Processing transactions and managing Customer accounts"
+          LI "Matching anonymous visitors to known identity records for our Customers"
+          LI "Detecting and preventing fraud and security incidents"
+          LI "Debugging and repairing errors in our technology"
+          LI "Complying with legal obligations and enforcing our terms"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "5. Sharing & Disclosure"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "We disclose Personal Information only to: Customers (identity results from their own traff"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "6. Retention"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "Personal Information is retained for the period necessary to fulfill the purposes describe"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "7. Your Rights Under CCPA/CPRA"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "California residents have the right to:"
+        UL.ml-5.list-disc.space-y-1.5
+          LI
+            STRONG.text-foreground "Know"
+          LI
+            STRONG.text-foreground "Delete"
+          LI
+            STRONG.text-foreground "Correct"
+          LI
+            STRONG.text-foreground "Opt out"
+          LI
+            STRONG.text-foreground "Non-discrimination"
+          LI
+            STRONG.text-foreground "Limit use of sensitive data"
+        P
+          A.font-semibold.text-amber-700.underline.underline-offset-2 "support@pixelco.io"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "8. Contact"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P
+          A.font-semibold.text-amber-700.underline.underline-offset-2 "support@pixelco.io"

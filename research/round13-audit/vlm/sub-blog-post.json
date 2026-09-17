@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"DIFFERENT\",\n  \"confidence\": 0.98,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"claim\": \"Image 2 contains a prominent yellow promotional banner at the top of the page ('Launch Offer...') which is completely absent in Image 1.\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"claim\": \"The breadcrumb navigation differs: Image 1 displays a standard text breadcrumb path ('Home / Blog / ...'), while Image 2 replaces this with a 'Back to Blog' link with an arrow icon.\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The metadata layout and order have changed: In Image 1, the date is placed before the read time; in Image 2, the read time (with a clock icon) is placed before the date.\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The introductory paragraph content and length differ significantly between the two images.\"\n    },\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"There is a slight vertical shift in the main content area in Image 2, likely caused by the addition of the top banner pushing the header and content down.\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789620403,
+  "id": "20260917124636fcd5a85869ae489b",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260917124636fcd5a85869ae489b",
+  "usage": {
+    "completion_tokens": 272,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2194
+  }
+}

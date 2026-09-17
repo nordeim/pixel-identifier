@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"DIFFERENT\",\n  \"confidence\": 1.0,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"claim\": \"Image 2 contains a prominent yellow promotional banner at the top of the viewport ('Launch Offer...') that is completely absent in Image 1.\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The text content of the 'Acceptance of Terms' section differs between the two images (e.g., Image 2 includes references to 'Privacy Policy' and 'do not agree, do not use' which are missing in Image 1).\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The text content of the 'Description of Service' section is significantly different; Image 2 describes a 'website visitor identification platform' and 'pixel script', whereas Image 1 describes a 'JavaScript-based tracking pixel'.\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789620418,
+  "id": "202609171246533cc2d6690a364a48",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "202609171246533cc2d6690a364a48",
+  "usage": {
+    "completion_tokens": 207,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2129
+  }
+}

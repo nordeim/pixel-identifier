@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"EXACT_MATCH\",\n  \"confidence\": 0.98,\n  \"findings\": [\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"The data content within the visitor list (names, emails, avatars, locations, confidence scores, and timestamps) differs between the two images, which is expected for a comparison between a live site and a local build with different database states.\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789620691,
+  "id": "202609171251272cb653392fe844d9",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "202609171251272cb653392fe844d9",
+  "usage": {
+    "completion_tokens": 98,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2020
+  }
+}

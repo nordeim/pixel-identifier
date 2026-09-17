@@ -1,0 +1,143 @@
+DIV
+  DIV
+    OL.fixed.top-0.z-[100].flex
+  SECTION
+  DIV.min-h-screen.bg-background
+    NAV.sticky.top-0.z-50.bg-background/90
+      DIV.container.mx-auto.flex.items-center
+        A.flex.items-center.gap-2.5
+          IMG.w-8.h-8
+          SPAN.text-lg.font-bold.text-foreground.tracking-tight "Pixelco"
+          SPAN.text-xs.text-muted-foreground.italic.translate-y-[3px] "By Ai Viral"
+        DIV.hidden.md:flex.items-center.gap-7
+          A.text-sm.font-medium.text-muted-foreground.hover:text-foreground "Benefits"
+          A.text-sm.font-medium.text-muted-foreground.hover:text-foreground "How It Works"
+          A.text-sm.font-medium.text-muted-foreground.hover:text-foreground "Pricing"
+          A.text-sm.font-medium.text-muted-foreground.hover:text-foreground "FAQ"
+        DIV.hidden.md:flex.items-center.gap-3
+          A
+            BUTTON.inline-flex.items-center.justify-center.gap-2 "Log In"
+          A
+            BUTTON.inline-flex.items-center.justify-center.gap-2 "Start Identifying"
+        BUTTON.md:hidden.text-foreground
+          SVG
+    DIV.container.mx-auto.px-6.py-16
+      A.text-sm.text-primary.hover:underline.mb-6 "← Back to Home"
+      H1.text-4xl.font-bold.text-foreground.mb-3 "Documentation"
+      P.text-muted-foreground.mb-12.text-lg "Get started with Pixelco in under 5 minutes."
+      DIV.grid.sm:grid-cols-2.gap-5.mb-14
+        DIV.border.border-border.rounded-xl.p-6
+          SVG
+          H3.text-lg.font-semibold.text-foreground.mb-2 "1. Create Your Account"
+          P.text-sm.text-muted-foreground.leading-relaxed "Sign up for a free Pixelco account and add your website domain in the dashboard."
+        DIV.border.border-border.rounded-xl.p-6
+          SVG
+          H3.text-lg.font-semibold.text-foreground.mb-2 "2. Install the Pixel"
+          P.text-sm.text-muted-foreground.leading-relaxed "Copy the pixel code snippet and paste it into the <head> section of your website, just bef"
+        DIV.border.border-border.rounded-xl.p-6
+          SVG
+          H3.text-lg.font-semibold.text-foreground.mb-2 "3. Verify Installation"
+          P.text-sm.text-muted-foreground.leading-relaxed "Visit your website and check the Pixelco dashboard — you should see a green 'Active' statu"
+        DIV.border.border-border.rounded-xl.p-6
+          SVG
+          H3.text-lg.font-semibold.text-foreground.mb-2 "4. Start Identifying"
+          P.text-sm.text-muted-foreground.leading-relaxed "That's it! Pixelco will begin identifying anonymous visitors and populating your dashboard"
+      H2.text-2xl.font-bold.text-foreground.mb-4 "Example Pixel Code"
+      DIV.bg-yellow-500/10.border.border-yellow-500/30.rounded-xl
+        SPAN.text-yellow-500.text-lg.mt-0.5 "⚠️"
+        P.text-sm.text-yellow-300.leading-relaxed
+          STRONG.text-yellow-400 "This is a sample snippet for illustration only."
+          A.text-primary.underline.hover:no-underline "Pixelco dashboard"
+      DIV.relative.mb-14
+        DIV.absolute.top-3.left-3.bg-yellow-500/20 "SAMPLE"
+        PRE.bg-card.border.border-yellow-500/20.rounded-xl "<!-- Pixelco Tracking Pixel --> <script> (function(p,i,x,e,l){ p._pxid=p._pxid||[]; var s="
+        BUTTON.absolute.top-3.right-3.p-2
+          SVG
+      H2.text-2xl.font-bold.text-foreground.mb-4 "Platform-Specific Instructions"
+      DIV.space-y-4.mb-14
+        DIV.border.border-border.rounded-xl.p-5
+          H3.text-base.font-semibold.text-foreground.mb-1 "WordPress"
+          P.text-sm.text-muted-foreground "Go to Appearance → Theme Editor → header.php. Paste the pixel code before </head>. Or use "
+        DIV.border.border-border.rounded-xl.p-5
+          H3.text-base.font-semibold.text-foreground.mb-1 "Shopify"
+          P.text-sm.text-muted-foreground "Go to Online Store → Themes → Edit Code → theme.liquid. Paste the pixel code before </head"
+        DIV.border.border-border.rounded-xl.p-5
+          H3.text-base.font-semibold.text-foreground.mb-1 "Webflow"
+          P.text-sm.text-muted-foreground "Go to Project Settings → Custom Code → Head Code. Paste the pixel code and publish."
+        DIV.border.border-border.rounded-xl.p-5
+          H3.text-base.font-semibold.text-foreground.mb-1 "Wix"
+          P.text-sm.text-muted-foreground "Go to Settings → Custom Code → Add Custom Code. Paste the pixel code, set it to load on al"
+        DIV.border.border-border.rounded-xl.p-5
+          H3.text-base.font-semibold.text-foreground.mb-1 "Next.js / React"
+          P.text-sm.text-muted-foreground "Add the script tag to your _document.tsx (Next.js) or index.html (React/Vite) inside the <"
+        DIV.border.border-border.rounded-xl.p-5
+          H3.text-base.font-semibold.text-foreground.mb-1 "Custom HTML"
+          P.text-sm.text-muted-foreground "Paste the pixel code directly into the <head> section of every page, or in your shared lay"
+      H2.text-2xl.font-bold.text-foreground.mb-4 "Common Questions"
+      DIV.space-y-4.mb-10
+        DIV.border.border-border.rounded-xl.p-5
+          H3.font-semibold.text-foreground.mb-1 "Does the pixel slow down my website?"
+          P.text-sm.text-muted-foreground "No. The Pixelco script is loaded asynchronously and is under 5KB — it has zero impact on p"
+        DIV.border.border-border.rounded-xl.p-5
+          H3.font-semibold.text-foreground.mb-1 "Is the pixel GDPR compliant?"
+          P.text-sm.text-muted-foreground "Pixelco is 100% cookieless and does not use cookies or local storage. However, you should "
+        DIV.border.border-border.rounded-xl.p-5
+          H3.font-semibold.text-foreground.mb-1 "How quickly will I see results?"
+          P.text-sm.text-muted-foreground "You'll start seeing identified visitors within minutes of installation. Results improve ov"
+      DIV.text-center.py-8
+        P.text-muted-foreground.mb-4 "Need help? Reach out to our team."
+        BUTTON.inline-flex.items-center.justify-center.gap-2 "Contact Support"
+    FOOTER.mt-20
+      DIV.border-t.border-border.bg-background
+        DIV.container.mx-auto.px-6.py-14
+          DIV.grid.grid-cols-1.sm:grid-cols-2.md:grid-cols-4
+            DIV.col-span-2.md:col-span-4.lg:col-span-1.mb-4
+              A.flex.items-center.gap-2.mb-4
+                IMG.w-8.h-8
+                SPAN.text-lg.font-bold.text-foreground "Pixelco"
+                SPAN.text-xs.text-muted-foreground.italic.translate-y-[3px] "By Ai Viral"
+              P.text-sm.text-muted-foreground.leading-relaxed.max-w-xs "The world's first B2C email identification platform. Know who's visiting your site — by th"
+              DIV.flex.items-center.gap-3
+                A.w-8.h-8.rounded-md.bg-card
+                  SVG
+                A.w-8.h-8.rounded-md.bg-card
+                  SVG
+                A.w-8.h-8.rounded-md.bg-card
+                  SVG
+            DIV
+              H4.text-sm.font-semibold.text-foreground.mb-4 "Product"
+              UL.space-y-2.5
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Features"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Pricing"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "How It Works"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Documentation"
+            DIV
+              H4.text-sm.font-semibold.text-foreground.mb-4 "Company"
+              UL.space-y-2.5
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "About"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Contact"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Careers"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Blog"
+            DIV
+              H4.text-sm.font-semibold.text-foreground.mb-4 "Legal"
+              UL.space-y-2.5
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Privacy Policy"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Terms of Service"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "GDPR"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "CCPA"
+      DIV.border-t.border-border.bg-card/50
+        DIV.container.mx-auto.px-6.py-5
+          P.text-xs.text-muted-foreground "© 2026 Pixelco. All rights reserved."
+          P.text-xs.text-muted-foreground "Made with precision for marketers who want results."

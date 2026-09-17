@@ -1,0 +1,177 @@
+DIV.mx-auto.max-w-3xl.px-4.py-14
+  A.inline-flex.items-center.gap-1.5.text-sm
+    SVG
+  H1.mt-8.text-3xl.font-extrabold.tracking-tight "Privacy Policy"
+  P.mt-3.text-sm.text-muted-foreground "Last updated: April 14, 2026"
+  DIV.mt-10.space-y-10
+    SECTION
+      H2.text-lg.font-bold.text-foreground "1. Introduction"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "Pixelco ("Pixelco", "we", "us", "our") provides a visitor identification platform that hel"
+        P "By using Pixelco, you agree to the practices described in this policy. If you are a Custom"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "2. Definitions"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        UL.ml-5.list-disc.space-y-1.5
+          LI
+            STRONG.text-foreground "Customer"
+          LI
+            STRONG.text-foreground "Visitor"
+          LI
+            STRONG.text-foreground "Personal Data"
+          LI
+            STRONG.text-foreground "Identity Resolution"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "3. Information We Collect"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "3.1 Customer Information"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed
+            P "When you register for a Pixelco account, we collect:"
+            UL.ml-5.list-disc.space-y-1.5
+              LI "Full name and email address"
+              LI "Company name, website URL, and industry"
+              LI "Account credentials and preferences"
+              LI "Communication records with our support team"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "3.2 Visitor Data (Collected via Pixel)"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed
+            P "Our pixel technology collects the following from website visitors:"
+            UL.ml-5.list-disc.space-y-1.5
+              LI "IP address (used for geolocation, then hashed or anonymized)"
+              LI "Browser type, version, and language settings"
+              LI "Device type, operating system, and screen resolution"
+              LI "Pages visited, time on page, scroll depth, and click events"
+              LI "Referral source and UTM parameters"
+              LI "Cookies and similar tracking identifiers"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "3.3 Identity Resolution Data"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed
+            P "For Visitors who are successfully matched, we resolve: the visitor's email address, visito"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "3.4 Automatically Collected Information"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed
+            P "Like most online services, we automatically collect log data (IP address, browser type, ac"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "4. How We Use Information"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "We use the information we collect to:"
+        UL.ml-5.list-disc.space-y-1.5
+          LI "To provide, operate, and maintain our visitor identification services"
+          LI "To deliver analytics, insights, and reporting to Customers"
+          LI "To process payments and manage subscriptions"
+          LI "To send transactional emails, service updates, and product announcements"
+          LI "To improve, personalize, and optimize our technology, algorithms, and services"
+          LI "To detect, prevent, and address fraud, abuse, and security issues"
+          LI "To comply with legal obligations and enforce our terms"
+          LI "To respond to Customer support requests"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "5. Legal Basis for Processing (EEA/UK)"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "Under the GDPR, we process Personal Data based on:"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Contractual necessity"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Processing Customer account data to deliver the service you signed up for."
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Legitimate interests"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Operating and securing our platform, improving our services, and enabling Customers to con"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Consent"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Where required by law or where a Visitor or Customer has provided explicit consent, we pro"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Legal obligation"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Retaining records and disclosing data where required by law."
+    SECTION
+      H2.text-lg.font-bold.text-foreground "6. Data Sharing & Third Parties"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "We share data only in these limited circumstances:"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "With Customers"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Identity-resolution results about Visitors on the Customer's own website are disclosed to "
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Service Providers"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Vendors who host our infrastructure, process payments, or deliver email — bound by data pr"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Legal Requirements"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Disclosure in response to valid legal process, or to protect our rights, property, or the "
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Business Transfers"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Data may be transferred as part of a merger or acquisition, with notice where appropriate."
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "With Your Consent"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Any other sharing we undertake with your explicit permission."
+    SECTION
+      H2.text-lg.font-bold.text-foreground "7. Cookies & Tracking Technologies"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "Our core identification technology is cookieless: the pixel does not place tracking cookie"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "8. Data Retention"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Customer Data"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Retained for the life of the account and deleted within 30 days of account closure."
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Visitor Identification Data"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Retained for 12 months from the identification event, or sooner if the originating Custome"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Behavioral/Analytics Data"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Aggregated and anonymized after 90 days."
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Billing Records"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Retained for 7 years as required by tax and accounting law."
+    SECTION
+      H2.text-lg.font-bold.text-foreground "9. Data Security"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "We protect data with industry-standard measures, including:"
+        UL.ml-5.list-disc.space-y-1.5
+          LI "Encryption in transit (TLS 1.2+) and at rest (AES-256)"
+          LI "Role-based access controls and least-privilege principles"
+          LI "Regular penetration testing and security audits"
+          LI "SOC 2 Type II compliant infrastructure"
+          LI "Automated threat detection and incident response procedures"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "10. Your Rights"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "Depending on your jurisdiction, you may have the following rights:"
+        UL.ml-5.list-disc.space-y-1.5
+          LI
+            STRONG.text-foreground "Access"
+          LI
+            STRONG.text-foreground "Rectification"
+          LI
+            STRONG.text-foreground "Erasure"
+          LI
+            STRONG.text-foreground "Restriction"
+          LI
+            STRONG.text-foreground "Portability"
+          LI
+            STRONG.text-foreground "Objection"
+          LI
+            STRONG.text-foreground "Withdraw Consent"
+          LI
+            STRONG.text-foreground "Non-Discrimination"
+        P
+          A.font-semibold.text-amber-700.underline.underline-offset-2 "support@pixelco.io"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "11. International Data Transfers"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "We operate globally, and data may be processed in countries other than your own. Where Per"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "12. Children's Privacy"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "Pixelco is not directed at children under 16, and Customers may not deploy the pixel on we"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "13. Changes to This Policy"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "We may update this Privacy Policy from time to time. Material changes will be announced on"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "14. Contact Us"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "If you have questions about this Privacy Policy, contact us:"
+        UL.ml-5.list-disc.space-y-1.5
+          LI
+            A.font-semibold.text-amber-700.underline.underline-offset-2 "support@pixelco.io"
+          LI
+            A.font-semibold.text-amber-700.underline.underline-offset-2 "GDPR Compliance"
+          LI
+            A.font-semibold.text-amber-700.underline.underline-offset-2 "CCPA / CPRA"

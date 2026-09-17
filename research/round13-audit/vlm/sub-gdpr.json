@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"DIFFERENT\",\n  \"confidence\": 1.0,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"claim\": \"Image 2 contains a prominent yellow promotional banner at the top of the viewport ('Launch Offer — Get 100 free visitor identifications...') which is completely absent in Image 1.\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"claim\": \"The text content under section '1. Our Commitment to GDPR' is significantly different between the two images. Image 1 mentions being operated by Aiviral and specific regions (EEA, UK, Switzerland), whereas Image 2 has entirely different copy regarding the world's highest bar for personal-data protection and the Privacy Policy.\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The bullet points under section '2. Roles & Responsibilities' are present in Image 1 ('Pixelco as Data Controller', 'Pixelco as Data Processor') but are missing or not yet rendered in Image 2.\"\n    },\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"Due to the presence of the top banner in Image 2, the vertical positioning of the main content container (including the 'Back to Home' link and 'GDPR Compliance' heading) is shifted downwards compared to Image 1.\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789620424,
+  "id": "2026091712465816f1b32b08a64eaa",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "2026091712465816f1b32b08a64eaa",
+  "usage": {
+    "completion_tokens": 293,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2215
+  }
+}

@@ -1,0 +1,146 @@
+A.text-sm.text-primary.hover:underline.mb-6 "← Back to Home"
+H1.text-4xl.font-bold.text-foreground.mb-2 "Privacy Policy"
+P.text-muted-foreground.mb-10 "Last updated: April 14, 2026"
+DIV.prose.prose-sm.max-w-none.space-y-8
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "1. Introduction"
+    P.text-muted-foreground.leading-relaxed "Pixelco, operated by Aiviral ("we," "our," or "us"), is committed to protecting your priva"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "2. Definitions"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI
+        STRONG.text-foreground ""Customer""
+      LI
+        STRONG.text-foreground ""End User" / "Visitor""
+      LI
+        STRONG.text-foreground ""Pixel""
+      LI
+        STRONG.text-foreground ""Personal Data""
+      LI
+        STRONG.text-foreground ""Processing""
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "3. Information We Collect"
+    H3.text-lg.font-medium.text-foreground.mt-4 "3.1 Customer Information"
+    P.text-muted-foreground.leading-relaxed "When you register for a Pixelco account, we collect:"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-1
+      LI "Full name and email address"
+      LI "Company name, website URL, and industry"
+      LI "Billing and payment information (processed securely via third-party payment processors)"
+      LI "Account credentials and preferences"
+      LI "Communication records with our support team"
+    H3.text-lg.font-medium.text-foreground.mt-4 "3.2 Visitor Data (Collected via Pixel)"
+    P.text-muted-foreground.leading-relaxed "Our pixel technology collects the following from website visitors:"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-1
+      LI "IP address (used for geolocation, then hashed or anonymized)"
+      LI "Browser type, version, and language settings"
+      LI "Device type, operating system, and screen resolution"
+      LI "Pages visited, time on page, scroll depth, and click events"
+      LI "Referral source and UTM parameters"
+      LI "Cookies and similar tracking identifiers"
+    H3.text-lg.font-medium.text-foreground.mt-4 "3.3 Identity Resolution Data"
+    P.text-muted-foreground.leading-relaxed "We match anonymized visitor data against our proprietary database to identify visitors. Re"
+    H3.text-lg.font-medium.text-foreground.mt-4 "3.4 Automatically Collected Information"
+    P.text-muted-foreground.leading-relaxed "When you visit pixelco.io, we automatically collect standard web analytics data including "
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "4. How We Use Information"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI "To provide, operate, and maintain our visitor identification services"
+      LI "To match anonymous website traffic to known contact records and deliver identity-resolved "
+      LI "To deliver analytics, insights, and reporting to Customers"
+      LI "To process payments and manage subscriptions"
+      LI "To send transactional emails, service updates, and product announcements"
+      LI "To improve, personalize, and optimize our technology, algorithms, and services"
+      LI "To detect, prevent, and address fraud, abuse, and security issues"
+      LI "To comply with legal obligations and enforce our terms"
+      LI "To respond to Customer support requests"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "5. Legal Basis for Processing (EEA/UK)"
+    P.text-muted-foreground.leading-relaxed "Under the GDPR, we process Personal Data based on:"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI
+        STRONG.text-foreground "Contractual necessity:"
+      LI
+        STRONG.text-foreground "Legitimate interests:"
+      LI
+        STRONG.text-foreground "Consent:"
+      LI
+        STRONG.text-foreground "Legal obligation:"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "6. Data Sharing & Third Parties"
+    P.text-muted-foreground.leading-relaxed "We do not sell Personal Data to third parties. We share data only in the following circums"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI
+        STRONG.text-foreground "With Customers:"
+      LI
+        STRONG.text-foreground "Service Providers:"
+      LI
+        STRONG.text-foreground "Legal Requirements:"
+      LI
+        STRONG.text-foreground "Business Transfers:"
+      LI
+        STRONG.text-foreground "With Your Consent:"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "7. Cookies & Tracking Technologies"
+    P.text-muted-foreground.leading-relaxed "We use cookies, web beacons, and similar technologies to collect data and improve our serv"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "8. Data Retention"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI
+        STRONG.text-foreground "Customer Data:"
+      LI
+        STRONG.text-foreground "Visitor Identification Data:"
+      LI
+        STRONG.text-foreground "Behavioral/Analytics Data:"
+      LI
+        STRONG.text-foreground "Billing Records:"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "9. Data Security"
+    P.text-muted-foreground.leading-relaxed "We implement industry-standard technical and organizational security measures, including:"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-1
+      LI "Encryption in transit (TLS 1.2+) and at rest (AES-256)"
+      LI "Role-based access controls and least-privilege principles"
+      LI "Regular penetration testing and security audits"
+      LI "SOC 2 Type II compliant infrastructure"
+      LI "Automated threat detection and incident response procedures"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "10. Your Rights"
+    P.text-muted-foreground.leading-relaxed "Depending on your jurisdiction, you may have the following rights:"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI
+        STRONG.text-foreground "Access:"
+      LI
+        STRONG.text-foreground "Rectification:"
+      LI
+        STRONG.text-foreground "Erasure:"
+      LI
+        STRONG.text-foreground "Restriction:"
+      LI
+        STRONG.text-foreground "Portability:"
+      LI
+        STRONG.text-foreground "Objection:"
+      LI
+        STRONG.text-foreground "Withdraw Consent:"
+      LI
+        STRONG.text-foreground "Non-Discrimination:"
+    P.text-muted-foreground.leading-relaxed.mt-3
+      A.text-primary.hover:underline "support@pixelco.io"
+      A.text-primary.hover:underline "GDPR"
+      A.text-primary.hover:underline "CCPA"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "11. International Data Transfers"
+    P.text-muted-foreground.leading-relaxed "Your data may be transferred to and processed in countries other than your country of resi"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "12. Children's Privacy"
+    P.text-muted-foreground.leading-relaxed "Our services are not directed at individuals under 16. We do not knowingly collect Persona"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "13. Changes to This Policy"
+    P.text-muted-foreground.leading-relaxed "We may update this Privacy Policy from time to time. We will notify Customers of material "
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "14. Contact Us"
+    P.text-muted-foreground.leading-relaxed "If you have questions about this Privacy Policy, contact us:"
+    UL.list-none.pl-0.text-muted-foreground.space-y-1
+      LI
+        A.text-primary.hover:underline "support@pixelco.io"
+      LI
+        A.text-primary.hover:underline "support@pixelco.io"
+    P.text-muted-foreground.leading-relaxed.mt-3 "If unsatisfied with our response, you have the right to lodge a complaint with your local "

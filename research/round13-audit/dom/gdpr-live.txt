@@ -1,0 +1,104 @@
+A.text-sm.text-primary.hover:underline.mb-6 "← Back to Home"
+H1.text-4xl.font-bold.text-foreground.mb-2 "GDPR Compliance"
+P.text-muted-foreground.mb-10 "Last updated: April 14, 2026"
+DIV.prose.prose-sm.max-w-none.space-y-8
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "1. Our Commitment to GDPR"
+    P.text-muted-foreground.leading-relaxed "Pixelco, operated by Aiviral, is committed to complying with the General Data Protection R"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "2. Roles & Responsibilities"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI
+        STRONG.text-foreground "Pixelco as Data Controller:"
+      LI
+        STRONG.text-foreground "Pixelco as Data Processor:"
+      LI
+        STRONG.text-foreground "Joint Controller Scenarios:"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "3. Lawful Basis for Processing"
+    P.text-muted-foreground.leading-relaxed "We process Personal Data under one or more of the following legal bases:"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI
+        STRONG.text-foreground "Consent (Art. 6(1)(a)):"
+      LI
+        STRONG.text-foreground "Contractual Performance (Art. 6(1)(b)):"
+      LI
+        STRONG.text-foreground "Legitimate Interest (Art. 6(1)(f)):"
+      LI
+        STRONG.text-foreground "Legal Obligation (Art. 6(1)(c)):"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "4. Data Subject Rights"
+    P.text-muted-foreground.leading-relaxed "Under the GDPR, data subjects have the following rights, which we honor within 30 days of "
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI
+        STRONG.text-foreground "Right of Access (Art. 15):"
+      LI
+        STRONG.text-foreground "Right to Rectification (Art. 16):"
+      LI
+        STRONG.text-foreground "Right to Erasure (Art. 17):"
+      LI
+        STRONG.text-foreground "Right to Restriction (Art. 18):"
+      LI
+        STRONG.text-foreground "Right to Data Portability (Art. 20):"
+      LI
+        STRONG.text-foreground "Right to Object (Art. 21):"
+      LI
+        STRONG.text-foreground "Rights Related to Automated Decision-Making (Art. 22):"
+      LI
+        STRONG.text-foreground "Right to Withdraw Consent (Art. 7(3)):"
+    P.text-muted-foreground.leading-relaxed.mt-3
+      A.text-primary.hover:underline "support@pixelco.io"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "5. Data Processing Agreement (DPA)"
+    P.text-muted-foreground.leading-relaxed "We offer a GDPR-compliant Data Processing Agreement to all Customers. The DPA covers:"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-1
+      LI "Nature and purpose of processing"
+      LI "Types of Personal Data and categories of data subjects"
+      LI "Obligations and rights of the controller and processor"
+      LI "Sub-processor management and notification"
+      LI "Data breach notification procedures"
+      LI "Data deletion and return upon termination"
+      LI "Audit and inspection rights"
+    P.text-muted-foreground.leading-relaxed.mt-3
+      A.text-primary.hover:underline "support@pixelco.io"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "6. International Data Transfers"
+    P.text-muted-foreground.leading-relaxed "When Personal Data is transferred outside the EEA/UK, we ensure adequate protection throug"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-1
+      LI "Standard Contractual Clauses (SCCs) as approved by the European Commission (June 2021 vers"
+      LI "Supplementary technical and organizational measures as recommended by the EDPB"
+      LI "Transfer Impact Assessments (TIAs) for each transfer destination"
+      LI "Adequacy decisions where applicable"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "7. Data Protection Impact Assessments (DPIA)"
+    P.text-muted-foreground.leading-relaxed "We conduct Data Protection Impact Assessments for processing activities that are likely to"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "8. Sub-Processors"
+    P.text-muted-foreground.leading-relaxed "We maintain a list of approved sub-processors. We will notify Customers at least 30 days b"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "9. Data Breach Notification"
+    P.text-muted-foreground.leading-relaxed "In the event of a Personal Data breach, we will:"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-1
+      LI "Notify affected Customers without undue delay, and no later than 72 hours after becoming a"
+      LI "Provide details of the nature of the breach, categories and approximate number of data sub"
+      LI "Assist Customers in fulfilling their own breach notification obligations to supervisory au"
+      LI "Document all breaches in our internal breach register"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "10. Data Protection Officer"
+    P.text-muted-foreground.leading-relaxed "We have appointed a Data Protection Officer (DPO) who can be contacted at:"
+    UL.list-none.pl-0.text-muted-foreground.space-y-1
+      LI
+        A.text-primary.hover:underline "support@pixelco.io"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "11. Supervisory Authority"
+    P.text-muted-foreground.leading-relaxed
+      A.text-primary.hover:underline "European Data Protection Board website"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "12. Customer Responsibilities Under GDPR"
+    P.text-muted-foreground.leading-relaxed "If you are a Customer using Pixelco on a website that receives EEA/UK visitors, you must:"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI "Implement a GDPR-compliant cookie consent banner that obtains valid consent before the Pix"
+      LI "Include clear disclosure of Pixelco and its purposes in your privacy policy."
+      LI "Maintain records of processing activities as required under Art. 30."
+      LI "Promptly forward any data subject requests to us that relate to data processed through our"
+      LI "Ensure you have a lawful basis for any outreach to identified visitors."

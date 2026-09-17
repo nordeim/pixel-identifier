@@ -1,0 +1,120 @@
+A.text-sm.text-primary.hover:underline.mb-6 "← Back to Home"
+H1.text-4xl.font-bold.text-foreground.mb-2 "CCPA / CPRA Compliance"
+P.text-muted-foreground.mb-10 "Last updated: April 14, 2026"
+DIV.prose.prose-sm.max-w-none.space-y-8
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "1. Overview"
+    P.text-muted-foreground.leading-relaxed
+      A.text-primary.hover:underline "Privacy Policy"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "2. Categories of Personal Information Collected"
+    P.text-muted-foreground.leading-relaxed "In the preceding 12 months, we have collected the following categories of Personal Informa"
+    DIV.overflow-x-auto.mt-3
+      TABLE.w-full.text-sm.border.border-border
+        THEAD
+          TR.bg-muted/50
+            TH.text-left.p-3.border-b.border-border "Category"
+            TH.text-left.p-3.border-b.border-border "Examples"
+            TH.text-left.p-3.border-b.border-border "Collected"
+        TBODY.text-muted-foreground
+          TR.border-b.border-border
+            TD.p-3 "Identifiers"
+            TD.p-3 "Name, email, IP address, account ID"
+            TD.p-3 "Yes"
+          TR.border-b.border-border
+            TD.p-3 "Commercial Information"
+            TD.p-3 "Subscription plans, billing history, usage records"
+            TD.p-3 "Yes"
+          TR.border-b.border-border
+            TD.p-3 "Internet/Network Activity"
+            TD.p-3 "Browsing history, pages visited, referral sources, click data"
+            TD.p-3 "Yes"
+          TR.border-b.border-border
+            TD.p-3 "Geolocation Data"
+            TD.p-3 "Approximate location derived from IP address"
+            TD.p-3 "Yes"
+          TR.border-b.border-border
+            TD.p-3 "Professional/Employment Info"
+            TD.p-3 "Company name, job title (from identity resolution)"
+            TD.p-3 "Yes"
+          TR.border-b.border-border
+            TD.p-3 "Inferences"
+            TD.p-3 "Visitor intent, interest profiles, lead scoring"
+            TD.p-3 "Yes"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "3. Sources of Personal Information"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI
+        STRONG.text-foreground "Directly from you:"
+      LI
+        STRONG.text-foreground "Automatically:"
+      LI
+        STRONG.text-foreground "Third-party sources:"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "4. Business Purposes for Collection"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI "Providing, operating, and improving our identity resolution services"
+      LI "Processing transactions and managing Customer accounts"
+      LI "Matching anonymous visitors to known identity records for our Customers"
+      LI "Detecting and preventing fraud and security incidents"
+      LI "Debugging and repairing errors in our technology"
+      LI "Short-term transient use (e.g., contextualizing a current interaction)"
+      LI "Conducting internal research for product development"
+      LI "Verifying and maintaining quality of service"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "5. Sale & Sharing of Personal Information"
+    P.text-muted-foreground.leading-relaxed
+      STRONG.text-foreground "We do not "sell" Personal Information"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI "We share identified visitor information (email, name, company) with the Customer who owns "
+      LI "We do not share Personal Information with third parties for their own marketing purposes."
+      LI "We do not share Personal Information of consumers under 16 years of age."
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "6. Your California Privacy Rights"
+    P.text-muted-foreground.leading-relaxed "As a California resident, you have the following rights:"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI
+        STRONG.text-foreground "Right to Know (Access):"
+      LI
+        STRONG.text-foreground "Right to Delete:"
+      LI
+        STRONG.text-foreground "Right to Correct:"
+      LI
+        STRONG.text-foreground "Right to Opt-Out of Sale/Sharing:"
+      LI
+        STRONG.text-foreground "Right to Limit Use of Sensitive PI:"
+      LI
+        STRONG.text-foreground "Right to Non-Discrimination:"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "7. How to Exercise Your Rights"
+    P.text-muted-foreground.leading-relaxed "You can submit a verifiable consumer request by:"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI
+        A.text-primary.hover:underline "support@pixelco.io"
+      LI "Using the "Do Not Sell or Share My Personal Information" link in our website footer"
+    P.text-muted-foreground.leading-relaxed.mt-3
+      STRONG.text-foreground "Verification:"
+    P.text-muted-foreground.leading-relaxed.mt-3
+      STRONG.text-foreground "Response Timeline:"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "8. Retention"
+    P.text-muted-foreground.leading-relaxed
+      A.text-primary.hover:underline "Privacy Policy"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "9. Financial Incentives"
+    P.text-muted-foreground.leading-relaxed "We do not currently offer any financial incentive programs that require disclosure under t"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "10. Metrics (Annual Disclosure)"
+    P.text-muted-foreground.leading-relaxed "As required by the CCPA/CPRA, we will publish annual metrics on consumer requests received"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "11. Customer Responsibilities Under CCPA"
+    P.text-muted-foreground.leading-relaxed "If you are a Customer using Pixelco and your website receives California visitors, you mus"
+    UL.list-disc.pl-5.text-muted-foreground.space-y-2
+      LI "Include a "Do Not Sell or Share My Personal Information" link on your website if applicabl"
+      LI "Disclose your use of Pixelco and the categories of Personal Information collected/shared i"
+      LI "Honor consumer opt-out requests and communicate them to us promptly."
+      LI "Ensure any use of identified visitor data complies with the CCPA/CPRA, including purpose l"
+  SECTION
+    H2.text-xl.font-semibold.text-foreground "12. Contact"
+    P.text-muted-foreground.leading-relaxed
+      A.text-primary.hover:underline "support@pixelco.io"

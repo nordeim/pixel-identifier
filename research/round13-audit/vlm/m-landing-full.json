@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"EXACT_MATCH\",\n  \"confidence\": 0.98,\n  \"findings\": [\n    {\n      \"severity\": \"LOW\",\n      \"claim\": \"The 'Live Visitor Feed' component in image 2 displays dynamic data (email addresses and user names) that are not present in the reference image (image 1), which appears to be in an empty or loading state for that specific section. All static UI chrome, layout, typography, and colors are identical.\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789620694,
+  "id": "20260917125131f48e72fc52ae4306",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260917125131f48e72fc52ae4306",
+  "usage": {
+    "completion_tokens": 113,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 156
+    },
+    "total_tokens": 2035
+  }
+}

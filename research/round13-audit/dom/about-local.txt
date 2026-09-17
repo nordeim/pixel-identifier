@@ -1,0 +1,37 @@
+DIV.mx-auto.max-w-4xl.px-4.py-14
+  A.inline-flex.items-center.gap-1.5.text-sm
+    SVG
+  H1.mt-8.text-4xl.font-extrabold.leading-tight
+    SPAN.bg-primary.px-2.[box-decoration-break:clone] "visitor intelligence"
+  P.mt-6.max-w-2xl.text-lg.leading-relaxed "Pixelco is the first and only platform that lets websites identify anonymous visitors by t"
+  SECTION.mt-16
+    H2.text-2xl.font-extrabold.tracking-tight.text-foreground "Our Mission"
+    P.mt-4.text-[15px].leading-relaxed.text-muted-foreground "97% of website visitors leave without ever filling out a form. That's thousands of potenti"
+  SECTION.mt-16
+    H2.text-2xl.font-extrabold.tracking-tight.text-foreground "What We Stand For"
+    DIV.mt-6.grid.gap-5.sm:grid-cols-2
+      DIV.rounded-xl.border.border-border.bg-card
+        SPAN.flex.h-10.w-10.items-center
+          SVG
+        H3.mt-4.text-base.font-bold.text-foreground "Innovation First"
+        P.mt-2.text-sm.leading-relaxed.text-muted-foreground "We built the world's first email-level visitor identification — because IP lookups weren't"
+      DIV.rounded-xl.border.border-border.bg-card
+        SPAN.flex.h-10.w-10.items-center
+          SVG
+        H3.mt-4.text-base.font-bold.text-foreground "Privacy by Design"
+        P.mt-2.text-sm.leading-relaxed.text-muted-foreground "Our technology is 100% cookieless. We respect user privacy while delivering actionable ins"
+      DIV.rounded-xl.border.border-border.bg-card
+        SPAN.flex.h-10.w-10.items-center
+          SVG
+        H3.mt-4.text-base.font-bold.text-foreground "Global Scale"
+        P.mt-2.text-sm.leading-relaxed.text-muted-foreground "We serve businesses in 50+ countries, identifying visitors across every continent."
+      DIV.rounded-xl.border.border-border.bg-card
+        SPAN.flex.h-10.w-10.items-center
+          SVG
+        H3.mt-4.text-base.font-bold.text-foreground "Results-Driven"
+        P.mt-2.text-sm.leading-relaxed.text-muted-foreground "Every feature we ship is measured by one metric: does it help our customers convert more l"
+  SECTION.mt-16.rounded-2xl.bg-gradient-to-br.from-amber-400
+    H2.text-balance.text-2xl.font-extrabold.tracking-tight "See who's visiting your site."
+    P.mx-auto.mt-3.max-w-xl.text-amber-950/80 "Join the businesses turning anonymous traffic into real, actionable leads — starting with "
+    A.inline-flex.items-center.justify-center.gap-2
+      SVG

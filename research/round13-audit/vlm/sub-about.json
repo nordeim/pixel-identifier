@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"DIFFERENT\",\n  \"confidence\": 0.98,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"claim\": \"Image 2 contains a prominent yellow promotional banner at the top ('Launch Offer — Get 100 free visitor identifications...') that is completely absent in Image 1.\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"claim\": \"The typography for the highlighted words 'visitor intelligence' differs significantly: Image 1 uses standard text coloring (yellow text on white background), while Image 2 applies a solid yellow background highlight block behind the text.\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"The color of the 'Back to Home' link and arrow is different; it appears as a bright yellow/gold in Image 1 but a darker orange/amber in Image 2.\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"claim\": \"Due to the added top banner in Image 2, the vertical positioning of all page content (header, hero section, mission section) is shifted downwards compared to Image 1.\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789620388,
+  "id": "20260917124623d536514af2de423e",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260917124623d536514af2de423e",
+  "usage": {
+    "completion_tokens": 250,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1922,
+    "prompt_tokens_details": {
+      "cached_tokens": 2
+    },
+    "total_tokens": 2172
+  }
+}

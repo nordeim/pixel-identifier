@@ -1,0 +1,128 @@
+DIV
+  DIV
+    OL.fixed.top-0.z-[100].flex
+  SECTION
+  DIV.min-h-screen.bg-background
+    NAV.sticky.top-0.z-50.bg-background/90
+      DIV.container.mx-auto.flex.items-center
+        A.flex.items-center.gap-2.5
+          IMG.w-8.h-8
+          SPAN.text-lg.font-bold.text-foreground.tracking-tight "Pixelco"
+          SPAN.text-xs.text-muted-foreground.italic.translate-y-[3px] "By Ai Viral"
+        DIV.hidden.md:flex.items-center.gap-7
+          A.text-sm.font-medium.text-muted-foreground.hover:text-foreground "Benefits"
+          A.text-sm.font-medium.text-muted-foreground.hover:text-foreground "How It Works"
+          A.text-sm.font-medium.text-muted-foreground.hover:text-foreground "Pricing"
+          A.text-sm.font-medium.text-muted-foreground.hover:text-foreground "FAQ"
+        DIV.hidden.md:flex.items-center.gap-3
+          A
+            BUTTON.inline-flex.items-center.justify-center.gap-2 "Log In"
+          A
+            BUTTON.inline-flex.items-center.justify-center.gap-2 "Start Identifying"
+        BUTTON.md:hidden.text-foreground
+          SVG
+    DIV.container.mx-auto.px-6.py-16
+      A.text-sm.text-primary.hover:underline.mb-6 "← Back to Home"
+      DIV.mb-16
+        H1.text-4xl.sm:text-5xl.font-bold.text-foreground
+          SPAN.text-gradient-hero "visitor intelligence."
+        P.text-lg.text-muted-foreground.max-w-2xl.leading-relaxed "Pixelco is the first and only platform that lets websites identify anonymous visitors by t"
+      SECTION.mb-16
+        H2.text-2xl.font-bold.text-foreground.mb-3 "Our Mission"
+        P.text-muted-foreground.leading-relaxed.text-base "97% of website visitors leave without ever filling out a form. That's thousands of potenti"
+      SECTION.mb-16
+        H2.text-2xl.font-bold.text-foreground.mb-6 "What We Stand For"
+        DIV.grid.sm:grid-cols-2.gap-5
+          DIV.border.border-border.rounded-xl.p-6
+            SVG
+            H3.text-lg.font-semibold.text-foreground.mb-2 "Innovation First"
+            P.text-sm.text-muted-foreground.leading-relaxed "We built the world's first email-level visitor identification — because IP lookups weren't"
+          DIV.border.border-border.rounded-xl.p-6
+            SVG
+            H3.text-lg.font-semibold.text-foreground.mb-2 "Privacy by Design"
+            P.text-sm.text-muted-foreground.leading-relaxed "Our technology is 100% cookieless. We respect user privacy while delivering actionable ins"
+          DIV.border.border-border.rounded-xl.p-6
+            SVG
+            H3.text-lg.font-semibold.text-foreground.mb-2 "Global Scale"
+            P.text-sm.text-muted-foreground.leading-relaxed "We serve businesses in 50+ countries, identifying visitors across every continent."
+          DIV.border.border-border.rounded-xl.p-6
+            SVG
+            H3.text-lg.font-semibold.text-foreground.mb-2 "Results-Driven"
+            P.text-sm.text-muted-foreground.leading-relaxed "Every feature we ship is measured by one metric: does it help our customers convert more l"
+      SECTION.mb-16
+        DIV.grid.grid-cols-3.gap-6.text-center
+          DIV
+            P.text-3xl.font-extrabold.text-gradient-hero "50+"
+            P.text-sm.text-muted-foreground.mt-1 "Countries Served"
+          DIV
+            P.text-3xl.font-extrabold.text-gradient-hero "10M+"
+            P.text-sm.text-muted-foreground.mt-1 "Visitors Identified"
+          DIV
+            P.text-3xl.font-extrabold.text-gradient-hero "2,000+"
+            P.text-sm.text-muted-foreground.mt-1 "Businesses Trust Us"
+      SECTION.mb-16
+        H2.text-2xl.font-bold.text-foreground.mb-3 "Our Team"
+        P.text-muted-foreground.leading-relaxed.mb-6 "We're a lean, global team of engineers, data scientists, and growth experts obsessed with "
+        DIV.flex.items-center.gap-3
+          SVG
+          P.text-sm.text-muted-foreground
+            A.text-primary.hover:underline "support@pixelco.io"
+      DIV.text-center.py-10.border-t.border-border
+        H2.text-2xl.font-bold.text-foreground.mb-3 "Ready to see who's visiting your site?"
+        P.text-muted-foreground.mb-6 "Start identifying anonymous visitors today — it's free."
+        A
+          BUTTON.inline-flex.items-center.justify-center.gap-2 "Get Started Free"
+    FOOTER.mt-20
+      DIV.border-t.border-border.bg-background
+        DIV.container.mx-auto.px-6.py-14
+          DIV.grid.grid-cols-1.sm:grid-cols-2.md:grid-cols-4
+            DIV.col-span-2.md:col-span-4.lg:col-span-1.mb-4
+              A.flex.items-center.gap-2.mb-4
+                IMG.w-8.h-8
+                SPAN.text-lg.font-bold.text-foreground "Pixelco"
+                SPAN.text-xs.text-muted-foreground.italic.translate-y-[3px] "By Ai Viral"
+              P.text-sm.text-muted-foreground.leading-relaxed.max-w-xs "The world's first B2C email identification platform. Know who's visiting your site — by th"
+              DIV.flex.items-center.gap-3
+                A.w-8.h-8.rounded-md.bg-card
+                  SVG
+                A.w-8.h-8.rounded-md.bg-card
+                  SVG
+                A.w-8.h-8.rounded-md.bg-card
+                  SVG
+            DIV
+              H4.text-sm.font-semibold.text-foreground.mb-4 "Product"
+              UL.space-y-2.5
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Features"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Pricing"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "How It Works"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Documentation"
+            DIV
+              H4.text-sm.font-semibold.text-foreground.mb-4 "Company"
+              UL.space-y-2.5
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "About"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Contact"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Careers"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Blog"
+            DIV
+              H4.text-sm.font-semibold.text-foreground.mb-4 "Legal"
+              UL.space-y-2.5
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Privacy Policy"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "Terms of Service"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "GDPR"
+                LI
+                  A.text-sm.text-muted-foreground.hover:text-foreground.transition-colors "CCPA"
+      DIV.border-t.border-border.bg-card/50
+        DIV.container.mx-auto.px-6.py-5
+          P.text-xs.text-muted-foreground "© 2026 Pixelco. All rights reserved."
+          P.text-xs.text-muted-foreground "Made with precision for marketers who want results."

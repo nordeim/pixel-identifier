@@ -1,0 +1,45 @@
+DIV.mx-auto.max-w-3xl.px-4.py-14
+  A.inline-flex.items-center.gap-1.5.text-sm
+    SVG
+  HEADER.mt-6
+    DIV.flex.flex-wrap.items-center.gap-3
+      SPAN.inline-flex.items-center.rounded-full.bg-amber-100 "Fintech"
+      SPAN.flex.items-center.gap-1.text-xs
+        SVG
+      TIME.text-xs.text-muted-foreground "Sep 10, 2026"
+    H1.mt-4.text-3xl.font-extrabold.leading-tight "FLC Markets: Start a Free Prop Trading Challenge and Manage Funded Capital"
+    P.mt-4.text-lg.leading-relaxed.text-muted-foreground "FLC Markets lets traders start a free $100,000 qualification challenge. Hit the profit tar"
+  DIV.mt-10
+    DIV.space-y-5.text-[15px].leading-relaxed.text-muted-foreground
+      P
+        SPAN "Trading your own capital is the single biggest bottleneck in a trader's career. You can ha"
+        A.font-semibold.text-amber-700.underline.underline-offset-2 "FLC Markets"
+        SPAN "was built to solve."
+      P
+        STRONG "How the free challenge works"
+      P
+        SPAN "FLC Markets gives every applicant a free $100,000 qualification challenge — no entry fee, "
+      P
+        SPAN "The rules are strict by design. A funded seat is real capital, and the challenge filters f"
+      P
+        STRONG "Why we're writing about it on the Pixelco blog"
+      P
+        SPAN "Two reasons. First, our audiences overlap heavily: performance marketers, fintech operator"
+        A.font-semibold.text-amber-700.underline.underline-offset-2 "flcmarkets.com"
+        SPAN "."
+      P
+        SPAN "Second — and more interesting to us — FLC Markets is a case study in high-intent traffic. "
+      P
+        STRONG "The pattern behind funded trading and visitor identification"
+      P
+        SPAN "Both products monetize an audience the internet has always treated as anonymous. Prop firm"
+      P
+        SPAN "If you run a fintech or trading-adjacent site, the playbook is straightforward. Install th"
+      P
+        STRONG "What to watch before you start"
+      P
+        SPAN "Read the challenge rules carefully: profit target, maximum daily loss, overall drawdown, a"
+      P
+        SPAN "Whether you take the challenge or just file the pattern away, the lesson generalizes: the "
+      P.border-t.border-border/60.pt-5.text-sm
+        A.font-semibold.text-amber-700.underline.underline-offset-2 "Try Pixelco free"

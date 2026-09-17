@@ -1,0 +1,134 @@
+DIV.text-center.mb-14
+  H1.text-4xl.md:text-5xl.font-bold.text-foreground "The Pixelco Blog"
+  P.text-lg.text-muted-foreground.max-w-2xl.mx-auto "Insights on visitor identification, lead generation, and modern marketing — from the team "
+DIV.grid.gap-8.md:grid-cols-2.lg:grid-cols-3
+  ARTICLE
+    A.group.block.h-full.rounded-xl
+      DIV.flex.items-center.gap-2.mb-3
+        SPAN.inline-flex.items-center.gap-1.text-xs
+          SVG
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.text-lg.font-semibold.text-foreground.group-hover:text-primary "FLC Markets: Start a Free Prop Trading Challenge and Manage Funded Capital"
+      P.text-sm.text-muted-foreground.leading-relaxed.mb-4 "FLC Markets lets traders start a free $100,000 qualification challenge. Hit the profit tar"
+      DIV.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "September 10, 2026"
+        SPAN.text-sm.text-primary.font-medium.flex
+          SVG
+  ARTICLE
+    A.group.block.h-full.rounded-xl
+      DIV.flex.items-center.gap-2.mb-3
+        SPAN.inline-flex.items-center.gap-1.text-xs
+          SVG
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.text-lg.font-semibold.text-foreground.group-hover:text-primary "TalkToMe.bio: How Influencers Turn Their Link in Bio Into a Paid Lead Magnet"
+      P.text-sm.text-muted-foreground.leading-relaxed.mb-4 "TalkToMe.bio is a link-in-bio tool that lets influencers charge followers for guaranteed r"
+      DIV.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "May 10, 2026"
+        SPAN.text-sm.text-primary.font-medium.flex
+          SVG
+  ARTICLE
+    A.group.block.h-full.rounded-xl
+      DIV.flex.items-center.gap-2.mb-3
+        SPAN.inline-flex.items-center.gap-1.text-xs
+          SVG
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.text-lg.font-semibold.text-foreground.group-hover:text-primary "PersonPages: Look Up Anyone's Salary, Net Worth, Address & Public Records"
+      P.text-sm.text-muted-foreground.leading-relaxed.mb-4 "PersonPages is a global people search engine that lets you look up almost anyone — their e"
+      DIV.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "May 2, 2026"
+        SPAN.text-sm.text-primary.font-medium.flex
+          SVG
+  ARTICLE
+    A.group.block.h-full.rounded-xl
+      DIV.flex.items-center.gap-2.mb-3
+        SPAN.inline-flex.items-center.gap-1.text-xs
+          SVG
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.text-lg.font-semibold.text-foreground.group-hover:text-primary "AIViral: Generate B2B Leads and Run AI Outreach Campaigns on Autopilot"
+      P.text-sm.text-muted-foreground.leading-relaxed.mb-4 "Meet AIViral — our sister platform that lets you scrape unlimited B2B leads in any niche w"
+      DIV.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "April 18, 2026"
+        SPAN.text-sm.text-primary.font-medium.flex
+          SVG
+  ARTICLE
+    A.group.block.h-full.rounded-xl
+      DIV.flex.items-center.gap-2.mb-3
+        SPAN.inline-flex.items-center.gap-1.text-xs
+          SVG
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.text-lg.font-semibold.text-foreground.group-hover:text-primary "How to Identify Anonymous Website Visitors and Turn Them Into Leads"
+      P.text-sm.text-muted-foreground.leading-relaxed.mb-4 "97% of website visitors leave without converting. Learn how modern visitor identification "
+      DIV.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "April 10, 2026"
+        SPAN.text-sm.text-primary.font-medium.flex
+          SVG
+  ARTICLE
+    A.group.block.h-full.rounded-xl
+      DIV.flex.items-center.gap-2.mb-3
+        SPAN.inline-flex.items-center.gap-1.text-xs
+          SVG
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.text-lg.font-semibold.text-foreground.group-hover:text-primary "Website Visitor Tracking vs. Google Analytics: What You're Missing"
+      P.text-sm.text-muted-foreground.leading-relaxed.mb-4 "Google Analytics tells you what happened on your site. Visitor tracking tells you who did "
+      DIV.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "April 5, 2026"
+        SPAN.text-sm.text-primary.font-medium.flex
+          SVG
+  ARTICLE
+    A.group.block.h-full.rounded-xl
+      DIV.flex.items-center.gap-2.mb-3
+        SPAN.inline-flex.items-center.gap-1.text-xs
+          SVG
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.text-lg.font-semibold.text-foreground.group-hover:text-primary "The 7 Best Website Visitor Identification Tools in 2026 (Compared)"
+      P.text-sm.text-muted-foreground.leading-relaxed.mb-4 "From Pixelco to Clearbit to Leadfeeder — we break down the top visitor identification plat"
+      DIV.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "March 28, 2026"
+        SPAN.text-sm.text-primary.font-medium.flex
+          SVG
+  ARTICLE
+    A.group.block.h-full.rounded-xl
+      DIV.flex.items-center.gap-2.mb-3
+        SPAN.inline-flex.items-center.gap-1.text-xs
+          SVG
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.text-lg.font-semibold.text-foreground.group-hover:text-primary "How to Grow Your Email List 10x Faster with Visitor Identification"
+      P.text-sm.text-muted-foreground.leading-relaxed.mb-4 "Stop relying solely on opt-in forms. Discover how visitor identification technology can su"
+      DIV.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "March 20, 2026"
+        SPAN.text-sm.text-primary.font-medium.flex
+          SVG
+  ARTICLE
+    A.group.block.h-full.rounded-xl
+      DIV.flex.items-center.gap-2.mb-3
+        SPAN.inline-flex.items-center.gap-1.text-xs
+          SVG
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.text-lg.font-semibold.text-foreground.group-hover:text-primary "Retargeting Without Third-Party Cookies: The Identity-First Approach"
+      P.text-sm.text-muted-foreground.leading-relaxed.mb-4 "With third-party cookies dying, marketers need new strategies. Learn how first-party ident"
+      DIV.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "March 12, 2026"
+        SPAN.text-sm.text-primary.font-medium.flex
+          SVG
+  ARTICLE
+    A.group.block.h-full.rounded-xl
+      DIV.flex.items-center.gap-2.mb-3
+        SPAN.inline-flex.items-center.gap-1.text-xs
+          SVG
+        SPAN.flex.items-center.gap-1.text-xs
+          SVG
+      H2.text-lg.font-semibold.text-foreground.group-hover:text-primary "GDPR-Compliant Visitor Tracking: A Complete Guide for Marketers"
+      P.text-sm.text-muted-foreground.leading-relaxed.mb-4 "Yes, you can identify website visitors and stay compliant. Here's exactly how to set up vi"
+      DIV.flex.items-center.justify-between
+        TIME.text-xs.text-muted-foreground "March 5, 2026"
+        SPAN.text-sm.text-primary.font-medium.flex
+          SVG

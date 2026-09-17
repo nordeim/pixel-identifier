@@ -1,0 +1,112 @@
+DIV.mx-auto.max-w-3xl.px-4.py-14
+  A.inline-flex.items-center.gap-1.5.text-sm
+    SVG
+  H1.mt-8.text-3xl.font-extrabold.tracking-tight "Terms of Service"
+  P.mt-3.text-sm.text-muted-foreground "Last updated: April 14, 2026"
+  DIV.mt-10.space-y-10
+    SECTION
+      H2.text-lg.font-bold.text-foreground "1. Acceptance of Terms"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "By accessing or using Pixelco ("the Services"), you agree to be bound by these Terms of Se"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "2. Description of Service"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "Pixelco provides a website visitor identification platform. Customers install a pixel scri"
+        P "Identification capabilities depend on the traffic profile of each website; match rates var"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "3. Eligibility"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "You must be at least 18 years old and able to form a binding contract to use the Services."
+    SECTION
+      H2.text-lg.font-bold.text-foreground "4. Account Registration & Security"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        UL.ml-5.list-disc.space-y-1.5
+          LI "You must provide accurate, complete, and current registration information."
+          LI "You are responsible for all activities that occur under your account."
+          LI "You are responsible for maintaining the confidentiality of your credentials and for notify"
+          LI "One person or legal entity may not maintain multiple accounts to circumvent plan limits or"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "5. Acceptable Use Policy"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "You agree to use Pixelco only for lawful purposes. You shall NOT:"
+        UL.ml-5.list-disc.space-y-1.5
+          LI "Use identified data for harassment, stalking, or discrimination."
+          LI "Send spam in violation of CAN-SPAM, CASL, or equivalent laws."
+          LI "Use the Services on websites you don’t own or have authorization to instrument."
+          LI "Reverse-engineer our proprietary algorithms or database."
+          LI "Resell or redistribute identified visitor data without written consent."
+          LI "Violate applicable data protection laws (GDPR, CCPA, PIPEDA, etc.)."
+          LI "Deploy the pixel on websites directed at children under 16."
+    SECTION
+      H2.text-lg.font-bold.text-foreground "6. Customer Compliance Obligations"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "As a Customer, you are responsible for:"
+        UL.ml-5.list-disc.space-y-1.5
+          LI
+            A.font-semibold.text-amber-700.underline.underline-offset-2 "privacy policy"
+          LI "Obtaining required consents from visitors as mandated by applicable laws."
+          LI "Honoring opt-out, deletion, and access requests from identified individuals."
+          LI "Ensuring your outreach to identified visitors complies with applicable marketing and anti-"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "7. Intellectual Property & Data Ownership"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Your Data"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "You retain all rights to the content on your website and your account information. You may"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Our Technology"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "The Pixelco platform, including the pixel, algorithms, identity resolution engine, and das"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Identified Data"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "Identity-resolution results generated from your website traffic are licensed to you for yo"
+        DIV
+          H3.mt-2.text-[15px].font-semibold.text-foreground "Aggregated Data"
+          DIV.mt-1.5.space-y-2.text-[15px].leading-relaxed "We may use de-identified, aggregated statistics (never tied to an identifiable individual "
+    SECTION
+      H2.text-lg.font-bold.text-foreground "8. Payment, Billing & Refunds"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        UL.ml-5.list-disc.space-y-1.5
+          LI "Paid plans are billed monthly or annually as selected."
+          LI "All fees are in USD and exclusive of applicable taxes."
+          LI "All fees are non-refundable except as required by law."
+          LI "Pricing changes require at least 30 days’ notice."
+          LI "Failure to pay may result in account suspension after a 7-day grace period."
+        P "Overage: on paid plans, identifications beyond the monthly allowance continue to be delive"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "9. Service Level & Availability"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "We target high availability but do not guarantee uninterrupted service. We may modify or d"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "10. Data Processing & Privacy"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "Our collection and handling of data is described in the Privacy Policy, which is incorpora"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "11. Disclaimers & Limitation of Liability"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "THE SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRE"
+        P "TO THE MAXIMUM EXTENT PERMITTED BY LAW, OUR AGGREGATE LIABILITY ARISING OUT OF OR RELATING"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "12. Indemnification"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "You agree to indemnify and hold harmless Pixelco and its affiliates from any claims, damag"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "13. Termination"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        UL.ml-5.list-disc.space-y-1.5
+          LI "You may cancel your account at any time."
+          LI "We may suspend or terminate for violation of these Terms or non-payment."
+          LI "Data is retained for 30 days post-termination for export, then deleted."
+          LI "Sections 7, 11, 12, 14, and 15 survive termination."
+    SECTION
+      H2.text-lg.font-bold.text-foreground "14. Governing Law"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "These Terms are governed by the laws of the State of Delaware, USA, without regard to conf"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "15. Dispute Resolution"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P "The parties will first attempt to resolve any dispute informally for at least 30 days. Unr"
+    SECTION
+      H2.text-lg.font-bold.text-foreground "16. Contact"
+      DIV.mt-3.space-y-3.text-[15px].leading-relaxed
+        P
+          A.font-semibold.text-amber-700.underline.underline-offset-2 "support@pixelco.io"
