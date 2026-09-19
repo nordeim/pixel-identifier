@@ -890,3 +890,35 @@ Stage Summary:
 - Next: atomic commits + push (Task R18-ship), then Round-19 can
   extend the geometry probes to the marketing bundle and re-verify
   with the R18 toolchain.
+
+Work Log (R18-ship):
+- Final gate re-run GREEN: 519 tests / 52 files, lint, typecheck,
+  build 27 routes (+ standalone). One environmental flake (prisma
+  schema-engine panic — spawn EAGAIN from lingering browser daemons)
+  resolved by killing the daemons; the suite then passed clean.
+  Secret scan: no key material in the tree (only skills/ docs
+  referencing the key format).
+- 13 atomic commits on main (a2f5ede..0cb0efb): evidence, settings
+  A1, auth space-y seam A2, install A3, pricing, comparison/features,
+  how-it-works, feed, hero, chrome/wordmark, cta/banner/social, test
+  pins (+35), docs (PAD v1.17, session_15, plan log, AGENTS/CLAUDE/
+  README).
+- Push via docs/ssh_git_wrapper_v3.py + paramiko shim (PATH
+  prepended), --remote git@github.com:nordeim/pixel-identifier.git:
+  dry-run green (e77bde8..0cb0efb), real push verified (remote
+  refs/heads/main @ 0cb0efb == local HEAD), remote-tracking ref
+  synced. Deploy key fingerprint verified before use
+  (SHA256:HpVRkv3e8k0HgD6SKijmGSmjs/ZRRJxrZaAm6y6/Rns); operator key
+  residue shredded (random overwrite + remove). No key material on
+  disk.
+
+Stage Summary:
+- Round-18 fully closed and shipped: main @ 0cb0efb on GitHub, PAD
+  v1.17, 519/52 tests. The live is stable across three consecutive
+  audits; the clone's app bundle now matches it in GEOMETRY (pixel-
+  exact settings card, 11px auth gaps) and the marketing bundle's
+  class emission is pinned to the live's current build.
+- Next: Round-19 drift watch with the R18 toolchain (tokenizer +
+  class-inventory + geometry probes — extend the geometry probes to
+  the marketing bundle); deeper functional parity (domains validation
+  states, visitors sheet interactions) as an alternative track.
