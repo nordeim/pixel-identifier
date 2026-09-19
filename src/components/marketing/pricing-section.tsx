@@ -32,7 +32,15 @@ export function PricingSection() {
           </p>
 
           {/* Billing cycle toggle — the live's iOS switch, defaulting to
-              annual. Labels sit on both sides; Save 20% is accent-yellow. */}
+              annual. Labels sit on both sides; Save 20% is accent-yellow.
+              R20-F1: the three real sub-fixes are the off-branch track
+              (bg-muted), the off-branch knob (translate-x-0) and the
+              monthly sub-line below — the live's toggle button is a
+              plain <button aria-label>, but the clone KEEPS its switch
+              semantics + knob aria-hidden per the D5 ruling (invisible
+              functional a11y chrome — same category as the trend
+              chart's role="img"); the R20 functional probe confirmed
+              these are the ONLY remaining attr divergences. */}
           <div className="flex items-center justify-center gap-3 mt-8">
             <span className={cycle === 'monthly' ? 'text-sm font-medium text-foreground' : 'text-sm font-medium text-muted-foreground'}>
               Monthly
@@ -46,7 +54,7 @@ export function PricingSection() {
               className={
                 cycle === 'annual'
                   ? 'relative w-14 h-7 rounded-full transition-colors duration-300 bg-primary'
-                  : 'relative w-14 h-7 rounded-full transition-colors duration-300 bg-muted-foreground/30'
+                  : 'relative w-14 h-7 rounded-full transition-colors duration-300 bg-muted'
               }
             >
               <span
@@ -54,7 +62,7 @@ export function PricingSection() {
                 className={
                   cycle === 'annual'
                     ? 'absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform duration-300 translate-x-7'
-                    : 'absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform duration-300'
+                    : 'absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform duration-300 translate-x-0'
                 }
               />
             </button>
@@ -104,14 +112,21 @@ export function PricingSection() {
                       $0 — only the paid cards carry it. */}
                   {plan.monthlyPrice > 0 && <span className="text-muted-foreground text-sm">/mo</span>}
                 </div>
-                {/* R18: the live ALWAYS renders this line (empty for the
-                    Free card / monthly mode, "billed annually" for
-                    paid-annual) — the spacer keeps every card's CTA on the
-                    same baseline. */}
+                {/* R18: the live ALWAYS renders this line — the spacer
+                    keeps every card's CTA on the same baseline. R20-F1
+                    corrected branch pair: paid cards read "billed
+                    annually" (annual) / "billed monthly" (monthly); the
+                    Free card keeps the spacer (the live's children: " ").
+                    The R18 note claiming an empty line in monthly mode
+                    was an unverified assumption — the R20 runtime probe
+                    showed the live's `monthlyPrice>0 && !annual →
+                    "billed monthly"` branch. */}
                 <p className="text-xs text-muted-foreground mb-4">
-                  {cycle === 'annual' && plan.monthlyPrice > 0
-                    ? 'billed annually'
-                    : '\u00A0'}
+                  {plan.monthlyPrice > 0 ? (
+                    cycle === 'annual' ? 'billed annually' : 'billed monthly'
+                  ) : (
+                    '\u00A0'
+                  )}
                 </p>
 
                 {/* R10-F4: the live's CTA matrix — ONLY Growth carries the
