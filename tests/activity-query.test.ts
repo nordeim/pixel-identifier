@@ -52,18 +52,19 @@ async function seed() {
   return user
 }
 
-describe('listActivity (F-25: cursor pagination, shared query)', () => {
+describe('listActivity (F-25/R22-F6: 50-per-page offset pagination, shared query)', () => {
   beforeEach(async () => {
     await db.user.deleteMany()
   })
 
-  it('returns the newest page with a nextCursor', async () => {
+  it('returns the newest 50-event page with the exact count', async () => {
     const user = await seed()
 
-    const first = await listActivity(user.id, { take: 60 })
+    const first = await listActivity(user.id)
 
-    expect(first.events).toHaveLength(60)
-    expect(first.nextCursor).not.toBeNull()
+    expect(first.events).toHaveLength(50)
+    expect(first.count).toBe(101)
+    expect(first.pageCount).toBe(3)
     // Newest first.
     expect(first.events[0].path).toBe('/identified-pageview')
     expect(first.events[0].name).toBe('pageview')
@@ -79,7 +80,7 @@ describe('listActivity (F-25: cursor pagination, shared query)', () => {
   it('R7-F1: pageview rows from identified visitors show the anonymous id, not the email', async () => {
     const user = await seed()
 
-    const first = await listActivity(user.id, { take: 60 })
+    const first = await listActivity(user.id)
 
     // The newest event is a pageview from the identified visitor.
     const pageview = first.events[0]
@@ -94,19 +95,22 @@ describe('listActivity (F-25: cursor pagination, shared query)', () => {
     expect(identification?.anonymousId).toBeNull()
   })
 
-  it('walks the cursor to the remaining events', async () => {
+  it('pages by offset with no overlap (the live\'s range model)', async () => {
     const user = await seed()
 
-    const first = await listActivity(user.id, { take: 60 })
-    const second = await listActivity(user.id, { take: 60, cursor: first.nextCursor ?? undefined })
+    const first = await listActivity(user.id)
+    const second = await listActivity(user.id, { page: 1 })
+    const third = await listActivity(user.id, { page: 2 })
 
-    expect(second.events).toHaveLength(41)
-    expect(second.nextCursor).toBeNull()
+    expect(second.events).toHaveLength(50)
+    expect(second.events[0].path).toBe('/page-50')
+    expect(third.events).toHaveLength(1)
+    expect(third.events[0].path).toBe('/page-0')
     // Contiguous, no overlap, still descending.
-    expect(second.events[0].path).toBe('/page-40')
-    expect(second.events[40].path).toBe('/page-0')
     const firstIds = new Set(first.events.map((e) => e.id))
     expect(second.events.every((e) => !firstIds.has(e.id))).toBe(true)
+    const secondIds = new Set(second.events.map((e) => e.id))
+    expect(third.events.every((e) => !secondIds.has(e.id))).toBe(true)
   })
 
   it('scopes strictly to the requesting user', async () => {
@@ -114,9 +118,10 @@ describe('listActivity (F-25: cursor pagination, shared query)', () => {
     const stranger = await db.user.create({
       data: { email: `stranger-${crypto.randomUUID()}@test.example`, passwordHash: 'x' },
     })
-    const result = await listActivity(stranger.id, { take: 60 })
+    const result = await listActivity(stranger.id)
     expect(result.events).toHaveLength(0)
-    expect(result.nextCursor).toBeNull()
+    expect(result.count).toBe(0)
+    expect(result.pageCount).toBe(0)
     void user
   })
 })
