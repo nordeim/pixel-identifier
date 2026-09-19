@@ -273,6 +273,53 @@ make it pass — fix the code.
   links + ONE `h-10 w-full` gradient CTA (Start Identifying → /signup
   per the standing CTA mapping) — the live ships NO Log In button in
   the dropdown. Pinned by `tests/visitors-r21-parity.test.tsx`.
+- **R22: the Activity Log runs the LIVE's pagination model (v1.21).**
+  The live's bundle (component `hxe`) ships `Jc=50` — 50-per-page OFFSET
+  pagination with `useState(0)` page index (NEVER in the URL), `count
+  exact`, and a footer ONLY when count > 50: container `flex items-center
+  justify-between px-5 py-3 border-t border-border`, left `text-xs
+  text-muted-foreground` "1–50 of N", ghost `icon` chevron buttons
+  (`h-7 w-7`, disabled at the bounds) + `text-xs text-muted-foreground
+  px-2` "Page X of Y" between them. Page advance REPLACES the list (a
+  py-24 spinner mid-swap). NO polling, NO load-older, NO cursor — do
+  NOT re-introduce the pre-R22 5s poll / 60-per-page cursor walk.
+  `listActivity` (page mode + count) is the single seam shared by the
+  server page (page 0) and `/api/activity`. Pinned by
+  `tests/activity-r22-parity.test.tsx` + `tests/activity-query.test.ts`.
+- **R22: the first-run EMPTY STATES are the live's exact branches
+  (v1.21).** Visitors: when the current tab's FILTERED count is 0, a
+  `<p class="text-sm text-muted-foreground py-12 text-center">No
+  visitors identified yet. Install your pixel to get started.</p>`
+  REPLACES the entire table wrapper (direct child of the `p-0` card
+  content — search+confidence+source all feed the count, so a no-match
+  SEARCH shows the install message; "No visitors match your filters."
+  only materializes pagination-past-end). Activity: the same `<p>` with
+  "No activity yet. Install your pixel to start tracking.". Top Pages:
+  `py-8` + "No page data yet". Recent Identifications: class order
+  `text-sm text-muted-foreground py-12 text-center`. Domains: a plain
+  `div` `text-center py-12 text-sm text-muted-foreground` inside the
+  `p-0` card. The visitors search placeholder varies by tab ("Search
+  companies..." b2b / "Search emails, companies..." else). Pinned by
+  `tests/dashboard-empty-r22-parity.test.tsx`.
+- **R22: the install page's zero-domains path is the live's
+  interstitial (v1.21).** Normal header ("Install Your Pixel" + "Add a
+  domain first to get your tracking snippet.") + a centered card
+  with an "Add a Domain" hero-style CTA to `/dashboard/domains`. The
+  placeholder key `px_xxxxxxxxxxxxxxxx` is the live's LOADING
+  fallback — never shipped here. The DomainSwitcher renders ONLY when
+  sites.length > 1 (bundle `i.length>1`). The Quick Start copy button
+  swaps to a plain "Copied!" (no green check) — the GREEN check
+  (`text-green-500`) lives on the MARKETING docs copy button only.
+- **R22: the docs "Contact Support" is a real Button with a WORKING
+  mailto (v1.21).** The live ships the same Button tag but DEAD (no
+  handler — click-verified). The clone keeps the working
+  `mailto:support@pixelco.io` onClick in the extracted
+  `ContactSupportButton` client leaf; the dead-button behavior is a
+  documented live defect (R17 contact-sales precedent). The live's
+  signup EMAIL-CONFIRMATION gate ("Check your email" toast) is a
+  D-class divergence — this clone has no mail transport, so signup
+  auto-sessions (PAD §11). Pinned by
+  `tests/marketing-r22-parity.test.tsx`.
 - **D5 (R18): the clone's invisible functional chrome is KEPT, documented.**
   Switch semantics on the marketing billing toggle (`role="switch"` +
   `aria-checked` — the live ships a plain button; the R20 functional
@@ -476,8 +523,10 @@ verification gate before pushing.
 - Billing is simulated: `changePlanAction` updates entitlements directly, no
   payment processor. Switching plans never resets the used counter; paid
   plans keep identifying past the limit and report overage.
-- The Activity Log polls `/api/activity` every 5 s (client polling, no
-  websockets); polling pauses while the tab is hidden.
+- The Activity Log is PAGINATED, not polled (R22): 50 events per offset
+  page (`/api/activity?page=`, `{events, count, pageCount}` envelope), a
+  prev/next footer only when count > 50, page fetches on footer click —
+  NO 5-second poll, NO websockets, NO load-older.
 - NextAuth v4 on Next 16 is a maintenance-mode pairing — works today, but
   budget an Auth.js v5 / Better-Auth migration before the next Next major
   (see PAD §11).

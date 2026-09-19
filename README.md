@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 568 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 596 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -31,8 +31,9 @@ firmographics when the visitor is B2B. The product has four parts:
    sub-page copy — blog posts and legal texts — is the live content,
    converted verbatim).
 3. **Dashboard** (`/dashboard`) — visitor analytics with server-side search,
-   filters and pagination; a cursor-paged activity log; per-domain pixel
-   installation; domain management; plan settings with overage accounting.
+   filters and pagination; a 50-per-page paginated activity log (the live's
+   model — R22); per-domain pixel installation; domain management; plan
+   settings with overage accounting.
 4. **Tracking pipeline** — a one-line `<script>` snippet loads `/pixel.js`
    from this app; beacons flow into `/api/track`, where visitors are stitched
    by a cookieless localStorage ID, hostnames are gated against the
@@ -60,7 +61,7 @@ firmographics when the visitor is B2B. The product has four parts:
 | ⚡ | One-line install | Single `<script>` snippet per domain with a domain switcher; the install page carries the live's Quick Start, How It Works and Site Key cards plus per-platform guides (HTML, WordPress, Shopify, GTM) |
 | 📊 | Real-time dashboard | KPIs, 14-day UTC-bucketed trend chart, top pages, recent identifications, loading/error boundaries |
 | 👥 | Visitor CRM | **Identified visitors only** (like the live product — anonymous traffic never hits the table), B2B rows show company + resolved location + a “· N visits” sub-line, honest active/inactive status from the live's 1-hour window, server-side search + segment/confidence-band/source filters (the live's identification-source model), 20/page pagination, true DB counts, row selection, CSV export (current page or selected — the live's byte format) |
-| 🔴 | Live activity feed | Auto-refreshing event stream (pauses in background tabs) with cursor-based "Load older events" |
+| 🔴 | Activity log | The live's exact pagination model (R22): 50 events per offset page, prev/next footer with "1–50 of N" + "Page X of Y" (only when > 50 events), page fetches replace the list — no polling, no load-older |
 | 🌍 | Domain management | Registration, hostname-based auto-verification, ingest gated to registered hostnames, plan-based limits, delete confirmations |
 | 💳 | Plans & quotas | Free / Starter / Growth / Scale with per-plan allowances; paid plans keep identifying past the limit and count overage at the per-identification rate |
 
@@ -206,7 +207,7 @@ match rate in practice.
 | `/api/health` | GET | public | Liveness + DB readiness |
 | `/api/auth/[...nextauth]` | GET/POST | public | NextAuth credentials flow |
 | `/forgot-password` | GET | public | Anti-enumeration reset-request page (no email transport — shows an honest configuration note; the live links here but 404s) |
-| `/api/activity` | GET | session | Latest 60 events, or the page after `?cursor=` (event id) |
+| `/api/activity` | GET | session | The live's pagination model (R22): `?page=` (0-based, 50 events) + `{events, count, pageCount}` envelope |
 | `/api/export` | GET | session | CSV of identified visitors in the LIVE's byte format (9 columns, LF, no BOM, relative last-seen — R21); `?ids=` scopes to a selection/current page (ownership-scoped, max 500; present-but-empty = header-only file) |
 | Server Actions | — | session | Mutations: sign-up (throttled, P2002-safe, plan-intent), add/delete domain, update profile, change plan, ⚠️ delete account (signs out) |
 
@@ -349,6 +350,28 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   `tests/visitors-r21-parity.test.tsx` +
   `tests/export-r21-parity.test.ts`; responsive probes (375/768px)
   confirmed parity. Screenshots in `docs/screenshots/`.
+- **First-run states, activity pagination & sub-page interactions
+  (round-22)** — the 7th probe generation decoded the live's empty-state
+  branches from its app bundle (plus a runtime no-match-search
+  confirmation on the live visitors page) and rebuilt them exactly: the
+  visitors empty state is a `<p>` REPLACING the whole table ("No visitors
+  identified yet…" — branch = the current tab's filtered count), the
+  domains empty is a plain `div` inside the `p-0` card, Top Pages ships
+  `py-8`, Recent Identifications the live's class order, the activity
+  empty state the live's string, and the install page with zero domains
+  renders the live's interstitial ("Add a domain first…") with the
+  DomainSwitcher only when sites > 1. **The Activity Log was rebuilt from
+  a 5s-polled cursor feed to the live's 50/page pagination** (footer only
+  when count > 50, ghost chevron buttons, page state never in the URL,
+  polling/load-older retired). Marketing docs fixes: the copy-success
+  Check gained `text-green-500`, "Contact Support" is now a real Button
+  (working mailto — the live's own is a dead button, documented). The
+  b2b search placeholder varies by tab. The live's signup
+  email-confirmation gate is a documented D-class divergence (no mail
+  transport here — auto-session signup stays). +28 pins across
+  `tests/{activity-r22,dashboard-empty-r22,marketing-r22}-parity.test.tsx`;
+  fresh-signup first-run states, pagination end-to-end and no-polling all
+  runtime-verified. Screenshots in `docs/screenshots/`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the

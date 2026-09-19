@@ -185,6 +185,22 @@ and stable per visitor.
   Probe RESPONSIVE states too (375/768) — mobile-only UI (dropdowns,
   sheets) is invisible to desktop captures; open the live's mobile
   surfaces and capture their real structure.
+- **First-run / zero-data states and DEAD affordances are part of the
+  parity surface (v1.21, R22):** every populated-state pin is
+  unverified until the EMPTY branch matches too. The live's empty
+  branches are decoded from its bundle and runtime-confirmed: the
+  element that replaces the whole region (a `<p>` replacing the
+  visitors table; a plain `div` inside the `p-0` domains card), the
+  exact strings, and the branch variable (the current tab's FILTERED
+  count — a no-match search on a populated account shows the INSTALL
+  message, odd as that copy placement is — replicate faithfully). The
+  zero-domains install page ships the live's interstitial, not a
+  clone-authored guidance card. When the live ships a DEAD affordance
+  (its handler-less "Contact Support" button — click-verified), match
+  the TAG/classes but keep the clone's WORKING behavior; a live defect
+  is documented, never replicated. Gated flows the clone cannot honor
+  (the live's signup email confirmation — no mail transport here) are
+  D-class divergences, recorded in PAD §11, not faked.
 - **The marketing bundle has its own emission conventions (v1.17, R18):**
   lucide icons size→color→margin; paragraphs text-first; containers
   px-before-border; chips geometry-first; gradients are the FULL
@@ -326,7 +342,7 @@ Prove-It). `TZ` is pinned to UTC.
   110 concurrent calls, persisted monthly reset, overage); query seams
   `listVisitors` / `listActivity` / `getTopPages` (SQL groupBy with
   deterministic tie-breaks) / `hasRecentIdentifications` in `analytics.ts`
-  (search/filter/pagination/counts, cursor paging); server actions with
+  (search/filter/pagination/counts, 50-per-page offset paging — R22); server actions with
   mocked session/headers (plan switch, sign-up, domains, account deletion,
   profile update — the stored name is never clobbered).
 - **Integration (route handlers):** `/api/track` and `/api/export` invoked
@@ -415,7 +431,8 @@ state from props or handle it in event handlers.
 Four layers, strictly top-down:
 
 1. **RSC pages** (`src/app/**`) — fetch via `src/lib/analytics.ts`, no
-   direct fetching in client components beyond the activity poll.
+   direct fetching in client components beyond the activity page
+   fetches (R22: footer-driven page navigation, never polling).
 2. **Server Actions** (`src/actions/*`) — the only write path.
 3. **Domain libs** (`src/lib/*`) — pure where possible
    (`identification.ts`, `plans.ts`, `validation.ts`), server-only for data
