@@ -25,7 +25,9 @@ export function DocsCopyButton() {
       }}
     >
       {copied ? (
-        <Check className="w-4 h-4" aria-hidden="true" />
+        /* R22-F8: the live's copy-success glyph carries text-green-500
+            (runtime-verified on pixelco.io/docs). */
+        <Check className="w-4 h-4 text-green-500" aria-hidden="true" />
       ) : (
         <Copy className="w-4 h-4" aria-hidden="true" />
       )}

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ChartColumn, Code, Settings, Zap } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { DocsCopyButton } from '@/components/marketing/docs-copy-button'
+import { ContactSupportButton } from '@/components/marketing/contact-support-button'
 import { marketingMetadata } from '@/lib/marketing-seo'
 
 // R14-F2/F3: title + description are the live copy verbatim.
@@ -159,14 +159,10 @@ export default function DocsPage() {
 
       <div className="text-center py-8">
         <p className="text-muted-foreground mb-4">Need help? Reach out to our team.</p>
-        <Button
-          asChild
-          variant={null}
-          size={null}
-          className="bg-primary hover:bg-primary/90 h-10 px-4 py-2 gradient-cta text-primary-foreground border-0 hover:opacity-90 font-semibold"
-        >
-          <Link href="mailto:support@pixelco.io">Contact Support</Link>
-        </Button>
+        {/* R22-F9: a real BUTTON like the live (onClick mailto keeps the
+            behavior the live's dead button lacks — R17 contact-sales
+            pattern). */}
+        <ContactSupportButton />
       </div>
     </div>
   )
