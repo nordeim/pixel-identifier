@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "1) The table is replaced by a single centered empty-state message: \"No visitors identified yet. Install your pixel to get started.\"\n2) Yes, the message text is muted/gray and centered.\n3) No, there are no rendering defects.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789811686,
+  "id": "20260919175444e172eeddc94140f9",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260919175444e172eeddc94140f9",
+  "usage": {
+    "completion_tokens": 52,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1750,
+    "prompt_tokens_details": {
+      "cached_tokens": 5
+    },
+    "total_tokens": 1802
+  }
+}
