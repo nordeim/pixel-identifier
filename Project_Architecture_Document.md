@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.15
+# Pixelco — Master Project Architecture Document (PAD) v1.16
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-18 (v1.15)
+**Last Updated:** 2026-09-19 (v1.16)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -11,6 +11,32 @@
 ---
 
 #### Revision Block (Tracked Changes)
+
+- **v1.16** `[SYN]` Round-17 drift watch + verification-gap closure (plan:
+  `docs/plans/2026-09-19-round17-verification-gaps.md`; evidence in
+  `research/round17-audit/`). The live was **100% stable since R16**
+  (zero live-side class/tag changes on all 7 dashboard pages; marketing,
+  auth, shell byte-stable). A stricter order-sensitive diff of the clone
+  found 3 residuals the R16 verification pass had missed: the activity
+  **Identified** badge shipped the wrong generation (secondary-variant
+  hybrid with `hover:opacity-90`; the live ships the new-gen
+  default-variant string — byte-identical to the domains-Verified
+  badge), the **pricing contact-sales card** (outline+asChild mailto
+  anchor with flex-first orders; the live ships a variant-free Button
+  with the full consumer tail + twMerge-displaced card root
+  `border-border bg-card`), and three **install chip wrappers**
+  (span/flex-first/aria-hidden; the live ships bare geometry-first
+  divs). Fixed via TDD (+8 pins, suite 476/51 → **484/51**). New
+  rulings: D1 — the contact CTA is a real button with onClick mailto
+  (DOM parity + functional parity); D3 — the trend chart keeps its
+  `role="img"`+aria-label (invisible functional a11y, same class as the
+  search aria-labels). Responsive spot-checks: 1024/768px identical,
+  375px equivalent (both sides' pages overflow horizontally — the
+  live's own quirk, reproduced by identical structure). Pixel
+  verification note: the live's pre-hydration shell renders dark —
+  screenshot parity requires waiting for hydration (the R16 0.00%
+  sidebar diff had raced loading skeletons on both sides; the
+  loaded-page diff is 0.24%, data-only).
 
 - **v1.15** `[SYN]` Round-16 app content-layer realignment (plan:
   `docs/plans/2026-09-18-round16-content-realignment.md`; evidence in
@@ -1390,7 +1416,9 @@ speculatively.
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
 | E2E (browser) | manual + opt-in smoke | — | dev server flows; `PIXELCO_STANDALONE_SMOKE=1` boots the standalone server | browser pass |
 
-The suite totals **476 tests across 51 files** (v1.15: the R16
+The suite totals **484 tests across 51 files** (v1.16: +8 R17 pins — the
+activity-Identified badge generation, the contact-sales card/CTA, the
+install chip wrappers; v1.15: the R16
 content-parity pins live in `tests/content-parity.test.tsx` — 44 tests
 covering the div-generation rows, legacy content badges, Radix switch,
 Tabs order and per-page class strings; plus 2 opt-in standalone

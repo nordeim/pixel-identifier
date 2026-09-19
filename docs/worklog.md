@@ -741,3 +741,56 @@ Stage Summary:
 - Round-16 fully closed and shipped: main @ 9c9524e on GitHub.
 - Next: Round-17 drift watch after the live's rolling deploy settles
   (content layer + shell), responsive spot-checks 768–1024px.
+
+---
+Task ID: R17
+Agent: main (Super Z)
+Task: Round-17 — drift watch, verification-gap closure, responsive spot-checks, TDD remediation, docs, ship
+
+Work Log:
+- Workspace refreshed (git pull — already at b1581d6, the R16 ship);
+  core docs re-verified (PAD v1.15, AGENTS/CLAUDE R16 blocks); baseline
+  gate GREEN (476/51, lint, typecheck, build).
+- Round-17 audit (fresh live+local captures per page to
+  research/round17-audit/, order-sensitive tokenizer diff):
+  - Live-side drift since R16: ZERO (0 class/tag changes across all 7
+    dashboard pages). Marketing byte-stable (sections
+    [762,403,174,526,708,610,650,814,756,500], H2=7, sub-pages, blog
+    slugs 10/10, robots, favicon md5). Shell sidebar BYTE-IDENTICAL
+    (14767 chars). Headers aligned (D4 aria-hidden only).
+  - Clone-side: 3 residuals the R16 verification missed (stricter diff):
+    F1 activity Identified badge (wrong generation — secondary hybrid
+    with hover:opacity-90 vs the live's new-gen default-variant string
+    identical to domains Verified); F2 pricing contact-sales card
+    (outline+asChild mailto anchor + flex-first orders vs the live's
+    variant-free Button + twMerge-displaced root); F3 install chip
+    wrappers (span/flex-first/aria-hidden vs bare geometry-first divs).
+    F4 trend-chart role/aria-label → ruling D3: keep (invisible
+    functional a11y).
+- Plan written + validated against the codebase
+  (docs/plans/2026-09-19-round17-verification-gaps.md).
+- TDD: RED 8 pins (content-parity R17 blocks + PlanPanel action mock) →
+  GREEN (activity-feed variant fix; plan-panel contact card rebuild;
+  platform-instructions + install page chips); 1 superseded
+  shell-parity pin. Suite 476/51 → 484/51; lint + typecheck + build ✓.
+- Browser verification: badge byte-identical; pricing card diffs
+  eliminated; install chips gone from the diff; remaining flags proven
+  tokenizer alignment noise (direct extraction byte-identical). E2E
+  green (pricing switch + $65 annual, Contact Sales, selection →
+  Export (1) + ids href, settings, install); zero console errors.
+- Responsive spot-checks: 1024px identical (chart 280, KPI 4-col,
+  sidebar 256); 768px identical (280, 2-col, 256, table fits); 375px
+  equivalent (both sides overflow horizontally — the live's own quirk;
+  clone rail CSS-hidden vs live CSR unmount, documented).
+- Screenshot methodology fix: the live's pre-hydration shell renders
+  DARK — parity screenshots must wait for header h1 (the R16 0.00%
+  comparison had raced loading skeletons on both sides). Loaded-page
+  sidebar pixel-diff: 0.24% (data-only).
+- Docs: PAD v1.16, README (484 + R17 bullet), AGENTS.md (R17 facts),
+  CLAUDE.md (v1.16 precedents), plan execution log, evidence README.
+
+Stage Summary:
+- Round-17 complete: live stable since R16; the 3 R16 verification gaps
+  closed (badge generation, contact card, install chips); suite
+  476/51 → 484/51; PAD v1.14 → v1.15 → v1.16.
+- Next: atomic commits + push (Task R17-ship)

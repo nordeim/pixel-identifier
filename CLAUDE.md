@@ -127,6 +127,17 @@ and stable per visitor.
   verbatim (do not fix it), and `focus-brand` is gone from app-bundle
   consumers. Pinned by `tests/content-parity.test.tsx` — treat those
   pins as the contract.
+  pins as the contract.
+- **R17 gap-closure precedents (v1.16):** the activity Identified badge
+  = the domains-Verified string (one new-gen call, no hybrids); the
+  contact-sales CTA is a variant-free Button + onClick mailto (DOM
+  parity AND functional parity — the live's CSR button navigates the
+  same way); contact-card roots reproduce the live's twMerge
+  displacement via consumer `border-border bg-card`; install chips are
+  bare geometry-first divs; the trend chart's role/aria-label stays
+  (invisible functional a11y). When screenshot-diffing against the
+  live, ALWAYS wait for hydration (`header h1` present) — the live's
+  pre-hydration shell is dark and will false-diff.
 - **Document heads are part of the parity surface (v1.13):** the live
   is CSR — its raw HTML ships one static shell but its router sets
   per-page title/description/og/twitter/canonical on navigation, and

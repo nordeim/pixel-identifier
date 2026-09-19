@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 476 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 484 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -280,6 +280,12 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   order, the KPI card DOM, the `h-[280px]` trend chart, the visitors
   B2B icon-chip avatar and Card-wrapped table, and the install/settings
   class orders (`tests/content-parity.test.tsx`).
+- **Content-parity gap closure (round-17)** — the activity Identified
+  badge pinned to the new-gen default-variant string (byte-identical to
+  domains Verified), the pricing contact-sales card (variant-free
+  button CTA + twMerge-displaced card root), the install chip wrappers
+  as bare geometry-first divs, and the trend-chart a11y ruling
+  (role=img kept, documented) — +8 pins in `tests/content-parity.test.tsx`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the

@@ -147,6 +147,24 @@ make it pass — fix the code.
   level; it matches no utility on either side, so the label fade snaps).
   Do NOT "fix" it to `transition-[margin,opacity]`.
   Pinned by `tests/content-parity.test.tsx`.
+- **R17 verification-gap closures (v1.16).** The activity **Identified**
+  badge rides the SAME new-gen string as the domains Verified badge
+  (`variant="default"` + `text-[10px] px-1.5 py-0 gradient-primary
+  text-primary-foreground border-0`) — NOT a secondary-variant hybrid
+  (no `hover:opacity-90` anywhere in the content layer). The pricing
+  contact-sales CTA is a **variant-free Button** with the full consumer
+  tail (`border-2 border-primary/30 bg-transparent text-primary
+  hover:bg-primary/10 transition-all duration-300 font-semibold h-10
+  px-4 py-2 shrink-0`) + `onClick` mailto — never an outline/asChild
+  anchor; its Card root uses consumer `border-border bg-card` (twMerge
+  displaces the base bg-card to the tail — that IS the live's order).
+  Install icon chips are BARE geometry-first divs (`h-8 w-8 rounded-lg
+  bg-muted flex items-center justify-center`, step chips `h-6 w-6
+  rounded-full bg-primary/10 … shrink-0 mt-0.5`) — never span wrappers
+  with aria-hidden. The trend chart KEEPS its `role="img"` + aria-label
+  (ruling D3: invisible functional a11y). Screenshot parity requires
+  waiting for hydration — the live's pre-hydration shell renders DARK;
+  never diff screenshots captured during loading skeletons.
 - **`w-[--sidebar-width]` is hand-defined in globals (R15).** Tailwind v4
   compiles the live's TW3-style bare-var brackets to INVALID CSS
   (`width:--sidebar-width`); the two affected utilities (+ the
