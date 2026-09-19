@@ -91,7 +91,7 @@ const PLATFORMS = [
 
 export function PlatformInstructions() {
   return (
-    <Card aria-labelledby="platform-heading">
+    <Card>
       <CardHeader>
         <div className="flex items-center gap-3">
           {/* R17-F3: the live's chip — bare geometry-first div. */}
