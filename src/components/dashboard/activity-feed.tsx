@@ -133,7 +133,12 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
                       {event.email ?? `${event.anonymousId}...`}
                     </span>
                     {event.name === 'identification' ? (
-                      <Badge variant="secondary" className="gradient-primary border-0 px-1.5 py-0 text-[10px] text-primary-foreground hover:opacity-90">
+                      /* R17-F1: the live's Identified badge rides the
+                          new-gen DEFAULT variant + the gradient tail —
+                          byte-identical to the domains-Verified string
+                          (bg-primary hover:bg-primary/80, no
+                          hover:opacity-90). */
+                      <Badge variant="default" className="text-[10px] px-1.5 py-0 gradient-primary text-primary-foreground border-0">
                         Identified
                       </Badge>
                     ) : (
