@@ -103,7 +103,9 @@ export default async function OverviewPage() {
           </CardHeader>
           <CardContent>
             {topPages.length === 0 ? (
-              <p className="py-12 text-center text-sm text-muted-foreground">
+              /* R22-F3: the live's empty branch — py-8 + text-utility-first
+                  order (bundle emission). */
+              <p className="text-sm text-muted-foreground py-8 text-center">
                 No page data yet
               </p>
             ) : (
@@ -159,7 +161,8 @@ export default async function OverviewPage() {
         </div>
         <CardContent className="p-0">
           {recent.length === 0 ? (
-            <p className="py-12 text-center text-sm text-muted-foreground">
+            /* R22-F5: the live's empty branch — text-utility-first order. */
+            <p className="text-sm text-muted-foreground py-12 text-center">
               No identifications yet. Install your pixel to get started.
             </p>
           ) : (
