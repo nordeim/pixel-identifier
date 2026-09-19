@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useEffect, useRef } from 'react'
+import { useActionState, useEffect, useRef, useState } from 'react'
 import { CircleAlert, CircleCheckBig, Globe, Loader2, Plus } from 'lucide-react'
 import { Trash2Icon } from '@/components/dashboard/live-icons'
 import { addDomainAction, deleteDomainAction, type DomainDto } from '@/actions/domains'
@@ -33,10 +33,27 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
   const [state, formAction, pending] = useActionState(addDomainAction, null)
   const [deleteState, deleteFormAction] = useActionState(deleteDomainAction, null)
   const { toast } = useToast()
+  // R20-F2: the live's add-domain input is a controlled field — its
+  // submit renders DISABLED while the input is empty (captured DOM:
+  // type="submit" disabled="" + value=""), replacing the native
+  // empty-field tooltip path. The input is cleared after a successful add
+  // (preserving the React-19 auto-reset the uncontrolled field had).
+  const [domainValue, setDomainValue] = useState('')
+
+  // R20-F2: clear the controlled input when a fresh SUCCESSFUL action
+  // result lands — React's "adjust state during render" pattern (the
+  // documented replacement for a reset effect; setState during render of
+  // the same component re-renders immediately without committing).
+  const [prevAddResult, setPrevAddResult] = useState(state)
+  if (state !== prevAddResult) {
+    setPrevAddResult(state)
+    if (state?.ok) setDomainValue('')
+  }
 
   // Toasts fire from an effect keyed on state IDENTITY, never from onSubmit:
   // onSubmit runs before the action resolves and would re-announce the
-  // previous submission's result (F-07).
+  // previous submission's result (F-07). The toast is an external-system
+  // update (sonner) — state resets live above, in the render-phase block.
   const lastAddResult = useRef<ActionResult<DomainDto> | null>(null)
   useEffect(() => {
     if (state === null || state === lastAddResult.current) return
@@ -84,15 +101,17 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
               className="flex-1"
               aria-label="Domain to register"
               autoComplete="off"
-              required
+              value={domainValue}
+              onChange={(e) => setDomainValue(e.target.value)}
             />
             {/* Live CTA: gradient-primary + glow with a Plus glyph (R6-M3).
                 R12-F6: the live builds this as Button base + overrides only
                 (no variant fragment — their DOM shows no bg-primary); cva
-                treats variant={null} size={null} as an explicit skip. */}
+                treats variant={null} size={null} as an explicit skip.
+                R20-F2: disabled while empty — the live's captured state. */}
             <Button
               type="submit"
-              disabled={pending}
+              disabled={pending || domainValue.trim() === ''}
               variant={null}
               size={null}
               className="gradient-primary text-primary-foreground shadow-lg glow-primary hover:opacity-90 transition-all duration-300 font-semibold h-10 px-4 py-2"
