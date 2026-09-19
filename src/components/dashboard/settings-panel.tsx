@@ -68,10 +68,13 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
           </CardTitle>
         </CardHeader>
         {/* R16: the live's Profile body carries space-y-4 on the card body
-            (the form itself is classless — the live is CSR with no form at
-            all; ours stays for the server action, D2). */}
+            (the live is CSR with no form at all; ours stays for the server
+            action, D2). R18-A1: the form ALSO carries space-y-4 — TW4's
+            space-y only applies to direct children, so the classless form
+            silently ate the card body's rhythm (0px group gaps vs the
+            live's 16px). */}
         <CardContent className="p-6 pt-0 space-y-4">
-          <form action={formAction}>
+          <form action={formAction} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="company">Company Name</Label>
               <Input
@@ -99,37 +102,42 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
 
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" defaultValue={email} disabled />
+              {/* R18-A1: the live's disabled email input carries opacity-60
+                  (appended after md:text-sm via twMerge). */}
+              <Input
+                id="email"
+                defaultValue={email}
+                disabled
+                className="opacity-60"
+              />
             </div>
 
-            <div className="flex items-center gap-3">
-              {/* R16: variant-free + h-9 rounded-md px-3 tail — the live's
-                  446-char string (twMerge: font-semibold displaces
-                  font-medium; transition-all displaces transition-colors). */}
-              <Button
-                type="submit"
-                disabled={pending}
-                variant={null}
-                size={null}
-                className="gradient-primary text-primary-foreground shadow-lg glow-primary hover:opacity-90 transition-all duration-300 font-semibold h-9 rounded-md px-3"
-              >
-                {pending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                ) : (
-                  'Save Changes'
-                )}
-              </Button>
-              {state && state.ok && (
-                <p role="status" className="text-sm font-medium text-teal-600">
-                  Saved
-                </p>
+            {/* R18-A1: the live's Save button sits DIRECTLY in the card
+                body's space-y-4 flow (no wrapper div). The form carries
+                space-y-4 so the group rhythm survives the D2 form wrapper. */}
+            <Button
+              type="submit"
+              disabled={pending}
+              variant={null}
+              size={null}
+              className="gradient-primary text-primary-foreground shadow-lg glow-primary hover:opacity-90 transition-all duration-300 font-semibold h-9 rounded-md px-3"
+            >
+              {pending ? (
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+              ) : (
+                'Save Changes'
               )}
-              {state && !state.ok && (
-                <p role="alert" className="text-sm text-red-600">
-                  {state.error.message}
-                </p>
-              )}
-            </div>
+            </Button>
+            {state && state.ok && (
+              <p role="status" className="text-sm font-medium text-teal-600">
+                Saved
+              </p>
+            )}
+            {state && !state.ok && (
+              <p role="alert" className="text-sm text-red-600">
+                {state.error.message}
+              </p>
+            )}
           </form>
         </CardContent>
       </Card>
