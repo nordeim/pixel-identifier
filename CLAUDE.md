@@ -172,6 +172,19 @@ and stable per visitor.
   defects BEFORE fixing: the live accepting arbitrary domain strings
   and deleting without confirm are defects to diverge from (zod +
   AlertDialog stay), not parity targets.
+- **Exported FILES and data semantics are part of the parity surface
+  (v1.20, R21):** a download the user opens is a deliverable — its
+  bytes are user-visible. Decode the live's export from its app bundle
+  (the W function: columns, date formats, line endings, BOM, quoting,
+  scope) and replicate them exactly, even where "nicer" engineering
+  exists (the clone's RFC-4180+BOM export was replaced by the live's
+  raw LF format). The same applies to hidden data models: the live's
+  `source`/confidence semantics (identType, b2b-null confidence) and
+  time rules (relative formatters, active windows) live in its bundle —
+  extract the constants rather than inferring from one screenshot.
+  Probe RESPONSIVE states too (375/768) — mobile-only UI (dropdowns,
+  sheets) is invisible to desktop captures; open the live's mobile
+  surfaces and capture their real structure.
 - **The marketing bundle has its own emission conventions (v1.17, R18):**
   lucide icons size→color→margin; paragraphs text-first; containers
   px-before-border; chips geometry-first; gradients are the FULL

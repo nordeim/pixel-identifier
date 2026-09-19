@@ -237,6 +237,42 @@ make it pass — fix the code.
   `.feed-text-exit` / `.feed-text-in` / `.feed-badge-in` keyframes in
   `globals.css` (reduced-motion guarded); phase constants and the
   static t=0 render are unchanged (R19 pins hold).
+- **R21: the CSV export ships the LIVE's byte format (v1.20).** The
+  live's export (bundle fn W) is a client-side Blob with header
+  `Type,Name,Detail,Confidence,Source,Location,First Seen,Last
+  Seen,Status`, per-type rows (Company/Individual, `X%`/`—`,
+  identType/"IP Lookup", geo-join/`—`, en-US short First Seen, RELATIVE
+  Last Seen, 1-hour computed status), joined with LF, NO BOM, NO
+  quoting (the live embeds its date comma raw — replicate faithfully),
+  scoped to the CURRENT PAGE. The clone's `/api/export` emits those
+  bytes (the server mechanism is invisible); the topbar's Export All
+  href is page-scoped via the chrome store's `pageVisitorIds`. Do NOT
+  re-add BOM/CRLF/csvCell quoting — that was the pre-R21 format.
+- **R21: the visitors page runs the LIVE's filter/badge/data model
+  (v1.20).** PAGE_SIZE 20 (the live's `ni`). Confidence select = the
+  live's BANDS (All / High (85%+) / Medium (70-84%) / Low (<70%) —
+  `gte 85`, `70-84`, `lt 70` — never lower-bounds). Source = the
+  IDENTIFICATION type (All Sources / Direct Signups / Network Matches);
+  `visitor.source` holds `direct|network|ip-lookup` (derived by
+  `identTypeFor` at the identification claim; `sourceFromReferrer` is
+  RETIRED — referrers live on Event rows). The b2c Type badge is
+  Direct (neon-green) / Network (electric-blue); the confidence bar
+  fill is 3-TIER (>=85 neon-green / >=70 electric-blue / else
+  hot-pink); company rows carry confidence NULL and ALWAYS render the
+  MapPin location cell. Pinned by `tests/visitors-r21-parity.test.tsx`.
+- **R21: `relativeTime` + `isVisitorActive` are the live's exact rules
+  (v1.20).** relativeTime = the live's `Ry`: "Just now" <60s / "N min
+  ago" / "N hr ago" / "Nd ago" (no space, no weeks, no date fallback).
+  isVisitorActive = the live's `now−36e5` (ONE hour, not the old
+  30-minute session window). Both feed the table, activity feed,
+  dashboard and the export.
+- **R21: the landing MOBILE dropdown is the live's captured structure
+  (v1.20).** Container `md:hidden bg-background border-b border-border
+  px-6 py-4 flex flex-col gap-4`, PLAIN anchors (`text-sm font-medium
+  text-muted-foreground` — no rounded/padding/hover classes), the 4 nav
+  links + ONE `h-10 w-full` gradient CTA (Start Identifying → /signup
+  per the standing CTA mapping) — the live ships NO Log In button in
+  the dropdown. Pinned by `tests/visitors-r21-parity.test.tsx`.
 - **D5 (R18): the clone's invisible functional chrome is KEPT, documented.**
   Switch semantics on the marketing billing toggle (`role="switch"` +
   `aria-checked` — the live ships a plain button; the R20 functional

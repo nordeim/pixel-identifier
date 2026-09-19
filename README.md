@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 543 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 568 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -59,7 +59,7 @@ firmographics when the visitor is B2B. The product has four parts:
 | 🍪 | Cookieless tracking | First-party localStorage visitor ID — no consent-banner dependencies |
 | ⚡ | One-line install | Single `<script>` snippet per domain with a domain switcher; the install page carries the live's Quick Start, How It Works and Site Key cards plus per-platform guides (HTML, WordPress, Shopify, GTM) |
 | 📊 | Real-time dashboard | KPIs, 14-day UTC-bucketed trend chart, top pages, recent identifications, loading/error boundaries |
-| 👥 | Visitor CRM | **Identified visitors only** (like the live product — anonymous traffic never hits the table), B2B rows show company + resolved location + a “· N visits” sub-line, honest active/inactive status from the 30-minute session window, server-side search + segment/confidence/source filters, 25/page pagination, true DB counts, row selection, CSV export (all or selected) |
+| 👥 | Visitor CRM | **Identified visitors only** (like the live product — anonymous traffic never hits the table), B2B rows show company + resolved location + a “· N visits” sub-line, honest active/inactive status from the live's 1-hour window, server-side search + segment/confidence-band/source filters (the live's identification-source model), 20/page pagination, true DB counts, row selection, CSV export (current page or selected — the live's byte format) |
 | 🔴 | Live activity feed | Auto-refreshing event stream (pauses in background tabs) with cursor-based "Load older events" |
 | 🌍 | Domain management | Registration, hostname-based auto-verification, ingest gated to registered hostnames, plan-based limits, delete confirmations |
 | 💳 | Plans & quotas | Free / Starter / Growth / Scale with per-plan allowances; paid plans keep identifying past the limit and count overage at the per-identification rate |
@@ -207,7 +207,7 @@ match rate in practice.
 | `/api/auth/[...nextauth]` | GET/POST | public | NextAuth credentials flow |
 | `/forgot-password` | GET | public | Anti-enumeration reset-request page (no email transport — shows an honest configuration note; the live links here but 404s) |
 | `/api/activity` | GET | session | Latest 60 events, or the page after `?cursor=` (event id) |
-| `/api/export` | GET | session | CSV (UTF-8 BOM, formula-injection guarded) of identified visitors; `?ids=` exports a selection (ownership-scoped, max 500) |
+| `/api/export` | GET | session | CSV of identified visitors in the LIVE's byte format (9 columns, LF, no BOM, relative last-seen — R21); `?ids=` scopes to a selection/current page (ownership-scoped, max 500; present-but-empty = header-only file) |
 | Server Actions | — | session | Mutations: sign-up (throttled, P2002-safe, plan-intent), add/delete domain, update profile, change plan, ⚠️ delete account (signs out) |
 
 ## Environment Variables
@@ -271,7 +271,7 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   `/api/` disallowed, app routes excluded, byte-exact formatting).
 - **Pure helpers** — plan/money math (IEEE-754 robustness), domain
   normalisation, snippet hardening (host validation, JS-string escaping),
-  CSV escaping + formula guard, relative-time boundaries.
+  the live's Ry relative-time boundaries.
 - **Dashboard content parity (round-16)** — the app bundle's content layer
   is pinned to the live's current build: the div-generation activity/
   domains/visitors rows, the legacy-gen content badges (visitors tab
@@ -330,6 +330,25 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   post-fix the monthly cards, the disabled form state and the reveal
   transition all match the live's runtime emission. Screenshots in
   `docs/screenshots/`.
+- **Export byte-format & data-semantics parity (round-21)** — the 6th
+  probe generation decoded the live's CSV export from its app bundle
+  (function W) and found the clone's file completely different. The
+  export now ships the live's exact bytes: `Type,Name,Detail,
+  Confidence,Source,Location,First Seen,Last Seen,Status` columns,
+  Company/Individual rows, en-US short First Seen + RELATIVE Last
+  Seen, LF line endings, no BOM, no quoting, and the live's
+  current-page scope ("Export All" = all rows on this page vs the
+  selected subset). The visitors page was re-aligned to the live's
+  data model: page size 20, confidence BAND filters (High (85%+)/
+  Medium (70-84%)/Low (<70%)), the identification-source model
+  (Direct Signups/Network Matches; Direct/Network badges), 3-tier
+  confidence bar fills, null-confidence company rows with the MapPin
+  location cell, the live's "Nd ago" relative formatter, the 1-hour
+  active window, and the live's mobile dropdown (plain links, one
+  full-width CTA, no Log In). +30 pins in
+  `tests/visitors-r21-parity.test.tsx` +
+  `tests/export-r21-parity.test.ts`; responsive probes (375/768px)
+  confirmed parity. Screenshots in `docs/screenshots/`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the

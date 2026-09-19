@@ -3,7 +3,7 @@
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-19 (v1.19)
+**Last Updated:** 2026-09-19 (v1.20)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,67 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.20** `[SYN]` Round-21 functional-flow & export parity audit (plan:
+  `docs/plans/2026-09-19-round21-functional-export-parity.md`; evidence
+  `/tmp/r21-caps` + `docs/screenshots/` + `research/round21-audit/`). The
+  live stayed **100% stable since R19** (sixth consecutive stable audit —
+  the landing's only 7 token changes were one feed row's `done`-unmount
+  timing artifact; bundle hash UNCHANGED, `index-C3AAh5Je.js`). R21
+  introduced the **6th probe generation**: the CSV export decoded from
+  the live's app bundle (`index-nhmKaUsm.js`, function W — the definitive
+  source), the visitors filter selects OPENED at runtime (Radix portal
+  options harvested live-vs-clone), and the first-ever responsive probes
+  (375px/768px — landing + dashboard — **PARITY**, non-finding: both
+  sides 1-col grids, same hamburger, same 768px sidebar tree; the live's
+  own landing has docScrollableX at 375 — its quirk, never replicate).
+  Findings (all fixed via TDD, suite 543/54 → **568/56**): **(F1)** the
+  CSV export's byte format diverged completely — the live emits
+  `Type,Name,Detail,Confidence,Source,Location,First Seen,Last
+  Seen,Status` (Company/Individual rows, `X%`/`—`, identType/"IP
+  Lookup", geo-join/`—`, en-US short First Seen, RELATIVE Last Seen,
+  computed 1-hour status), joined with **LF**, **NO BOM**, **NO quoting**
+  (the live embeds its date comma raw — replicated faithfully), scoped to
+  **the current page** (Export All = all-rows-on-this-page vs the
+  selected subset); the clone shipped `Email,Type,Company,…`, ISO
+  dates, CRLF, BOM, csvCell quoting, all-rows scope. The route now emits
+  the live's bytes; the mechanism stays a server route (invisible). The
+  topbar's Export All href is page-scoped via the chrome store's new
+  `pageVisitorIds`. **(F2)** PAGE_SIZE 25 → the live's `ni = 20`.
+  **(F3)** the confidence filter is the live's BANDS — `All / High
+  (85%+) / Medium (70-84%) / Low (<70%)` (gte 85 / 70-84 / lt 70 — band
+  semantics, not lower bounds; the clone shipped 90%+/75%+/50%+).
+  **(F4)** the `source` column repurposed to the live's identification
+  source — `direct`/`network` for individuals (bundle rule
+  `confidence>=70 → direct`), `ip-lookup` for companies; the filter ships
+  `All Sources / Direct Signups / Network Matches`; the b2c Type badge
+  is Direct (neon-green) / Network (electric-blue); traffic attribution
+  (`sourceFromReferrer`) RETIRED — the live's rows never carry it
+  (referrer stays on Event rows). **(F5)** the confidence bar fill is
+  the live's 3-TIER (>=85 neon-green / >=70 electric-blue / else
+  hot-pink; the clone always shipped neon-green). **(F6)** company rows
+  carry confidence **null** (the live's b2b model — excluded from
+  confidence bands, `—` in export; the resolver keeps the RNG draw,
+  stores null). **(F7)** the landing mobile dropdown rebuilt on the
+  live's captured structure — `md:hidden bg-background border-b
+  border-border px-6 py-4 flex flex-col gap-4`, plain anchors, 4 links
+  + ONE `h-10 w-full` gradient CTA, **no Log In** (the clone shipped a
+  richer styled dropdown with Log In). **(F8)** the b2b Confidence cell
+  is ALWAYS the MapPin location div (`location || "—"` — never a bar,
+  never a bare span). **(F9)** `relativeTime` = the live's `Ry`
+  byte-for-byte — "Just now" <60s / "N min ago" / "N hr ago" /
+  **"Nd ago"** (no space, no weeks, no date fallback; the clone shipped
+  "N d ago" + weeks + a 45s boundary). **(F10)** `isVisitorActive`
+  window 30 min → the live's **1 hour** (bundle `36e5`).
+  Non-findings/intentional: the plan-switch flow (the live's Get Started
+  opens a Stripe **EmbeddedCheckout** dialog — a paid external
+  dependency; the clone's direct `changePlanAction` stays, D-class
+  "Honesty over simulation"), the landing header root tag (`<nav>` on
+  the live vs the clone's `<header>` + inner nav — D5 invisible a11y
+  chrome, KEPT), pagination footer (pinned R11). Post-fix verification:
+  export fetch byte-checks green (header/rows/filename/no-BOM/LF/
+  page-scoped href), selects' options identical to the live's, cells
+  verified (Direct/Company badges, MapPin company cell, "1d ago"
+  compact), zero console errors, 5 screenshots + 2 VLM confirmations.
 - **v1.19** `[SYN]` Round-20 runtime-state & functional parity audit (plan:
   `docs/plans/2026-09-19-round20-runtime-functional-parity.md`; evidence
   `/tmp/r20-caps` + `docs/screenshots/` + `research/round20-audit/vlm*`).
@@ -1341,8 +1402,11 @@ visitor-activity joins and cascade deletes).
 Statuses are strings (SQLite has no enums) constrained by application code:
 `plan` ∈ `src/lib/plans.ts` (the catalogue is the enum), `site.status` ∈
 `{pending, verified}`, `event.name` ∈ `{pageview, identification}`,
-`visitor.source` derived by `sourceFromReferrer`. Monetary values exist only
-in `plans.ts` (integer cents); no money columns are stored.
+`visitor.source` ∈ the live's identification sources `{direct, network,
+ip-lookup}` (R21-F4 — derived by `identTypeFor` at the identification
+claim; traffic attribution never touches visitor rows, referrer stays on
+Event rows). Monetary values exist only in `plans.ts` (integer cents); no
+money columns are stored.
 
 ### 4.3 Persistence Strategy
 
@@ -1526,15 +1590,15 @@ Reduced-motion drops the transition (content still reveals). Pinned by
 | Beacon endpoint hardening | Site-key lookup returns 204 for unknown keys (anti-enumeration); 120/min fixed-window per key; 204 for malformed payloads; beacons whose page hostname ≠ the registered domain are dropped **before any write** (spoofed-key quota burning is impossible) |
 | Response hardening | Baseline headers on every route via `next.config.ts` `headers()`: `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy: camera=(), microphone=(), geolocation=()`, `Strict-Transport-Security: max-age=31536000; includeSubDomains` (v1.6 — the live sends HSTS on both surfaces). Strict CSP deferred (§11) |
 | Signup abuse | Per-IP fixed-window throttle (5 signups / 10 min) in the server action; duplicate-email races resolve to a typed CONFLICT result (never a thrown P2002) |
-| Output encoding | React escapes by default; CSV export escapes per RFC 4180 (`csvCell`) + formula-injection guard (`'` prefix on `=+-@`); the snippet generator validates the forwarded host against a hostname grammar and escapes every JS-string interpolation |
+| Output encoding | React escapes by default; the CSV export ships the LIVE's raw byte format (R21-F1: unquoted values, LF join, no BOM — the live's own Blob behavior; not a guard regression: in this clone the exported values come only from the deterministic resolver's catalogs — no user-supplied text reaches a CSV cell); the snippet generator validates the forwarded host against a hostname grammar and escapes every JS-string interpolation |
 | Account deletion | Requires retyped email confirmation; cascades all owned data; the client signs the session out on success (JWT revocation on delete is inherently best-effort with stateless tokens) |
 
 ### 6.2 Security Utilities
 
 `normalizeDomain` (hostname-grammar allowlist — defeats path/query/injection
-smuggling through the domain field), `sourceFromReferrer` (URL-parsed, never
-string-matched raw), rate limiter with stale-bucket sweep (bounds memory),
-CSV cell escaper, `initialsForEmail` (display-only derivation).
+smuggling through the domain field), `identTypeFor` (the live's
+identification-source derivation — R21-F4), rate limiter with stale-bucket
+sweep (bounds memory), `initialsForEmail` (display-only derivation).
 
 ### 6.3 Authentication & Authorization
 
@@ -1624,11 +1688,12 @@ Next server context (`next/cache`, `next/navigation`, `next/headers`,
   mocked `document`/`history`/`localStorage`/`navigator` — asserts
   route-change beacons, `pushState`/`replaceState`/`popstate` wiring, and
   the monkey-patch recursion regression (ADR-007's risky edge).
-- **Visitor semantics (round-5):** `listVisitors` is identified-only
-  (anonymous seeded rows never appear; counts match), the 30-minute
-  `isVisitorActive` window has boundary cases (+29 min active, +31 min
-  inactive), B2B resolutions persist a deterministic `"City, State, CC"`
-  location, and the domains DTO splits identified vs total counts.
+- **Visitor semantics (round-5, updated R21):** `listVisitors` is
+  identified-only (anonymous seeded rows never appear; counts match), the
+  `isVisitorActive` window is the live's 1-HOUR boundary (R21-F10: +59 min
+  active, +61 min inactive — the bundle's `36e5`), B2B resolutions persist
+  a deterministic `"City, State, CC"` location and NULL confidence
+  (R21-F6), and the domains DTO splits identified vs total counts.
 - **Quota Prove-It:** 110 concurrent `consumeIdentification` calls against a
   free plan at the limit → exactly `limit` succeed (ADR-008's concurrency
   guarantee, tested at the DB level).
@@ -1653,10 +1718,10 @@ Next server context (`next/cache`, `next/navigation`, `next/headers`,
 ### 8.3 Coverage Thresholds
 
 None enforced numerically yet. The high-value targets named in v1.0
-(resolver determinism, `normalizeDomain`, `sourceFromReferrer`, `csvCell`,
-plan math, `/api/track` integration) are all covered. Remaining gaps worth
-adding: resolver distribution property tests over larger samples, and a
-Playwright E2E smoke of the critical funnel.
+(resolver determinism, `normalizeDomain`, `identTypeFor`, plan math,
+`/api/track` integration, the live's export byte format) are all covered.
+Remaining gaps worth adding: resolver distribution property tests over
+larger samples, and a Playwright E2E smoke of the critical funnel.
 
 ### 8.4 Pre-PR / Pre-Deploy Checklist
 
@@ -1773,6 +1838,7 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 | LOW | OAuth buttons are disabled placeholders | Users must use email sign-in | By design — no providers configured |
 | LOW | The live's add-domain flow accepts ARBITRARY input (R20 probe created "not_a_valid domain!!" as a real row on the live) | The clone validates hostnames via zod instead | Intentional divergence — never replicate a live defect (v1.19/F3) |
 | LOW | The live deletes domains IMMEDIATELY — no confirm dialog (observed R20) | Misclicks destroy domains + visitors + events with no undo | Intentional divergence — the clone keeps its AlertDialog confirm (v1.19/F3) |
+| MEDIUM | The live's dashboard plan-switch opens a Stripe EmbeddedCheckout dialog (paid external dependency, `create-portal-session` for billing management) | The clone's Get Started applies the plan change directly via `changePlanAction` | Intentional divergence — "Honesty over simulation": faking a payment form would be deceptive (v1.20, D-class; the plans catalogue/prices/CTAs themselves match) |
 | LOW | Sessions are 30-day JWTs; no server-side revocation | Stolen cookies valid until expiry; deletion sign-out is client-side only | Accepted for this product shape |
 | LOW | Footer Careers link is dead | None functionally — the original pixelco.io links it to `#` too | Parity — flagged `dead: true` in the link map |
 | LOW | No Dockerfile / CI workflow | Self-hosting requires manual steps | **Fixed in v1.3** — multi-stage Dockerfile + GitHub Actions CI |

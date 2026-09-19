@@ -115,3 +115,40 @@ Key fully shredded (the failed keyless ls-remote confirms it). Remote verificati
 Recovering from the interrupted session, I verified the D5 re-ruling (toggle attrs kept) was fully applied, then finished the remaining documentation — AGENTS/CLAUDE/README R20 facts, `.env.example` re-verified matching. The full gate re-ran GREEN after the revert: **lint ✓ typecheck ✓ 543 tests/54 files ✓ build ✓**. Eight atomic commits landed on `main` (pricing monthly-mode fix, controlled add-domain form, staged feed reveal, +12 pins, audit evidence, 8 screenshots, docs, ship record), pushed via the SSH wrapper with fingerprint verification — remote confirmed at `f0aaedc`, operator key shredded.
 
 **Suggested next:** Round-21 drift watch using the R20 runtime-state toolchain — promising targets are marketing mobile/responsive states and blog/docs sub-page interactions, plus watching for any live bundle hash change.
+
+---
+
+## Round 21 (continued by the agent — functional-flow & export parity)
+
+Base: 95604e0 (R20 ship f0aaedc + this log). Gate at base: lint ✓
+typecheck ✓ 543/54 ✓ build ✓.
+
+**Audit:** drift watch (6th) — LIVE 100% STABLE (the landing's 7 tokens
+= one feed row's done-unmount artifact; bundle hash unchanged). The 6th
+probe generation: the CSV export decoded from the live's app bundle
+(index-nhmKaUsm.js, fn W — 9 columns, LF, no BOM, no quoting, relative
+Last Seen, 1-hour status, current-page scope, ni=20); the visitors
+selects OPENED at runtime (confidence BANDS, source = identType);
+first-ever responsive probes (375/768 — PARITY, non-finding); the live
+mobile dropdown captured; the plan-switch flow decoded (Stripe
+EmbeddedCheckout — intentional divergence, never fake a payment form).
+
+**Findings F1-F10, all fixed via TDD** (543/54 → 568/56): the export
+byte format (now the live's, page-scoped via chrome-store pageVisitorIds);
+PAGE_SIZE 20; confidence bands; source repurposed to identType
+(direct/network/ip-lookup, sourceFromReferrer retired); 3-tier bar fill;
+company confidence null; the live's mobile dropdown (no Log In, plain
+links, one w-full CTA); always-MapPin b2b cell; relativeTime = Ry
+byte-for-byte ("Nd ago"); the 1-hour active window. csvCell retired.
+
+**Verification:** export fetch byte-checks green; selects' options
+identical to the live's; cells verified; zero console errors; 5
+screenshots + 2 VLM confirmations; dev DB re-seeded with the live
+semantics.
+
+**Outcome:** R21 complete — main advanced, 568/56 tests, PAD v1.20.
+
+**Next:** Round-22 drift watch with the R21 toolchain; probe targets —
+the live's signup → dashboard first-run funnel (fresh-account states),
+the activity feed's load-older flow, and the marketing blog/docs
+sub-page interactions.
