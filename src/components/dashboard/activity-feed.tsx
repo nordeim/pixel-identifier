@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { ArrowUpRight, ChevronDown, Eye, Globe, Loader2, Mail } from 'lucide-react'
+import { LegacyBadge } from '@/components/dashboard/content-badges'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -29,9 +30,11 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
   const [events, setEvents] = useState<ActivityEvent[]>(initialEvents)
   const [cursor, setCursor] = useState<string | null>(initialCursor)
   const [loadingMore, setLoadingMore] = useState(false)
-  const [tick, setTick] = useState(0)
-
   // Re-render every 15 s so relative timestamps stay honest between polls.
+  // R16: the tick state is a re-render trigger only — the live's DOM carries
+  // no data-tick attribute (the pin lives in tests/content-parity.test.tsx).
+  const [, setTick] = useState(0)
+
   useEffect(() => {
     const timer = setInterval(() => setTick((v) => v + 1), 15_000)
     return () => clearInterval(timer)
@@ -96,36 +99,34 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
         </CardHeader>
         <CardContent className="p-0">
         {events.length === 0 ? (
-          <p className="px-4 py-16 text-center text-sm text-muted-foreground" data-tick={tick}>
+          <p className="px-4 py-16 text-center text-sm text-muted-foreground">
             No events yet. Install your pixel and visit your site — events will
             appear here in real time.
           </p>
         ) : (
-          <ul className="divide-y divide-border">
+          <div className="divide-y divide-border">
             {events.map((event) => (
-              <li
+              <div
                 key={event.id}
-                className="flex items-start gap-4 px-5 py-4 transition-colors hover:bg-muted/20"
-                data-tick={tick}
+                className="flex items-start gap-4 px-5 py-4 hover:bg-muted/20 transition-colors"
               >
-                <span
+                <div
                   className={
                     event.name === 'identification'
-                      ? 'mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full gradient-primary'
-                      : 'mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted'
+                      ? 'h-8 w-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 gradient-primary'
+                      : 'h-8 w-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-muted'
                   }
-                  aria-hidden="true"
                 >
                   {event.name === 'identification' ? (
                     <Mail className="h-3.5 w-3.5 text-primary-foreground" />
                   ) : (
                     <Eye className="h-3.5 w-3.5 text-muted-foreground" />
                   )}
-                </span>
+                </div>
 
-                <div className="min-w-0 flex-1">
-                  <p className="mb-0.5 flex flex-wrap items-center gap-2">
-                    <span className="truncate text-sm font-medium text-foreground">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-sm font-medium truncate">
                       {/* R7-F1: pageview rows show the truncated anonymous id
                           ("first 12 chars + ...") like the live; only
                           identification rows show the email. */}
@@ -136,31 +137,33 @@ export function ActivityFeed({ initialEvents, initialCursor }: ActivityFeedProps
                         Identified
                       </Badge>
                     ) : (
-                      <Badge variant="outline" className="px-1.5 py-0 text-[10px] text-foreground">
+                      /* R16: the live's Pageview badge is the LEGACY-gen base
+                          (border) + text-foreground tail. */
+                      <LegacyBadge className="text-foreground text-[10px] px-1.5 py-0">
                         Pageview
-                      </Badge>
+                      </LegacyBadge>
                     )}
-                  </p>
-                  {/* R6-M2: two meta groups with gap-3 — globe+domain and
-                      arrow+path — like the live row footer. */}
-                  <p className="flex items-center gap-3 text-xs text-muted-foreground">
-                    <span className="flex min-w-0 items-center gap-1">
-                      <Globe className="h-3 w-3 shrink-0" aria-hidden="true" />
-                      <span className="truncate">{event.domain}</span>
+                  </div>
+                  {/* R16: two meta groups with gap-3, raw-text children —
+                      the live renders domain/path as bare text (D8). */}
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Globe className="h-3 w-3" aria-hidden="true" />
+                      {event.domain}
                     </span>
-                    <span className="flex min-w-0 items-center gap-1">
-                      <ArrowUpRight className="h-3 w-3 shrink-0" aria-hidden="true" />
-                      <span className="truncate">{event.path}</span>
+                    <span className="flex items-center gap-1">
+                      <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
+                      {event.path}
                     </span>
-                  </p>
+                  </div>
                 </div>
 
-                <time className="mt-1 shrink-0 text-xs text-muted-foreground" dateTime={event.createdAt}>
+                <span className="text-xs text-muted-foreground shrink-0 mt-1">
                   {relativeTime(event.createdAt)}
-                </time>
-              </li>
+                </span>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
 
         {cursor && (
