@@ -25,8 +25,10 @@ export function PricingSection() {
           <h2 id="pricing-heading" className="text-3xl sm:text-4xl font-bold mt-2 text-foreground">
             Start Free. <span className="text-gradient-hero">Scale as You Grow.</span>
           </h2>
-          <p className="text-muted-foreground mt-3">
-            No credit card required • Cancel anytime • Results in minutes
+          {/* R18-B1: the live's subtitle carries max-w-md mx-auto and
+              middle-dot separators (U+00B7, not U+2022 bullets). */}
+          <p className="text-muted-foreground mt-3 max-w-md mx-auto">
+            No credit card required · Cancel anytime · Results in minutes
           </p>
 
           {/* Billing cycle toggle — the live's iOS switch, defaulting to
@@ -78,12 +80,12 @@ export function PricingSection() {
                 data-reveal-delay={String((planIndex + 1) * 100)}
                 className={
                   plan.popular
-                    ? 'relative rounded-xl p-7 border-2 border-primary shadow-elevated bg-background'
+                    ? 'relative rounded-xl p-7 border border-2 border-primary shadow-elevated bg-background'
                     : 'relative rounded-xl p-7 border border-border shadow-card bg-card'
                 }
               >
                 {plan.popular && (
-                  <span className="gradient-cta absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full gradient-cta text-[10px] font-bold text-primary-foreground uppercase tracking-wider">
                     POPULAR
                   </span>
                 )}
@@ -102,37 +104,53 @@ export function PricingSection() {
                       $0 — only the paid cards carry it. */}
                   {plan.monthlyPrice > 0 && <span className="text-muted-foreground text-sm">/mo</span>}
                 </div>
-                {cycle === 'annual' && plan.monthlyPrice > 0 && (
-                  <p className="mb-4 text-xs text-muted-foreground">billed annually</p>
-                )}
+                {/* R18: the live ALWAYS renders this line (empty for the
+                    Free card / monthly mode, "billed annually" for
+                    paid-annual) — the spacer keeps every card's CTA on the
+                    same baseline. */}
+                <p className="text-xs text-muted-foreground mb-4">
+                  {cycle === 'annual' && plan.monthlyPrice > 0
+                    ? 'billed annually'
+                    : '\u00A0'}
+                </p>
 
                 {/* R10-F4: the live's CTA matrix — ONLY Growth carries the
                     gradient (with a Zap icon BEFORE the text); Free reads
                     "Free Tier" in the secondary style, Starter/Scale are
-                    secondary "Get Started" — all with a trailing arrow. */}
-                <Button
-                  asChild
-                  className={
-                    plan.id === 'free'
-                      ? 'mt-6 mb-5 w-full border-border bg-secondary font-semibold text-secondary-foreground hover:bg-secondary/80'
-                      : plan.popular
-                        ? 'mb-5 w-full gradient-cta border-0 font-semibold text-primary-foreground hover:opacity-90'
-                        : 'mb-5 w-full border-border bg-secondary font-semibold text-secondary-foreground hover:bg-secondary/80'
-                  }
+                    secondary "Get Started" — all with a trailing arrow.
+                    R18-B6 pattern: the live wraps every CTA button in a
+                    class="block" anchor; the tails follow the live's
+                    emission order. */}
+                <Link
+                  href={plan.id === 'free' ? '/signup' : `/signup?plan=${plan.id}&cycle=${cycle}`}
+                  className="block"
                 >
-                  <Link href={plan.id === 'free' ? '/signup' : `/signup?plan=${plan.id}&cycle=${cycle}`}>
-                    {plan.popular && <Zap className="mr-1.5 h-4 w-4" aria-hidden="true" />}
+                  {/* R12 convention: variant/size skipped (cva null) — the
+                      consumer tail carries the live's exact emission order
+                      (size fragment, then consumer, then the variant-ish
+                      chain — the live's builder assembles strings
+                      per-component, so only the full tail reproduces it). */}
+                  <Button
+                    variant={null}
+                    size={null}
+                    className={
+                      plan.popular
+                        ? 'bg-primary hover:bg-primary/90 h-10 px-4 py-2 w-full mb-5 font-semibold gradient-cta text-primary-foreground border-0 hover:opacity-90'
+                        : 'h-10 px-4 py-2 w-full mb-5 font-semibold bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                    }
+                  >
+                    {plan.popular && <Zap className="w-4 h-4 mr-1.5" aria-hidden="true" />}
                     {plan.id === 'free' ? 'Free Tier' : 'Get Started'}
                     {/* R10: the live's Growth CTA is Zap + text only; the
                         other cards carry a trailing arrow. */}
-                    {!plan.popular && <ArrowRight className="ml-1.5 h-4 w-4" aria-hidden="true" />}
-                  </Link>
-                </Button>
+                    {!plan.popular && <ArrowRight className="w-4 h-4 ml-1.5" aria-hidden="true" />}
+                  </Button>
+                </Link>
 
                 <ul className="space-y-2.5">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+                      <Check className="w-4 h-4 text-accent shrink-0 mt-0.5" aria-hidden="true" />
                       {feature}
                     </li>
                   ))}
