@@ -1,7 +1,8 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import { Check, CircleHelp, Loader2, Zap } from 'lucide-react'
+import { Check, Loader2, Zap } from 'lucide-react'
+import { CircleHelpIcon } from '@/components/dashboard/live-icons'
 import { changePlanAction } from '@/actions/settings'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -67,13 +68,13 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
   const shownPlan = (pendingPlan ?? currentPlan) as PlanId
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8">
       {/* Live summary banner: a tinted primary card (R6-H6). */}
-      <Card className="border-primary/20 bg-primary/5 shadow-sm">
+      <Card className="shadow-sm border-primary/20 bg-primary/5">
         <CardContent className="p-6 pt-5 pb-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-semibold text-foreground">
+              <p className="text-sm font-semibold">
                 You&apos;re on the <span className="text-gradient-primary capitalize">{PLANS[shownPlan].name}</span> plan
               </p>
               <p className="text-xs text-muted-foreground mt-0.5">
@@ -86,36 +87,31 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
               )}
             </div>
             <div className="flex items-center gap-3">
-              <div
-                className="h-1.5 w-32 overflow-hidden rounded-full bg-muted"
-                role="progressbar"
-                aria-valuenow={percent}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-label="Identifications used"
-              >
+              {/* R16: the live's usage bar carries no progressbar semantics. */}
+              <div className="h-1.5 w-32 rounded-full bg-muted overflow-hidden">
                 <div className="h-full rounded-full gradient-primary" style={{ width: `${Math.min(percent, 100)}%` }} />
               </div>
-              <span className="text-xs font-medium text-muted-foreground">{percent}%</span>
+              <span className="text-xs font-medium">{percent}%</span>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Billing toggle — Monthly [switch] Annual, like the live app */}
+      {/* Billing toggle — Monthly [switch] Annual, like the live app.
+          R16: both labels always carry font-medium; the active side adds
+          text-foreground, the inactive stays text-muted-foreground. */}
       <div className="flex items-center justify-center gap-3">
         <span
-          className={cycle === 'monthly' ? 'text-sm font-medium text-foreground' : 'text-sm text-muted-foreground'}
+          className={cycle === 'monthly' ? 'text-sm font-medium text-foreground' : 'text-sm font-medium text-muted-foreground'}
         >
           Monthly
         </span>
         <Switch
           checked={cycle === 'annual'}
           onCheckedChange={(annual) => setCycle(annual ? 'annual' : 'monthly')}
-          aria-label="Switch to annual billing"
         />
         <span
-          className={cycle === 'annual' ? 'text-sm font-medium text-foreground' : 'text-sm text-muted-foreground'}
+          className={cycle === 'annual' ? 'text-sm font-medium text-foreground' : 'text-sm font-medium text-muted-foreground'}
         >
           Annual
         </span>
@@ -123,7 +119,7 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
 
       {/* Plan cards — the live's header/body split, hover elevation, inline
           quota block, CTA above plain-check features. */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
         {PLAN_ORDER.map((id) => {
           const plan = PLANS[id]
           const monthly = effectiveMonthlyPrice(plan, cycle)
@@ -239,15 +235,16 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
         <h2 className="font-display text-xl font-bold text-center mb-6">
           Frequently Asked Questions
         </h2>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid md:grid-cols-2 gap-4">
           {FAQ.map((item) => (
-            <Card key={item.q} className="shadow-sm transition-colors hover:border-primary/10">
+            <Card key={item.q} className="shadow-sm hover:border-primary/10 transition-colors">
               <CardContent className="p-6 pt-5 pb-4">
                 <div className="flex items-start gap-3">
-                  <CircleHelp className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                  <CircleHelpIcon className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-semibold text-foreground">{item.q}</p>
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{item.a}</p>
+                    {/* R16: the live's FAQ block — h4 + text-xs answer. */}
+                    <h4 className="text-sm font-semibold mb-1">{item.q}</h4>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{item.a}</p>
                   </div>
                 </div>
               </CardContent>

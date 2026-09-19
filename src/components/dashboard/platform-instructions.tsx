@@ -104,15 +104,15 @@ export function PlatformInstructions() {
             <CardTitle className="text-lg">
               Platform Instructions
             </CardTitle>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Step-by-step guides for popular platforms.
             </p>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="html">
-          <TabsList className="mb-4 h-10 w-full justify-start bg-muted p-1">
+        <Tabs defaultValue="html" className="w-full">
+          <TabsList className="w-full justify-start mb-4">
             {PLATFORMS.map((platform) => (
               <TabsTrigger
                 key={platform.id}
@@ -126,7 +126,7 @@ export function PlatformInstructions() {
           </TabsList>
 
           {PLATFORMS.map((platform) => (
-            <TabsContent key={platform.id} value={platform.id} className="mt-0 space-y-4">
+            <TabsContent key={platform.id} value={platform.id} className="space-y-4">
               <div className="space-y-3">
                 {platform.steps.map((step, index) => (
                   <div key={step.title} className="flex gap-3">
@@ -137,7 +137,7 @@ export function PlatformInstructions() {
                       {index + 1}
                     </span>
                     <div>
-                      <p className="text-sm font-medium text-foreground">{step.title}</p>
+                      <p className="text-sm font-medium">{step.title}</p>
                       <p className="text-sm text-muted-foreground">{step.text}</p>
                     </div>
                   </div>

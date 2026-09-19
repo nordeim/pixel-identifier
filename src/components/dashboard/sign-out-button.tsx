@@ -15,8 +15,9 @@ export function SignOutButton({ className }: { className?: string }) {
       onClick={() => void signOut({ callbackUrl: '/' })}
       className={cn(
         // R11: live sign-out — text-xs, gap-2, px-1, LogOut h-3.5; a plain
-        // text button (no pill chrome, no hover tint).
-        'flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors w-full px-1 focus-brand',
+        // text button (no pill chrome, no hover tint). R16: focus-brand
+        // dropped — the live's button carries no focus utility.
+        'flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors w-full px-1',
         className,
       )}
     >

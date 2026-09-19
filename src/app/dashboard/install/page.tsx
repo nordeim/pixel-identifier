@@ -85,13 +85,13 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
   const receiving = site.lastEventAt !== null
 
   return (
-    <div className="max-w-4xl space-y-6">
+    <div className="space-y-6 max-w-4xl">
       {/* Page header + domain switcher, mirroring the live install page. */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-2xl font-bold">Install Your Pixel</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            One snippet in your <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">&lt;head&gt;</code> tag — works on every page automatically.
+          <p className="text-muted-foreground text-sm mt-1">
+            One snippet in your <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">&lt;head&gt;</code> tag — works on every page automatically.
           </p>
         </div>
         <DomainSwitcher domains={sites} activeSiteKey={site.siteKey} />
@@ -101,19 +101,16 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
       <Card className="border-primary/20">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <span
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-primary-foreground gradient-primary"
-              aria-hidden="true"
-            >
+            <div className="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center text-sm font-bold text-primary-foreground">
               <Zap className="h-4 w-4" />
-            </span>
+            </div>
             <div>
               <CardTitle className="text-lg">
                 Quick Start
               </CardTitle>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Copy and paste this snippet before the closing{' '}
-                <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">&lt;/head&gt;</code>{' '}
+                <code className="text-xs bg-muted px-1 py-0.5 rounded font-mono">&lt;/head&gt;</code>{' '}
                 tag on your website.
               </p>
             </div>
@@ -121,10 +118,11 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
         </CardHeader>
         <CardContent>
           <div className="relative">
-            <pre className="overflow-x-auto rounded-lg border border-border bg-foreground/5 p-4 font-mono text-sm leading-relaxed text-foreground">
+            {/* R16: the live's pre order, no text-foreground. */}
+            <pre className="bg-foreground/5 border border-border rounded-lg p-4 text-sm font-mono overflow-x-auto leading-relaxed">
               <code>{snippet}</code>
             </pre>
-            <CopyButton text={snippet} className="absolute right-3 top-3 h-9" />
+            <CopyButton text={snippet} className="absolute top-3 right-3" />
           </div>
 
           {receiving ? (
@@ -171,18 +169,18 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
               <CardTitle className="text-lg">
                 How It Works
               </CardTitle>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 What happens after you install the pixel.
               </p>
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid sm:grid-cols-2 gap-4">
             {HOW_IT_WORKS.map((feature) => (
-              <div key={feature.title} className="rounded-lg border border-border bg-muted/10 p-4">
-                <p className="mb-1 text-sm font-medium text-foreground">{feature.title}</p>
-                <p className="text-xs leading-relaxed text-muted-foreground">{feature.text}</p>
+              <div key={feature.title} className="p-4 rounded-lg border border-border bg-muted/10">
+                <p className="text-sm font-medium mb-1">{feature.title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">{feature.text}</p>
               </div>
             ))}
           </div>
@@ -191,16 +189,16 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
 
       {/* Site Key */}
       <Card className="border-primary/20">
-        <CardContent>
+        <CardContent className="pt-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-foreground">Site Key</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">
+              <p className="text-sm font-medium">Site Key</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
                 Your unique identifier for{' '}
                 <span className="font-medium text-foreground">{site.domain}</span>
               </p>
             </div>
-            <code className="rounded-md bg-foreground/5 px-3 py-1.5 font-mono text-sm text-foreground">
+            <code className="bg-foreground/5 px-3 py-1.5 rounded-md text-sm font-mono">
               {site.siteKey}
             </code>
           </div>

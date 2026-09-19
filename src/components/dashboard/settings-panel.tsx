@@ -51,12 +51,12 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
   }
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="space-y-6 max-w-2xl">
       {/* R5-H2: in-page title — the live settings page renders its H1 inside
           the content area, not in the topbar. */}
       <div>
         <h1 className="font-display text-2xl font-bold">Settings</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm mt-1">
           Manage your account and pixel configuration.
         </p>
       </div>
@@ -67,8 +67,11 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
             Profile
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <form action={formAction} className="space-y-4">
+        {/* R16: the live's Profile body carries space-y-4 on the card body
+            (the form itself is classless — the live is CSR with no form at
+            all; ours stays for the server action, D2). */}
+        <CardContent className="p-6 pt-0 space-y-4">
+          <form action={formAction}>
             <div className="space-y-2">
               <Label htmlFor="company">Company Name</Label>
               <Input
@@ -78,7 +81,6 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
                 placeholder="Acme Inc."
                 autoComplete="organization"
                 maxLength={120}
-                className="bg-[#F6F7F9]"
               />
             </div>
 
@@ -92,20 +94,24 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
                 placeholder="https://yoursite.com"
                 autoComplete="url"
                 maxLength={253}
-                className="bg-[#F6F7F9]"
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" defaultValue={email} disabled className="bg-[#F6F7F9]" />
+              <Input id="email" defaultValue={email} disabled />
             </div>
 
             <div className="flex items-center gap-3">
+              {/* R16: variant-free + h-9 rounded-md px-3 tail — the live's
+                  446-char string (twMerge: font-semibold displaces
+                  font-medium; transition-all displaces transition-colors). */}
               <Button
                 type="submit"
                 disabled={pending}
-                className="gradient-primary font-semibold text-primary-foreground shadow-lg glow-primary transition-all duration-300 hover:opacity-90"
+                variant={null}
+                size={null}
+                className="gradient-primary text-primary-foreground shadow-lg glow-primary hover:opacity-90 transition-all duration-300 font-semibold h-9 rounded-md px-3"
               >
                 {pending ? (
                   <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
@@ -128,16 +134,16 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
         </CardContent>
       </Card>
 
-      <Card className="border-destructive/20 shadow-sm">
+      <Card className="border-destructive/20">
         <CardHeader>
           <CardTitle className="text-lg text-destructive">
             Danger Zone
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <CardContent className="p-6 pt-0">
+          <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-foreground">Delete Account</p>
+              <p className="text-sm font-medium">Delete Account</p>
               <p className="text-xs text-muted-foreground">
                 Permanently delete your account and all data.
               </p>
