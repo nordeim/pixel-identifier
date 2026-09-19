@@ -345,6 +345,47 @@
 .feed-matching {
   animation: feed-matching 1s ease-in-out infinite;
 }
+/* R20-F4: the live's mode:"wait" reveal swap — the anonymous block exits
+   first (opacity→0, y:-8, 0.3s), then the email block enters (opacity
+   0→1, y 8→0, 0.4s); the ✓ badge springs in (scale 0→1 with an
+   overshoot bezier ≈ framer stiffness 400 / damping 15). */
+@keyframes feed-text-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+.feed-text-exit {
+  animation: feed-text-exit 0.3s ease both;
+}
+@keyframes feed-text-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.feed-text-in {
+  animation: feed-text-in 0.4s ease both;
+}
+@keyframes feed-badge-in {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+.feed-badge-in {
+  animation: feed-badge-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
 /* Logo marquee (R9-F1: live .animate-scroll-left). The track holds two
    copies of the 10-name set; translate(-50%) = exactly one copy, so the
    30s linear loop is seamless. */
@@ -372,6 +413,9 @@
 @media (prefers-reduced-motion: reduce) {
   .feed-row,
   .feed-matching,
+  .feed-text-exit,
+  .feed-text-in,
+  .feed-badge-in,
   .animate-pulse-glow,
   .animate-scroll-left {
     animation: none;

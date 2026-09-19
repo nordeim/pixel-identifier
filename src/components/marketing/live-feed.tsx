@@ -47,6 +47,12 @@ const DEMO_ENTRIES: FeedEntry[] = [
 const SCAN_AT = 600
 const REVEAL_AT = 1600
 const DONE_AT = 3200
+/** R20-F4: the live's AnimatePresence mode:"wait" — the anonymous
+ * text block exits FIRST (opacity→0, y:-8, 0.3 s) and only then the
+ * email block mounts (opacity 0→1, y 8→0, 0.4 s). The avatar flip and
+ * the ✓ badge stay pinned to the reveal tick; only the text swap is
+ * staged by this offset. */
+const SWAP_MS = 300
 /** The live's parent cycle — every 10s the whole roster re-mounts. */
 const CYCLE_MS = 10_000
 
@@ -54,12 +60,24 @@ type Phase = 'enter' | 'scan' | 'reveal' | 'done'
 
 function FeedRow({ entry, index, cycle }: { entry: FeedEntry; index: number; cycle: number }) {
   const [phase, setPhase] = useState<Phase>('enter')
+  const [textEmail, setTextEmail] = useState(false)
+  const [textExiting, setTextExiting] = useState(false)
 
   useEffect(() => {
     const base = entry.delay * 1000
     const timers = [
       setTimeout(() => setPhase('scan'), base + SCAN_AT),
-      setTimeout(() => setPhase('reveal'), base + REVEAL_AT),
+      setTimeout(() => {
+        setPhase('reveal')
+        // the wait-mode exit starts at the same tick as the avatar flip
+        setTextExiting(true)
+      }, base + REVEAL_AT),
+      // mode:"wait" — the anon block's 0.3s exit completes, THEN the
+      // email block mounts with its 0.4s enter animation.
+      setTimeout(() => {
+        setTextEmail(true)
+        setTextExiting(false)
+      }, base + REVEAL_AT + SWAP_MS),
       setTimeout(() => setPhase('done'), base + DONE_AT),
     ]
     return () => timers.forEach(clearTimeout)
@@ -90,23 +108,26 @@ function FeedRow({ entry, index, cycle }: { entry: FeedEntry; index: number; cyc
         )}
       </div>
       <div className="flex-1 min-w-0">
-        {revealed ? (
-          <>
+        {/* R20-F4: the live's mode:"wait" swap — during the 0.3s window
+            after reveal the anon block plays the exit animation; then the
+            email block mounts with the enter animation. */}
+        {textEmail ? (
+          <div className="feed-text-in">
             <p className="text-sm font-semibold text-foreground">{entry.email}</p>
             <p className="text-xs text-primary font-medium">✓ Identified</p>
-          </>
+          </div>
         ) : (
-          <>
+          <div className={textExiting ? 'feed-text-exit' : undefined}>
             <p className="text-sm font-medium text-muted-foreground">{entry.label}</p>
             <p className="text-xs text-muted-foreground/60">Browsing your site…</p>
-          </>
+          </div>
         )}
       </div>
       {phase === 'scan' && (
         <div className="feed-matching text-xs text-primary font-medium">Matching…</div>
       )}
       {revealed && (
-        <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+        <div className="feed-badge-in w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
           <span className="text-primary text-xs">✓</span>
         </div>
       )}
