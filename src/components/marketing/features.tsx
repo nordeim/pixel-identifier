@@ -7,7 +7,9 @@ import { Button } from '@/components/ui/button'
  * annexes) traced verbatim off the live DOM. Verified absent from
  * lucide-react 0.525 and six older versions (all 5,466 exports scanned);
  * drawn with lucide conventions (24 viewBox, stroke 2, round caps/joins)
- * so it renders indistinguishably from the lucide set. */
+ * so it renders indistinguishably from the lucide set. R18: the live's
+ * current build emits lucide's deprecated+current double name
+ * (lucide-building2 + lucide-building-2) on this icon — replicate it. */
 function CompanyBuildingIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -18,7 +20,7 @@ function CompanyBuildingIcon({ className }: { className?: string }) {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={className}
+      className={className ? `lucide lucide-building2 lucide-building-2 ${className}` : 'lucide lucide-building2 lucide-building-2'}
       aria-hidden="true"
     >
       <path d="M10 12h4" />
@@ -86,7 +88,9 @@ export function Features() {
   return (
     <section id="benefits" aria-labelledby="features-heading" className="py-20">
       <div className="container mx-auto px-6">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
+        {/* R18: the live's grid order + gap-14 (was gap-12 — 8px tighter
+            than the live). */}
+        <div className="grid lg:grid-cols-2 gap-14 items-center">
           <div>
             {/* R12-F1: the live wraps the kicker + h2 in a classless reveal
                 div (its benefits header animates as one unit). */}
@@ -107,9 +111,12 @@ export function Features() {
             <div className="grid sm:grid-cols-2 gap-x-6 gap-y-7">
               {FEATURES.map((feature, i) => (
                 <div key={feature.title} data-reveal="16" data-reveal-delay={String((i + 1) * 100)} className="flex gap-3">
-                  <span className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center shrink-0" aria-hidden="true">
+                  {/* R18-B3: the live's chip is a bare div (R17-F3 wrapper
+                      pattern — no clone-authored aria-hidden; lucide's own
+                      attribute covers the icon). */}
+                  <div className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center shrink-0">
                     <feature.icon className="w-4.5 h-4.5 text-primary" />
-                  </span>
+                  </div>
                   <div>
                     <h3 className="font-semibold text-sm text-foreground mb-0.5">{feature.title}</h3>
                     <p className="text-xs text-muted-foreground leading-relaxed">{feature.text}</p>
@@ -160,7 +167,7 @@ export function Comparison() {
             <ul className="space-y-3">
               {LEGACY_LIMITS.map((item) => (
                 <li key={item} className="flex items-center gap-2.5 text-sm text-muted-foreground">
-                  <X className="h-4 w-4 text-destructive shrink-0" aria-hidden="true" />
+                  <X className="w-4 h-4 text-destructive shrink-0" aria-hidden="true" />
                   {item}
                 </li>
               ))}
@@ -168,30 +175,31 @@ export function Comparison() {
           </div>
 
           <div className="rounded-xl border-2 border-primary bg-background p-7 relative shadow-elevated">
-            <span className="absolute -top-3 left-6 px-3 py-0.5 rounded-full gradient-cta text-xs font-semibold text-primary-foreground">
+            {/* R18-B2: the live's BEST VALUE pill is a div (generic-tag
+                swap — no semantic difference). */}
+            <div className="absolute -top-3 left-6 px-3 py-0.5 rounded-full gradient-cta text-xs font-semibold text-primary-foreground">
               BEST VALUE
-            </span>
+            </div>
             <h3 className="font-bold text-foreground mb-1">Pixelco</h3>
             <p className="text-sm text-muted-foreground mb-5">Individual email identification</p>
             <ul className="space-y-3">
               {PIXELCO_WINS.map((item) => (
-                <li key={item} className="flex items-center gap-2.5 text-sm font-medium text-foreground">
-                  <Check className="h-4 w-4 shrink-0 text-green-600" aria-hidden="true" />
+                <li key={item} className="flex items-center gap-2.5 text-sm text-foreground">
+                  <Check className="w-4 h-4 text-accent shrink-0" aria-hidden="true" />
                   {item}
                 </li>
               ))}
             </ul>
             {/* R11: the live's Compare CTA — gradient-cta on the default
-                h-10 size with hover:opacity-90. */}
-            <Button
-              asChild
-              className="w-full mt-6 gradient-cta text-primary-foreground border-0 hover:opacity-90 font-semibold"
-            >
-              <Link href="/signup">
+                variant/size (bg-primary + h-10 ride BEFORE the consumer
+                tail — the default cva order matches this CTA). R18: the
+                live wraps it in a class="block" anchor. */}
+            <Link href="/signup" className="block">
+              <Button className="w-full mt-6 gradient-cta text-primary-foreground border-0 hover:opacity-90 font-semibold">
                 Start Free
-                <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
-              </Link>
-            </Button>
+                <ArrowRight className="w-4 h-4 ml-1" aria-hidden="true" />
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
