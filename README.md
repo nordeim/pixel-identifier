@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 519 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 531 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -298,6 +298,21 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   +35 pins (`tests/marketing-r18-parity.test.tsx` + the content-parity
   R18 blocks); post-fix the settings card matches the live
   pixel-exactly.
+- **Computed-style + runtime-model parity (round-19)** — the geometry
+  probes extended to the marketing bundle's COMPUTED styles caught what
+  class-string pins cannot: `.gradient-hero` resolving dark instead of
+  the live's amber 3-stop on every marketing surface (fixed with a
+  `.marketing-scope .gradient-hero` rule — one bundle, two resolutions,
+  like the live's marketing/app bundle split; the auth canvas stays
+  dark) and the hero feed widget running a static 8-entry rotation
+  instead of the live's 5-entry phase machine (enter→scan→reveal→done,
+  10s cycle, `index*56+12` row tops, avatar muted→primary flip,
+  Matching…/✓ phase badges — rebuilt from the live's bundle source).
+  The hero trust-row avatars were re-synced to the live's current
+  photos (guarded by an offline perceptual-hash pin) — +12 pins in
+  `tests/marketing-r19-parity.test.tsx`; post-fix the feed rows measure
+  identical tops to the live (12/68/124/180/236) and the login canvas
+  keeps the dark sweep. Screenshots in `docs/screenshots/`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the

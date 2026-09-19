@@ -3,7 +3,7 @@
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-19 (v1.17)
+**Last Updated:** 2026-09-19 (v1.18)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,55 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.18** `[SYN]` Round-19 marketing computed-style/geometry audit (plan:
+  `docs/plans/2026-09-19-round19-geometry-audit.md`; evidence `/tmp/r19-caps`
+  + `docs/screenshots/`). The live stayed **100% stable since R18** (fourth
+  consecutive stable audit — marketing body DOM byte-identical, all 7
+  dashboard pages zero token drift, dashboard clone-side at the
+  documented-residual state). R19 extended the R18 geometry probes to the
+  MARKETING bundle's computed styles and found what class-string pins
+  cannot see: **(F1)** `.gradient-hero` resolved DARK on every marketing
+  surface — the live's marketing bundle defines ONE `.gradient-hero` =
+  the amber 3-stop `var(--gradient-hero)` (measured rgb(255,170,0) →
+  rgb(255,217,26) → rgb(245,143,0) on step chips/announcement bar/CTA
+  banner, not redefined in `.dark`), while the clone's single definition
+  was the auth/app-bundle dark sweep — R18 pinned the class STRINGS but
+  not the CSS RESOLUTION. Fixed by scoping the amber image to
+  `.marketing-scope .gradient-hero` (one bundle, two resolutions, exactly
+  the live's two-bundle architecture; the auth canvas sits outside the
+  scope and keeps the dark sweep — VLM-verified amber on all three
+  marketing surfaces + dark on login); the dead `.gradient-hero-light`
+  utility retired (zero references, the live's marketing bundle defines
+  no such class). **(F2)** the hero "Live Visitor Feed" widget's ROW MODEL
+  was rebuilt from the live's bundle source (symbols PD/TD/ND in
+  index-C3AAh5Je.js): 5 entries {label, email, delay} with staggered
+  delays [0, 1.8, 3.6, 5.4, 7.2]s (the clone shipped 8 static entries
+  incl. emails the live never renders), per-row phase machine
+  enter→scan (delay+600ms)→reveal (+1600)→done (+3200, unmount), 10s
+  parent cycle re-mounting the roster (was a 2.6s offset rotation), row
+  tops `index*56+12` (was `8+slot*56`), avatar backgroundColor
+  muted→primary flip with a 0.4s transition (`.feed-avatar`), the
+  "Matching…" opacity-pulse badge during scan and the ✓ spring badge
+  during reveal. Post-fix the feed rows measure offsetTops
+  **12/68/124/180/236 — identical to the live**; VLM comparison of the
+  widget crops: layout, stats strip (847/169), colors and structure
+  identical (row text differs only by rotation phase at capture).
+  **(F4)** the live re-hosted its hero trust-row avatar photos after the
+  R8 capture (VLM-verified: five different people) — replaced with the
+  live's current set downscaled to the repo's 96px convention (displayed
+  at 32px; a perceptual 8×8 average-luma hash pin guards the set
+  offline). R19 also ruled F3 a non-finding: the live's avatars 2-5
+  returned transient 404s during the audit capture (CDN hiccup; all 200
+  on re-check — never replicate a live-side defect). Fixed via TDD (+12
+  pins in `tests/marketing-r19-parity.test.tsx`, 2 superseded R18 B5
+  pins updated to the phase model; suite 519/52 → **531/53**).
+  Post-fix verification: chips/bar/CTA amber + auth dark (computed),
+  settings geometry **pixel-exact** (groups 237/325/413, Save 501 both
+  sides — the R19 live probe had lost its session mid-run; re-probed
+  with fresh login using the form-independent card selector: the live's
+  settings page has no `<form>` element — D2 machinery), E2E console
+  sweep **zero errors** on 10 pages, screenshots in
+  `docs/screenshots/` (7 files).
 - **v1.17** `[SYN]` Round-18 app-bundle geometry fixes + marketing
   class realignment (plan:
   `docs/plans/2026-09-19-round18-marketing-realignment.md`; evidence in

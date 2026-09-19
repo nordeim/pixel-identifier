@@ -148,6 +148,17 @@ and stable per visitor.
   equality is NOT layout equality. The fixes live in scoped CSS
   (`.space-y-2 > label + input`) and on the form elements themselves
   (D2 wrappers carry the spacing), never on the pinned primitives.
+- **Computed styles and runtime models are part of the parity surface
+  (v1.18, R19):** class-string pins cannot see CSS RESOLUTION (the same
+  `.gradient-hero` class renders amber in the live's marketing bundle
+  and dark in its app bundle — the clone scopes the amber to
+  `.marketing-scope`) nor RUNTIME MODELS (the live's feed widget is a
+  5-row phase machine with a 10s cycle, not a static list). When a
+  component animates or phases on the live, extract its model from the
+  live's bundle source (the minified symbols are readable) and pin the
+  data + timing constants, not just the static markup. Transient
+  live-side defects (CDN 404s, login hiccups) are non-findings —
+  re-check before acting, and never replicate a live defect.
 - **The marketing bundle has its own emission conventions (v1.17, R18):**
   lucide icons size→color→margin; paragraphs text-first; containers
   px-before-border; chips geometry-first; gradients are the FULL

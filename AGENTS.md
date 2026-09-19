@@ -180,6 +180,36 @@ make it pass — fix the code.
   avatars are divs with inline `background-color: var(--primary)/
   var(--muted)`; the stat zap is the live's data-URI img. Pinned by
   `tests/marketing-r18-parity.test.tsx`.
+- **R19: `.gradient-hero` resolves differently per bundle (v1.18).** The
+  live ships TWO CSS resolutions under one class name: its marketing
+  bundle defines `.gradient-hero` = the amber 3-stop
+  `var(--gradient-hero)` (on `:root`, NOT redefined in `.dark`), while
+  its app bundle uses the dark navy-to-warm-brown sweep (auth canvas).
+  The clone mirrors this with ONE rule pair in `globals.css`: bare
+  `.gradient-hero` (dark, auth) + `.marketing-scope .gradient-hero`
+  (amber 3-stop, marketing tree). Do NOT "simplify" either away, and do
+  NOT reintroduce `.gradient-hero-light` (retired R19 — the live's
+  marketing bundle defines no such class; zero references). Pinned by
+  `tests/marketing-r19-parity.test.tsx`.
+- **R19: the hero feed widget runs the live's PHASE model (v1.18).**
+  `live-feed.tsx` ships the live's roster (5 entries, varied labels
+  "Anonymous Visitor"/"Unknown User"/"Site Visitor", delays
+  [0, 1.8, 3.6, 5.4, 7.2]s), the per-row phase machine enter→scan
+  (+600ms)→reveal (+1600)→done (+3200, unmount), the 10s parent cycle
+  re-mount, row tops `index*56+12`, the avatar muted→primary flip
+  (`.feed-avatar` transition) with User→Mail icons, the "Matching…"
+  pulse badge and the ✓ reveal badge. The static render is the t=0
+  ENTER state (all rows anonymous — emails appear only at the reveal
+  timeout); do NOT bake emails into the static markup. Framer-motion
+  inlines on the live's rows are D5-class reveal machinery. Pinned by
+  `tests/marketing-r19-parity.test.tsx`.
+- **R19: the hero trust-row avatars are the live's CURRENT photos
+  (v1.18).** The live re-hosted its avatar set after the R8 capture
+  (content-hashed names). The local `public/assets/avatars/avatar-{1..5}.jpg`
+  are the live's current people at 96px (displayed at 32px); a
+  perceptual 8×8 average-luma hash pin (offline, stored live hashes)
+  guards the set. If the live swaps photos again, re-download and
+  re-capture the hashes — never regenerate from scratch.
 - **D5 (R18): the clone's invisible functional chrome is KEPT, documented.**
   Switch semantics on the marketing billing toggle (`role="switch"` +
   `aria-checked` — the live ships a plain button), the 8 marketing
