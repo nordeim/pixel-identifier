@@ -80,11 +80,12 @@ const domainsHtml = renderToStaticMarkup(
   />,
 )
 
-describe('visitors badges (R11-F7)', () => {
+describe('visitors badges (R16 D1 — legacy-gen strings)', () => {
   it('renders the source badge at px-2 keeping the variant hover', () => {
-    // Direct (individual) row: secondary variant + neon tint + px-2.
+    // Direct (individual) row: LEGACY-gen base + hover:bg-secondary/80 +
+    // the neon tint tail (R16 supersession of the R11-F7 pin).
     expect(visitorsHtml).toContain(
-      'border-neon-green/20 bg-neon-green/10 px-2 py-0 text-[10px] text-neon-green',
+      'inline-flex items-center rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-secondary/80 text-[10px] px-2 py-0 bg-neon-green/10 text-neon-green border-neon-green/20',
     )
     expect(visitorsHtml).not.toContain('hover:bg-neon-green/10')
   })
@@ -112,14 +113,14 @@ describe('visitors badges (R11-F7)', () => {
       />,
     )
     expect(companyHtml).toContain(
-      'border-amber-500/20 bg-amber-500/10 px-2 py-0 text-[10px] text-amber-600',
+      'hover:bg-secondary/80 text-[10px] px-2 py-0 bg-amber-500/10 text-amber-600 border-amber-500/20',
     )
     expect(companyHtml).toContain('Company')
   })
 
-  it('renders the inactive status badge as the plain secondary variant at px-2', () => {
+  it('renders the inactive status badge as the legacy secondary (text-secondary-foreground)', () => {
     expect(visitorsHtml).toContain(
-      'border-transparent bg-secondary hover:bg-secondary/80 text-[10px] px-2 py-0',
+      'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 text-[10px] px-2 py-0',
     )
     expect(visitorsHtml).not.toContain('hover:bg-secondary"')
     expect(visitorsHtml).toContain('>inactive</div>')
@@ -136,9 +137,9 @@ describe('domains badges (R11-F7)', () => {
     expect(domainsHtml).toContain('h-2.5 w-2.5 mr-0.5')
   })
 
-  it('renders Pending as the plain secondary variant', () => {
+  it('renders Pending as the LEGACY secondary (base border + text-secondary-foreground)', () => {
     expect(domainsHtml).toContain(
-      'border-transparent bg-secondary hover:bg-secondary/80 text-[10px] px-1.5 py-0',
+      'inline-flex items-center rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 text-[10px] px-1.5 py-0',
     )
   })
 })

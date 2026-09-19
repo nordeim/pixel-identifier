@@ -79,9 +79,10 @@ describe('visitors table selection chrome (R11 live parity)', () => {
       />,
     )
     expect(html).not.toContain('Export Selected')
-    // The live filter widths: confidence w-44, source w-40 (class precedes
-    // aria-label in the SSR output, so anchor the other way round).
-    expect(html).toMatch(/h-10 w-44[^"]*" aria-label="Filter by confidence"/)
-    expect(html).toMatch(/h-10 w-40[^"]*" aria-label="Filter by source"/)
+    // The live filter widths: confidence w-44, source w-40. R16: the base
+    // carries h-10 (no consumer duplicate — twMerge would displace it);
+    // the width lands in the consumer tail.
+    expect(html).toMatch(/line-clamp-1 w-44" aria-label="Filter by confidence"/)
+    expect(html).toMatch(/line-clamp-1 w-40" aria-label="Filter by source"/)
   })
 })
