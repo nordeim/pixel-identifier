@@ -981,3 +981,46 @@ Stage Summary:
   observation (sampling the live's rotation phases) as a fifth probe
   generation; deeper functional parity (pricing toggle URL-state sync,
   visitors sort states, domains validation flows).
+
+---
+Task ID: R20
+Agent: main (Super Z)
+Task: Round-20 — runtime-state & functional parity audit + remediation + ship (continued from an interrupted session)
+
+Work Log:
+- Continued the interrupted R20 session: all code fixes (F1 pricing
+  monthly, F2 domains controlled form, F4 staged reveal), test pins
+  (+12, 543/54), screenshots (8), PAD v1.19, session_17 R20 log, plan
+  + execution log were on disk uncommitted; verified the mid-session
+  D5 re-ruling (F1d revert: the toggle's role="switch"/aria-checked/
+  knob aria-hidden stay KEPT — the strict-parity pin was superseded)
+  was fully applied across code, tests and docs before proceeding.
+- Completed the remaining documentation: AGENTS.md (three R20 fact
+  blocks + the D5 entry's R20 re-confirmation note), CLAUDE.md (the
+  runtime-STATE/functional-flow parity principle, v1.19), README (543
+  assertions + the R20 round bullet). .env.example re-verified
+  matching the codebase (DATABASE_URL file path, NextAuth v4 implicit
+  NEXTAUTH_SECRET, site-url NEXTAUTH_URL; tracked).
+- Re-ran the full verification gate AFTER the F1d revert: lint ✓ ·
+  typecheck ✓ · 543 tests / 54 files ✓ · next build ✓.
+- 7 atomic commits on main (2f28b4f..22d4389): F1 pricing → F2
+  domains → F4 feed staging → R20 pins → audit evidence → screenshots
+  → docs.
+- Push via docs/ssh_git_wrapper_v3.py + paramiko shim: fingerprint
+  verified before use (SHA256:HpVRkv3e8k0HgD6SKijmGSmjs/ZRRJxrZaAm6y
+  6/Rns — matches R15-R19 records); dry-run green (44949ce..22d4389),
+  real push verified (remote refs/heads/main @ 22d4389 == local HEAD);
+  tracking ref synced; operator key shredded (random overwrite x3 +
+  remove) — no key material on disk.
+
+Stage Summary:
+- Round-20 FULLY CLOSED AND SHIPPED: main @ 22d4389 on GitHub, PAD
+  v1.19, 543/54 tests. The live is stable across five consecutive
+  audits; the clone now matches its runtime STATES (pricing monthly
+  emission, add-domain disabled-on-empty) and the feed's staged
+  mode:"wait" reveal transition, with the live's own defects (zero
+  domain validation, no delete confirm) ruled intentional divergences.
+- Next: Round-21 drift watch with the R20 toolchain (tokenizer +
+  runtime-state + functional probes); probe targets — marketing
+  mobile/responsive states, the blog/docs sub-page interactions, and
+  any live deploy that changes the bundle hash (index-C3AAh5Je.js).
