@@ -922,3 +922,62 @@ Stage Summary:
   class-inventory + geometry probes — extend the geometry probes to
   the marketing bundle); deeper functional parity (domains validation
   states, visitors sheet interactions) as an alternative track.
+
+---
+Task ID: R19
+Agent: main (Super Z)
+Task: Round-19 — marketing computed-style/geometry audit + remediation + ship
+
+Work Log:
+- Continued the interrupted R19 audit: reconstructed evidence from
+  /tmp/r19-caps (dashboard+landing captures, geometry probes); baseline
+  gate GREEN at 7c5c0bb (519/52). Live 100% stable since R18 — 4th
+  consecutive stable audit (marketing body DOM byte-identical, zero
+  dashboard token drift, auth 11px gaps hold).
+- Findings: F1 .gradient-hero resolved DARK on all marketing surfaces
+  (the live's marketing bundle defines it as the amber 3-stop
+  var(--gradient-hero); R18 pinned class strings, not CSS resolution);
+  F2 the hero feed widget's row model (live = 5-entry roster with
+  staggered delays, enter→scan→reveal→done phase machine, 10s cycle,
+  index*56+12 tops, avatar muted→primary flip, Matching…/✓ badges —
+  extracted from the live's bundle source); F3 non-finding (live CDN
+  404s transient); F4 the live swapped its avatar photos after R8
+  (VLM-verified all five differ).
+- TDD: 12 RED → GREEN pins (tests/marketing-r19-parity.test.tsx,
+  incl. an offline perceptual avatar-hash pin) + 2 superseded R18 B5
+  pins updated to the phase model. Suite 519/52 → 531/53; lint/
+  typecheck/build GREEN.
+- Fixed: .marketing-scope .gradient-hero (amber) + bare .gradient-hero
+  (auth dark); .gradient-hero-light retired; live-feed.tsx rebuilt on
+  the live's model; avatars re-synced to the live's current photos
+  (96px).
+- Browser verification: chips/bar/CTA amber + login canvas dark
+  (computed styles); feed rows offsetTops 12/68/124/180/236 identical
+  to the live; settings geometry pixel-exact (237/325/413/501 both
+  sides — form-independent card selector: the live's settings page has
+  no form, D2); E2E console sweep zero errors on 10 pages; VLM visual
+  confirmations; 7 screenshots in docs/screenshots/. (One incident: the
+  first verification run probed a zombie server from the interrupted
+  session on port 3000 — killed, static+public recopied, re-ran clean.)
+- Docs: PAD v1.18, session_16, plan + execution log, AGENTS/CLAUDE R19
+  facts, README 531 + R19 bullet. .env.example re-verified matching
+  (tracked since e95a20e).
+- Push via docs/ssh_git_wrapper_v3.py + paramiko shim, --remote
+  git@github.com:nordeim/pixel-identifier.git: dry-run green
+  (7c5c0bb..993fa80), real push verified (remote refs/heads/main @
+  993fa80 == local HEAD), tracking ref synced. Deploy key fingerprint
+  verified before use (SHA256:HpVRkv3e8k0HgD6SKijmGSmjs/ZRRJxrZaAm6y6
+  /Rns — matches R15-R18 records); operator key shredded (random
+  overwrite + remove). No key material on disk.
+
+Stage Summary:
+- Round-19 fully closed and shipped: main @ 993fa80 on GitHub, PAD
+  v1.18, 531/53 tests. The live is stable across four consecutive
+  audits; the clone now matches it in computed styles (amber/dark
+  gradient resolution), the feed widget's runtime model (pixel-identical
+  row geometry), and the live's current avatar set.
+- Next: Round-20 drift watch with the full R19 toolchain (tokenizer +
+  class-inventory + computed-style + geometry probes); runtime-state
+  observation (sampling the live's rotation phases) as a fifth probe
+  generation; deeper functional parity (pricing toggle URL-state sync,
+  visitors sort states, domains validation flows).
