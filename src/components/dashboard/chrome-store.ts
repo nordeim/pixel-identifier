@@ -26,12 +26,17 @@ interface ChromeState {
   visitorsCounts: VisitorsCounts | null
   /** R11: selected visitor row ids (visitors page → topbar Export (N)). */
   selectedVisitorIds: string[]
+  /** R21-F1: the CURRENT PAGE's row ids — the live's "Export All" exports
+   * the rows currently displayed (the current tab's page), not the whole
+   * account; the topbar scopes the href with these ids. */
+  pageVisitorIds: string[]
 }
 
 let state: ChromeState = {
   sidebar: 'expanded',
   visitorsCounts: null,
   selectedVisitorIds: [],
+  pageVisitorIds: [],
 }
 const listeners = new Set<() => void>()
 
@@ -94,5 +99,13 @@ export function publishVisitorsCounts(counts: VisitorsCounts) {
  * Export button swaps to "Export (N)" with an ids-scoped href. */
 export function publishSelectedVisitorIds(ids: string[]) {
   state = { ...state, selectedVisitorIds: ids }
+  emit()
+}
+
+/** R21-F1: the visitors table publishes the current page's row ids so the
+ * topbar's "Export All" scopes to the displayed rows (the live's W() exports
+ * D = the current tab's current page). */
+export function publishPageVisitorIds(ids: string[]) {
+  state = { ...state, pageVisitorIds: ids }
   emit()
 }

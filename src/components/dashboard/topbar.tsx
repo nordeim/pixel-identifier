@@ -33,16 +33,21 @@ export function Topbar({
   const pathname = usePathname()
   const meta = pageMeta(pathname)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
-  const { visitorsCounts, selectedVisitorIds } = useChromeState()
+  const { visitorsCounts, selectedVisitorIds, pageVisitorIds } = useChromeState()
   const isVisitors = pathname === '/dashboard/visitors'
 
-  // R11: with rows selected, the live swaps the topbar Export button to
-  // "Export (N)" with an ids-scoped href (no separate bulk-action row).
+  // R11 + R21-F1: with rows selected, the live swaps the topbar Export
+  // button to "Export (N)" with an ids-scoped href (no separate bulk-action
+  // row). Unselected, the live's W() exports the CURRENT PAGE's rows —
+  // "Export All" means all-rows-on-this-page vs the selected subset, never
+  // the whole account; the href scopes to the page ids the table publishes.
   const selectedCount = selectedVisitorIds.length
   const exportHref =
     isVisitors && selectedCount > 0
       ? `/api/export?ids=${selectedVisitorIds.join(',')}`
-      : '/api/export'
+      : isVisitors
+        ? `/api/export?ids=${pageVisitorIds.join(',')}`
+        : '/api/export'
 
   /** R15-F1: the sidebar breakpoint is md (768px) like the live — the
    * trigger collapses the desktop rail at md+ and opens the mobile sheet
