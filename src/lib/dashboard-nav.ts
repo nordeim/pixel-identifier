@@ -144,7 +144,10 @@ export function hasUnreadActivity(
  * no stored state, so it can never go stale (round-5 plan, A2).
  */
 export function isVisitorActive(lastSeen: Date, now: Date = new Date()): boolean {
-  return now.getTime() - lastSeen.getTime() < 30 * 60_000
+  // R21-F10: the live computes `lastSeen > now − 36e5` (ONE hour,
+  // index-nhmKaUsm.js) — derived at render time from lastSeen, no stored
+  // state, so it can never go stale (round-5 plan, A2).
+  return now.getTime() - lastSeen.getTime() < 3_600_000
 }
 
 /* ------------------------------------------------------------------ */

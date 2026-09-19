@@ -2,18 +2,15 @@
 
 export function relativeTime(date: Date | string): string {
   const then = typeof date === 'string' ? new Date(date) : date
-  const seconds = Math.max(0, Math.floor((Date.now() - then.getTime()) / 1000))
-  if (seconds < 45) return 'Just now'
-  if (seconds < 90) return '1 min ago'
-  const minutes = Math.floor(seconds / 60)
+  // R21-F9: the live's Ry formatter (index-nhmKaUsm.js), byte-for-byte:
+  // "Just now" below one minute, "N min ago", "N hr ago", then the compact
+  // "Nd ago" (no space) forever — no weeks branch, no date fallback.
+  const minutes = Math.floor((Date.now() - then.getTime()) / 60_000)
+  if (minutes < 1) return 'Just now'
   if (minutes < 60) return `${minutes} min ago`
   const hours = Math.floor(minutes / 60)
   if (hours < 24) return `${hours} hr ago`
-  const days = Math.floor(hours / 24)
-  if (days < 7) return `${days} d ago`
-  const weeks = Math.floor(days / 7)
-  if (weeks < 5) return `${weeks} w ago`
-  return then.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  return `${Math.floor(hours / 24)}d ago`
 }
 
 export function formatDate(date: Date | string): string {
@@ -41,17 +38,9 @@ export function initialsForEmail(email: string): string {
   return local.slice(0, 2).toUpperCase()
 }
 
-/**
- * Escape a value for safe inclusion in a CSV cell (RFC 4180), with a
- * formula-injection guard: values that begin with =, +, -, @ or a tab are
- * prefixed with an apostrophe so spreadsheet applications render them as
- * text instead of evaluating them as formulas.
- */
-export function csvCell(value: string | number | null | undefined): string {
-  const str = value === null || value === undefined ? '' : String(value)
-  const guarded = /^[=+\-@\t]/.test(str) ? `'${str}` : str
-  if (/[",\n\r]/.test(guarded)) {
-    return `"${guarded.replace(/"/g, '""')}"`
-  }
-  return guarded
-}
+/* csvCell was RETIRED in R21-F1: the export now replicates the live's
+   byte format (raw unquoted values, LF, no BOM — see api/export/route.ts).
+   The formula-injection guard is intentionally not re-applied: the live's
+   own export ships raw values (never replicate-vs-exceed the live), and in
+   this clone the exported values come only from the deterministic
+   resolver's catalogs — no user-supplied text reaches a CSV cell. */
