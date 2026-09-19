@@ -12,11 +12,14 @@ import {
   Search,
   User,
 } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { cn } from '@/lib/utils'
+import { Building2Icon } from '@/components/dashboard/live-icons'
+import { LegacyBadge, LEGACY_BADGE_SECONDARY, LEGACY_BADGE_DEFAULT } from '@/components/dashboard/content-badges'
 import {
   Select,
   SelectContent,
@@ -174,30 +177,33 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
     // Live app: pill tabs with count badges, icons only on Individuals/Companies.
     { key: 'all', label: 'All', count: counts.all, icon: null },
     { key: 'individual', label: 'Individuals', count: counts.individual, icon: User },
-    { key: 'company', label: 'Companies', count: counts.company, icon: Building2 },
+    { key: 'company', label: 'Companies', count: counts.company, icon: Building2Icon },
   ]
 
   return (
     <div className="space-y-4">
 
       {/* Segment tabs — shadcn pill tabs with count badges like the live
-          app (R6-H2); Radix owns the arrow-key roving focus. */}
+          app (R6-H2); Radix owns the arrow-key roving focus. R16: the list
+          carries NO consumer classes (the primitive base IS the live string)
+          and the icons ship the live's h-3.5 single-name classes. */}
       <Tabs
         value={filters.type}
         onValueChange={(value) => navigate({ type: value })}
       >
-        <TabsList className="h-10 justify-start rounded-md p-1">
+        <TabsList>
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.key}
               value={tab.key}
-              className="h-auto gap-1.5 rounded-sm px-3 py-1.5"
+              className="gap-1.5"
             >
-              {tab.icon && <tab.icon className="h-4 w-4" aria-hidden="true" />}
+              {tab.icon && <tab.icon className="h-3.5 w-3.5" aria-hidden="true" />}
               {tab.label}
-              <span className="ml-0.5 inline-flex items-center rounded-full border border-transparent bg-secondary px-1.5 py-0 text-[10px] font-semibold text-secondary-foreground">
+              {/* R16 D1: legacy-gen count badge (live 158-char string). */}
+              <LegacyBadge className={cn(LEGACY_BADGE_SECONDARY, 'text-[10px] px-1.5 py-0 ml-0.5')}>
                 {tab.count}
-              </span>
+              </LegacyBadge>
             </TabsTrigger>
           ))}
         </TabsList>
@@ -205,13 +211,13 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
 
       {/* Search + filters row — live: h-10 search with pl-9 icon, w-44 selects */}
       <div className="flex items-center gap-3">
-        <div className="relative max-w-sm flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search emails, companies..."
-            className="h-10 pl-9"
+            className="pl-9"
             aria-label="Search visitors"
           />
         </div>
@@ -220,7 +226,7 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
           value={filters.confidence}
           onValueChange={(value) => navigate({ confidence: value })}
         >
-          <SelectTrigger className="h-10 w-44" aria-label="Filter by confidence">
+          <SelectTrigger className="w-44" aria-label="Filter by confidence">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -232,7 +238,7 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
         </Select>
 
         <Select value={filters.source} onValueChange={(value) => navigate({ source: value })}>
-          <SelectTrigger className="h-10 w-40" aria-label="Filter by source">
+          <SelectTrigger className="w-40" aria-label="Filter by source">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -255,31 +261,34 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
       </div>
 
       {/* Table — live chrome: muted/30 header strip, 11px uppercase columns
-          with a sort glyph on VISITOR, square checkboxes, hover:muted/20 rows. */}
-      <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          with a sort glyph on VISITOR, square checkboxes, hover:muted/20 rows.
+          R16: th cells carry the live order (text-left first, no scope attr). */}
+      {/* R16: the live wraps the table in a CARD (base classes + p-0 body,
+          no overflow-hidden consumer). */}
+      <Card>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+          <table className="w-full">
             <thead>
               <tr className="border-b border-border bg-muted/30">
-                <th scope="col" className="w-10 p-3 pl-5">
+                <th className="p-3 pl-5 w-10">
                   <Checkbox
                     aria-label="Select all visitors on this page"
                     checked={pageSelected ? true : someSelected ? 'indeterminate' : false}
                     onCheckedChange={(checked) => toggleAll(checked === true)}
                     disabled={visitors.length === 0}
-                    className="rounded-sm border-primary"
                   />
                 </th>
-                <th scope="col" className="p-3 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                <th className="text-left p-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
                   <span className="inline-flex items-center gap-1">
                     Visitor
                     <ArrowUpDown className="h-3 w-3" aria-hidden="true" />
                   </span>
                 </th>
-                <th scope="col" className="p-3 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Type</th>
-                <th scope="col" className="p-3 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Confidence</th>
-                <th scope="col" className="p-3 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Status</th>
-                <th scope="col" className="p-3 pr-5 text-right text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Last Active</th>
+                <th className="text-left p-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Type</th>
+                <th className="text-left p-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Confidence</th>
+                <th className="text-left p-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                <th className="text-right p-3 pr-5 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Last Active</th>
               </tr>
             </thead>
             <tbody>
@@ -296,46 +305,30 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                   <tr
                     key={visitor.id}
                     onClick={() => setSelectedId(visitor.id)}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault()
-                        setSelectedId(visitor.id)
-                      }
-                    }}
-                    tabIndex={0}
-                    role="button"
-                    aria-label={`View details for ${visitor.email ?? 'visitor'}`}
-                    className="border-b border-border transition-colors last:border-0 hover:bg-muted/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-500"
+                    className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors "
                   >
                     <td className="p-3 pl-5" onClick={(event) => event.stopPropagation()}>
                       <Checkbox
-                        aria-label={`Select ${visitor.email ?? 'visitor'}`}
                         checked={selectedIds.has(visitor.id)}
                         onCheckedChange={(checked) => toggleRow(visitor.id, checked === true)}
-                        className="rounded-sm border-primary"
                       />
                     </td>
                     <td className="p-3">
-                      <span className="flex items-center gap-3">
+                      <div className="flex items-center gap-3">
                         {visitor.type === 'company' ? (
-                          // Live company rows: square yellow-tint avatar with
-                          // a building icon, company name as the primary text.
-                          <span
-                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10"
-                            aria-hidden="true"
-                          >
-                            <Building2 className="h-4 w-4 text-primary" />
-                          </span>
+                          // Live company rows: square yellow-tint chip with
+                          // a building icon, company name as the primary text
+                          // (R16: div-rooted, live class order).
+                          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">
+                            <Building2Icon className="h-4 w-4" />
+                          </div>
                         ) : (
-                          <span
-                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full gradient-primary text-[10px] font-bold text-primary-foreground"
-                            aria-hidden="true"
-                          >
+                          <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center text-[10px] font-bold text-primary-foreground shrink-0">
                             {initialsForEmail(visitor.email ?? '')}
-                          </span>
+                          </div>
                         )}
-                        <span className="min-w-0">
-                          <span className="block truncate text-sm font-medium text-foreground">
+                        <div className="min-w-0">
+                          <span className="text-sm font-medium block truncate">
                             {visitor.type === 'company'
                               ? (visitor.companyName ?? visitor.email)
                               : visitor.email}
@@ -343,74 +336,68 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                           {visitor.type === 'company' ? (
                             // Live company sub-line: primary-tinted visits
                             // count (R6-H3) — the domain stays implicit.
-                            <span className="block truncate text-[11px] font-mono text-muted-foreground">
-                              <span className="ml-1.5 font-sans text-[10px] text-primary">
+                            <span className="text-[11px] text-muted-foreground font-mono block truncate">
+                              <span className="ml-1.5 text-[10px] text-primary font-sans">
                                 · {visitor.pageviews} {visitor.pageviews === 1 ? 'visit' : 'visits'}
                               </span>
                             </span>
                           ) : (
-                            <span className="block truncate text-[11px] font-mono text-muted-foreground">
+                            <span className="text-[11px] text-muted-foreground font-mono block truncate">
                               {visitor.domain}
                             </span>
                           )}
-                        </span>
-                      </span>
+                        </div>
+                      </div>
                     </td>
                     <td className="p-3">
                       {visitor.type === 'company' ? (
-                        /* R11: px-2 badges keeping the variant hover. */
-                        <Badge variant="secondary" className="border-amber-500/20 bg-amber-500/10 px-2 py-0 text-[10px] text-amber-600">
+                        /* R16 D1: legacy-gen badges with the amber/neon tails. */
+                        <LegacyBadge className="hover:bg-secondary/80 text-[10px] px-2 py-0 bg-amber-500/10 text-amber-600 border-amber-500/20">
                           Company
-                        </Badge>
+                        </LegacyBadge>
                       ) : (
-                        <Badge variant="secondary" className="border-neon-green/20 bg-neon-green/10 px-2 py-0 text-[10px] text-neon-green">
+                        <LegacyBadge className="hover:bg-secondary/80 text-[10px] px-2 py-0 bg-neon-green/10 text-neon-green border-neon-green/20">
                           {SOURCE_LABELS[visitor.source] ?? visitor.source}
-                        </Badge>
+                        </LegacyBadge>
                       )}
                     </td>
                     <td className="p-3">
                       {visitor.type === 'company' && visitor.city ? (
                         // Live company rows show the resolved office location
                         // in the Confidence column instead of a bar.
-                        <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                           <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
-                          <span className="max-w-[180px] truncate">
+                          <span className="truncate max-w-[180px]">
                             {visitor.city}, {visitor.state}, {visitor.country}
                           </span>
-                        </span>
+                        </div>
                       ) : visitor.confidence !== null ? (
-                        // Live confidence: a plain neon bar + 12px label.
-                        <span className="flex items-center gap-2">
-                          <span
-                            className="h-1.5 w-14 overflow-hidden rounded-full bg-muted"
-                            role="progressbar"
-                            aria-valuenow={visitor.confidence}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                            aria-label={`${visitor.confidence}% confidence`}
-                          >
-                            <span
-                              className="block h-full rounded-full bg-neon-green"
+                        // Live confidence: a plain neon bar + 12px label
+                        // (R16: div-rooted, no progressbar role).
+                        <div className="flex items-center gap-2">
+                          <div className="h-1.5 w-14 rounded-full bg-muted overflow-hidden">
+                            <div
+                              className="h-full rounded-full bg-neon-green"
                               style={{ width: `${visitor.confidence}%` }}
                             />
-                          </span>
-                          <span className="text-xs font-medium text-foreground">
+                          </div>
+                          <span className="text-xs font-medium">
                             {visitor.confidence}%
                           </span>
-                        </span>
+                        </div>
                       ) : (
                         <span className="text-xs text-muted-foreground">—</span>
                       )}
                     </td>
                     <td className="p-3">
                       {isVisitorActive(new Date(visitor.lastSeen)) ? (
-                        <Badge variant="default" className="text-[10px] px-2 py-0">
+                        <LegacyBadge className={cn(LEGACY_BADGE_DEFAULT, 'text-[10px] px-2 py-0')}>
                           active
-                        </Badge>
+                        </LegacyBadge>
                       ) : (
-                        <Badge variant="secondary" className="text-[10px] px-2 py-0">
+                        <LegacyBadge className={cn(LEGACY_BADGE_SECONDARY, 'text-[10px] px-2 py-0')}>
                           inactive
-                        </Badge>
+                        </LegacyBadge>
                       )}
                     </td>
                     <td className="p-3 pr-5 text-right text-sm text-muted-foreground">
@@ -421,10 +408,10 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
               )}
             </tbody>
           </table>
-        </div>
+          </div>
 
-        {/* Pagination footer */}
-        {pageCount > 1 && (
+          {/* Pagination footer */}
+          {pageCount > 1 && (
           <nav
             aria-label="Visitor pages"
             className="flex items-center justify-between gap-3 border-t border-border px-4 py-3"
@@ -458,8 +445,9 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
               </Button>
             </div>
           </nav>
-        )}
-      </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Visitor detail sheet (clone value-add — the live rows are inert) */}
       <Sheet open={selected !== null} onOpenChange={(open) => !open && setSelectedId(null)}>
