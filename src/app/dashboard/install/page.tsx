@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { headers } from 'next/headers'
 import { getServerSession } from 'next-auth'
-import { CircleAlert, CircleCheck, Globe, Zap } from 'lucide-react'
+import { CircleAlert, CircleCheck, Zap } from 'lucide-react'
 import { authOptions } from '@/lib/auth'
 import { requireUser } from '@/lib/analytics'
 import { db } from '@/lib/db'
@@ -61,22 +61,34 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
   const proto = headerList.get('x-forwarded-proto')
   const collectorUrl = collectorUrlFromHeaders(host, proto)
 
-  // No domain yet: guide the user to register one first.
+  // R22-F7: the live's zero-sites interstitial (bundle component pxe):
+  // the normal page header + a centered card directing to domains — not
+  // a custom guidance card. The placeholder key fallback never ships.
   const site = pickSelectedSite(sites, siteParam ?? null)
   if (!site) {
     return (
-      <div className="mx-auto max-w-lg rounded-lg border border-border bg-card p-8 text-center shadow-sm">
-        <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/15" aria-hidden="true">
-          <Globe className="h-6 w-6 text-amber-600" />
-        </span>
-        <h2 className="mt-4 text-lg font-bold">Add a domain first</h2>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Your pixel snippet is generated per domain. Register the website you
-          want to track, then come back here to install the snippet.
-        </p>
-        <Button asChild className="mt-6 font-semibold">
-          <Link href="/dashboard/domains">Go to Domains</Link>
-        </Button>
+      <div className="max-w-3xl space-y-6">
+        <div>
+          <h1 className="font-display text-2xl font-bold">Install Your Pixel</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Add a domain first to get your tracking snippet.
+          </p>
+        </div>
+        <Card>
+          <CardContent className="pt-6 text-center py-12">
+            <p className="text-sm text-muted-foreground mb-4">
+              You need to register a domain before installing the pixel.
+            </p>
+            <Button
+              asChild
+              variant={null}
+              size={null}
+              className="gradient-primary text-primary-foreground shadow-lg glow-primary hover:opacity-90 transition-all duration-300 font-semibold h-10 px-4 py-2"
+            >
+              <Link href="/dashboard/domains">Add a Domain</Link>
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     )
   }
@@ -94,7 +106,9 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
             One snippet in your <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">&lt;head&gt;</code> tag — works on every page automatically.
           </p>
         </div>
-        <DomainSwitcher domains={sites} activeSiteKey={site.siteKey} />
+        {/* R22-F7: the live renders the domain switcher ONLY when the
+            account has multiple sites (bundle: i.length>1). */}
+        {sites.length > 1 && <DomainSwitcher domains={sites} activeSiteKey={site.siteKey} />}
       </div>
 
       {/* Quick Start */}
