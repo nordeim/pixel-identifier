@@ -94,12 +94,10 @@ export function PlatformInstructions() {
     <Card aria-labelledby="platform-heading">
       <CardHeader>
         <div className="flex items-center gap-3">
-          <span
-            className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted"
-            aria-hidden="true"
-          >
+          {/* R17-F3: the live's chip — bare geometry-first div. */}
+          <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center">
             <PanelsTopLeft className="h-4 w-4 text-muted-foreground" />
-          </span>
+          </div>
           <div>
             <CardTitle className="text-lg">
               Platform Instructions
@@ -130,12 +128,10 @@ export function PlatformInstructions() {
               <div className="space-y-3">
                 {platform.steps.map((step, index) => (
                   <div key={step.title} className="flex gap-3">
-                    <span
-                      className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary"
-                      aria-hidden="true"
-                    >
+                    {/* R17-F3: bare geometry-first step chip (no wrapper aria-hidden). */}
+                    <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary shrink-0 mt-0.5">
                       {index + 1}
-                    </span>
+                    </div>
                     <div>
                       <p className="text-sm font-medium">{step.title}</p>
                       <p className="text-sm text-muted-foreground">{step.text}</p>

@@ -159,12 +159,10 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <span
-              className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted"
-              aria-hidden="true"
-            >
+            {/* R17-F3: the live's chip — bare geometry-first div. */}
+            <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center">
               <CircleAlert className="h-4 w-4 text-muted-foreground" />
-            </span>
+            </div>
             <div>
               <CardTitle className="text-lg">
                 How It Works
