@@ -44,7 +44,7 @@ describe('GET /api/export', () => {
     expect(response.status).toBe(401)
   })
 
-  it('exports identified visitors with a BOM and RFC 4180 rows', async () => {
+  it('emits the live\'s byte format (R21-F1: 9 columns, LF, no BOM, raw values)', async () => {
     const user = await db.user.create({
       data: { email: `export-${crypto.randomUUID()}@test.example`, passwordHash: 'x' },
     })
@@ -53,14 +53,16 @@ describe('GET /api/export', () => {
 
     const response = await GET(exportRequest('http://localhost:3000/api/export'))
     expect(response.status).toBe(200)
-    expect(response.headers.get('content-type')).toContain('text/csv')
+    expect(response.headers.get('content-type')).toBe('text/csv; charset=utf-8')
 
-    // Response.text() strips a leading BOM per the Fetch spec, so assert the
-    // raw bytes: the CSV must start with EF BB BF for Excel to detect UTF-8.
+    // R21-F1: NO BOM — the live's Blob ships plain text.
     const raw = Buffer.from(await response.arrayBuffer())
-    expect(raw.subarray(0, 3)).toEqual(Buffer.from([0xef, 0xbb, 0xbf]))
-    const text = raw.subarray(3).toString('utf-8')
-    expect(text).toContain('Email,Type,Company,Confidence')
+    expect(raw.subarray(0, 3)).not.toEqual(Buffer.from([0xef, 0xbb, 0xbf]))
+    const text = raw.toString('utf-8')
+
+    // The live's exact 9-column header + LF lines.
+    expect(text.startsWith('Type,Name,Detail,Confidence,Source,Location,First Seen,Last Seen,Status')).toBe(true)
+    expect(text).not.toContain('\r\n')
     expect(text).toContain('one@export.example')
     expect(text).toContain('two@export.example')
     // Anonymous visitors are never exported.
@@ -101,7 +103,10 @@ describe('GET /api/export', () => {
     expect(text).not.toContain('one@other.example')
   })
 
-  it('ignores malformed ids', async () => {
+  it('ignores malformed ids when the param is absent-equivalent (full export)', async () => {
+    // Historical behavior kept for the param-ABSENT contract: a fully
+    // malformed list yields no valid ids but the param IS present, so the
+    // scope is the (empty) selection — the live exports D=[] → header-only.
     const user = await db.user.create({
       data: { email: `mal-${crypto.randomUUID()}@test.example`, passwordHash: 'x' },
     })
@@ -111,7 +116,8 @@ describe('GET /api/export', () => {
     const response = await GET(exportRequest('http://localhost:3000/api/export?ids=,,,not-an-id,,'))
     expect(response.status).toBe(200)
     const text = await response.text()
-    expect(text).toContain('one@malformed.example')
-    expect(text).toContain('two@malformed.example')
+    // R21-F1: selection scope — the header-only file (no rows).
+    expect(text.split('\n').filter(Boolean)).toHaveLength(1)
+    expect(text.startsWith('Type,Name,Detail,Confidence')).toBe(true)
   })
 })

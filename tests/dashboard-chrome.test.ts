@@ -165,7 +165,7 @@ describe('hasUnreadActivity (bell dot honesty)', () => {
   })
 })
 
-describe('isVisitorActive (R5-C2: honest 30-minute session window)', () => {
+describe('isVisitorActive (R21-F10: the live\'s 1-hour window, bundle 36e5)', () => {
   const now = new Date('2026-09-15T12:00:00Z')
 
   it('treats a visitor seen just now as active', () => {
@@ -176,10 +176,14 @@ describe('isVisitorActive (R5-C2: honest 30-minute session window)', () => {
     expect(isVisitorActive(new Date('2026-09-15T11:31:00Z'), now)).toBe(true)
   })
 
-  it('treats a visitor seen 31 minutes ago as inactive', () => {
-    // The live collector's SESSION_MAX_AGE is 1800s (30 minutes — one
-    // "visit"): beyond that window the visitor renders the gray pill.
-    expect(isVisitorActive(new Date('2026-09-15T11:29:00Z'), now)).toBe(false)
+  it('treats a visitor seen 59 minutes ago as active (the live window is 1 hour)', () => {
+    // R21-F10: the live computes `lastSeen > now − 36e5` — ONE hour, not
+    // the 30-minute session window (index-nhmKaUsm.js).
+    expect(isVisitorActive(new Date('2026-09-15T11:01:00Z'), now)).toBe(true)
+  })
+
+  it('treats a visitor seen 61 minutes ago as inactive', () => {
+    expect(isVisitorActive(new Date('2026-09-15T10:59:00Z'), now)).toBe(false)
   })
 
   it('treats a visitor seen 13 hours ago as inactive (live observation)', () => {
@@ -188,7 +192,7 @@ describe('isVisitorActive (R5-C2: honest 30-minute session window)', () => {
 
   it('uses the current time when now is omitted', () => {
     expect(isVisitorActive(new Date())).toBe(true)
-    expect(isVisitorActive(new Date(Date.now() - 45 * 60_000))).toBe(false)
+    expect(isVisitorActive(new Date(Date.now() - 2 * 3_600_000))).toBe(false)
   })
 })
 

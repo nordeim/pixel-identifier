@@ -87,34 +87,42 @@ describe('listVisitors (F-24: server-side search, filters, pagination)', () => {
     expect(byAnonId.total).toBe(0)
   })
 
-  it('filters by segment, confidence and source', async () => {
+  it('filters by segment, confidence band and source (R21 live semantics)', async () => {
     const { user } = await seed()
 
     const companies = await listVisitors(user.id, { type: 'company', page: 1, pageSize: 25 })
     expect(companies.total).toBe(8)
     expect(companies.rows.every((r) => r.type === 'company')).toBe(true)
 
-    const confident = await listVisitors(user.id, { minConfidence: 90, page: 1, pageSize: 25 })
-    // identified visitors have confidence 70/80/90 evenly (i%3): the 90s are i%3==2
-    expect(confident.rows.every((r) => (r.confidence ?? 0) >= 90)).toBe(true)
-    expect(confident.total).toBe(6)
+    // R21-F3: the live's bands — high gte 85, medium 70-84, low lt 70.
+    // Identified visitors have confidence 70/80/90 evenly (i%3).
+    const high = await listVisitors(user.id, { confidenceBand: 'high', page: 1, pageSize: 25 })
+    expect(high.rows.every((r) => (r.confidence ?? 0) >= 85)).toBe(true)
+    const medium = await listVisitors(user.id, { confidenceBand: 'medium', page: 1, pageSize: 25 })
+    expect(medium.rows.every((r) => (r.confidence ?? 0) >= 70 && (r.confidence ?? 0) < 85)).toBe(true)
+    expect(medium.total).toBe(14)
+    const low = await listVisitors(user.id, { confidenceBand: 'low', page: 1, pageSize: 25 })
+    expect(low.total).toBe(0)
 
-    const search = await listVisitors(user.id, { source: 'social', page: 1, pageSize: 25 })
-    expect(search.total).toBe(6)
-    expect(search.rows.every((r) => r.source === 'social')).toBe(true)
+    // R21-F4: the source filter scopes individuals; company rows stay
+    // visible (the live's b2b query ignores the source filter).
+    const direct = await listVisitors(user.id, { source: 'direct', page: 1, pageSize: 25 })
+    expect(
+      direct.rows.every((r) => r.type === 'company' || r.source === 'direct'),
+    ).toBe(true)
   })
 
   it('combines filters with pagination', async () => {
     const { user } = await seed()
     const result = await listVisitors(user.id, {
       type: 'individual',
-      minConfidence: 70,
+      confidenceBand: 'medium',
       page: 1,
       pageSize: 5,
     })
     expect(result.rows).toHaveLength(5)
-    expect(result.total).toBe(12)
-    expect(result.pageCount).toBe(3)
+    expect(result.total).toBe(8)
+    expect(result.pageCount).toBe(2)
   })
 
   it('exposes the B2B location fields for company display (R5-H4)', async () => {

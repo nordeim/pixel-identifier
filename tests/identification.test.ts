@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { resolveIdentity, sourceFromReferrer } from '@/lib/identification'
+import { identTypeFor, resolveIdentity } from '@/lib/identification'
 
 /**
  * Resolver invariants (round-5 plan, A5). The engine is deterministic and
@@ -74,16 +74,20 @@ describe('resolveIdentity B2B locations (R5-H4: company rows show a location)', 
   })
 })
 
-describe('sourceFromReferrer', () => {
-  it('classifies the major traffic sources', () => {
-    expect(sourceFromReferrer('')).toBe('direct')
-    expect(sourceFromReferrer('https://www.google.com/search?q=x')).toBe('search')
-    expect(sourceFromReferrer('https://linkedin.com/feed')).toBe('social')
-    expect(sourceFromReferrer('https://partner.example.com/promo')).toBe('referral')
-    expect(sourceFromReferrer('https://newsletter.example.com/utm-campaign')).toBe('campaign')
+describe('identTypeFor (R21-F4: the live\'s identification source)', () => {
+  // The live's bundle rule: `he = confidence>=70 && !all_emails ?
+  // "direct" : "network"` — the clone derives the same two individual
+  // classes by confidence; companies (null confidence) are IP-lookup
+  // identified (the live's b2b identType is null, its export renders
+  // "IP Lookup" for b2b rows).
+  it('classifies individuals by the confidence threshold', () => {
+    expect(identTypeFor(100)).toBe('direct')
+    expect(identTypeFor(70)).toBe('direct')
+    expect(identTypeFor(69)).toBe('network')
+    expect(identTypeFor(0)).toBe('network')
   })
 
-  it('treats unparsable referrers as referrals, never crashes', () => {
-    expect(sourceFromReferrer('not a url ://')).toBe('referral')
+  it('marks company resolutions as ip-lookup', () => {
+    expect(identTypeFor(null)).toBe('ip-lookup')
   })
 })
