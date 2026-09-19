@@ -794,3 +794,27 @@ Stage Summary:
   closed (badge generation, contact card, install chips); suite
   476/51 → 484/51; PAD v1.14 → v1.15 → v1.16.
 - Next: atomic commits + push (Task R17-ship)
+
+Work Log (R17-ship):
+- Final gate re-run GREEN: 484 tests / 51 files, lint, typecheck,
+  build 36 routes. Secret scan: no key material in the tree (the only
+  credential mentions are pre-existing pushed operator docs).
+- 6 atomic commits on main (66df785..608f41d): evidence, activity
+  badge, pricing contact card, install chips, test pins (+8), docs
+  (PAD v1.16, session_14, plan log).
+- Push via docs/ssh_git_wrapper_v3.py + paramiko shim (PATH
+  prepended), --remote git@github.com:nordeim/pixel-identifier.git:
+  dry-run green (b1581d6..608f41d), real push verified (remote
+  refs/heads/main @ 608f41d == local HEAD), remote-tracking ref
+  synced. Deploy key fingerprint verified before use
+  (SHA256:HpVRkv3e8k0HgD6SKijmGSmjs/ZRRJxrZaAm6y6/Rns); operator key
+  residue shredded (random overwrite ×3 + remove). No key material
+  on disk.
+
+Stage Summary:
+- Round-17 fully closed and shipped: main @ 608f41d on GitHub, PAD
+  v1.16, 484/51 tests. The live is stable across two consecutive
+  audits (R16+R17); the clone's content layer now matches it with
+  only the documented D2/D3/D4/aria residuals remaining.
+- Next: Round-18 drift watch on the R17 tokenizer; optional strict-DOM
+  closure of the aria residuals.
