@@ -22,7 +22,9 @@ import type { TrendPoint } from '@/lib/analytics'
 export function TrendChart({ data }: { data: TrendPoint[] }) {
   return (
     <>
-      <div className="h-72 w-full" role="img" aria-label="Line chart of daily pageviews and identified visitors over the last 14 days">
+      {/* R16: the live's current build pins the chart at 280px — an 8px
+          height drift measured off the live DOM (was 288px). */}
+      <div className="h-[280px]" role="img" aria-label="Line chart of daily pageviews and identified visitors over the last 14 days">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
           <defs>
@@ -86,7 +88,7 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
       </div>
       {/* Live legend markup, verbatim (R8-F2): centered under the chart,
           amber dot = Pageviews, neon-green dot = Identified. */}
-      <div className="mt-2 flex items-center justify-center gap-6">
+      <div className="flex items-center gap-6 mt-2 justify-center">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <div className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
           Pageviews
