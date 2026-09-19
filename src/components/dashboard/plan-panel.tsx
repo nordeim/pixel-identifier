@@ -209,22 +209,32 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
         })}
       </div>
 
-      {/* Enterprise — bordered card with the live's 2px outline CTA. */}
-      <Card className="border-border shadow-sm">
-        <CardContent className="flex flex-col items-center justify-between gap-4 p-6 pt-6 md:flex-row">
+      {/* Enterprise — bordered card with the live's 2px outline CTA.
+          R17-F2: card root consumer `border-border bg-card` (twMerge
+          displaces the base bg-card to the tail — reproduces the live
+          order); body p-6 pt-6-first; CTA is a variant-free Button with
+          the live's full consumer tail (transition-all displaces
+          transition-colors, font-semibold displaces font-medium) — D1:
+          the mailto behavior moves to onClick (the live's CSR button
+          navigates client-side too). */}
+      <Card className="border-border bg-card">
+        <CardContent className="p-6 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
             <h3 className="font-display text-lg font-bold">Need 7,500+ identifications?</h3>
-            <p className="mt-0.5 text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground mt-0.5">
               Custom pricing with volume discounts, SLA, dedicated infrastructure,
               and white-glove onboarding.
             </p>
           </div>
           <Button
-            variant="outline"
-            className="shrink-0 border-2 border-primary/30 bg-transparent font-semibold text-primary hover:bg-primary/10"
-            asChild
+            variant={null}
+            size={null}
+            className="border-2 border-primary/30 bg-transparent text-primary hover:bg-primary/10 transition-all duration-300 font-semibold h-10 px-4 py-2 shrink-0"
+            onClick={() => {
+              window.location.href = 'mailto:sales@pixelco.example'
+            }}
           >
-            <a href="mailto:sales@pixelco.example">Contact Sales</a>
+            Contact Sales
           </Button>
         </CardContent>
       </Card>
