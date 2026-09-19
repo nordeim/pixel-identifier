@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.14
+# Pixelco — Master Project Architecture Document (PAD) v1.15
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-17 (v1.14)
+**Last Updated:** 2026-09-18 (v1.15)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -11,6 +11,40 @@
 ---
 
 #### Revision Block (Tracked Changes)
+
+- **v1.15** `[SYN]` Round-16 app content-layer realignment (plan:
+  `docs/plans/2026-09-18-round16-content-realignment.md`; evidence in
+  `research/round16-audit/`). A fresh drift audit found the marketing
+  bundle, auth surfaces, and the R15 shell fully STABLE (landing sections,
+  sub-pages, blog/legal, robots/sitemap, favicon, og bytes, login cards —
+  all byte-equal; the live only moved its og URLs to gpt-engineer/R2
+  storage again, content md5s match). The live shipped a new build of the
+  dashboard CONTENT components — every page below the shell drifted in one
+  consistent pattern: text in `<span>`/`<div>` (not `<p>`), no
+  `text-foreground` on labels/values, geometry-first class orders, `div`
+  rows (not `ul`/`li`), `div` icon chips (no `aria-hidden` wrappers), and
+  the LEGACY Badge generation on content badges (base `border` +
+  secondary `text-secondary-foreground`) while the sidebar/domains-Verified
+  badges stay new-gen. Remediated via TDD (42 RED → 44 GREEN pins):
+  KPI cards (grid `grid-cols-1 … lg` not xl; span kickers; div
+  chips/values), trend chart `h-[280px]` (was 288px), activity rows
+  (div generation, legacy Pageview badge), domains rows (div generation,
+  legacy Pending badge, no section wrapper), visitors tabs (new-gen
+  primitive strings, legacy tab counts, h-3.5 icons, B2B icon-chip
+  avatar, Card-wrapped table, no a11y chrome on rows), pricing (Radix
+  billing switch, h4 FAQ, CircleHelpIcon), settings (variant-free Save
+  with the h-9 tail, bg-background inputs, danger-zone orders), install
+  (code/pre/chips/switcher orders, pt-6 Site Key body). New seams:
+  `content-badges.tsx` (LegacyBadge), `live-icons.tsx`
+  (single-name lucide classes — the R12 custom-icon precedent). The
+  settings/install button oddities are cva+twMerge mechanics (size sm
+  displaces rounded-md to the tail) — no primitive regeneration. The
+  live's broken group-label class (`transition-[margin,opa]`) is
+  replicated verbatim (ruling D2). `focus-brand` dropped from app-bundle
+  consumers the live doesn't carry. Suite 432/50 → **476/51**; PAD §5
+  and §9 updated. Verification: per-page structural diff vs the round16
+  captures (visitors/domains/pricing at zero order+token drift),
+  sidebar pixel-identical (0.00%), E2E green, zero console errors.
 
 - **v1.14** `[SYN]` Round-15 dashboard shell & auth-card realignment (plan:
   `docs/plans/2026-09-17-round15-shell-realignment.md`; evidence in
@@ -1223,7 +1257,23 @@ and the auth cards (h-16), per the R15 shell realignment. **R15 primitive
 updates:** Badge is a DIV root without the base `border` (secondary has no
 own foreground — the live's badges are divs in both bundles); Label is the
 new-generation string (`text-sm font-medium leading-none
-peer-disabled:…`, no data-slot/flex chrome); CardTitle's
+peer-disabled:…`, no data-slot/flex chrome). **R16 content-generation
+split (v1.15):** the live ships MIXED badge/tabs generations — the
+sidebar FREE badge, the domains Verified badge, the activity Identified
+badge and the auth-card buttons keep the R15 strings, while the visitors
+tab counts, visitors type/status badges, the domains Pending badge and
+the activity Pageview badge ship the LEGACY Badge generation (base WITH
+`border`, secondary WITH `text-secondary-foreground`). The legacy strings
+render through `components/dashboard/content-badges.tsx`
+(`LegacyBadge`), not the `ui/badge.tsx` primitive. The Tabs primitive
+carries the current trigger order (data-[state=active] BEFORE
+focus-visible) and a bare Root div (no base class); the billing switch
+(`ui/switch.tsx`) is the Radix-style string with data-state + value=on.
+Content rows are divs (never ul/li), icon chips are `div`s without
+aria-hidden wrappers, and lucide class names follow the live's
+single-name form via `components/dashboard/live-icons.tsx`
+(Building2Icon/Trash2Icon/CircleHelpIcon — the R12 custom-icon
+precedent); CardTitle's
 `font-semibold tracking-tight font-display` base also styles the auth h3
 and every dashboard card/heading — headings across the app carry NO
 `text-foreground` (the live's convention). The dashboard shell itself is
@@ -1340,7 +1390,10 @@ speculatively.
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
 | E2E (browser) | manual + opt-in smoke | — | dev server flows; `PIXELCO_STANDALONE_SMOKE=1` boots the standalone server | browser pass |
 
-The suite totals **380 tests across 48 files** (plus 2 opt-in standalone
+The suite totals **476 tests across 51 files** (v1.15: the R16
+content-parity pins live in `tests/content-parity.test.tsx` — 44 tests
+covering the div-generation rows, legacy content badges, Radix switch,
+Tabs order and per-page class strings; plus 2 opt-in standalone
 smoke tests), runs in the `node`
 environment against a throwaway SQLite database (`db/test.db`, recreated
 from the schema by `tests/global-setup.ts` on every run), with `TZ=UTC`

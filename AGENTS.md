@@ -124,6 +124,29 @@ make it pass — fix the code.
   Radix dialog (`--sidebar-width: 18rem` inline). The desktop sidebar
   stays CSS-hidden below md (SSR cannot know the viewport; the live's
   CSR unmounts it) — visually identical.
+- **The app bundle's content layer tracks the live's CURRENT build (R16).**
+  The live ships MIXED primitive generations side by side: the sidebar
+  FREE badge, the domains Verified badge, the activity Identified badge
+  and the auth-card buttons ride the R15 new-gen strings, while the
+  visitors tab counts + type/status badges, the domains Pending badge
+  and the activity Pageview badge ship the LEGACY Badge generation (base
+  WITH `border`, secondary WITH `text-secondary-foreground`) — rendered
+  via `src/components/dashboard/content-badges.tsx` (`LegacyBadge`), NOT
+  the `ui/badge.tsx` primitive. Content rows are divs (`div.divide-y` +
+  div rows — never ul/li), icon chips are bare `div`s (no aria-hidden
+  wrappers), no content label/value carries `text-foreground`, and the
+  class orders are geometry-first (e.g. `flex items-center justify-between
+  mb-3`). The Tabs primitive carries the live's current trigger order
+  (data-[state=active] BEFORE focus-visible) + a bare Root div; the
+  billing switch (`ui/switch.tsx`) is the Radix-style string with
+  data-state + value="on". lucide class names follow the live's
+  single-name form via `src/components/dashboard/live-icons.tsx`
+  (Building2Icon/Trash2Icon/CircleHelpIcon — R12 custom-icon precedent).
+  The sidebar group-label deliberately ships the live's BROKEN class
+  `transition-[margin,opa]` (their build dropped "city" — verified at hex
+  level; it matches no utility on either side, so the label fade snaps).
+  Do NOT "fix" it to `transition-[margin,opacity]`.
+  Pinned by `tests/content-parity.test.tsx`.
 - **`w-[--sidebar-width]` is hand-defined in globals (R15).** Tailwind v4
   compiles the live's TW3-style bare-var brackets to INVALID CSS
   (`width:--sidebar-width`); the two affected utilities (+ the

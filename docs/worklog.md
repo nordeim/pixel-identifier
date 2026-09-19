@@ -663,3 +663,61 @@ Stage Summary:
   (byte-exact DOM). Residuals are data-only + the 2 documented
   micro-divergences (lucide aria-hidden default, SSR-hidden mobile
   sidebar).
+
+---
+Task ID: R16
+Agent: main (Super Z)
+Task: Round-16 — drift watch, app content-layer realignment, TDD remediation, docs, ship
+
+Work Log:
+- Workspace rebuilt post-reset (fresh clone @ e948a61, npm install,
+  .env + seeded DB, standalone build + server). Baseline gate GREEN
+  (432/50, 36 routes) — codebase matched PAD v1.14.
+- Round-16 audit (base64 DOM probes, same-page live-vs-local diffing,
+  stability verification across repeated loads): marketing bundle + auth
+  surfaces + R15 shell all STABLE (landing sections, sub-pages,
+  blog/legal, robots/sitemap, favicon, og bytes, login cards byte-equal;
+  the live only moved og URLs to gpt-engineer/R2 storage — content md5s
+  match). KEY DISCOVERY: the live shipped a new build of the dashboard
+  CONTENT components — every page below the shell drifted (KPI cards,
+  trend chart h-[280px], activity/domains/visitors rows, tabs, badges,
+  pricing switch/FAQ, settings forms, install code blocks). Extracted
+  full ground-truth DOM per page to research/round16-audit/.
+- Mechanics decoded en route: the live's odd button strings are
+  cva+twMerge displacement (size sm displaces rounded-md to the tail;
+  font-semibold displaces font-medium; transition-all displaces
+  transition-colors) — ONE Button primitive, no regeneration. The live
+  ships MIXED badge generations (new-gen sidebar/Verified/Identified;
+  legacy-gen content badges with base border + text-secondary-foreground).
+  The live's group-label ships a genuinely broken class
+  transition-[margin,opa] (hex-verified).
+- Plan written (docs/plans/2026-09-18-round16-content-realignment.md;
+  10 findings + 8 rulings) and validated against the codebase before
+  execution (all files/evidence/seams confirmed, including the Verified
+  badge being already byte-identical).
+- TDD remediation (RED 42 → GREEN 44 pins in
+  tests/content-parity.test.tsx; 5 superseded R11 pins updated): Tabs
+  primitive + consumers; overview KPI/chart/top-pages/recent-ids;
+  activity div-generation rows + legacy Pageview badge; domains
+  div rows + legacy Pending badge + no section wrapper; visitors tabs/
+  badges/avatars/table/a11y-chrome sweep; Radix billing switch + h4 FAQ;
+  settings variant-free Save + inputs + danger zone; install code/pre/
+  chips/switcher/orders; universal sweeps (focus-brand, live-icons,
+  broken group-label class). New seams: content-badges.tsx (LegacyBadge),
+  live-icons.tsx (Building2Icon/Trash2Icon/CircleHelpIcon).
+- Gate GREEN: 476 tests / 51 files (+44), 36 routes. Fresh-standalone
+  browser pass: per-page structural diff vs the round16 captures
+  (visitors/domains/pricing at ZERO order+token drift; remaining
+  residuals data-only + the server-action form machinery); sidebar
+  pixel-diff 0.00%; E2E green (login → 7 pages → selection → Export (1)
+  → CSV 200 → pricing switch → install snippet → settings form); zero
+  console errors.
+- Docs: PAD v1.15, README (476 + R16 bullet), AGENTS.md (R16 fact block
+  + broken-class warning), CLAUDE.md (v1.15 principle), plan execution
+  log, evidence README.
+
+Stage Summary:
+- Round-16 complete: the app bundle's content layer now matches the
+  live's current build at the DOM class-string level across all 7
+  dashboard pages; suite 432/50 → 476/51; PAD v1.14 → v1.15.
+- Next: atomic commits + push (Task R16-ship)

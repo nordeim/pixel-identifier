@@ -110,6 +110,23 @@ and stable per visitor.
   form — do not "modernize" the class strings). lucide's default
   `aria-hidden` and the SSR-required CSS-hidden (not unmounted) mobile
   sidebar are the two documented micro-divergences.
+- **The app bundle's CONTENT layer tracks the live's current build
+  (v1.15):** below the shell, the live's current generation renders
+  text in `<span>`/`<div>` (not `<p>`), drops `text-foreground` from
+  labels/values, ships geometry-first class orders, uses `div` rows
+  (never ul/li) and bare-`div` icon chips, and ships the LEGACY Badge
+  generation on content badges (base `border` + secondary
+  `text-secondary-foreground`) while the sidebar/Verified/Identified
+  badges stay new-gen — mixed generations are the live's actual DOM,
+  reproduced via `content-badges.tsx` (LegacyBadge) and
+  `live-icons.tsx` (single-name lucide classes). The settings/install
+  buttons' odd strings are cva+twMerge mechanics (size `sm` displaces
+  `rounded-md` to the tail; `font-semibold` displaces `font-medium`)
+  — one Button primitive, consumers choose variant/size. The sidebar
+  group-label ships the live's broken `transition-[margin,opa]` class
+  verbatim (do not fix it), and `focus-brand` is gone from app-bundle
+  consumers. Pinned by `tests/content-parity.test.tsx` — treat those
+  pins as the contract.
 - **Document heads are part of the parity surface (v1.13):** the live
   is CSR — its raw HTML ships one static shell but its router sets
   per-page title/description/og/twitter/canonical on navigation, and

@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 432 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 476 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -272,6 +272,14 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
 - **Pure helpers** — plan/money math (IEEE-754 robustness), domain
   normalisation, snippet hardening (host validation, JS-string escaping),
   CSV escaping + formula guard, relative-time boundaries.
+- **Dashboard content parity (round-16)** — the app bundle's content layer
+  is pinned to the live's current build: the div-generation activity/
+  domains/visitors rows, the legacy-gen content badges (visitors tab
+  counts, type/status, domains Pending) vs the new-gen sidebar/Verified
+  badges, the Radix billing switch, the Tabs primitive's current trigger
+  order, the KPI card DOM, the `h-[280px]` trend chart, the visitors
+  B2B icon-chip avatar and Card-wrapped table, and the install/settings
+  class orders (`tests/content-parity.test.tsx`).
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the
