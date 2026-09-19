@@ -74,13 +74,13 @@ export function Hero() {
               consumers — identified by their real email address. No forms. No popups. No cookies.
             </p>
 
-            <div data-reveal="20" data-reveal-delay="300" className="mb-8 flex flex-wrap gap-3">
+            <div data-reveal="20" data-reveal-delay="300" className="flex flex-wrap gap-3 mb-8">
               {TRUST_POINTS.map((point) => (
                 <div
                   key={point.strong}
                   className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card border border-border text-sm"
                 >
-                  <point.icon className={`h-4 w-4 ${point.iconCls}`} aria-hidden="true" />
+                  <point.icon className={`w-4 h-4 ${point.iconCls}`} aria-hidden="true" />
                   <span className="text-muted-foreground">
                     {point.before}
                     <strong className="text-foreground">{point.strong}</strong>
@@ -103,7 +103,7 @@ export function Hero() {
                     alt="Customer"
                     width={32}
                     height={32}
-                    className="h-8 w-8 rounded-full border-2 border-background object-cover"
+                    className="w-8 h-8 rounded-full border-2 border-background object-cover"
                   />
                 ))}
               </div>
@@ -118,24 +118,32 @@ export function Hero() {
             </div>
 
             <div data-reveal="20" data-reveal-delay="500" className="flex flex-col sm:flex-row gap-3 mb-4">
-              <Button
-                asChild
-                className="gradient-cta border-0 px-7 h-12 text-base font-semibold text-primary-foreground hover:opacity-90 w-full sm:w-auto"
-              >
-                <Link href="/signup">
+              {/* R18-B6: the live wraps each hero CTA in a
+                  w-full sm:w-auto anchor around a real button; the tails
+                  follow the live's exact emission order (no py-2). The
+                  hrefs keep the documented single-deployment mapping
+                  (/signup, /login). */}
+              <Link href="/signup" className="w-full sm:w-auto">
+                <Button
+                  variant={null}
+                  size={null}
+                  className="bg-primary hover:bg-primary/90 rounded-md w-full sm:w-auto gradient-cta text-primary-foreground border-0 hover:opacity-90 px-7 h-12 text-base font-semibold"
+                >
                   Start Identifying Visitors
-                  <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                className="w-full border-border bg-background px-7 text-base font-medium hover:bg-card sm:w-auto h-12"
-              >
+                  <ArrowRight className="w-4 h-4 ml-2" aria-hidden="true" />
+                </Button>
+              </Link>
+              <Link href="/login" className="w-full sm:w-auto">
                 {/* R11: the live's demo CTA goes to the app (which serves
                     login when signed out) — not a local anchor. */}
-                <Link href="/login">See Live Demo</Link>
-              </Button>
+                <Button
+                  variant={null}
+                  size={null}
+                  className="border bg-background hover:text-accent-foreground rounded-md w-full sm:w-auto h-12 text-base px-7 border-border text-foreground hover:bg-card font-medium"
+                >
+                  See Live Demo
+                </Button>
+              </Link>
             </div>
             {/* The live's takes-line animates opacity only (its inline
                 style keeps `opacity: 1;` with no transform) — y=0. */}
