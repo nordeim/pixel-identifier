@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 531 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 543 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -313,6 +313,23 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   `tests/marketing-r19-parity.test.tsx`; post-fix the feed rows measure
   identical tops to the live (12/68/124/180/236) and the login canvas
   keeps the dark sweep. Screenshots in `docs/screenshots/`.
+- **Runtime-state + functional parity (round-20)** — the probe
+  toolchain's 5th generation sampled the live's rotating feed at 2 s
+  intervals and drove its interactive states (pricing toggle, domains
+  form, delete flow), catching what every static audit missed: the
+  pricing MONTHLY mode diverged 4 ways (missing "billed monthly"
+  sub-line, off-track `bg-muted-foreground/30` vs the live's
+  `bg-muted`, off-thumb missing `translate-x-0`, plus the
+  D5-re-confirmed toggle attrs) and the Add-Domain button wasn't
+  disabled on empty input like the live's. The feed reveal now STAGES
+  its text swap like the live's AnimatePresence `mode:"wait"` (exit
+  0.3 s → enter 0.4 s, ✓ badge spring) instead of swapping atomically.
+  The live's own defects (zero domain validation, no delete confirm)
+  are documented intentional divergences — the clone keeps zod +
+  AlertDialog. +12 pins in `tests/marketing-r20-parity.test.tsx`;
+  post-fix the monthly cards, the disabled form state and the reveal
+  transition all match the live's runtime emission. Screenshots in
+  `docs/screenshots/`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the

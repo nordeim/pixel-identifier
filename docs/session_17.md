@@ -144,3 +144,59 @@ Round-19 is fully closed and shipped. Here's the final state:
 **Shipped**: 7 atomic commits on main (no new branches), pushed via `ssh_git_wrapper_v3.py` with fingerprint verification (`HpVRkv3e8k0…`, matching R15–R18 records), key shredded ×3, `.env.example` verified matching.
 
 **Suggested next steps**: Round-20 could re-run the full R19 toolchain as a drift watch, extend probes to runtime-state observation (sampling the live's feed rotation phases), or deepen functional parity (pricing toggle URL-state sync, visitors sort states, domains validation flows).
+
+---
+
+# Round-20 — Runtime-State & Functional Parity (continuation of this session)
+
+**Base:** 44949ce (R19 ship + this log's R19 narrative). **Gate:** GREEN
+at 531/53. **Outcome:** R20 complete — main advanced, 543/54 tests, PAD
+v1.19.
+
+## What R20 added
+
+1. **Fifth consecutive stable audit** — the live is byte-stable across all
+   9 captured surfaces (tokenizer diff, zero changes).
+2. **A fifth probe generation: runtime-state observation.** 16-second feed
+   sampling on both sides + a definitive bundle re-extraction confirmed
+   the R19 feed rebuild is EXACT (cycle, roster, tops, reveal order,
+   done-unmount) — and exposed one last runtime gap: the live stages its
+   reveal (AnimatePresence mode:"wait", old text exits 0.3 s before the
+   email block enters; ✓ badge springs in). Runtime samples caught the
+   live mid-swap (amber avatar + badge + anonymous text) — a state the
+   clone's atomic swap could not produce. Fixed with `SWAP_MS = 300`
+   staging + three new CSS keyframes (all reduced-motion-guarded).
+3. **Functional probes.** The pricing toggle's MONTHLY state (invisible
+   to static pins — both ships default annual): the live's off-track is
+   `bg-muted`, the knob emits `translate-x-0`, paid cards read
+   "billed monthly" (an R18 documentation error corrected) — three
+   sub-fixes applied. The toggle's a11y attrs (role/aria-checked) stay
+   KEPT per the standing D5 ruling (invisible functional chrome; the
+   probe confirmed attrs are the only remaining divergence there). The
+   live's Add-Domain button renders disabled on empty input — the
+   clone now matches (controlled input, `required` dropped). The
+   visitors table has NO sort on either side (parity non-finding).
+4. **Live defects documented, never replicated:** the live accepts
+   ARBITRARY domain input (the R20 probe created
+   "not_a_valid domain!!" as a real row — cleaned up immediately; account
+   verified restored) and deletes domains with NO confirm dialog. The
+   clone keeps its zod validation + AlertDialog confirmation.
+
+## Verification
+
+543 tests / 54 files (+12 TDD pins) · lint/typecheck/build GREEN ·
+pricing monthly probe identical to the live's captured state · domains
+computed style `disabled → opacity .5 / pointer-events none` · feed
+sampling observed exit + enter + the mid-transition state (VLM-confirmed
+twice) · zero console errors on 10 pages · 8 screenshots (`r20-*`).
+
+## Ship
+
+Atomic commits on main → pushed via `docs/ssh_git_wrapper_v3.py`
+(fingerprint verified, key shredded). PAD v1.19; this plan:
+`docs/plans/2026-09-19-round20-runtime-functional-parity.md`.
+
+**Next:** Round-21 drift watch with the R20 toolchain; probe targets —
+the live's signup → dashboard first-run funnel, the plan-switch flow
+(clone-only feature vs the live's billing), and export CSV byte-format
+parity.

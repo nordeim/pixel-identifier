@@ -159,6 +159,19 @@ and stable per visitor.
   data + timing constants, not just the static markup. Transient
   live-side defects (CDN 404s, login hiccups) are non-findings —
   re-check before acting, and never replicate a live defect.
+- **Runtime STATES and functional flows are part of the parity surface
+  (v1.19, R20):** static pins miss everything behind a click or a
+  timer. The R20 probes (5th generation) sampled the live's rotating
+  feed at 2 s intervals and drove its pricing toggle, domains form and
+  delete flow — finding 4 monthly-mode pricing divergences and a
+  missing disabled-on-empty state that every static audit missed.
+  When the live ships an interactive state (toggle off-branch, form
+  disabled state, staged text swap), probe the RUNTIME emission, not
+  just the default render; extract the state machine from the live's
+  bundle and pin both branches. Distinguish clone defects from live
+  defects BEFORE fixing: the live accepting arbitrary domain strings
+  and deleting without confirm are defects to diverge from (zod +
+  AlertDialog stay), not parity targets.
 - **The marketing bundle has its own emission conventions (v1.17, R18):**
   lucide icons size→color→margin; paragraphs text-first; containers
   px-before-border; chips geometry-first; gradients are the FULL

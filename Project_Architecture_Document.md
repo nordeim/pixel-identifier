@@ -3,7 +3,7 @@
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-19 (v1.18)
+**Last Updated:** 2026-09-19 (v1.19)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,71 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.19** `[SYN]` Round-20 runtime-state & functional parity audit (plan:
+  `docs/plans/2026-09-19-round20-runtime-functional-parity.md`; evidence
+  `/tmp/r20-caps` + `docs/screenshots/` + `research/round20-audit/vlm*`).
+  The live stayed **100% stable since R19** (fifth consecutive stable
+  audit — zero token changes across all 7 dashboard pages + shell +
+  landing). R20 introduced two new probe generations beyond the R19
+  toolchain: **runtime-state observation** (16 s feed sampling on live +
+  clone, then a definitive re-extraction of the live's phase machine
+  from its JS bundle) and **functional probes** (pricing toggle state
+  machine, visitors sort, domains add/delete flows). Findings — **(F1)**
+  the pricing toggle's MONTHLY state (never covered by the static pins,
+  which capture the annual default): the live's off-branch track is
+  `bg-muted` (the clone shipped `bg-muted-foreground/30`), the off-branch
+  knob emits `translate-x-0` (the clone omitted it), paid cards read
+  **"billed monthly"** in monthly mode (the R18 note claiming an empty
+  spacer was an unverified assumption — the live's KD branch is
+  `monthlyPrice>0 && !annual → "billed monthly"`). All three sub-fixes
+  applied to `pricing-section.tsx`; the toggle's attr divergence
+  (the live ships a plain `<button aria-label>`, the clone keeps
+  role="switch"/aria-checked/type + knob aria-hidden) was re-ruled
+  KEPT under the D5 precedent (invisible functional a11y chrome — the
+  same category as the trend chart's role="img", D3) — the R20 probe
+  confirmed those are the ONLY remaining attr divergences on the
+  toggle. **(F2)** the live's
+  Add-Domain submit renders **disabled while its controlled input is
+  empty** (captured DOM: `type="submit" disabled=""` + `value=""`);
+  the clone relied on the native `required` tooltip instead — the input
+  is now controlled (`domainValue` state), the button disables on
+  `pending || domainValue.trim() === ''`, and the `required` attr was
+  dropped (the live ships none). A successful add clears the input via
+  React's render-phase adjust pattern (`state !== prevAddResult`),
+  preserving the React-19 auto-reset the uncontrolled field had. **(F4)**
+  the feed reveal TRANSITION: the live's text column is an
+  AnimatePresence `mode:"wait"` — the anonymous block exits FIRST
+  (opacity→0, y:-8, 0.3 s) and only then the email block enters
+  (opacity 0→1, y 8→0, 0.4 s) — and the ✓ badge springs in (scale 0→1,
+  stiffness 400/damping 15); the clone swapped atomically. Runtime
+  samples caught the live mid-transition (avatar primary + ✓ badge +
+  anonymous text — impossible in the atomic model), proving the staging;
+  the clone now stages the swap (`SWAP_MS = 300` after `REVEAL_AT`,
+  `.feed-text-exit`/`.feed-text-in`/`.feed-badge-in` keyframes with
+  reduced-motion guards; phase constants and all R19 pins unchanged).
+  **(F3 — live defects, documented never-replicate divergences)** the
+  live's add-domain flow has ZERO input validation — the audit probe
+  submitted `not_a_valid domain!!` and the live CREATED it as a domain
+  row (probe pollution, immediately cleaned; account restored to its
+  original two domains) — and its domain delete is IMMEDIATE with no
+  confirm dialog. The clone KEEPS its zod hostname validation and its
+  AlertDialog delete confirmation ("Honesty over simulation" / never
+  replicate a live defect). Non-findings: visitors sort (absent on BOTH
+  sides — headers are plain `th` cells, the only button is the
+  select-all checkbox; parity), the feed runtime model (sampling +
+  bundle re-extraction confirm the R19 rebuild is EXACT — same cycle,
+  roster, tops, reveal order, done-unmount), and pricing URL state (the
+  live's toggle is pure useState, NO URL sync; the clone matches).
+  Fixed via TDD (+12 pins in `tests/marketing-r20-parity.test.tsx`;
+  suite 531/53 → **543/54**). Post-fix verification: pricing monthly
+  state probe identical to the live's captured state (track
+  `bg-muted`, knob `translate-x-0`, $79/$249/$799 + "billed monthly"),
+  domains button computed style `disabled → opacity: 0.5,
+  pointer-events: none`, feed 150 ms-cadence sampling observed the
+  exit class, the enter class AND the live's mid-transition state
+  (VLM-confirmed: amber avatar + checkmark badge + anonymous text),
+  zero console errors on 10 pages, 8 screenshots in `docs/screenshots/`
+  (r20-*).
 - **v1.18** `[SYN]` Round-19 marketing computed-style/geometry audit (plan:
   `docs/plans/2026-09-19-round19-geometry-audit.md`; evidence `/tmp/r19-caps`
   + `docs/screenshots/`). The live stayed **100% stable since R18** (fourth
@@ -1418,6 +1483,18 @@ hover transitions ≤200ms. All motion collapses under
 No JS animation library — Framer Motion was deliberately not added for two
 animations.
 
+**Feed phase machinery (R19-F2 + R20-F4):** the widget's motion is state,
+not a library — each row runs the live's phase machine
+(enter→scan→reveal→done at delay+600/1600/3200 ms; 10 s roster cycle).
+The avatar background transitions 0.4 s (`.feed-avatar`); the scan badge
+pulses (`feed-matching`); and since R20 the reveal is STAGED like the
+live's AnimatePresence `mode:"wait"` — the anonymous text block exits
+(`feed-text-exit`, 0.3 s, y:-8) BEFORE the email block mounts
+(`feed-text-in`, 0.4 s, y:+8), while the ✓ badge springs in
+(`feed-badge-in`, overshoot bezier ≈ framer stiffness 400 / damping 15).
+All four feed keyframes are reduced-motion-guarded (content swaps without
+motion).
+
 **Scroll-reveal entrances (R12-F1, v1.11):** the live's entrance motion is
 reproduced with CSS transitions + ONE shared IntersectionObserver —
 elements carry `data-reveal="<y>"` (translateY px, 0 = fade-only) and
@@ -1694,6 +1771,8 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 | MEDIUM | In-memory rate limiting and signup throttle (per-instance) | Multi-instance deploys would multiply the effective limit | Open — swap to shared store when horizontally scaling |
 | MEDIUM | `getTopPages` aggregates lifetime pageviews in JS | Degrades at very large event counts | **Fixed in v1.3** — SQL `groupBy` with deterministic tie-breaks |
 | LOW | OAuth buttons are disabled placeholders | Users must use email sign-in | By design — no providers configured |
+| LOW | The live's add-domain flow accepts ARBITRARY input (R20 probe created "not_a_valid domain!!" as a real row on the live) | The clone validates hostnames via zod instead | Intentional divergence — never replicate a live defect (v1.19/F3) |
+| LOW | The live deletes domains IMMEDIATELY — no confirm dialog (observed R20) | Misclicks destroy domains + visitors + events with no undo | Intentional divergence — the clone keeps its AlertDialog confirm (v1.19/F3) |
 | LOW | Sessions are 30-day JWTs; no server-side revocation | Stolen cookies valid until expiry; deletion sign-out is client-side only | Accepted for this product shape |
 | LOW | Footer Careers link is dead | None functionally — the original pixelco.io links it to `#` too | Parity — flagged `dead: true` in the link map |
 | LOW | No Dockerfile / CI workflow | Self-hosting requires manual steps | **Fixed in v1.3** — multi-stage Dockerfile + GitHub Actions CI |

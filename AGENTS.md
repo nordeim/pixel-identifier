@@ -210,9 +210,38 @@ make it pass — fix the code.
   perceptual 8×8 average-luma hash pin (offline, stored live hashes)
   guards the set. If the live swaps photos again, re-download and
   re-capture the hashes — never regenerate from scratch.
+- **R20: the pricing toggle's MONTHLY state matches the live (v1.19).**
+  The live's KD emission in monthly mode: paid cards carry a
+  `"billed monthly"` sub-line (annual says "billed annually", free
+  keeps the nbsp spacer), the off track is `bg-muted` (NOT
+  `bg-muted-foreground/30`), and the off thumb emits `translate-x-0`
+  (template branch, annual = `translate-x-7`). The live's toggle is
+  pure `useState` — NO URL sync on either side (the "toggle URL
+  state" hypothesis is a documented non-finding). Pinned by
+  `tests/marketing-r20-parity.test.tsx`.
+- **R20: the domains Add-Domain form is controlled + disabled-on-empty
+  (v1.19).** `domains-panel.tsx` holds `domainValue` state, disables the
+  button while `pending || domainValue.trim() === ''` (the live's
+  behavior; the clone previously leaned on native `required`, which the
+  live has none of), and clears the input on success. The clone's zod
+  hostname validation and AlertDialog delete-confirm are KEPT as
+  intentional divergences — the live accepts ARBITRARY domain strings
+  (the R20 probe created `not_a_valid domain!!` as a real row) and
+  deletes immediately with no confirm; never replicate a live defect
+  (PAD Known Issues, v1.19/F3).
+- **R20: the feed reveal STAGES the text swap like the live (v1.19).**
+  The live's text column is AnimatePresence `mode:"wait"`: on reveal
+  the old anonymous text exits (0.3 s, y:-8) BEFORE the email block
+  enters (0.4 s, y:+8), and the ✓ badge springs in (scale overshoot).
+  `live-feed.tsx` stages this with `SWAP_MS = 300` state flags +
+  `.feed-text-exit` / `.feed-text-in` / `.feed-badge-in` keyframes in
+  `globals.css` (reduced-motion guarded); phase constants and the
+  static t=0 render are unchanged (R19 pins hold).
 - **D5 (R18): the clone's invisible functional chrome is KEPT, documented.**
   Switch semantics on the marketing billing toggle (`role="switch"` +
-  `aria-checked` — the live ships a plain button), the 8 marketing
+  `aria-checked` — the live ships a plain button; the R20 functional
+  probe re-confirmed these attrs are the toggle's ONLY divergence, and
+  the strict-parity fix was reverted in their favor), the 8 marketing
   `section aria-labelledby` landmarks, `focus-brand` focus rings on
   links, the reveal machinery (`data-reveal` + observer classes vs the
   live's inline styles), the `feed-row` animation hook, and decorative
