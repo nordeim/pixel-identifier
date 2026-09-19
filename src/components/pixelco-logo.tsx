@@ -51,20 +51,36 @@ export function PixelcoWordmark({
   )
 }
 
-/** Marketing wordmark: logo + "Pixelco" + the "By Ai Viral" cursive subtext
- * INLINE beside the wordmark (live header/footer, R7-V4; un-stacked R10 —
- * the live renders it as a sibling span with translate-y-[3px], not a
- * flex-col sub-line). */
-export function PixelcoMarketingWordmark({ className }: { className?: string }) {
+/** Marketing wordmark: PNG logo + "Pixelco" + the "By Ai Viral" cursive
+ * subtext. R18: the live's marketing header/footer put the lockup classes
+ * directly on the parent anchor and ship the PNG asset (like the app
+ * bundle's sidebar) — this now renders a bare fragment so the consumer
+ * link carries `flex items-center gap-*` (header gap-2.5 + tracking-tight,
+ * footer gap-2 without tracking). The Dancing Script subtext rides the
+ * clone's `font-script` utility (D5 chrome — the live hardcodes an inline
+ * font-family; next/font's generated family can't be referenced by the
+ * plain name). */
+export function PixelcoMarketingWordmark({
+  tracking = false,
+}: {
+  tracking?: boolean
+}) {
   return (
-    <span className={cn('inline-flex items-center gap-2', className)}>
-      <PixelcoLogo />
-      <span className="text-lg font-bold text-foreground tracking-tight">
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element -- the live's PNG asset */}
+      <img src="/assets/logo-BxfT-ZTZ.png" alt="Pixelco" className="w-8 h-8" />
+      <span
+        className={
+          tracking
+            ? 'text-lg font-bold text-foreground tracking-tight'
+            : 'text-lg font-bold text-foreground'
+        }
+      >
         Pixelco
       </span>
-      <span className="font-script text-xs italic text-muted-foreground translate-y-[3px]">
+      <span className="text-xs text-muted-foreground italic translate-y-[3px] font-script">
         By Ai Viral
       </span>
-    </span>
+    </>
   )
 }

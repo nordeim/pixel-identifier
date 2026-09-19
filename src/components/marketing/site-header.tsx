@@ -11,43 +11,56 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link href="/" className="focus-brand rounded-lg" aria-label="Pixelco home">
+    <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border">
+      {/* R18-B7: the live's container rides the `container` utility with
+          h-16 px-6 (no max-w-7xl/gap-4). */}
+      <div className="container mx-auto flex items-center justify-between h-16 px-6">
+        {/* R18-B7: the live puts the lockup classes directly on the anchor
+            (focus-brand stays as D5 keyboard-a11y chrome). */}
+        <Link href="/" className="flex items-center gap-2.5 focus-brand rounded-lg" aria-label="Pixelco home">
           {/* R10: the live header lockup uses gap-2.5 (the footer keeps gap-2). */}
-          <PixelcoMarketingWordmark className="gap-2.5" />
+          <PixelcoMarketingWordmark tracking />
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
+        <nav className="hidden md:flex items-center gap-7" aria-label="Main navigation">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-brand rounded"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors focus-brand rounded"
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden md:flex items-center gap-3">
           {/* R11: the live's header CTAs are both size sm — ghost + muted
-              text for Log In, gradient-cta for Start Identifying. */}
-          <Button variant="ghost" size="sm" asChild className="text-muted-foreground font-medium">
-            <Link href="/login">Log In</Link>
-          </Button>
-          <Button
-            size="sm"
-            asChild
-            className="gradient-cta text-primary-foreground border-0 hover:opacity-90 font-semibold"
-          >
-            <Link href="/signup">Start Identifying</Link>
-          </Button>
+              text for Log In, gradient-cta for Start Identifying. R18-B7:
+              the live wraps each in a bare anchor around a real button. */}
+          <Link href="/login">
+            <Button
+              variant={null}
+              size={null}
+              className="hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 text-muted-foreground font-medium"
+            >
+              Log In
+            </Button>
+          </Link>
+          <Link href="/signup">
+            <Button
+              variant={null}
+              size={null}
+              className="bg-primary hover:bg-primary/90 h-9 rounded-md px-3 gradient-cta text-primary-foreground border-0 hover:opacity-90 font-semibold"
+            >
+              Start Identifying
+            </Button>
+          </Link>
         </div>
 
         <button
           type="button"
-          className="rounded-md p-2 md:hidden focus-brand"
+          className="md:hidden text-foreground"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls="mobile-nav"
