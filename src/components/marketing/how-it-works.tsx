@@ -135,18 +135,18 @@ export function HowItWorks() {
                   number-in-circle badge. */}
               <span
                 aria-hidden="true"
-                className="absolute right-4 top-3 select-none text-5xl font-extrabold leading-none text-muted/50"
+                className="text-5xl font-extrabold text-muted/50 absolute top-3 right-4 select-none leading-none"
               >
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <div
-                className="gradient-hero-light mb-4 flex h-10 w-10 items-center justify-center rounded-lg"
-                aria-hidden="true"
-              >
-                <step.icon className="h-5 w-5 text-primary-foreground" />
+              {/* R18-B3: the live's step chip rides the full gradient-hero
+                  (not the light variant) with its emission order; bare div
+                  (no wrapper aria-hidden — R17-F3 pattern). */}
+              <div className="w-10 h-10 rounded-lg gradient-hero flex items-center justify-center mb-4">
+                <step.icon className="w-5 h-5 text-primary-foreground" />
               </div>
-              <h3 className="mb-1.5 font-bold text-foreground">{step.title}</h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">{step.text}</p>
+              <h3 className="font-bold text-foreground mb-1.5">{step.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{step.text}</p>
             </li>
           ))}
         </ol>
