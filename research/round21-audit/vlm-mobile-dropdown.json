@@ -1,0 +1,6 @@
+{
+  "probe": "VLM confirmation of the R21-F7 mobile dropdown (375px, opened)",
+  "image": "docs/screenshots/r21-mobile-dropdown.png",
+  "verdict": "```json\n{plain_links: true, one_cta: true, has_login: false}\n```",
+  "notes": "The live's mobile dropdown structure: plain text links (Benefits/How It Works/Pricing/FAQ), ONE full-width gradient Start Identifying CTA, NO Log In button."
+}

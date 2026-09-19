@@ -1,0 +1,18 @@
+{
+  "probe": "R21-F1 export byte-format verification (in-page fetch, post-fix)",
+  "result": {
+    "status": 200,
+    "contentType": "text/csv; charset=utf-8",
+    "disposition": "attachment; filename=\"pixelco-visitors-2026-09-19.csv\"",
+    "firstBytes": [84, 121, 112],
+    "hasCR": false,
+    "lines": [
+      "Type,Name,Detail,Confidence,Source,Location,First Seen,Last Seen,Status",
+      "Individual,jane.doe@example.com,demo-store.example.com,90%,direct,—,Sep 19, 2026,1 min ago,active",
+      "Company,Acme Corp,acmecorp.com,—,IP Lookup,San Francisco, CA, US,Sep 19, 2026,1 min ago,active",
+      "Individual,sarah.chen@gmail.com,demo-store.example.com,92%,direct,—,Sep 18, 2026,1d ago,inactive"
+    ],
+    "topbarExportHref": "http://localhost:3000/api/export?ids=<the 3 current page row ids>",
+    "verdict": "The live's byte format: 9 columns, LF join, no BOM, no quoting, en-US short First Seen, RELATIVE Last Seen, computed 1-hour status; Export All is page-scoped."
+  }
+}

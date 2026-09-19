@@ -1,0 +1,6 @@
+{
+  "probe": "VLM confirmation of the R21-F3/F4 visitors filter selects + badges",
+  "image": "docs/screenshots/r21-visitors-selects.png",
+  "verdict": "```json\n{band_options: true, badges: true}\n```",
+  "notes": "The open confidence select shows All Confidence / High (85%+) / Medium (70-84%) / Low (<70%); the table shows Direct (neon-green) and Company (amber) type badges."
+}
