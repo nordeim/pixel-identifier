@@ -71,33 +71,37 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div id="mobile-nav" className="border-t border-border/60 bg-background md:hidden">
-          <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4" aria-label="Mobile navigation">
+        /* R21-F7: the live's mobile dropdown (opened + captured on the live
+            at 375px) — container `md:hidden bg-background border-b
+            border-border px-6 py-4 flex flex-col gap-4`, PLAIN anchors
+            (text-sm font-medium text-muted-foreground — no rounded/padding/
+            hover-bg), the 4 nav links + ONE full-width CTA. The live ships
+            NO Log In button in the dropdown; the CTA is an anchor-wrapped
+            h-10 w-full gradient button. The nav wrapper stays as D5-class
+            invisible a11y chrome. */
+        <div id="mobile-nav" className="md:hidden bg-background border-b border-border px-6 py-4 flex flex-col gap-4">
+          <nav className="flex flex-col gap-4" aria-label="Mobile navigation">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                className="text-sm font-medium text-muted-foreground focus-brand rounded"
               >
                 {link.label}
               </Link>
             ))}
-            <div className="mt-3 flex flex-col gap-2">
-              <Button variant="ghost" asChild className="text-muted-foreground font-medium">
-                <Link href="/login" onClick={() => setOpen(false)}>
-                  Log In
-                </Link>
-              </Button>
+            {/* R13-D3: the live's dropdown CTA targets app.pixelco.io —
+                mapped to /signup per the standing CTA divergence. */}
+            <Link href="/signup" onClick={() => setOpen(false)} className="focus-brand rounded-lg">
               <Button
-                asChild
-                className="gradient-cta text-primary-foreground border-0 hover:opacity-90 font-semibold"
+                variant={null}
+                size={null}
+                className="bg-primary hover:bg-primary/90 h-10 px-4 py-2 gradient-cta text-primary-foreground border-0 w-full font-semibold"
               >
-                <Link href="/signup" onClick={() => setOpen(false)}>
-                  Start Identifying
-                </Link>
+                Start Identifying
               </Button>
-            </div>
+            </Link>
           </nav>
         </div>
       )}
