@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight, CircleCheckBig, ExternalLink, Globe, Mail } from 'lucide-react'
+import { ArrowRight, CircleCheckBig, ExternalLink, Globe, Mail, Shield } from 'lucide-react'
 import {
   Accordion,
   AccordionContent,
@@ -96,7 +96,7 @@ export function BottomCta() {
             yellow marketing gradient with WHITE display text, a radial sheen
             overlay, and a check-icon trust row in white/70 text-xs. R12-F1:
             the card reveals at y24 like the live. */}
-        <div data-reveal="24" data-reveal-delay="0" className="relative max-w-4xl mx-auto rounded-2xl gradient-hero-light p-6 sm:p-10 md:p-14 text-center overflow-hidden">
+        <div data-reveal="24" data-reveal-delay="0" className="relative max-w-4xl mx-auto rounded-2xl gradient-hero p-6 sm:p-10 md:p-14 text-center overflow-hidden">
           <div
             aria-hidden="true"
             className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_60%)]"
@@ -109,21 +109,30 @@ export function BottomCta() {
               Join 1,200+ businesses already turning invisible website traffic into
               real, actionable leads with Pixelco.
             </p>
-            <Button
-              asChild
-              size="lg"
-              className="w-full sm:w-auto border-0 bg-background px-8 text-base font-semibold text-foreground hover:bg-background/90 h-12"
-            >
-              <Link href="/signup">
+            {/* R18: the live wraps the CTA in a bare anchor around a real
+                button (R18-B6 pattern); the tail follows the live's
+                emission order. */}
+            <Link href="/signup">
+              <Button
+                variant={null}
+                size={null}
+                className="rounded-md bg-background text-foreground hover:bg-background/90 border-0 h-12 px-8 text-base font-semibold w-full sm:w-auto"
+              >
                 Start Identifying Visitors — Free
-                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
-              </Link>
-            </Button>
+                <ArrowRight className="w-4 h-4 ml-2" aria-hidden="true" />
+              </Button>
+            </Link>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 mt-6 text-white/70 text-xs">
-              {['No credit card required', '100 free identifications', 'GDPR compliant'].map((item) => (
-                <span key={item} className="flex items-center gap-1.5">
-                  <CircleCheckBig className="h-3.5 w-3.5" aria-hidden="true" />
-                  {item}
+              {/* R18: the live's third trust item carries a Shield (not a
+                  check); icon order w-before-h. */}
+              {[
+                { icon: CircleCheckBig, label: 'No credit card required' },
+                { icon: CircleCheckBig, label: '100 free identifications' },
+                { icon: Shield, label: 'GDPR compliant' },
+              ].map((item) => (
+                <span key={item.label} className="flex items-center gap-1.5">
+                  <item.icon className="w-3.5 h-3.5" aria-hidden="true" />
+                  {item.label}
                 </span>
               ))}
             </div>

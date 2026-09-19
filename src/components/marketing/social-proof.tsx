@@ -75,7 +75,7 @@ export function SocialProof() {
                   (no avatar circles). */}
               <div className="flex gap-0.5 mb-3" aria-label="Rated 5 out of 5 stars">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-primary text-primary" aria-hidden="true" />
+                  <Star key={i} className="w-4 h-4 fill-primary text-primary" aria-hidden="true" />
                 ))}
               </div>
               {/* R12-F3: the live ships ASCII straight quotes — the curly
@@ -106,11 +106,12 @@ export function StatsBar() {
           {STATS.map((stat, i) => (
             <div key={stat.label} data-reveal="16" data-reveal-delay={String(i * 100)} className="text-center">
               {/* R7-V11: the live's stat values carry the gradient-hero text
-                  treatment with mb-1 (not text-primary + tracking-tight). */}
-              <p className="mb-1 text-gradient-hero text-3xl font-extrabold sm:text-4xl">
+                  treatment with mb-1 (not text-primary + tracking-tight).
+                  R18: the live's emission order. */}
+              <p className="text-3xl sm:text-4xl font-extrabold text-gradient-hero mb-1">
                 {stat.value}
               </p>
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
                 {stat.label}
               </p>
             </div>

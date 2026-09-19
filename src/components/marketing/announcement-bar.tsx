@@ -15,8 +15,10 @@ export function AnnouncementBar() {
 
   if (!visible) return null
 
+  // R18: the live's bar rides the full gradient-hero (not the light
+  // variant) with its exact emission order.
   return (
-    <div className="gradient-hero-light relative px-4 py-2.5 text-sm text-primary-foreground">
+    <div className="gradient-hero text-primary-foreground text-sm py-2.5 px-4 relative">
       <div className="container mx-auto flex items-center justify-center gap-3 text-center">
         <span className="font-medium">
           🚀 Launch Offer — Get 100 free visitor identifications when you sign up today
