@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { Hero } from '@/components/marketing/hero'
 import { Features, Comparison } from '@/components/marketing/features'
@@ -134,10 +135,24 @@ describe('R18 B4 — icon class orders (size → color → margin)', () => {
 })
 
 describe('R18 B5 — feed widget (div avatars + inline background, live orders)', () => {
-  it('renders the identified avatar as a div with the inline primary background', () => {
-    expect(feed).toContain('class="w-8 h-8 rounded-full flex items-center justify-center shrink-0"')
-    expect(feed).toContain('style="background-color:var(--primary)"')
-    expect(feed).toContain('class="lucide lucide-mail w-4 h-4 text-primary-foreground"')
+  /** R19-F2: the widget now runs the live's PHASE machine
+   * (enter→scan→reveal→done). The static render is the t=0 enter state —
+   * every row anonymous (muted avatar + User + label). The reveal-state
+   * markup (primary avatar + Mail + email + ✓ Identified) renders at
+   * runtime; those strings are pinned at SOURCE level in
+   * marketing-r19-parity.test.tsx. */
+  // NB: a local `process` const below shadows the global, so the path is
+  // relative to the vitest cwd (project root) — no process.cwd() here.
+  const feedSrc = readFileSync('src/components/marketing/live-feed.tsx', 'utf8')
+
+  it('renders the avatar as a div with the inline background (phase-colored)', () => {
+    expect(feed).toContain(
+      'class="feed-avatar w-8 h-8 rounded-full flex items-center justify-center shrink-0"',
+    )
+    // static t=0: all muted; the reveal flips to primary at runtime
+    expect(feed).toContain('style="background-color:var(--muted)"')
+    expect(feedSrc).toContain("backgroundColor: revealed ? 'var(--primary)' : 'var(--muted)'")
+    expect(feed).toContain('class="lucide lucide-user w-4 h-4 text-muted-foreground"')
     // the old span + gradient-primary construction is gone
     expect(feed).not.toContain('gradient-primary flex h-8 w-8 shrink-0 items-center')
   })
@@ -155,9 +170,16 @@ describe('R18 B5 — feed widget (div avatars + inline background, live orders)'
   })
 
   it('renders names/sublabels/cards in the live orders', () => {
-    expect(feed).toContain('class="text-sm font-semibold text-foreground"')
+    // R19-F2: the email sub-label pair renders at the reveal phase — its
+    // class strings are source-pinned; the static t=0 rows carry the
+    // anonymous pair below.
+    expect(feed).toContain('class="text-sm font-medium text-muted-foreground">Anonymous Visitor')
+    expect(feed).toContain('class="text-sm font-medium text-muted-foreground">Unknown User')
+    expect(feed).toContain('class="text-sm font-medium text-muted-foreground">Site Visitor')
+    expect(feed).toContain('class="text-xs text-muted-foreground/60">Browsing your site…')
+    expect(feedSrc).toContain('className="text-sm font-semibold text-foreground"')
+    expect(feedSrc).toContain('className="text-xs text-primary font-medium">✓ Identified')
     expect(feed).not.toContain('truncate text-sm font-semibold')
-    expect(feed).toContain('class="text-xs text-primary font-medium">✓ Identified')
     expect(feed).toContain('class="flex-1 min-w-0"')
     expect(feed).toContain(
       'class="px-4 py-3 border-b border-border flex items-center justify-between bg-card"',
