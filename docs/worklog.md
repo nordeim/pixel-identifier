@@ -716,8 +716,28 @@ Work Log:
   + broken-class warning), CLAUDE.md (v1.15 principle), plan execution
   log, evidence README.
 
+Work Log (R16-ship, session restored after premature stop):
+- Re-verified the full gate on the committed tree: lint ✓, typecheck ✓,
+  476 tests / 51 files ✓, build 36 routes ✓.
+- Secret scan: all matches pre-existing pushed history (operator docs);
+  no key material in the tree.
+- 9 atomic commits on main (04c71a3..9c9524e): evidence, LegacyBadge +
+  live-icons seams, Tabs/Switch primitives, overview KPI/chart, activity
+  + domains rows, visitors table, settings/install/pricing sweeps, test
+  pins (+44), docs (PAD v1.15, session_13, plan log).
+- Push via docs/ssh_git_wrapper_v3.py + paramiko shim (PATH prepended),
+  --remote git@github.com:nordeim/pixel-identifier.git: dry-run green
+  (e948a61..9c9524e), real push verified (remote refs/heads/main @
+  9c9524e == local HEAD), remote-tracking ref synced.
+- Deploy key fingerprint verified (SHA256:HpVRkv3e8k0HgD6SKijmGSmjs/
+  ZRRJxrZaAm6y6/Rns) before use; wrapper shredded its temp copy
+  post-push, operator key residue shredded (random overwrite ×3 +
+  remove). No key material on disk.
+
 Stage Summary:
 - Round-16 complete: the app bundle's content layer now matches the
   live's current build at the DOM class-string level across all 7
   dashboard pages; suite 432/50 → 476/51; PAD v1.14 → v1.15.
-- Next: atomic commits + push (Task R16-ship)
+- Round-16 fully closed and shipped: main @ 9c9524e on GitHub.
+- Next: Round-17 drift watch after the live's rolling deploy settles
+  (content layer + shell), responsive spot-checks 768–1024px.
