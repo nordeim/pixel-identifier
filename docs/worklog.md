@@ -1024,3 +1024,58 @@ Stage Summary:
   runtime-state + functional probes); probe targets — marketing
   mobile/responsive states, the blog/docs sub-page interactions, and
   any live deploy that changes the bundle hash (index-C3AAh5Je.js).
+
+---
+Task ID: R21
+Agent: main (Super Z)
+Task: Round-21 — functional-flow & export parity audit + remediation + ship
+
+Work Log:
+- Baseline gate at 95604e0: lint ✓ typecheck ✓ 543/54 ✓ build ✓.
+- Audit: drift watch (6th) — LIVE 100% STABLE (the landing's 7 tokens
+  were one feed row's done-unmount artifact; bundle hash unchanged,
+  index-C3AAh5Je.js). 6th probe generation: the CSV export decoded from
+  the live's app bundle (index-nhmKaUsm.js, fn W), the visitors filter
+  selects opened at runtime (Radix portal), the first responsive probes
+  (375/768 — PARITY), the live mobile dropdown captured, the
+  plan-switch flow decoded (Stripe EmbeddedCheckout — intentional
+  divergence).
+- Findings F1-F10, all fixed via TDD (543/54 → 568/56; +30 pins in
+  tests/export-r21-parity.test.ts + tests/visitors-r21-parity.test.tsx;
+  legacy suites updated: export-route, format (csvCell retired),
+  identification (identTypeFor replaces sourceFromReferrer),
+  visitors-query, dashboard-chrome):
+  - F1 the export byte format (the live's 9 columns, LF, no BOM, no
+    quoting, relative Last Seen, 1-hour status; page-scoped via
+    chrome-store pageVisitorIds);
+  - F2 PAGE_SIZE 20; F3 confidence BANDS; F4 source = identType
+    (direct/network/ip-lookup); F5 3-tier bar fill; F6 b2b null
+    confidence; F7 the live's mobile dropdown; F8 always-MapPin b2b
+    cell; F9 relativeTime = Ry; F10 the 1-hour active window.
+- Verification: in-page export fetch byte-checks green; selects'
+  options identical to the live's; cells verified; zero console
+  errors; 5 screenshots + 2 VLM confirmations; dev DB re-seeded with
+  the live semantics (the shell-env DATABASE_URL override identified;
+  both DBs refreshed).
+- Docs: PAD v1.20 (+ body sections + Known-Issues Stripe row),
+  session_18 R21 log, R21 plan + execution log, AGENTS/CLAUDE/README.
+  .env.example re-verified matching (tracked, unchanged).
+- 7 atomic commits on main (60f531c..283f8df): time rules → visitors
+  model → export format → mobile dropdown → pins → evidence +
+  screenshots → docs.
+- Push via docs/ssh_git_wrapper_v3.py + paramiko shim: fingerprint
+  verified (SHA256:HpVRkv3e8k0HgD6SKijmGSmjs/ZRRJxrZaAm6y6/Rns,
+  matches R15-R20); dry-run + real push verified (remote
+  refs/heads/main @ 283f8df == local HEAD); tracking ref synced;
+  operator key shredded after the ship-record push (random overwrite
+  x3 + remove) — no key material on disk.
+
+Stage Summary:
+- Round-21 FULLY CLOSED AND SHIPPED: main @ 283f8df on GitHub, PAD
+  v1.20, 568/56 tests. The live is stable across six consecutive
+  audits; the clone now matches its exported-file bytes, its visitors
+  data/filter semantics, its time rules and its mobile dropdown, with
+  the Stripe checkout ruled an intentional divergence.
+- Next: Round-22 drift watch with the R21 toolchain; probe targets —
+  the live's signup → dashboard first-run funnel, the activity feed's
+  load-older flow, and the marketing blog/docs sub-page interactions.
