@@ -392,3 +392,18 @@
 .brand-scroll::-webkit-scrollbar-thumb:hover {
   background: #a8a29e;
 }
+
+/* R18-A2: restore v3 space-y semantics for [label, input] field groups.
+   Tailwind v4 compiles space-y-* as margin-block-end on the PRECEDING
+   sibling (:not(:last-child)); the live's v3 applies margin-top to the
+   FOLLOWING sibling. When the preceding sibling is an inline <label>
+   (every auth/settings field group), CSS ignores the vertical margin —
+   the label→input gap collapsed by 8px vs the live (measured, R18
+   geometry probes). This scoped rule puts the margin back on the block
+   input exactly where v3 had it; no pinned class string changes. */
+.space-y-2 > label + input {
+  margin-top: calc(var(--spacing) * 2);
+}
+.space-y-2 > label {
+  margin-bottom: 0;
+}
