@@ -224,7 +224,13 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search emails, companies..."
+            /* R22-F10: the live's placeholder varies by tab — "Search
+                companies..." on the b2b tab (bundle: l==="b2b" branch). */
+            placeholder={
+              filters.type === 'company'
+                ? 'Search companies...'
+                : 'Search emails, companies...'
+            }
             className="pl-9"
             aria-label="Search visitors"
           />
@@ -276,6 +282,17 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
           no overflow-hidden consumer). */}
       <Card>
         <CardContent className="p-0">
+          {/* R22-F1: the live's empty branch — a <p> REPLACING the whole
+              table wrapper (bundle: D.length===0 ? p : overflow-table),
+              branch = the FILTERED count of the current tab (M) — a
+              no-match search/filter shows the INSTALL message. */}
+          {visitors.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-12 text-center">
+              {total === 0
+                ? 'No visitors identified yet. Install your pixel to get started.'
+                : 'No visitors match your filters.'}
+            </p>
+          ) : (
           <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -301,16 +318,7 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
               </tr>
             </thead>
             <tbody>
-              {visitors.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="p-3 py-12 text-center text-sm text-muted-foreground">
-                    {total === 0 && counts.all === 0
-                      ? 'No visitors yet. Install your pixel to get started.'
-                      : 'No visitors match the current filters.'}
-                  </td>
-                </tr>
-              ) : (
-                visitors.map((visitor) => (
+              {visitors.map((visitor) => (
                   <tr
                     key={visitor.id}
                     onClick={() => setSelectedId(visitor.id)}
@@ -430,11 +438,11 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                       {relativeTime(visitor.lastSeen)}
                     </td>
                   </tr>
-                ))
-              )}
+                ))}
             </tbody>
           </table>
           </div>
+          )}
 
           {/* Pagination footer */}
           {pageCount > 1 && (
