@@ -24,7 +24,7 @@ interface VisitorSpec {
   city?: string
   state?: string
   country?: string
-  confidence?: number
+  confidence?: number | null
   source: string
   paths: string[]
   daysAgo: number
@@ -36,7 +36,8 @@ const VISITORS: VisitorSpec[] = [
     email: 'sarah.chen@gmail.com',
     type: 'individual',
     confidence: 92,
-    source: 'search',
+    // R21-F4: the identification source (live semantics: direct/network)
+    source: 'direct',
     paths: ['/', '/pricing', '/features'],
     daysAgo: 1,
   },
@@ -48,8 +49,9 @@ const VISITORS: VisitorSpec[] = [
     city: 'San Francisco',
     state: 'CA',
     country: 'US',
-    confidence: 85,
-    source: 'direct',
+    // R21-F6: the live's b2b rows carry NO confidence.
+    confidence: null,
+    source: 'ip-lookup',
     paths: ['/', '/pricing'],
     daysAgo: 0,
   },
@@ -58,14 +60,14 @@ const VISITORS: VisitorSpec[] = [
     email: 'jane.doe@example.com',
     type: 'individual',
     confidence: 90,
-    source: 'social',
+    source: 'direct',
     paths: ['/'],
     daysAgo: 0,
   },
   {
     vid: 'demo_vid_anon_004',
     email: null,
-    source: 'referral',
+    source: 'direct',
     paths: ['/blog/getting-started'],
     daysAgo: 2,
   },

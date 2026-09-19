@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { trackPayloadSchema } from '@/lib/validation'
-import { resolveIdentity, sourceFromReferrer } from '@/lib/identification'
+import { identTypeFor, resolveIdentity } from '@/lib/identification'
 import { getPlan } from '@/lib/plans'
 import { consumeIdentification, resetMonthlyWindowIfNeeded } from '@/lib/quota'
 import { randomBytes } from 'crypto'
@@ -145,7 +145,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       create: {
         siteId: site.id,
         anonymousId,
-        source: sourceFromReferrer(payload.r ?? ''),
+        // R21-F4: the column default ('direct') holds the placeholder until
+        // identification — the live's rows carry the IDENTIFICATION source,
+        // never traffic attribution (referrer stays on the Event rows).
         firstSeen: now,
         lastSeen: now,
         pageviews: 1,
@@ -191,6 +193,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             state: identity.state,
             country: identity.country,
             confidence: identity.confidence,
+            // R21-F4: the live's identification source — direct/network for
+            // individuals (by confidence), ip-lookup for companies.
+            source: identTypeFor(identity.confidence),
           },
         })
         if (claimed.count === 1) {
@@ -214,7 +219,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             // without being counted.
             await db.visitor.updateMany({
               where: { id: visitor.id, email: identity.email },
-              data: { email: null, type: null, companyName: null, city: null, state: null, country: null, confidence: null },
+              data: { email: null, type: null, companyName: null, city: null, state: null, country: null, confidence: null, source: 'direct' },
             })
           }
         }

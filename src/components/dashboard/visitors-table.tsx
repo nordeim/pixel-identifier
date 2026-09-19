@@ -35,6 +35,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import {
+  publishPageVisitorIds,
   publishSelectedVisitorIds,
   publishVisitorsCounts,
 } from '@/components/dashboard/chrome-store'
@@ -62,18 +63,18 @@ export interface VisitorRow {
 export interface VisitorFilters {
   q: string
   type: string // 'all' | 'individual' | 'company'
-  confidence: string // 'all' | '90' | '75' | '50'
-  source: string // 'all' | source key
+  confidence: string // 'all' | 'high' | 'medium' | 'low' (R21-F3 bands)
+  source: string // 'all' | 'direct' | 'network' (R21-F4 identType)
 }
 
 type Segment = 'all' | 'individual' | 'company'
 
+// R21-F4: the live's identification-source labels (the b2c Type-cell
+// badge). Traffic attribution was retired — the live's rows carry the
+// identification source, never the referrer.
 const SOURCE_LABELS: Record<string, string> = {
   direct: 'Direct',
-  search: 'Search',
-  social: 'Social',
-  referral: 'Referral',
-  campaign: 'Campaign',
+  network: 'Network',
 }
 
 interface VisitorsTableProps {
@@ -118,6 +119,13 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
   useEffect(() => {
     publishSelectedVisitorIds([...selectedIds])
   }, [selectedIds])
+
+  // R21-F1: publish the current page's row ids — the live's "Export All"
+  // exports the displayed rows (the current tab's page), never the whole
+  // account; the topbar scopes the href with these ids.
+  useEffect(() => {
+    publishPageVisitorIds(visitors.map((v) => v.id))
+  }, [visitors])
 
   /** Push new filter values into the URL (single source of truth). */
   function navigate(overrides: Partial<VisitorFilters> & { page?: number }) {
@@ -230,10 +238,12 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
+            {/* R21-F3: the live's band options (runtime-harvested from the
+                live's Radix portal). */}
             <SelectItem value="all">All Confidence</SelectItem>
-            <SelectItem value="90">90%+</SelectItem>
-            <SelectItem value="75">75%+</SelectItem>
-            <SelectItem value="50">50%+</SelectItem>
+            <SelectItem value="high">High (85%+)</SelectItem>
+            <SelectItem value="medium">Medium (70-84%)</SelectItem>
+            <SelectItem value="low">Low (&lt;70%)</SelectItem>
           </SelectContent>
         </Select>
 
@@ -242,12 +252,11 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
+            {/* R21-F4: the live's source options — the identification
+                source, not traffic attribution. */}
             <SelectItem value="all">All Sources</SelectItem>
-            {Object.entries(SOURCE_LABELS).map(([value, label]) => (
-              <SelectItem key={value} value={value}>
-                {label}
-              </SelectItem>
-            ))}
+            <SelectItem value="direct">Direct Signups</SelectItem>
+            <SelectItem value="network">Network Matches</SelectItem>
           </SelectContent>
         </Select>
 
@@ -356,37 +365,54 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                           Company
                         </LegacyBadge>
                       ) : (
-                        <LegacyBadge className="hover:bg-secondary/80 text-[10px] px-2 py-0 bg-neon-green/10 text-neon-green border-neon-green/20">
+                        /* R21-F4: the live's identType badge — Direct keeps the
+                           neon-green tail, Network ships electric-blue. */
+                        <LegacyBadge
+                          className={cn(
+                            'hover:bg-secondary/80 text-[10px] px-2 py-0',
+                            visitor.source === 'network'
+                              ? 'bg-electric-blue/10 text-electric-blue border-electric-blue/20'
+                              : 'bg-neon-green/10 text-neon-green border-neon-green/20',
+                          )}
+                        >
                           {SOURCE_LABELS[visitor.source] ?? visitor.source}
                         </LegacyBadge>
                       )}
                     </td>
                     <td className="p-3">
-                      {visitor.type === 'company' && visitor.city ? (
-                        // Live company rows show the resolved office location
-                        // in the Confidence column instead of a bar.
+                      {visitor.type === 'company' ? (
+                        // R21-F8: the live's b2b Confidence cell is ALWAYS the
+                        // MapPin location div (location || "—" — never a bar,
+                        // never a bare span; b2b confidence is null).
                         <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                           <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
                           <span className="truncate max-w-[180px]">
-                            {visitor.city}, {visitor.state}, {visitor.country}
+                            {[visitor.city, visitor.state, visitor.country]
+                              .filter(Boolean)
+                              .join(', ') || '—'}
                           </span>
                         </div>
-                      ) : visitor.confidence !== null ? (
-                        // Live confidence: a plain neon bar + 12px label
-                        // (R16: div-rooted, no progressbar role).
+                      ) : (
+                        // R21-F5: the live's 3-tier bar fill — >=85 neon-green,
+                        // >=70 electric-blue, else hot-pink.
                         <div className="flex items-center gap-2">
                           <div className="h-1.5 w-14 rounded-full bg-muted overflow-hidden">
                             <div
-                              className="h-full rounded-full bg-neon-green"
-                              style={{ width: `${visitor.confidence}%` }}
+                              className={cn(
+                                'h-full rounded-full',
+                                (visitor.confidence ?? 0) >= 85
+                                  ? 'bg-neon-green'
+                                  : (visitor.confidence ?? 0) >= 70
+                                    ? 'bg-electric-blue'
+                                    : 'bg-hot-pink',
+                              )}
+                              style={{ width: `${visitor.confidence ?? 0}%` }}
                             />
                           </div>
                           <span className="text-xs font-medium">
                             {visitor.confidence}%
                           </span>
                         </div>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">—</span>
                       )}
                     </td>
                     <td className="p-3">

@@ -10,10 +10,12 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic'
 
-const PAGE_SIZE = 25
+const PAGE_SIZE = 20
 const SEGMENTS = ['all', 'individual', 'company'] as const
-const SOURCES = ['direct', 'search', 'social', 'referral', 'campaign'] as const
-const CONFIDENCES = ['90', '75', '50'] as const
+const SOURCES = ['direct', 'network'] as const
+// R21-F3: the live's confidence band values (High (85%+) / Medium
+// (70-84%) / Low (<70%) — index-nhmKaUsm.js).
+const CONFIDENCE_BANDS = ['high', 'medium', 'low'] as const
 
 function firstParam(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value
@@ -42,8 +44,8 @@ export default async function VisitorsPage({ searchParams }: VisitorsPageProps) 
     ? (typeParam as 'individual' | 'company')
     : undefined
   const confidenceParam = firstParam(params.confidence)
-  const minConfidence = (CONFIDENCES as readonly string[]).includes(confidenceParam ?? '')
-    ? Number(confidenceParam)
+  const confidenceBand = (CONFIDENCE_BANDS as readonly string[]).includes(confidenceParam ?? '')
+    ? (confidenceParam as 'high' | 'medium' | 'low')
     : undefined
   const sourceParam = firstParam(params.source)
   const source = (SOURCES as readonly string[]).includes(sourceParam ?? '')
@@ -55,7 +57,7 @@ export default async function VisitorsPage({ searchParams }: VisitorsPageProps) 
   const list = await listVisitors(user.id, {
     q,
     type,
-    minConfidence,
+    confidenceBand,
     source,
     page,
     pageSize: PAGE_SIZE,

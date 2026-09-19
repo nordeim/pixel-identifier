@@ -65,7 +65,7 @@ model Visitor {
   city        String?
   state       String?
   country     String?
-  source      String    @default("direct") // direct | search | social | referral | campaign
+  source      String    @default("direct") // identification source: direct | network | ip-lookup (R21-F4, live semantics)
   confidence  Int?
   status      String    @default("active")
   pageviews   Int       @default(0)

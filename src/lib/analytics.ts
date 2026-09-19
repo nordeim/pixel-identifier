@@ -255,7 +255,9 @@ export interface VisitorListQuery {
   /** Substring search over email, company, domain and anonymous id. */
   q?: string
   type?: 'individual' | 'company'
-  minConfidence?: number
+  /** R21-F3: the live's confidence BANDS — high (>=85), medium (70-84), low (<70); null-confidence companies match no band. */
+  confidenceBand?: 'high' | 'medium' | 'low'
+  /** R21-F4: the identification source (direct|network). Companies are unaffected (the live's b2b query ignores the source filter). */
   source?: string
   page?: number
   pageSize?: number
@@ -324,11 +326,21 @@ export async function listVisitors(
   } else if (query.type === 'company') {
     filters.push({ type: 'company' })
   }
-  if (typeof query.minConfidence === 'number') {
-    filters.push({ confidence: { gte: query.minConfidence } })
+  // R21-F3: the live's band semantics (index-nhmKaUsm.js):
+  // high -> gte 85; medium -> gte 70 AND lt 85; low -> lt 70.
+  // Prisma comparisons exclude nulls, so null-confidence companies match
+  // no band — mirroring the live's b2b rows (confidence null).
+  if (query.confidenceBand === 'high') {
+    filters.push({ confidence: { gte: 85 } })
+  } else if (query.confidenceBand === 'medium') {
+    filters.push({ confidence: { gte: 70, lt: 85 } })
+  } else if (query.confidenceBand === 'low') {
+    filters.push({ confidence: { lt: 70 } })
   }
+  // R21-F4: the source filter describes INDIVIDUAL identification sources;
+  // company rows stay visible (the live's b2b query ignores the filter).
   if (query.source) {
-    filters.push({ source: query.source })
+    filters.push({ OR: [{ type: 'company' }, { source: query.source }] })
   }
   const where = { AND: filters }
 

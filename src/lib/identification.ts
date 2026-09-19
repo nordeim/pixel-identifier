@@ -101,11 +101,24 @@ export interface ResolvedIdentity {
   email: string
   type: 'individual' | 'company'
   companyName: string | null
-  confidence: number
+  /** R21-F6: NULL for companies — the live's b2b rows carry no confidence (the table shows the location cell, the export shows "—", confidence filters exclude them). */
+  confidence: number | null
   /** B2B office location — the live Confidence column shows "City, State, CC" for companies. */
   city: string | null
   state: string | null
   country: string | null
+}
+
+/**
+ * The live's identification source (R21-F4, bundle rule
+ * `he = confidence>=70 && !all_emails ? "direct" : "network"`):
+ * direct = a high-confidence direct match, network = a partner-network
+ * match, ip-lookup = company resolutions (the live's b2b identType is
+ * null; its export renders "IP Lookup" for b2b rows).
+ */
+export function identTypeFor(confidence: number | null): 'direct' | 'network' | 'ip-lookup' {
+  if (confidence === null) return 'ip-lookup'
+  return confidence >= 70 ? 'direct' : 'network'
 }
 
 /**
@@ -145,7 +158,11 @@ export function resolveIdentity(anonymousId: string, siteKey: string): ResolvedI
       email,
       type: 'company',
       companyName: company,
-      confidence,
+      // R21-F6: the live's b2b rows carry NO confidence (the Confidence
+      // column renders the location cell; exports/filters use "—"). The
+      // draw above keeps the RNG stream byte-identical — only the stored
+      // value changes.
+      confidence: null,
       city: location.city,
       state: location.state,
       country: location.country,
@@ -163,20 +180,10 @@ export function resolveIdentity(anonymousId: string, siteKey: string): ResolvedI
   return { email, type: 'individual', companyName: null, confidence, city: null, state: null, country: null }
 }
 
-/** Derive an attribution source from the document referrer. */
-export function sourceFromReferrer(referrer: string): string {
-  if (!referrer) return 'direct'
-  let host: string
-  try {
-    host = new URL(referrer).hostname.replace(/^www\./, '')
-  } catch {
-    return 'referral'
-  }
-  if (/google|bing|duckduckgo|yahoo|ecosia|brave/.test(host)) return 'search'
-  if (/facebook|instagram|twitter|x\.com|linkedin|tiktok|pinterest|reddit|youtube/.test(host)) return 'social'
-  if (/mail|newsletter|campaign|utm/.test(referrer)) return 'campaign'
-  return 'referral'
-}
+/* sourceFromReferrer was RETIRED in R21-F4: the live's visitors rows
+   carry the IDENTIFICATION source (direct/network — identTypeFor above),
+   never traffic attribution; referrer attribution lives on the Event
+   rows (the referrer column), matching the live's event model. */
 
 /** Cryptographically random site key, e.g. px_581d151f2c1ccaa7. */
 export function generateSiteKey(): string {
