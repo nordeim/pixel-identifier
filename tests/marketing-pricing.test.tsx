@@ -59,7 +59,8 @@ describe('PricingSection (R10-F4 live DOM parity)', () => {
     // The Growth CTA leads with a Zap and carries NO trailing arrow.
     const growthCard = html.slice(html.indexOf('>Growth<'), html.indexOf('>Scale<'))
     expect(growthCard).toContain('gradient-cta')
-    expect(growthCard).toContain('lucide lucide-zap mr-1.5 h-4 w-4')
+    // R18: the live's icon emission order (size before margin).
+    expect(growthCard).toContain('lucide lucide-zap w-4 h-4 mr-1.5')
     expect(growthCard.indexOf('lucide-zap')).toBeLessThan(growthCard.indexOf('>Get Started<'))
     expect(growthCard).not.toContain('lucide-arrow-right')
     // The Free CTA is secondary-styled with a trailing arrow, not the

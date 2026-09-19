@@ -5,6 +5,7 @@ import { join } from 'node:path'
 import { ActivityFeed, type ActivityEvent } from '@/components/dashboard/activity-feed'
 import { DomainsPanel } from '@/components/dashboard/domains-panel'
 import { PlanPanel } from '@/components/dashboard/plan-panel'
+import { SettingsPanel } from '@/components/dashboard/settings-panel'
 import { VisitorsTable } from '@/components/dashboard/visitors-table'
 import { PlatformInstructions } from '@/components/dashboard/platform-instructions'
 import { SignOutButton } from '@/components/dashboard/sign-out-button'
@@ -31,7 +32,11 @@ vi.mock('next-auth/react', () => ({ signOut: vi.fn() }))
 
 // R17-F2: PlanPanel imports the server action — mock the module so the
 // render never pulls next-auth/db into the component test.
-vi.mock('@/actions/settings', () => ({ changePlanAction: vi.fn() }))
+vi.mock('@/actions/settings', () => ({
+  changePlanAction: vi.fn(),
+  updateProfileAction: vi.fn(),
+  deleteAccountAction: vi.fn(),
+}))
 
 const src = (rel: string) =>
   readFileSync(join(process.cwd(), rel), 'utf8')
@@ -581,5 +586,51 @@ describe('R17 F3 — Install chips (bare geometry-first divs)', () => {
     expect(page).not.toContain(
       'className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted"',
     )
+  })
+})
+
+describe('R18 A1 — Settings Profile (form rhythm, opacity-60, no wrapper)', () => {
+  const settingsHtml = renderToStaticMarkup(
+    <SettingsPanel
+      email="demo@pixelco.local"
+      company="Demo Store Inc."
+      website="https://demo-store.example.com"
+    />,
+  )
+
+  it('ships the form with space-y-4 so the live 16px group rhythm applies through it', () => {
+    expect(settingsHtml).toMatch(/<form[^>]*class="[^"]*space-y-4/)
+  })
+
+  it('places the Save button directly in the form flow (no flex wrapper)', () => {
+    expect(settingsHtml).not.toContain('class="flex items-center gap-3"')
+    // the button still follows the email field group directly
+    expect(settingsHtml).toMatch(
+      /opacity-60" id="email" disabled="" value="[^"]*"\/><\/div><button/,
+    )
+  })
+
+  it('renders the disabled email input with the live opacity-60 tail', () => {
+    expect(settingsHtml).toContain('md:text-sm opacity-60"')
+  })
+})
+
+describe('R18 A3 — Install platform Card root (no clone-authored aria-labelledby)', () => {
+  it('ships the bare Card root like the live', () => {
+    const html = renderToStaticMarkup(<PlatformInstructions />)
+    expect(html).not.toContain('aria-labelledby="platform-heading"')
+  })
+})
+
+describe('R18 A2 — TW4 space-y label+input seam (CSS pin)', () => {
+  it('globals.css restores v3 space-y semantics for [label, input] groups', () => {
+    const css = src('src/app/globals.css')
+    // TW4 compiles space-y as margin-block-end on the PRECEDING sibling;
+    // vertical margins on inline <label> are ignored → 8px deficit vs the
+    // live's v3 (margin-top on the FOLLOWING block input). The rule restores
+    // the live's geometry without touching any pinned class string.
+    expect(css).toContain('.space-y-2 > label + input')
+    expect(css).toMatch(/\.space-y-2 > label \+ input\s*\{[^}]*margin-top:/)
+    expect(css).toMatch(/\.space-y-2 > label\s*\{[^}]*margin-bottom:\s*0/)
   })
 })

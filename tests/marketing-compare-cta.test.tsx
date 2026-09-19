@@ -79,7 +79,9 @@ describe('Comparison (R10-F6 live DOM parity)', () => {
 
 describe('BottomCta (R10-F8 live DOM parity)', () => {
   it('ships the live card + radial overlay + z-10 inner', () => {
-    expect(cta).toContain('relative max-w-4xl mx-auto rounded-2xl gradient-hero-light p-6 sm:p-10 md:p-14 text-center overflow-hidden')
+    // R18: the live's CTA card rides the FULL gradient-hero (the light
+    // variant was a clone-authored approximation) with its emission order.
+    expect(cta).toContain('relative max-w-4xl mx-auto rounded-2xl gradient-hero p-6 sm:p-10 md:p-14 text-center overflow-hidden')
     expect(cta).toContain('bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_60%)]')
     expect(cta).toContain('relative z-10')
   })
@@ -118,8 +120,11 @@ describe('SiteFooter (R10-F11 live DOM parity)', () => {
 
   it('renders the wordmark with "By Ai Viral" inline beside Pixelco (R10)', () => {
     // The live lockup: logo + Pixelco + By Ai Viral as flex-row siblings.
-    expect(footer).toContain('text-lg font-bold text-foreground tracking-tight')
-    expect(footer).toContain('font-script text-xs italic text-muted-foreground translate-y-[3px]')
+    // R18: the live's FOOTER wordmark carries no tracking-tight (only the
+    // header's does) and the subtext rides the live's order with the
+    // clone's font-script utility (D5) appended.
+    expect(footer).toContain('text-lg font-bold text-foreground">Pixelco</span>')
+    expect(footer).toContain('text-xs text-muted-foreground italic translate-y-[3px] font-script')
     expect(footer).not.toContain('flex flex-col leading-none')
   })
 })

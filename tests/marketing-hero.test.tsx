@@ -71,7 +71,8 @@ describe('Hero (R10-F2 live DOM parity)', () => {
     expect(html).toContain('text-lg text-muted-foreground leading-relaxed mb-8')
     expect(html).toContain('<em>and</em>')
     expect(html).toContain('px-3 py-1.5 rounded-lg bg-card border border-border text-sm')
-    expect(html).toContain('mb-8 flex flex-wrap gap-3')
+    // R18: the live's emission order (flex flex-wrap before gap/mb).
+    expect(html).toContain('flex flex-wrap gap-3 mb-8')
   })
 
   it('renders the avatar row directly after the pills (mb-6, no extra mt-8)', () => {
