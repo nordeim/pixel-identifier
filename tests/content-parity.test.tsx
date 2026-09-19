@@ -2,11 +2,9 @@ import { describe, expect, it, vi } from 'vitest'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import {
-  ActivityFeed,
-  type ActivityEvent,
-} from '@/components/dashboard/activity-feed'
+import { ActivityFeed, type ActivityEvent } from '@/components/dashboard/activity-feed'
 import { DomainsPanel } from '@/components/dashboard/domains-panel'
+import { PlanPanel } from '@/components/dashboard/plan-panel'
 import { VisitorsTable } from '@/components/dashboard/visitors-table'
 import { PlatformInstructions } from '@/components/dashboard/platform-instructions'
 import { SignOutButton } from '@/components/dashboard/sign-out-button'
@@ -30,6 +28,10 @@ vi.mock('next/navigation', () => ({
 }))
 
 vi.mock('next-auth/react', () => ({ signOut: vi.fn() }))
+
+// R17-F2: PlanPanel imports the server action — mock the module so the
+// render never pulls next-auth/db into the component test.
+vi.mock('@/actions/settings', () => ({ changePlanAction: vi.fn() }))
 
 const src = (rel: string) =>
   readFileSync(join(process.cwd(), rel), 'utf8')
@@ -493,5 +495,91 @@ describe('R16 G — Settings page (source pins)', () => {
     expect(panel).toContain('p-6 pt-0 space-y-4')
     expect(panel).toContain('flex items-center justify-between')
     expect(panel).not.toContain('flex flex-wrap items-center justify-between gap-3')
+  })
+})
+
+describe('R17 F1 — Activity Identified badge (new-gen default variant)', () => {
+  const html = renderToStaticMarkup(
+    <ActivityFeed initialEvents={events} initialCursor={null} />,
+  )
+
+  it('renders the Identified badge on the domains-Verified string (live match)', () => {
+    expect(html).toContain(
+      'class="inline-flex items-center rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary hover:bg-primary/80 text-[10px] px-1.5 py-0 gradient-primary text-primary-foreground border-0"',
+    )
+  })
+
+  it('ships no secondary-gradient hybrid or hover:opacity-90 tail (R16 miss)', () => {
+    expect(html).not.toContain('hover:bg-secondary/80 gradient-primary')
+    expect(html).not.toContain('hover:opacity-90')
+  })
+})
+
+describe('R17 F2 — Pricing contact-sales card (variant-free CTA, live orders)', () => {
+  const pricingHtml = renderToStaticMarkup(
+    <PlanPanel
+      currentPlan="free"
+      used={1}
+      limit={100}
+      percent={1}
+      period="lifetime"
+      overage={0}
+      overageCostLabel="$15.00"
+    />,
+  )
+
+  it('renders the card root with the twMerge-displaced order (border-border bg-card)', () => {
+    expect(pricingHtml).toContain(
+      'class="rounded-lg border text-card-foreground shadow-sm border-border bg-card"',
+    )
+  })
+
+  it('renders the card body p-6 pt-6-first and the subtitle text-sm-first', () => {
+    expect(pricingHtml).toContain(
+      'class="p-6 pt-6 flex flex-col md:flex-row items-center justify-between gap-4"',
+    )
+    expect(pricingHtml).toContain('class="text-sm text-muted-foreground mt-0.5"')
+  })
+
+  it('renders the CTA as a real button with the variant-free consumer tail', () => {
+    expect(pricingHtml).toContain('>Contact Sales</button>')
+    expect(pricingHtml).toContain(
+      'border-2 border-primary/30 bg-transparent text-primary hover:bg-primary/10 transition-all duration-300 font-semibold h-10 px-4 py-2 shrink-0',
+    )
+    // no outline-variant leftovers, no mailto anchor (D1: onClick keeps the behavior)
+    expect(pricingHtml).not.toContain('mailto:')
+    expect(pricingHtml).not.toContain(
+      'hover:text-accent-foreground h-10 px-4 py-2 shrink-0 border-2',
+    )
+  })
+})
+
+describe('R17 F3 — Install chips (bare geometry-first divs)', () => {
+  it('renders the platform chip as a div with the live order (no aria-hidden wrapper)', () => {
+    const html = renderToStaticMarkup(<PlatformInstructions />)
+    expect(html).toContain(
+      '<div class="h-8 w-8 rounded-lg bg-muted flex items-center justify-center">',
+    )
+    expect(html).not.toContain(
+      'class="flex h-8 w-8 items-center justify-center rounded-lg bg-muted"',
+    )
+  })
+
+  it('renders the step-number chips as divs with the live order', () => {
+    const html = renderToStaticMarkup(<PlatformInstructions />)
+    expect(html).toContain(
+      '<div class="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary shrink-0 mt-0.5">',
+    )
+    expect(html).not.toContain('mt-0.5 flex h-6 w-6 shrink-0 items-center')
+  })
+
+  it('renders the How It Works chip as a div with the live order (source pin)', () => {
+    const page = src('src/app/dashboard/install/page.tsx')
+    expect(page).toContain(
+      '<div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center">',
+    )
+    expect(page).not.toContain(
+      'className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted"',
+    )
   })
 })

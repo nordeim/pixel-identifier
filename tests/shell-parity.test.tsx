@@ -177,7 +177,11 @@ describe('pricing plan cards (R15 verification sweep)', () => {
     expect(source).toContain(
       "'rounded-lg border bg-card text-card-foreground relative overflow-hidden transition-all hover:shadow-lg flex flex-col h-full border-primary shadow-md ring-1 ring-primary/20 scale-[1.02]'",
     )
-    expect(source).not.toContain('border-border bg-card')
+    // R17 supersession: the plan-card roots stay pinned by the positive
+    // strings above; the contact-sales card now legitimately carries
+    // `border-border bg-card` (twMerge displacement reproduces the live
+    // order). The old wrong consumer was `border-border shadow-sm`.
+    expect(source).not.toContain('border-border shadow-sm')
   })
 
   it('ships no POPULAR badge (the live marks popular with the bar + border only)', () => {
