@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"Yes\",\n  \"notes\": \"The first row in the 'Live Visitor Feed' displays a yellow/amber circular background with a mail icon inside. It also features a small circular checkmark badge on the right. However, the text next to it still reads 'Unknown User' and 'Browsing your site...', which matches the description of a mid-animation transition state where the visual identity has updated but the text label has not yet.\"\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789798110,
+  "id": "20260919140827f795579f91d04723",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260919140827f795579f91d04723",
+  "usage": {
+    "completion_tokens": 100,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1776,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1876
+  }
+}

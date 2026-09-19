@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"Yes\",\n  \"notes\": \"The first row in the 'Live Visitor Feed' widget is fully revealed and matches all the specified criteria: it has an amber/yellow circular avatar with a mail icon, the email address 'james.miller92@gmail.com', an 'Identified' sub-line with a checkmark, and a small circular checkmark badge on the right.\"\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789798121,
+  "id": "202609191408368ef7a5d3354749c5",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "202609191408368ef7a5d3354749c5",
+  "usage": {
+    "completion_tokens": 89,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1750,
+    "prompt_tokens_details": {
+      "cached_tokens": 4
+    },
+    "total_tokens": 1839
+  }
+}

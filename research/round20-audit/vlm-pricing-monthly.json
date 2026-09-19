@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"verdict\": \"Yes\",\n  \"notes\": \"The toggle is in the left position (Monthly mode) with a gray track. The pricing cards display $79, $249, and $799, each with the sub-line 'billed monthly'. The Free card shows $0 with no sub-text.\"\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789798072,
+  "id": "202609191407492aeff5e8aa044fc6",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "202609191407492aeff5e8aa044fc6",
+  "usage": {
+    "completion_tokens": 73,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1759,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1832
+  }
+}
