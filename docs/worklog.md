@@ -818,3 +818,75 @@ Stage Summary:
   only the documented D2/D3/D4/aria residuals remaining.
 - Next: Round-18 drift watch on the R17 tokenizer; optional strict-DOM
   closure of the aria residuals.
+
+---
+Task ID: R18
+Agent: main (Super Z)
+Task: Round-18 — drift watch + first geometry probes + marketing class realignment, TDD remediation, docs, ship
+
+Work Log:
+- Workspace refreshed (git pull — main @ e77bde8, the R17 ship); core docs
+  re-verified (PAD v1.16); baseline gate GREEN (484/51, lint, typecheck,
+  build). scandihaven skills catalog reviewed (agent-browser confirmed).
+- Round-18 audit (methodology upgrade: the R17 tokenizer PLUS a landing
+  class-string inventory diff PLUS the first GEOMETRY probes —
+  getBoundingClientRect + computed styles):
+  - Live-side drift since R17: ZERO on all 7 dashboard pages (third
+    consecutive stable audit). Remaining dashboard diffs traced to
+    documented D2/D3/D4/aria residuals, state-dependent install notice,
+    or tokenizer alignment noise (byte-verified by direct extraction).
+  - A1 settings Profile card: the classless server-action form was the
+    only child of the space-y-4 card body → 0px group gaps (live: 16px),
+    Save button 72px high in a flex wrapper, email input missing
+    opacity-60.
+  - A2 auth forms: TW4 compiles space-y as margin-block-end on the
+    PRECEDING sibling; inline labels ignore vertical margins → 3px
+    label→input gaps (live: 11px) on login/signup/forgot.
+  - A3 install platform Card: inert clone-authored aria-labelledby.
+  - Marketing bundle: ~20 order-drift strings + real drifts never
+    byte-verified by R10-R12 (pricing subtitle/separators/spacer,
+    text-green-600 comparison checks, gradient-hero-light chips, span
+    feed avatars, flat hero CTAs, max-w-7xl header, tracking-tight
+    footer wordmark, gap-12 grid, semibold stat labels, missing lucide
+    double-name) — the R15-R17 "marketing stable" checks compared text
+    lengths, invisible to a class rebuild.
+- Plan written + validated against every source site
+  (docs/plans/2026-09-19-round18-marketing-realignment.md); evidence in
+  research/round18-audit/ (fresh live+local captures, geometry probes).
+- TDD: 30 RED pins → GREEN (25 in new tests/marketing-r18-parity.test.tsx
+  + 5 content-parity R18 blocks); 4 superseded R10-era pins updated.
+  Fixes: settings form space-y-4 + direct-flow button + opacity-60;
+  globals.css .space-y-2 > label + input v3-semantics rule;
+  aria-labelledby dropped; 12 marketing components realigned (pricing
+  subtitle/spacer/CTA structures/borders, comparison text-accent checks
+  + div pill + Link-wrapped CTA, benefits grid gap-14 + div chips,
+  how-it-works gradient-hero chips + orders, live-feed div avatars with
+  inline backgrounds + data-URI stat zap + orders, hero trust icons +
+  anchor-wrapped CTAs, site-header container chrome + anchor lockup +
+  PNG logo + gap-7, wordmark fragment (header tracking, footer not),
+  CTA banner gradient-hero + Link-wrapped button + Shield trust item,
+  announcement-bar gradient-hero, StatsBar orders/font-medium, star
+  orders, building icon double-name).
+- Gate: lint ✓, typecheck ✓, 519 tests / 52 files (+35), build ✓.
+- Browser verification: dashboard re-diff = documented residuals only;
+  landing class-order inventory = ZERO order-drifts; button inventory =
+  ZERO diffs (16 = 16); settings geometry PIXEL-EXACT (groups
+  237/325/413, Save 501); auth gaps 11px both sides; E2E smoke (toggle,
+  plan-intent hrefs, settings render + opacity-60 tail).
+- Ruling D5: invisible functional chrome kept + documented (switch
+  semantics, section aria-labelledby landmarks, focus-brand rings,
+  reveal machinery, feed-row hook, decorative aria-hidden).
+- Docs: PAD v1.17, README (519 + R18 bullet), AGENTS.md (TW4 space-y
+  seam + marketing emission conventions + D5), CLAUDE.md (geometry
+  parity principle + marketing conventions), plan execution log,
+  evidence README, session_15.md, worklog (this record).
+
+Stage Summary:
+- Round-18 complete: the live stable across three audits; two real
+  geometry bugs fixed (settings card, auth form gaps — invisible to
+  every prior DOM-string verification); the marketing bundle realigned
+  and pinned to the live's class emission; suite 484/51 → 519/52;
+  PAD v1.16 → v1.17.
+- Next: atomic commits + push (Task R18-ship), then Round-19 can
+  extend the geometry probes to the marketing bundle and re-verify
+  with the R18 toolchain.

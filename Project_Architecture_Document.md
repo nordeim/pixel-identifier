@@ -3,7 +3,7 @@
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-19 (v1.16)
+**Last Updated:** 2026-09-19 (v1.17)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -11,6 +11,54 @@
 ---
 
 #### Revision Block (Tracked Changes)
+
+- **v1.17** `[SYN]` Round-18 app-bundle geometry fixes + marketing
+  class realignment (plan:
+  `docs/plans/2026-09-19-round18-marketing-realignment.md`; evidence in
+  `research/round18-audit/`). The live stayed **100% stable since R17**
+  (third consecutive stable audit; zero class/tag changes on all 7
+  dashboard pages). The round's first-ever **geometry probes**
+  (getBoundingClientRect + computed styles) found two real visual bugs
+  invisible to every prior DOM-string verification: **(A1)** the settings
+  Profile form intercepted the card body's `space-y-4` (its classless
+  `<form>` was the only child, so field groups rendered FLUSH — 0px gaps
+  vs the live's 16px, Save button 72px high) and its Save button sat in
+  a clone-authored `flex items-center gap-3` wrapper while the email
+  input lacked the live's `opacity-60`; **(A2)** every auth form's
+  label→input gap was 8px short — Tailwind v4 compiles `space-y-*` as
+  `margin-block-end` on the PRECEDING sibling (`:not(:last-child)`) while
+  the live's v3 applies margin-top to the FOLLOWING block input, and
+  vertical margins on inline `<label>`s are ignored by CSS layout
+  (measured 3px vs the live's 11px on login/signup). Fixed via TDD
+  (+35 pins, suite 484/51 → **519/52**): the settings form carries
+  `space-y-4` + direct-flow button; a scoped `globals.css` rule
+  (`.space-y-2 > label + input`) restores v3 semantics without touching
+  any pinned class string; the install platform Card's inert
+  `aria-labelledby` was dropped. The marketing bundle was realigned to
+  the live's current class emission (never byte-verified by R10–R12 —
+  those pins covered CTAs/kickers/card chrome, and the R15–R17
+  "marketing stable" checks compared text lengths, which a class rebuild
+  doesn't move): pricing subtitle `max-w-md mx-auto` + `·` separators +
+  the ALWAYS-ON card spacer line + `border border-2` popular card +
+  a-block-wrapped CTAs with the live's exact tails; comparison win
+  checks `text-accent` (was green) + div BEST VALUE pill; benefits
+  how-it-works/CTA/announcement chips on the full `gradient-hero` (was
+  the light variant); feed avatars as divs with inline
+  `background-color: var(--primary)/var(--muted)` (the live's hsl(var())
+  adapted to the clone's hex tokens) + the stat zap as the live's
+  data-URI img; hero CTAs as `w-full sm:w-auto` anchors around buttons;
+  the header `container`-utility chrome with the lockup on the anchor +
+  PNG logo + `gap-7` nav; the footer wordmark without tracking-tight;
+  ~20 class-order strings (lucide size→color→margin, text-first
+  paragraphs, px-before-border containers); the building icon's lucide
+  double-name. New ruling **D5**: the clone's invisible functional
+  chrome is KEPT and documented (switch semantics on the billing toggle,
+  section aria-labelledby landmarks, focus-brand rings, reveal
+  machinery, feed-row hook, decorative aria-hidden); generic-tag swaps
+  (span→div) match the live. Post-fix verification: settings geometry
+  **pixel-exact** (groups 237/325/413, Save 501), auth gaps 11px both
+  sides, landing class-order inventory **zero drifts**, button
+  inventory **zero diffs**, E2E smoke green.
 
 - **v1.16** `[SYN]` Round-17 drift watch + verification-gap closure (plan:
   `docs/plans/2026-09-19-round17-verification-gaps.md`; evidence in

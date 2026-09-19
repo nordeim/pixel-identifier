@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 484 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 519 assertions) |
 | **Runtime** | Node.js ≥ 20 |
 
 ## Overview
@@ -286,6 +286,18 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   button CTA + twMerge-displaced card root), the install chip wrappers
   as bare geometry-first divs, and the trend-chart a11y ruling
   (role=img kept, documented) — +8 pins in `tests/content-parity.test.tsx`.
+- **Geometry + marketing class realignment (round-18)** — the first
+  geometry probes (getBoundingClientRect) caught two visual bugs every
+  DOM-string pass missed: the settings Profile form eating the card
+  body's `space-y-4` (0px group gaps vs the live's 16px) and TW4's
+  `space-y` compiling margin onto inline labels (8px-short auth-form
+  gaps). The marketing bundle was realigned to the live's class
+  emission — icon/paragraph/container orders, full `gradient-hero`
+  chips, anchor-wrapped CTAs, PNG wordmark, header `container` chrome,
+  div feed avatars with inline backgrounds, the data-URI stat zap —
+  +35 pins (`tests/marketing-r18-parity.test.tsx` + the content-parity
+  R18 blocks); post-fix the settings card matches the live
+  pixel-exactly.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the

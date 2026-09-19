@@ -147,6 +147,48 @@ make it pass — fix the code.
   level; it matches no utility on either side, so the label fade snaps).
   Do NOT "fix" it to `transition-[margin,opacity]`.
   Pinned by `tests/content-parity.test.tsx`.
+- **R18: TW4's space-y compiles v3-incompatibly for [label, input] groups.**
+  Tailwind v4 emits `margin-block-end` on the PRECEDING sibling
+  (`:not(:last-child)`); the live's v3 applied margin-top to the
+  FOLLOWING block input. When the preceding sibling is an inline
+  `<label>` (every auth/settings field group), CSS ignores the vertical
+  margin — the label→input gap collapsed by 8px. A scoped
+  `globals.css` rule (`.space-y-2 > label + input`) restores the v3
+  geometry; do NOT "fix" it by adding classes to Labels/Inputs (their
+  strings are pinned). Similarly, TW4's space-y only spaces DIRECT
+  children — a classless server-action `<form>` inside a
+  `space-y-*` CardContent silently eats the card's rhythm (the settings
+  Profile card once rendered FLUSH at 0px group gaps). Server-action
+  forms inside spaced card bodies carry `space-y-4` themselves.
+- **R18: the marketing bundle follows the live's emission orders (v1.17).**
+  The live's marketing build emits lucide icons size→color→margin
+  (`w-4 h-4 text-accent shrink-0`), paragraphs text-utilities-first
+  (`text-xs text-muted-foreground mt-0.5`), containers px-before-border
+  (`px-4 py-4 border-b border-border`), and icon/chip containers
+  geometry-first (`w-8 h-8 rounded-full flex …`). Gradient surfaces ride
+  the FULL `gradient-hero` (never the `-light` variant). Marketing CTAs
+  are anchors wrapped around real buttons (hero/header: bare `<a>`;
+  pricing/compare/CTA banner: `<a class="block">`/`w-full sm:w-auto`),
+  with variant-free Buttons carrying the live's exact tails (cva treats
+  `variant={null} size={null}` as an explicit skip). The pricing cards
+  ALWAYS render the `text-xs … mb-4` spacer line (`&nbsp;` for
+  free/monthly) so every CTA sits on the same baseline. The marketing
+  wordmark is the PNG asset in a bare fragment (header lockup on the
+  anchor with `gap-2.5` + tracking-tight; footer `gap-2` without);
+  "By Ai Viral" rides the `font-script` utility. The header container
+  uses the `container` utility + `h-16 px-6` (no max-w-7xl). The feed
+  avatars are divs with inline `background-color: var(--primary)/
+  var(--muted)`; the stat zap is the live's data-URI img. Pinned by
+  `tests/marketing-r18-parity.test.tsx`.
+- **D5 (R18): the clone's invisible functional chrome is KEPT, documented.**
+  Switch semantics on the marketing billing toggle (`role="switch"` +
+  `aria-checked` — the live ships a plain button), the 8 marketing
+  `section aria-labelledby` landmarks, `focus-brand` focus rings on
+  links, the reveal machinery (`data-reveal` + observer classes vs the
+  live's inline styles), the `feed-row` animation hook, and decorative
+  `aria-hidden` (stars, dots, knobs). Generic-tag swaps (span→div
+  pills/chips) DO match the live — R17-F3 pattern: no clone-authored
+  aria-hidden on bare chip wrappers.
 - **R17 verification-gap closures (v1.16).** The activity **Identified**
   badge rides the SAME new-gen string as the domains Verified badge
   (`variant="default"` + `text-[10px] px-1.5 py-0 gradient-primary

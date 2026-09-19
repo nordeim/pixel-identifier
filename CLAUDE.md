@@ -127,7 +127,6 @@ and stable per visitor.
   verbatim (do not fix it), and `focus-brand` is gone from app-bundle
   consumers. Pinned by `tests/content-parity.test.tsx` — treat those
   pins as the contract.
-  pins as the contract.
 - **R17 gap-closure precedents (v1.16):** the activity Identified badge
   = the domains-Verified string (one new-gen call, no hybrids); the
   contact-sales CTA is a variant-free Button + onClick mailto (DOM
@@ -138,6 +137,28 @@ and stable per visitor.
   (invisible functional a11y). When screenshot-diffing against the
   live, ALWAYS wait for hydration (`header h1` present) — the live's
   pre-hydration shell is dark and will false-diff.
+- **Geometry is part of the parity surface (v1.17, R18):** DOM-string
+  diffs cannot see layout. The R18 geometry probes (the first ever)
+  found two real visual bugs every prior pin pass missed: a classless
+  server-action form eating a card body's space-y-4 (0px group gaps),
+  and TW4's space-y compiling margin onto inline labels (8px-short
+  label→input gaps on every auth form). Verify rendered geometry
+  (getBoundingClientRect + computed styles) whenever a layout mechanism
+  differs between the live's TW3 and the clone's TW4 — class-string
+  equality is NOT layout equality. The fixes live in scoped CSS
+  (`.space-y-2 > label + input`) and on the form elements themselves
+  (D2 wrappers carry the spacing), never on the pinned primitives.
+- **The marketing bundle has its own emission conventions (v1.17, R18):**
+  lucide icons size→color→margin; paragraphs text-first; containers
+  px-before-border; chips geometry-first; gradients are the FULL
+  `gradient-hero`; CTAs are anchors wrapped around real buttons with
+  variant-free tails; the wordmark is the PNG asset (header lockup on
+  the anchor, footer without tracking-tight); the pricing cards always
+  render their spacer line. The clone's invisible functional chrome
+  (switch semantics, section landmarks, focus-brand rings, reveal
+  machinery, feed-row hook, decorative aria-hidden) is KEPT per ruling
+  D5 — documented residual, not drift. Pinned by
+  `tests/marketing-r18-parity.test.tsx`.
 - **Document heads are part of the parity surface (v1.13):** the live
   is CSR — its raw HTML ships one static shell but its router sets
   per-page title/description/og/twitter/canonical on navigation, and
