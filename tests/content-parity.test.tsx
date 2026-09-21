@@ -113,7 +113,7 @@ describe('R16 A — Tabs primitive + consumers', () => {
 
 describe('R16 C — Activity rows (div-based, live orders)', () => {
   const html = renderToStaticMarkup(
-    <ActivityFeed initialEvents={events} initialCursor={null} />,
+    <ActivityFeed initialEvents={events} totalCount={events.length} />,
   )
 
   it('renders a div.divide-y container with div rows (no ul/li/data-tick)', () => {
@@ -505,7 +505,7 @@ describe('R16 G — Settings page (source pins)', () => {
 
 describe('R17 F1 — Activity Identified badge (new-gen default variant)', () => {
   const html = renderToStaticMarkup(
-    <ActivityFeed initialEvents={events} initialCursor={null} />,
+    <ActivityFeed initialEvents={events} totalCount={events.length} />,
   )
 
   it('renders the Identified badge on the domains-Verified string (live match)', () => {

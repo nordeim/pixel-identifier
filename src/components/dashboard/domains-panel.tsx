@@ -139,14 +139,16 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
         <CardHeader className="pb-2">
           <CardTitle className="text-base">Your Domains</CardTitle>
         </CardHeader>
-        {domains.length === 0 ? (
-          <CardContent className="py-12 text-center">
-            <p className="text-sm text-muted-foreground">
+        {/* R22-F4: the live's empty branch — a plain DIV (text-center
+            first) as a DIRECT child of the p-0 card content; the list
+            branch already renders p-0 + divide-y, so the empty state
+            keeps the same card geometry (no padded CardContent wrapper). */}
+        <CardContent className="p-0">
+          {domains.length === 0 ? (
+            <div className="text-center py-12 text-sm text-muted-foreground">
               No domains yet. Add one above to get started.
-            </p>
-          </CardContent>
-        ) : (
-          <CardContent className="p-0">
+            </div>
+          ) : (
             <div className="divide-y divide-border">
               {domains.map((domain) => (
                 <div
@@ -234,8 +236,8 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
                 </div>
               ))}
             </div>
-          </CardContent>
-        )}
+          )}
+        </CardContent>
       </Card>
     </div>
   )

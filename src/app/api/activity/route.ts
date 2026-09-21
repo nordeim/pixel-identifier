@@ -4,9 +4,10 @@ import { authOptions } from '@/lib/auth'
 import { listActivity } from '@/lib/analytics'
 
 /**
- * Live feed API — polled by the Activity Log page. Returns the latest
- * events across all of the signed-in user's sites, or the page AFTER the
- * given `?cursor=` (event id) so the feed can page through history.
+ * Activity Log API — the live's pagination model (R22-F6): 50 events per
+ * offset page (`?page=`, 0-based), plus the exact count and pageCount for
+ * the feed's prev/next footer. The live polls nothing; pages are fetched
+ * on footer clicks only.
  */
 export const dynamic = 'force-dynamic'
 
@@ -16,7 +17,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'UNAUTHENTICATED' }, { status: 401 })
   }
 
-  const cursor = new URL(request.url).searchParams.get('cursor') ?? undefined
-  const page = await listActivity(session.user.id, { cursor })
-  return NextResponse.json(page)
+  const raw = new URL(request.url).searchParams.get('page') ?? '0'
+  const parsed = Number.parseInt(raw, 10)
+  const page = Number.isFinite(parsed) && parsed >= 0 ? parsed : 0
+  const result = await listActivity(session.user.id, { page })
+  return NextResponse.json(result)
 }

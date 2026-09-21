@@ -1,0 +1,101 @@
+{
+ "landing": {
+  "tokens21": 1470,
+  "tokens22": 1487,
+  "ops": 3,
+  "detail": [
+   {
+    "op": "replace",
+    "removed": [
+     "james.miller92@gmail.com"
+    ],
+    "added": [
+     "sarah.jones@gmail.com"
+    ]
+   },
+   {
+    "op": "insert",
+    "removed": [],
+    "added": [
+     "Unknown User",
+     "</p>",
+     "<p class=text-xs text-muted-foreground/60>",
+     "Browsing your site…",
+     "</p>",
+     "</div>",
+     "</div>",
+     "</div>",
+     "<div class=flex items-center gap-3 px-4 py-3 rounded-lg bg-card/80 border border-border backdrop-blur-sm>",
+     "<div class=w-8 h-8 rounded-full flex items-center justify-center shrink-0>",
+     "<svg aria-hidden=true class=lucide lucide-user w-4 h-4 text-muted-foreground fill=none height=24 stroke=currentColor stroke-linecap=round stroke-linejoin=round stroke-width=2 viewBox=0 0 24 24 width=24 xmlns=http://www.w3.org/2000/svg>",
+     "<path d=M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2>",
+     "</path>",
+     "<circle cx=12 cy=7 r=4>",
+     "</circle>",
+     "</svg>",
+     "</div>",
+     "<div class=flex-1 min-w-0>",
+     "<div >",
+     "<p class=text-sm font-medium text-muted-foreground>"
+    ]
+   },
+   {
+    "op": "delete",
+    "removed": [
+     "</div>",
+     "<div class=text-xs text-primary font-medium>",
+     "Matching…"
+    ],
+    "added": []
+   }
+  ]
+ },
+ "dashboard": {
+  "tokens21": 598,
+  "tokens22": 598,
+  "ops": 0,
+  "detail": []
+ },
+ "activity": {
+  "tokens21": 286,
+  "tokens22": 286,
+  "ops": 0,
+  "detail": []
+ },
+ "domains": {
+  "tokens21": 153,
+  "tokens22": 153,
+  "ops": 0,
+  "detail": []
+ },
+ "install": {
+  "tokens21": 307,
+  "tokens22": 307,
+  "ops": 0,
+  "detail": []
+ },
+ "pricing": {
+  "tokens21": 526,
+  "tokens22": 526,
+  "ops": 0,
+  "detail": []
+ },
+ "settings": {
+  "tokens21": 62,
+  "tokens22": 62,
+  "ops": 0,
+  "detail": []
+ },
+ "visitors": {
+  "tokens21": 274,
+  "tokens22": 274,
+  "ops": 0,
+  "detail": []
+ },
+ "shell": {
+  "tokens21": 165,
+  "tokens22": 165,
+  "ops": 0,
+  "detail": []
+ }
+}

@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.16
+# Pixelco — Master Project Architecture Document (PAD) v1.21
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-19 (v1.20)
+**Last Updated:** 2026-09-19 (v1.21)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,75 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.21** `[SYN]` Round-22 first-run states, activity pagination &
+  sub-page interaction parity audit (plan:
+  `docs/plans/2026-09-19-round22-firstrun-activity-parity.md`; evidence
+  `/tmp/r22-caps` + `docs/screenshots/` + `research/` probe scripts). The
+  live stayed **100% stable since R21** (seventh consecutive stable audit
+  — 8 of 9 pages zero token ops after a viewport-corrected re-capture; the
+  landing's 3 ops are the known feed-row phase artifact; bundle hash
+  UNCHANGED, `index-C3AAh5Je.js`). R22 introduced the **7th probe
+  generation**: the live's empty-state branches decoded from its app
+  bundle (the definitive source) + runtime confirmation on the live
+  visitors page (no-match search); a fresh live signup attempted (the
+  live's Supabase signup returns 200 WITHOUT a session — email
+  confirmation gate, F11); the Activity Log model decoded from bundle
+  component `hxe`; blog/docs sub-page interactions probed at runtime.
+  Findings (all fixed via TDD, suite 568/56 → **596/59**): **(F1)** the
+  visitors empty state — the live renders `<p class="text-sm
+  text-muted-foreground py-12 text-center">No visitors identified yet.
+  Install your pixel to get started.</p>` REPLACING the entire table
+  wrapper (direct child of the `p-0` card; branch = the current tab's
+  FILTERED count === 0 — search+confidence+source all feed it, so a
+  no-match search on a populated account shows the INSTALL message,
+  runtime-verified; "No visitors match your filters." only materializes
+  pagination-past-end); the clone shipped a `<td colSpan=6>` row with
+  different strings and a total&&all===0 branch. **(F2)** activity empty
+  state — the live's exact `<p>` + string "No activity yet. Install your
+  pixel to start tracking." (the clone had a different string at
+  `px-4 py-16`). **(F3)** Top Pages empty = `py-8` (not py-12) +
+  text-utility-first order. **(F4)** domains empty = a plain `div`
+  `text-center py-12 text-sm text-muted-foreground` direct child of the
+  `p-0` card (not CardContent + inner p). **(F5)** Recent Identifications
+  empty class order `text-sm text-muted-foreground py-12 text-center`.
+  **(F6) MAJOR — the Activity Log is PAGINATED, not polled:** the live
+  ships 50-per-page offset pagination (bundle `Jc=50`, `useState(0)` page
+  index, `count exact`), a footer ONLY when `count > 50` (`flex
+  items-center justify-between px-5 py-3 border-t border-border`; "1–50 of
+  N" span + ghost icon chevrons h-7 w-7 + "Page X of Y"), NO polling, NO
+  load-older, NO cursor walk; the clone shipped 60/page cursor + 5s poll
+  + "Load older events" — rebuilt to the live's model
+  (`listActivity` page mode + count envelope, `/api/activity?page=`,
+  client page state, poll/tick/load-older retired). **(F7)** the live's
+  install page with ZERO domains renders its normal header +
+  "Add a domain first to get your tracking snippet." interstitial card
+  (the placeholder key `px_xxxxxxxxxxxxxxxx` is the loading fallback,
+  never the zero-sites path — F7 re-read mid-round from the full bundle
+  branch); the clone's custom guidance card rebuilt to the exact live
+  structure; the DomainSwitcher renders only when sites > 1. **(F8)** the
+  docs copy-success Check icon carries `text-green-500`. **(F9)** the
+  docs "Contact Support" is a real `<button>` on the live (dead — no
+  handler, verified by click) — the clone now ships the real Button tag
+  (R17 contact-sales pattern) with a WORKING mailto onClick; the
+  dead-button behavior itself remains a documented live defect. **(F10)**
+  the visitors search placeholder varies by tab — `Search companies...`
+  (b2b) vs `Search emails, companies...` (else).
+  Non-findings/intentional: **(F11)** the live's signup email-confirmation
+  gate ("Check your email" toast; Supabase returns 200 without session;
+  login 400 "Email not confirmed") — the clone keeps auto-session signup
+  (no mail transport — "Honesty over simulation", D-class, Known Issues);
+  blog index/articles (static, pinned R13); docs copy button structure;
+  password policy (min 6 + confirm ✓); page-reset-on-filter-change ✓;
+  the live's stale-index selection persistence (live defect — clone's
+  clear-on-change stays); the "capture" event type (the live's
+  form-capture pipeline — no clone pipeline, dead map entry);
+  react-query focus-refetch + in-card spinners (CSR machinery vs RSC
+  streaming — D-class architecture divergence). Post-fix verification:
+  fresh signup → `/dashboard` (auto-session ✓), all first-run empty
+  branches DOM-verified (exact classes/strings, table GONE), activity
+  pagination end-to-end ("1–50 of 130" → next → "51–100 of 130",
+  "Page 1 of 3"/"Page 2 of 3"), NO polling (idle-network check), zero
+  console errors, 8 screenshots + 3 VLM confirmations.
 - **v1.20** `[SYN]` Round-21 functional-flow & export parity audit (plan:
   `docs/plans/2026-09-19-round21-functional-export-parity.md`; evidence
   `/tmp/r21-caps` + `docs/screenshots/` + `research/round21-audit/`). The
@@ -1111,10 +1180,11 @@ Layer 0: Route handlers — public protocol surfaces (collector script,
          validate input and never contain business rules beyond their
          single responsibility.
 Layer 1: RSC pages — session-scoped rendering; fetch via analytics lib;
-         never fetch in client components except the activity poll.
+         never fetch in client components except the activity page
+         fetches (R22: page navigation, not polling).
          Rule: `force-dynamic` on session pages; UI state stays client-side.
 Layer 2: Client islands — 'use client' components under src/components/*
-         for interactivity (filters, forms, polling, copy). Rule: no
+         for interactivity (filters, forms, page fetches, copy). Rule: no
          direct DB or secrets access; server communication only through
          actions and the whitelisted APIs.
 Layer 3: Server Actions — the ONLY write path. Rule: session re-check,
@@ -1147,14 +1217,14 @@ pixel-identifier/
 │   │   │   ├── layout.tsx              ← Session gate (UX) + sidebar/topbar chrome
 │   │   │   ├── page.tsx                ← Overview: KPIs, trend, top pages, recent
 │   │   │   ├── visitors/page.tsx       ← Visitor table + detail sheet (client)
-│   │   │   ├── activity/page.tsx       ← Live feed (5s poll)
+│   │   │   ├── activity/page.tsx       ← Activity Log: 50/page paginated (R22)
 │   │   │   ├── install/page.tsx        ← Snippet + status + platform guides
 │   │   │   ├── domains/page.tsx        ← Domain registration + limits
 │   │   │   ├── pricing/page.tsx        ← Plan switching (simulated billing)
 │   │   │   └── settings/page.tsx       ← Profile + danger zone
 │   │   ├── api/
 │   │   │   ├── track/route.ts          ← Beacon ingest (204/429, CORS *)
-│   │   │   ├── activity/route.ts       ← Authed: latest 60 events JSON
+│   │   │   ├── activity/route.ts       ← Authed: ?page= + count/pageCount envelope (R22)
 │   │   │   ├── export/route.ts         ← Authed: CSV download
 │   │   │   ├── health/route.ts         ← SELECT 1 probe
 │   │   │   └── auth/[...nextauth]/route.ts
@@ -1626,9 +1696,12 @@ predicates (`where: { site: { userId } }`), not by client-supplied IDs.
 
 - Identity resolution runs inline in the ingest request (sub-millisecond,
   deterministic — no external calls), so no async decoupling is needed.
-- The Activity Log's "real-time" feed is 5-second client polling of an
-  indexed query (`ORDER BY createdAt DESC LIMIT 60`) — at this scale,
-  polling is cheaper and operationally simpler than a websocket service.
+- The Activity Log is plain 50-per-page offset pagination over an
+  indexed query (`ORDER BY createdAt DESC`, page fetch on footer click —
+  R22: the live's model, `Jc=50` in its bundle). There is no polling, no
+  websocket, and no background refresh; the page refetches on
+  navigation. (The live's react-query focus-refetch is a D-class
+  architecture divergence — see §11.)
 - Rollups do not exist: analytics aggregate on read over bounded windows
   (§4.3), eliminating the classic aggregator-worker entirely.
 
@@ -1654,11 +1727,18 @@ speculatively.
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
 | E2E (browser) | manual + opt-in smoke | — | dev server flows; `PIXELCO_STANDALONE_SMOKE=1` boots the standalone server | browser pass |
 
-The suite totals **484 tests across 51 files** (v1.16: +8 R17 pins — the
-activity-Identified badge generation, the contact-sales card/CTA, the
-install chip wrappers; v1.15: the R16
-content-parity pins live in `tests/content-parity.test.tsx` — 44 tests
-covering the div-generation rows, legacy content badges, Radix switch,
+The suite totals **596 tests across 59 files** (v1.21: +28 R22 pins in 3
+new files — `tests/activity-r22-parity.test.tsx` (the pagination footer,
+page-replacement fetches, the live's empty state, no-polling /
+no-load-older), `tests/dashboard-empty-r22-parity.test.tsx` (the
+visitors/top-pages/domains/recent empty branches, the install
+interstitial, the b2b search placeholder) and
+`tests/marketing-r22-parity.test.tsx` (the docs green check + the
+Contact Support button), with the `activity-query` and `content-parity`
+suites updated to the page model; v1.20: +30 R21 export/data-semantics
+pins; v1.15: the R16
+content-parity pins live in `tests/content-parity.test.tsx` — covering
+the div-generation rows, legacy content badges, Radix switch,
 Tabs order and per-page class strings; plus 2 opt-in standalone
 smoke tests), runs in the `node`
 environment against a throwaway SQLite database (`db/test.db`, recreated
@@ -1839,6 +1919,9 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 | LOW | The live's add-domain flow accepts ARBITRARY input (R20 probe created "not_a_valid domain!!" as a real row on the live) | The clone validates hostnames via zod instead | Intentional divergence — never replicate a live defect (v1.19/F3) |
 | LOW | The live deletes domains IMMEDIATELY — no confirm dialog (observed R20) | Misclicks destroy domains + visitors + events with no undo | Intentional divergence — the clone keeps its AlertDialog confirm (v1.19/F3) |
 | MEDIUM | The live's dashboard plan-switch opens a Stripe EmbeddedCheckout dialog (paid external dependency, `create-portal-session` for billing management) | The clone's Get Started applies the plan change directly via `changePlanAction` | Intentional divergence — "Honesty over simulation": faking a payment form would be deceptive (v1.20, D-class; the plans catalogue/prices/CTAs themselves match) |
+| MEDIUM | The live's signup gates every account behind email confirmation (Supabase 200-without-session + "Check your email" toast; login returns 400 "Email not confirmed" until clicked) | The clone auto-sessions on signup (`signUpAction` + client `signIn`) | Intentional divergence (v1.21/R22-F11, D-class) — no mail transport exists here; locking a self-hosted clone behind an email it cannot send would brick it (joins the forgot-password ruling) |
+| LOW | The live's docs "Contact Support" button is DEAD — a real `<button>` with no handler (click-verified: no navigation, no toast) | The clone ships the same Button tag with a working `mailto:support@pixelco.io` onClick | Intentional divergence — never replicate a dead affordance (v1.21/R22-F9; R17 contact-sales precedent) |
+| LOW | The live's dashboard react-query defaults refetch on window focus and show in-card spinners (CSR data machinery) | The clone's RSC pages stream server-fetched data; the Activity Log refetches only on page navigation/footer click | Intentional divergence (v1.21, D-class architecture) — replicating focus-refetch across every RSC page would rebuild the live's whole CSR layer for invisible behavior |
 | LOW | Sessions are 30-day JWTs; no server-side revocation | Stolen cookies valid until expiry; deletion sign-out is client-side only | Accepted for this product shape |
 | LOW | Footer Careers link is dead | None functionally — the original pixelco.io links it to `#` too | Parity — flagged `dead: true` in the link map |
 | LOW | No Dockerfile / CI workflow | Self-hosting requires manual steps | **Fixed in v1.3** — multi-stage Dockerfile + GitHub Actions CI |

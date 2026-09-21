@@ -1079,3 +1079,60 @@ Stage Summary:
 - Next: Round-22 drift watch with the R21 toolchain; probe targets —
   the live's signup → dashboard first-run funnel, the activity feed's
   load-older flow, and the marketing blog/docs sub-page interactions.
+
+---
+Task ID: R22-ship
+Agent: main (Super Z)
+Task: Round-22 — first-run states, activity pagination & sub-page interaction parity audit + remediation + ship
+
+Work Log:
+- git pull brought the user's session_19.md (R21 narrative log);
+  baseline gate GREEN at 1b63733 (568/56).
+- Audit (7th probe generation): drift watch 7th consecutive STABLE
+  (8/9 pages zero ops after a viewport-corrected re-capture — the
+  first pass's narrower recharts surface (595 vs 702) was
+  capture-viewport, not content drift; landing's 3 ops = the known
+  feed-row phase artifact; bundle hash unchanged index-C3AAh5Je.js).
+  The live's empty-state branches decoded from its app bundle +
+  runtime-confirmed (no-match search on the live visitors page); a
+  fresh live signup attempted (Supabase 200 WITHOUT a session — the
+  email-confirmation gate, F11; probe account dormant-unconfirmed,
+  documented); the Activity Log decoded from bundle component hxe
+  (50/page offset pagination, NO polling, NO load-older); blog/docs
+  interactions probed (Contact Support = real but DEAD button on the
+  live; docs copy Check carries text-green-500).
+- TDD: F1-F10 fixed (568/56 → 596/59; +28 pins in 3 new suites,
+  activity-query/content-parity updated). F7 corrected mid-round from
+  the full bundle branch (the live's zero-sites install path IS an
+  interstitial; the placeholder key is its loading fallback).
+- Verified: fresh signup → /dashboard; all first-run empty branches
+  DOM-verified (exact classes/strings, table GONE); activity
+  pagination end-to-end ("1–50 of 130" → "51–100 of 130", "Page 1/2
+  of 3", prev disabled at page 0); NO polling (idle-network); zero
+  console errors; 8 screenshots + 3 VLM confirmations; evidence in
+  research/round22-audit/.
+- Docs: PAD v1.21 (revision entry + body + Known-Issues rows), README
+  (596, the activity model rows, R22 bullet), AGENTS/CLAUDE R22 facts
+  + principles, session_19 R22 log, R22 plan + execution log.
+  .env.example re-verified matching (tracked, unchanged).
+- 8 atomic commits on main (dae8ab6..773b904): visitors empty →
+  dashboard empty states → activity pagination → install
+  interstitial → marketing docs buttons → pins → evidence +
+  screenshots → docs.
+- Push via docs/ssh_git_wrapper_v3.py + paramiko shim: fingerprint
+  verified (SHA256:HpVRkv3e8k0HgD6SKijmGSmjs/ZRRJxrZaAm6y6/Rns,
+  matches R15-R21); dry-run + real push verified (remote
+  refs/heads/main @ 773b904 == local HEAD); tracking ref synced;
+  operator key to be shredded after the ship-record push (random
+  overwrite x3 + remove).
+
+Stage Summary:
+- Round-22 FULLY CLOSED AND SHIPPED: main @ 773b904 on GitHub, PAD
+  v1.21, 596/59 tests. The live is stable across seven consecutive
+  audits; the clone now matches its first-run empty states, its
+  Activity Log pagination model, its zero-domain install flow, and
+  its docs micro-interactions, with the signup email gate and the
+  dead Contact Support button ruled intentional divergences.
+- Next: Round-23 drift watch with the R22 toolchain; probe targets —
+  the live's visitors detail sheet (row click), settings save flows
+  at runtime, any live bundle hash change.

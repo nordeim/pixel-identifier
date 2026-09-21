@@ -30,8 +30,10 @@ export function CopyButton({ text, className }: { text: string; className?: stri
     >
       {copied ? (
         <>
-          <Check className="h-3.5 w-3.5 mr-1 text-neon-green" aria-hidden="true" />
-          Copied
+          {/* R22-F7c: the live's install copy state — an UNCOLORED check
+              (uncolored) and the "Copied!" label. */}
+          <Check className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
+          Copied!
         </>
       ) : (
         <>

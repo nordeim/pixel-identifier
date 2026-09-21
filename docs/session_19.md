@@ -129,3 +129,55 @@ The audit (6th probe generation) decoded the live's CSV export from its app bund
 Gate GREEN: **lint ✓ typecheck ✓ 568/56 tests ✓ build ✓**; verified at runtime with 5 screenshots + 2 VLM confirmations; drift stable (6th audit). Eight atomic commits on `main`, pushed via the SSH wrapper — remote verified at `cc3c550`, key shredded.
 
 **Suggested next:** Round-22 drift watch, then probe the live's signup→dashboard first-run funnel, the activity feed's load-older flow, and blog/docs sub-page interactions.
+
+---
+
+## Round 22 (continued by the agent — first-run states, activity pagination & sub-page parity)
+
+Base: 1b63733 (R21 ship cc3c550 + this log). Gate at base: lint ✓
+typecheck ✓ 568/56 ✓ build ✓.
+
+**Audit:** drift watch (7th) — LIVE 100% STABLE (8 of 9 pages zero token
+ops after a viewport-corrected re-capture — a default-window first pass
+produced a narrower recharts surface (595 vs 702), capture-viewport, not
+content drift; the landing's 3 ops are the known feed-row phase
+artifact; bundle hash unchanged `index-C3AAh5Je.js`). The 7th probe
+generation: the live's empty-state branches decoded from its app bundle
++ runtime confirmation (no-match search on the live visitors page — the
+"identified yet" message replaces the whole table); a fresh live signup
+attempted (Supabase 200 WITHOUT a session — email-confirmation gate,
+F11; the probe account is a dormant unconfirmed row, documented); the
+Activity Log model decoded from bundle component `hxe` (50/page offset
+pagination, footer only when count>50, NO polling, NO load-older — the
+clone's 5s poll + cursor walk was clone engineering); blog/docs sub-page
+interactions probed (blog = static R13 pins; docs copy button matches,
+its success Check carries text-green-500, "Contact Support" is a real
+but DEAD button on the live).
+
+**Findings F1-F10 fixed via TDD** (568/56 → 596/59; +28 pins in 3 new
+files, activity-query/content-parity updated): the visitors empty `<p>`
+replacing the table (filtered-count branch, live strings), the activity
+empty state, Top Pages py-8, the domains empty plain div, the
+recent-ident class order, **the Activity Log rebuilt to the live's
+50/page pagination** (listActivity page mode + count envelope,
+/api/activity?page=, footer, page-replacement fetches, poll/tick/
+load-older retired), the install zero-domains interstitial (F7
+re-read mid-round from the full bundle branch — the placeholder key is
+the loading fallback; DomainSwitcher only when sites>1; Quick Start copy
+button plain "Copied!"), the docs green check, the Contact Support real
+Button with a WORKING mailto (the live's own is dead — documented, R17
+precedent), the b2b search placeholder.
+
+**Verification:** fresh signup → /dashboard (auto-session ✓), all
+first-run empty branches DOM-verified (exact classes/strings, table
+GONE), activity pagination end-to-end ("1–50 of 130" → next →
+"51–100 of 130", "Page 1 of 3"/"Page 2 of 3", prev disabled at page 0),
+NO polling (idle-network check), zero console errors across the affected
+pages, 8 screenshots + 3 VLM confirmations (footer, visitors empty,
+install interstitial).
+
+**Outcome:** R22 complete — main advanced, 596/59 tests, PAD v1.21.
+
+**Next:** Round-23 drift watch; probe targets — the live's visitors
+detail sheet (row click), settings save flows at runtime, any live
+bundle hash change.

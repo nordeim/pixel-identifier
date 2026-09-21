@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "1) Yes, there is a pagination footer at the bottom of the activity card with a '1-50 of 130' label, a 'Page 1 of 3' label, and small left/right chevron buttons. The left chevron is visually disabled (greyed out).\n2) There are roughly 50 event rows in the list.\n3) No rendering defects are visible; the layout and text are clear and well-aligned.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1789811674,
+  "id": "20260919175428a5c155a093924aca",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260919175428a5c155a093924aca",
+  "usage": {
+    "completion_tokens": 91,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 6049,
+    "prompt_tokens_details": {
+      "cached_tokens": 5
+    },
+    "total_tokens": 6140
+  }
+}

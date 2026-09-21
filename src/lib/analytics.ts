@@ -427,40 +427,46 @@ export interface ActivityListItem {
 
 export interface ActivityPage {
   events: ActivityListItem[]
-  /** Cursor for the next older page; null when the log is exhausted. */
-  nextCursor: string | null
+  /** Total event count across the user's sites (the footer's "N"). */
+  count: number
+  /** ceil(count / 50) — the live's page math (no max(1)). */
+  pageCount: number
 }
 
 /**
- * Activity-log query (F-25): the API route and the page share this single
- * seam. Cursor pagination keeps older history reachable — the fixed
- * 60-event window used to make anything older permanently invisible.
+ * Activity-log query (F-25/R22-F6): the API route and the page share this
+ * single seam. The live's model is OFFSET pagination — 50 events per page
+ * (its bundle's Jc=50), `count exact`, ordered created_at desc; the page
+ * index never touches the URL.
  */
 export async function listActivity(
   userId: string,
-  opts: { take?: number; cursor?: string } = {},
+  opts: { page?: number } = {},
 ): Promise<ActivityPage> {
-  const take = Math.min(100, Math.max(1, opts.take ?? 60))
-  const events = await db.event.findMany({
-    where: { site: { userId } },
-    select: {
-      id: true,
-      name: true,
-      path: true,
-      createdAt: true,
-      visitor: { select: { email: true, anonymousId: true } },
-      site: { select: { domain: true } },
-    },
-    orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
-    take: take + 1,
-    ...(opts.cursor ? { cursor: { id: opts.cursor }, skip: 1 } : {}),
-  })
+  // R22-F6: the live's page size (Jc = 50 in its app bundle).
+  const pageSize = 50
+  const page = Math.max(0, opts.page ?? 0)
 
-  const hasMore = events.length > take
-  const page = hasMore ? events.slice(0, take) : events
+  const [events, count] = await Promise.all([
+    db.event.findMany({
+      where: { site: { userId } },
+      select: {
+        id: true,
+        name: true,
+        path: true,
+        createdAt: true,
+        visitor: { select: { email: true, anonymousId: true } },
+        site: { select: { domain: true } },
+      },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      skip: page * pageSize,
+      take: pageSize,
+    }),
+    db.event.count({ where: { site: { userId } } }),
+  ])
 
   return {
-    events: page.map((event) => {
+    events: events.map((event) => {
       // R7-F1: the row identity depends on the EVENT type, not the visitor's
       // current state — pageview rows always show the (truncated) anonymous
       // id, identification rows show the email. Joining the visitor's email
@@ -476,6 +482,7 @@ export async function listActivity(
         createdAt: event.createdAt.toISOString(),
       }
     }),
-    nextCursor: hasMore ? page[page.length - 1].id : null,
+    count,
+    pageCount: Math.ceil(count / pageSize),
   }
 }
