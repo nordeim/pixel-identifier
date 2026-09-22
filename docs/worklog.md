@@ -1136,3 +1136,69 @@ Stage Summary:
 - Next: Round-23 drift watch with the R22 toolchain; probe targets —
   the live's visitors detail sheet (row click), settings save flows
   at runtime, any live bundle hash change.
+
+---
+Task ID: R23-ship
+Agent: main (Super Z)
+Task: Round-23 — DB seam (file:../db/custom.db), mobile-nav parity, Playwright e2e + skill distillation + ship
+
+Work Log:
+- Continuation of an interrupted session: the audit, remediation
+  (F1-F10) and docs were done; this session re-verified everything,
+  finished the SKILL.md, and shipped.
+- Baseline: the user's `update env example` (085bd09) + session_20.md
+  + merge 8cb18bd; gate GREEN at 596/59 (2 skipped).
+- Audit (8th probe generation, evidence in the R23 plan): live login +
+  dashboard re-verified (VLM STRUCTURAL MATCH); live mobile dropdown
+  computed styles byte-equal; live Sheet closes on link navigation
+  while the clone's stayed open (F3, functional); live toggle icon
+  w-6 h-6 (24px) vs the clone's h-5 w-5 (F4); announcement-bar
+  class-order byte divergences (F5-F7); TW4 emission order verified
+  CORRECT in the built CSS (no ordering bug; F11 CI "corruption"
+  retracted as a terminal display artifact).
+- DB seam root cause empirically isolated (one-variable probes):
+  Prisma CLI anchors env-indirected relative file: URLs at the
+  .env/project root (escapes the repo); the Next server runtime
+  REWRITES env file: URLs (even absolute) to a wrong base (SQLite
+  error 14); datasourceUrl bypasses the rewriting; plain-node
+  contexts anchor schema-relative. Fix: src/lib/db-path.ts
+  (resolveDatabaseUrl) + datasourceUrl in db.ts (F2), and
+  scripts/with-db-url.mjs routing db:push/db:seed (F1) — the
+  .env.example contract now holds everywhere.
+- TDD: tests/db-path.test.ts (RED 0/8 → GREEN 8/8),
+  tests/mobile-nav-r23-parity.test.tsx (RED 7 → GREEN),
+  Playwright suite (playwright.config.ts + 3 specs, 14 chromium
+  tests against the standalone build on :3100 with db/e2e.db, incl.
+  the F3 Sheet-close regression + beacon→Activity loop), CI e2e job,
+  test:e2e script (F8).
+- This session's verification: vitest 613 passed | 2 skipped (61
+  files) via --pool=forks --maxWorkers=1 --no-file-parallelism after
+  a resource-induced SIGABRT (stray dev server + browsers killed;
+  NOT a code failure); lint + typecheck clean after clearing a stale
+  .next/types reference to the deleted dbdiag diagnostic route;
+  build clean (all 19 pages + 5 API routes).
+- pixel-identifier_SKILL.md distilled per skills/distill-codebase-skill
+  + skills/to-distill-project-into-skill (20 sections + 4 appendices,
+  1132 lines; every version/count/path re-verified against the tree;
+  path spot-check fixed app-pixelco_dashboard.png).
+- Ship: single commit 6bbcee7 on main (32 files, +2588) — no new
+  branch; push via docs/ssh_git_wrapper_v3.py + paramiko shim
+  (paramiko 5.0.0 into the venv python; shim at workspace bin/),
+  key fingerprint SHA256:4rAzu5gC41giPSWmIojTc1isH0FGoGiSgYJkDcMp54g;
+  dry-run + real push verified (remote refs/heads/main @ 6bbcee7 ==
+  local HEAD); tracking ref synced; operator key shredded (399
+  random bytes + remove). This worklog entry follows in a second
+  docs commit.
+
+Stage Summary:
+- Round-23 FULLY CLOSED AND SHIPPED: main @ 6bbcee7 (+ this worklog
+  commit) on GitHub, PAD v1.22, 613/61 vitest + 14/14 e2e chromium.
+  The DB seam the user's .env.example documents now actually works
+  for the CLI, build, and server runtime; the dashboard mobile Sheet
+  closes on navigation like the live; the mobile toggle matches 24px;
+  announcement-bar bytes match; the repo gained its first e2e net and
+  its master engineering skill (pixel-identifier_SKILL.md).
+- Next: Round-24 drift watch with the R23 toolchain; probe targets —
+  the live's settings save flows, the visitors detail sheet (row
+  click), any live bundle hash change; watch Prisma 6.x CLI anchor
+  behavior on minor bumps (the wrapper normalizes it today).
