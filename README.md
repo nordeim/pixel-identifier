@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 662 assertions) · Playwright e2e (chromium, standalone build) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 667 assertions) · Playwright e2e (chromium, standalone build) |
 | **Runtime** | Node.js ≥ 20 |
 
 > **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
@@ -457,6 +457,26 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   (WordPress tab verbatim both sides; only the active Radix panel
   carries content). Zero code changes; gates 662 vitest + 14/14 e2e
   chromium; 6 VLM-verified screenshots in `docs/screenshots/r25-*`.
+- **Pricing POPULAR badge remediation (round-26)** — the 11th probe
+  generation re-verified the standing surfaces (no redeploy — all bundle
+  hashes + the lucide 0.462.0 pin unchanged; mobile navs, TW4 emission,
+  DB seam, 18-page console sweep all clean) and walked the dashboard
+  pages beyond the R25 target list — finding ONE real drift the previous
+  five rounds missed: the live's **dashboard Pricing & Plan Growth card
+  renders a POPULAR badge** (new-gen Badge, default variant, gradient-
+  first consumer tail `gradient-primary text-primary-foreground border-0
+  text-[10px] px-2 py-0.5`, verified in both billing states and both
+  viewports) while the clone shipped the h3-only header. The R15
+  "no POPULAR badge" pin had pinned the OLD build served during the
+  rolling-deploy window (the app bundle hash never changed — the badge
+  was in the live's bundle all along). Fixed with the Badge primitive in
+  `plan-panel.tsx` (runtime byte-identical to the live capture); the
+  disproven negative pin replaced by positive source + SSR pins, and a
+  NEW `e2e/pricing.spec.ts` (badge presence, class bytes, header
+  position, non-popular cards, both toggle states with the $249 → $199
+  annual price check) closes the e2e coverage gap that let the drift
+  survive. Gates: 667 vitest + 16/16 e2e chromium; 7 VLM-verified
+  screenshots in `docs/screenshots/r26-*`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the

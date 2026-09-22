@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.24
+# Pixelco — Master Project Architecture Document (PAD) v1.25
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-22 (v1.24)
+**Last Updated:** 2026-09-23 (v1.25)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,31 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.25** `[SYN]` Round-26 pricing POPULAR badge remediation (plan:
+  `docs/plans/2026-09-23-round26-pricing-popular-badge.md`; evidence
+  `docs/screenshots/r26-*` + the live captures cited in the plan). The
+  11th probe generation re-verified the standing surfaces (no redeploy
+  — all bundle hashes + the lucide 0.462.0 pin unchanged; mobile navs
+  on both sites and surfaces, TW4 emission checks, the DB seam, an
+  18-route console-error sweep, marketing pricing monthly toggle,
+  topbar/bell bytes — all clean) and walked the dashboard pages beyond
+  the R25 target list. **ONE real drift found and fixed (R26-F1):** the
+  live's dashboard Pricing & Plan Growth card renders a POPULAR badge
+  (new-gen Badge, default variant, gradient-first consumer tail
+  `gradient-primary text-primary-foreground border-0 text-[10px] px-2
+  py-0.5` — verified in BOTH billing states and BOTH viewports) that
+  the clone had shipped without since R15. The R15 "no POPULAR badge"
+  pin had captured the OLD app build served during the rolling-deploy
+  window; the app bundle hash never changed, so the badge was in the
+  live's bundle all along — a lesson in re-verifying old evidence
+  against the CURRENT DOM. Fix: the Badge primitive in
+  `plan-panel.tsx` (runtime byte-identical to the live capture); pin
+  net: `tests/dashboard-r26-parity.test.tsx` (SSR byte pins) + the
+  replaced positive source pin in `tests/shell-parity.test.tsx` + the
+  NEW `e2e/pricing.spec.ts` (badge bytes, header position, non-popular
+  cards, both toggle states + the $249 → $199 annual price assertion —
+  closing the e2e coverage gap that let the drift survive five drift
+  watches). Gates: 667 vitest | 2 skipped · 16/16 e2e chromium.
 - **v1.24** `[SYN]` Round-25 drift watch: CLEAN (plan:
   `docs/plans/2026-09-22-round25-drift-watch.md`; evidence
   `docs/screenshots/r25-*` + the live captures cited in the plan). The

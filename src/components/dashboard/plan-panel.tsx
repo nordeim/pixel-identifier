@@ -4,6 +4,7 @@ import { useActionState, useState } from 'react'
 import { Check, Loader2, Zap } from 'lucide-react'
 import { CircleHelpIcon } from '@/components/dashboard/live-icons'
 import { changePlanAction } from '@/actions/settings'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
@@ -138,6 +139,17 @@ export function PlanPanel({ currentPlan, used, limit, percent, period, overage, 
               <div className="flex flex-col space-y-1.5 p-6 pb-2">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold tracking-tight font-display text-lg">{plan.name}</h3>
+                  {plan.popular && (
+                    /* R26-F1: the live's Growth header ships a POPULAR badge
+                        (new-gen Badge, default variant, gradient-first tail —
+                        captured verbatim in both billing states). */
+                    <Badge
+                      variant="default"
+                      className="gradient-primary text-primary-foreground border-0 text-[10px] px-2 py-0.5"
+                    >
+                      POPULAR
+                    </Badge>
+                  )}
                 </div>
                 <div className="flex items-baseline gap-1 mt-2">
                   <span className="font-display text-3xl xl:text-4xl font-bold">

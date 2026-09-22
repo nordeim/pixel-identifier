@@ -367,7 +367,7 @@ Prove-It). `TZ` is pinned to UTC.
   (R23-F3), the auth redirect, `/api/health`, `/pixel.js`, the
   anti-enumeration 204, and the beacon → Activity-Log loop. Manual browser
   flows (sign-up → domain → beacon → dashboard → export) complement it.
-- **Live-parity pins (rounds 11-25):** the live DOM's class strings,
+- **Live-parity pins (rounds 11-26):** the live DOM's class strings,
   emission orders and copy are pinned by SSR/source tests against
   captured evidence — the R24 batch pins the live app bundle's
   lucide-react 0.462 icon generation (ten geometry overrides in
@@ -381,7 +381,16 @@ Prove-It). `TZ` is pinned to UTC.
   instructions-r24,marketing-r24-parity}.test.ts(x)`). R25 was a CLEAN
   drift watch: no redeploy (bundle hashes + lucide pin unchanged), no
   findings — the badge's negative branch is now live-verified too
-  (plan: `docs/plans/2026-09-22-round25-drift-watch.md`).
+  (plan: `docs/plans/2026-09-22-round25-drift-watch.md`). R26 found and
+  fixed ONE real drift the prior five rounds missed: the dashboard
+  pricing Growth card's POPULAR badge (new-gen Badge, default variant,
+  gradient-first tail `gradient-primary text-primary-foreground border-0
+  text-[10px] px-2 py-0.5`, both billing states + viewports) — the R15
+  "no badge" pin had captured the rolling-deploy window's OLD build;
+  fixed in `plan-panel.tsx`, pinned by
+  `tests/dashboard-r26-parity.test.tsx` + the replaced source pin + the
+  NEW `e2e/pricing.spec.ts` (plan:
+  `docs/plans/2026-09-23-round26-pricing-popular-badge.md`).
 
 ### Test Commands
 

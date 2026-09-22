@@ -184,8 +184,14 @@ describe('pricing plan cards (R15 verification sweep)', () => {
     expect(source).not.toContain('border-border shadow-sm')
   })
 
-  it('ships no POPULAR badge (the live marks popular with the bar + border only)', () => {
-    expect(source).not.toContain('POPULAR')
+  it('ships the POPULAR badge on the popular plan card (R26-F1, live-verified)', () => {
+    // The live's Growth card header renders a new-gen Badge (default
+    // variant) with the gradient-first consumer tail — captured verbatim
+    // off the live in BOTH billing states and both viewports (R26). The
+    // R15 "bar + border only" evidence came from the old build in the
+    // rolling-deploy window; this pin replaces the disproven negative.
+    expect(source).toContain('gradient-primary text-primary-foreground border-0 text-[10px] px-2 py-0.5')
+    expect(source).toMatch(/<Badge[^>]*>[\s\S]*?POPULAR[\s\S]*?<\/Badge>/)
   })
 
   it('renders the CTAs on the live variants (outline Current Plan, gradient Get Started)', () => {

@@ -1301,3 +1301,53 @@ Stage Summary:
   live touch), the badge's no-branch if live data returns to
   lastWeek=0, a settings-save toast watch, and a full desktop
   token-diff if any hash moves.
+
+---
+Task ID: R26
+Agent: main (Super Z)
+Task: Round-26 live-parity sweep + pricing POPULAR badge remediation.
+
+Work Log:
+- Workspace re-cloned at 128b6ac (R25-clean); scandihaven cloned for
+  tech-stack patterns; full doc chain reviewed. Environment: .env with
+  the user's DATABASE_URL contract (file:../db/custom.db → repo db/),
+  db:push + db:seed, dev server + /api/health green. Arrival gates:
+  lint 0, typecheck 0, 662 vitest, build, e2e 14/14.
+- 11th probe generation (dual agent-browser sessions, 1280 + 375):
+  - No redeploy: marketing C3AAh5Je.js/bLMWzsGr.css + app
+    index-nhmKaUsm.js + lucide 0.462.0 unchanged.
+  - Mobile nav (standing emphasis) both surfaces/sites: dropdown bytes
+    + w-6 h-6 toggle + close-on-link-click; Sheet 288px + close-on-nav
+    + same-page edge — parity.
+  - TW4 checks (bare-var brackets, md:hidden emission, hand-defined
+    utilities), DB seam, marketing pricing monthly toggle, topbar/bell
+    bytes, 18-route console sweep — all clean.
+  - VLM comparisons: landing/dashboard/visitors/settings/activity/
+    domains/install/login — essentially identical.
+  - FINDING R26-F1: the live's dashboard pricing Growth card header
+    renders a POPULAR badge (new-gen Badge, default variant,
+    gradient-first tail, both billing states + viewports) that the
+    clone lacked since R15 — the old "no POPULAR badge" pin had
+    captured the rolling-deploy window's OLD build (bundle hash never
+    changed).
+- TDD: RED 6 failing (dashboard-r26-parity SSR pins + replaced
+  shell-parity source pin) → GREEN after the Badge-primitive fix in
+  plan-panel.tsx; runtime byte-diff vs the live: IDENTICAL.
+- NEW e2e/pricing.spec.ts (2 specs — badge bytes/position/scope +
+  both toggle states with the $249→$199 price check) closes the e2e
+  coverage gap. Full e2e 16/16 chromium.
+- Gates: lint 0, typecheck 0, 667 vitest / 66 files (2 skipped),
+  build + standalone OK, 16/16 e2e, zero console errors.
+- 7 VLM-verified screenshots: docs/screenshots/r26-*.
+- .env.example re-verified (3 keys, consistent).
+- Docs: README R26 bullet, AGENTS R26 fact, CLAUDE 11–26 mirror,
+  PAD v1.25, SKILL.md R26 rows, plan execution log, session_26.md,
+  this entry.
+
+Stage Summary:
+- Round-26 SHIPPED: one real drift found and fixed (the pricing
+  POPULAR badge), pin net hardened (+5 vitest, +2 e2e), runtime
+  byte-verified against the live; everything else confirmed at parity.
+- Next (R27): bundle hashes; the pricing page is now in the standing
+  regression loop; settings-save toast watch; NTW no-badge branch if
+  live data returns to lastWeek=0.

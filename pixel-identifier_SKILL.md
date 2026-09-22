@@ -2,8 +2,8 @@
 name: pixel-identifier
 description: "Pixelco clone — cookieless visitor-identification SaaS: Next.js 16.3 App Router + React 19.3 + Tailwind v4 CSS-first + Prisma 6/SQLite + NextAuth v4 — marketing site, dashboard, tracking pixel, and identity-resolution pipeline, built to byte-level visual/functional parity with pixelco.io"
 version: 1.0.0
-last_updated: 2026-09-22
-project_state: "R25 clean drift watch: no live redeploy (bundle hashes + lucide 0.462 pin unchanged), zero code changes; NTW badge negative branch live-verified; 662 vitest (65 files) + 14 e2e chromium green, PAD v1.24"
+last_updated: 2026-09-23
+project_state: "R26 pricing POPULAR badge remediation: one real drift found + fixed (Growth card header badge, live-verified both states/viewports, runtime byte-identical); no live redeploy; 667 vitest (66 files) + 16 e2e chromium green, PAD v1.25"
 audience: "engineers + AI agents extending, debugging, onboarding, or replicating the Pixelco clone"
 tags: [nextjs16, react19, tailwind-v4, prisma, sqlite, nextauth4, vitest, playwright, saas, visitor-identification, parity-clone]
 ---
@@ -50,7 +50,7 @@ tags: [nextjs16, react19, tailwind-v4, prisma, sqlite, nextauth4, vitest, playwr
 18. [§18 Z-Index Layer Map](#18-z-index-layer-map)
 19. [§19 Color Reference (Complete)](#19-color-reference-complete)
 20. [§20 The Complete TypeScript Interface Reference](#20-the-complete-typescript-interface-reference)
-- [Appendix A — Round History (R1–R25)](#appendix-a--round-history)
+- [Appendix A — Round History (R1–R26)](#appendix-a--round-history)
 - [Appendix B — The DATABASE_URL Seam (Deep Dive)](#appendix-b--the-database_url-seam-deep-dive)
 - [Appendix C — Live-Site Validation Methodology](#appendix-c--live-site-validation-methodology)
 - [Appendix D — Audit History](#appendix-d--audit-history)
@@ -66,8 +66,8 @@ reimplementation of `pixelco.io`** — a cookieless visitor-identification SaaS
 where anonymous website visitors are resolved to real email addresses —
 consisting of a marketing site (landing + 8 sub-pages), an authenticated
 dashboard, a first-party tracking pixel, and an identity-resolution pipeline,
-specified in `Project_Architecture_Document.md v1.24` and iterated to parity
-with the live across 25 audited rounds (R1–R25).
+specified in `Project_Architecture_Document.md v1.25` and iterated to parity
+with the live across 26 audited rounds (R1–R26).
 
 **Design thesis — amber-on-white SaaS with a neon data accent.** The live is
 built on warm amber CTA gradients (`linear-gradient(135deg, rgb(255,170,0),
@@ -570,10 +570,10 @@ Run in order — the exact gate the rounds ship under
 ```bash
 npm run lint          # 1. eslint 9 — zero warnings tolerated
 npm run typecheck     # 2. tsc --noEmit — includes e2e/ specs
-npm run test          # 3. vitest — expect 662 passed | 2 skipped (65 files)
+npm run test          # 3. vitest — expect 667 passed | 2 skipped (66 files)
 npm run build         # 4. next build — all routes compile, no type errors
 # 5. e2e (standalone build first):
-npm run build:standalone && npm run test:e2e   # expect 14/14 chromium
+npm run build:standalone && npm run test:e2e   # expect 16/16 chromium
 ```
 
 **DB seam acceptance (when touching anything near the database):**
@@ -995,7 +995,7 @@ The hand-written surfaces (read each file for the authoritative fields):
 
 ## Appendix A — Round History
 
-The project iterates in audited "rounds" (R1–R25); each plan lives in
+The project iterates in audited "rounds" (R1–R26); each plan lives in
 `docs/plans/<date>-roundNN-*.md` with findings, rulings, and an execution
 log. Key milestones (see `docs/session_*.md` + `docs/worklog.md` for the
 full record):
@@ -1012,6 +1012,7 @@ full record):
 | **R23** | **DB seam (`file:../db/custom.db` → repo `db/`), mobile-nav parity (F3/F4), announcement-bar byte fixes (F5–F7), Playwright e2e suite (F8), DEPLOYMENT.md + .env.example contract (F9/F10), this SKILL.md** |
 | **R24** | **Icon-generation pin (live app = lucide 0.462.0 → 10 legacy overrides in `live-icons.tsx`), platform instructions rewritten live-verbatim (`buildPlatformSnippet` per-tab pres), New This Week trend badge, Export `<button>` + mobile visibility, Save spinner beside label, "views" no-singular, B2B + kicker texts, R14-F10 evidence correction, no live redeploy (bundle hashes re-confirmed)** |
 | **R25** | **CLEAN drift watch: no redeploy (all bundle hashes + the lucide pin unchanged), zero code changes; NTW badge negative branch live-verified (`-100.0%` destructive + legacy trending-down), mobile-menu close-on-link-click re-verified both sides (probe-artifact lesson: visibility-filter click targets), R23-F3 + R24-F2 regressions green** |
+| **R26** | **Pricing POPULAR badge remediation: ONE real drift found + fixed — the live's dashboard Growth card header ships a POPULAR badge (new-gen Badge, default variant, gradient-first tail `gradient-primary … border-0 text-[10px] px-2 py-0.5`, both billing states + viewports); the R15 "no badge" pin had captured the rolling-deploy window's OLD build (bundle hash never changed — lesson: re-verify old evidence against the CURRENT DOM); pin net: dashboard-r26-parity SSR pins + replaced source pin + NEW e2e/pricing.spec.ts (closes the e2e coverage gap)** |
 
 ---
 
@@ -1084,6 +1085,7 @@ surface):
 | R23 (2026-09-22) | mobile nav (marketing dropdown + dashboard Sheet), announcement bar, DB seam, TW4 emission order, desktop dashboard | `docs/screenshots/r23-*` (7 captures) + `docs/plans/2026-09-22-round23-db-seam-mobile-nav-playwright.md` |
 | R24 (2026-09-22) | drift watch (no redeploy — hashes re-confirmed) + icon-generation pin, platform instructions, trend badge, Export/Save buttons, dashboard texts, settings/visitors targets probed (no drift) | `docs/screenshots/r24-*` (8 captures) + `docs/plans/2026-09-22-round24-live-icon-generation-platform-instructions.md` |
 | R25 (2026-09-22) | clean drift watch — no redeploy, named targets re-verified (settings save, visitors rows, mobile nav both surfaces), NTW negative badge branch live-verified, regressions green | `docs/screenshots/r25-*` (6 captures) + `docs/plans/2026-09-22-round25-drift-watch.md` |
+| R26 (2026-09-23) | pricing POPULAR badge remediation — no redeploy, standing surfaces + TW4 checks + DB seam + 18-route console sweep all clean; ONE real drift fixed (Growth card header badge, live-verified both billing states + viewports, runtime byte-identical); e2e coverage gap closed | `docs/screenshots/r26-*` (7 captures) + `docs/plans/2026-09-23-round26-pricing-popular-badge.md` |
 
 **R23 final gate:** lint ✓ typecheck ✓ **613 vitest / 61 files** (2
 skipped) ✓ build ✓ **14/14 e2e chromium** ✓ DB acceptance (the user's
@@ -1104,6 +1106,12 @@ edge case (the live also keeps the Sheet open) ✓ zero console errors ✓
 (standalone, 15.8 s) ✓ 6 VLM-verified screenshots ✓ zero code changes
 (tree identical to R24's `8fccf4a` for `src/` + `tests/`)
 
+**R26 final gate:** lint ✓ typecheck ✓ **667 vitest / 66 files** (2
+skipped) ✓ build ✓ **16/16 e2e chromium** (standalone, 19.7 s — the
+new `e2e/pricing.spec.ts` included) ✓ badge runtime byte-diff vs the
+live (class string + header structure + child order — identical) ✓ 7
+VLM-verified screenshots ✓ zero console errors (18 routes)
+
 ---
 
 ## Quick Reference Card
@@ -1113,7 +1121,7 @@ Commands
   npm run dev                    # dev server :3000 (needs db/ seeded)
   npm run verify                 # lint + typecheck + vitest + build  ← THE GATE
   npm run db:push / db:seed      # wrapper-routed Prisma CLI (repo-root db/)
-  npm run build:standalone && npm run test:e2e   # 14 e2e tests, :3100, db/e2e.db
+  npm run build:standalone && npm run test:e2e   # 16 e2e tests, :3100, db/e2e.db
   npx vitest run --pool=forks --maxWorkers=1 --no-file-parallelism   # low-RAM run
   curl localhost:3000/api/health # {"status":"ok","db":"up"}
 
@@ -1133,8 +1141,8 @@ Files you will touch most
   docs/plans/2026-09-22-round23-*.md   # the R23 record
   docs/plans/2026-09-22-round24-*.md   # the R24 record
 
-Counts (R24, verified)
-  662 vitest (65 files) + 14 e2e chromium · 79 tsx · 19 pages · 5 API routes
+Counts (R26, verified)
+  667 vitest (66 files) + 16 e2e chromium · 79 tsx · 19 pages · 5 API routes
   4 Prisma models · 7 keyframes · 3 env vars · 1 custom hook
 ```
 

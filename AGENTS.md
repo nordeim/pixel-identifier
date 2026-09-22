@@ -121,6 +121,22 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   the live's 0.462 never renders it), silent settings save, inert
   visitor rows, dead live Delete button. Plan:
   `docs/plans/2026-09-22-round25-drift-watch.md`.
+- **R26: the dashboard pricing POPULAR badge (v1.25).** The live's Pricing
+  & Plan Growth card renders a **POPULAR badge** in its header row — a
+  new-gen Badge (`variant="default"` from `ui/badge.tsx`) with the
+  gradient-first consumer tail `gradient-primary text-primary-foreground
+  border-0 text-[10px] px-2 py-0.5` — in BOTH billing states and both
+  viewports (live-verified R26). The consumer order is GRADIENT-FIRST,
+  unlike the Verified/Identified badges' sizes-first
+  `text-[10px] px-1.5 py-0 …` order — both orders are the live's; do not
+  "normalize" them. The old R15 pin ("no POPULAR badge — bar + border
+  only") had captured the old build from the rolling-deploy window; the
+  app bundle hash never changed, so the badge was always live. Pinned by
+  `tests/dashboard-r26-parity.test.tsx` (SSR byte pins) + the replaced
+  positive source pin in `tests/shell-parity.test.tsx` + the NEW
+  `e2e/pricing.spec.ts` (badge bytes, header position, non-popular cards,
+  both toggle states + the $249 → $199 annual price assertion). Plan:
+  `docs/plans/2026-09-23-round26-pricing-popular-badge.md`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle
