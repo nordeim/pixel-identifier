@@ -32,7 +32,13 @@ export function Topbar({
 }) {
   const pathname = usePathname()
   const meta = pageMeta(pathname)
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  // R23-F3: the live's mobile Sheet CLOSES on navigation (its dialog
+  // unmounts after a nav-link click). The open state is DERIVED from the
+  // pathname — the sheet is open only while the pathname is the one it was
+  // opened on — so any navigation (link click, back/forward) closes it
+  // without an effect (the react-hooks/set-state-in-effect-safe pattern).
+  const [sheetPathname, setSheetPathname] = useState<string | null>(null)
+  const mobileNavOpen = sheetPathname !== null && sheetPathname === pathname
   const { visitorsCounts, selectedVisitorIds, pageVisitorIds } = useChromeState()
   const isVisitors = pathname === '/dashboard/visitors'
 
@@ -56,7 +62,7 @@ export function Topbar({
     if (window.matchMedia('(min-width: 768px)').matches) {
       toggleSidebar()
     } else {
-      setMobileNavOpen(true)
+      setSheetPathname(mobileNavOpen ? null : pathname)
     }
   }
 
@@ -85,7 +91,12 @@ export function Topbar({
         {/* Mobile sheet (the same trigger opens it below md). R15-D8: the
             live's SheetContent classes — w-[--sidebar-width] driven by the
             inline 18rem override, slide-in-from-left, bg-sidebar p-0. */}
-        <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
+        <Sheet
+          open={mobileNavOpen}
+          onOpenChange={(open) => {
+            if (!open) setSheetPathname(null)
+          }}
+        >
           <SheetContent
             side="left"
             className="w-[--sidebar-width] bg-sidebar p-0"

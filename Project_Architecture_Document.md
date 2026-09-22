@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.21
+# Pixelco — Master Project Architecture Document (PAD) v1.22
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-19 (v1.21)
+**Last Updated:** 2026-09-22 (v1.22)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,41 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.22** `[SYN]` Round-23 DB-seam, mobile-nav parity & Playwright e2e
+  (plan: `docs/plans/2026-09-22-round23-db-seam-mobile-nav-playwright.md`;
+  evidence `docs/screenshots/r23-*` + the probe transcripts in the plan).
+  The 8th probe generation re-verified the live (marketing mobile dropdown
+  + dashboard mobile Sheet at 375 px — computed styles + VLM MATCH; the
+  desktop dashboard STRUCTURAL MATCH) and root-caused the **DATABASE_URL
+  seam** the `.env.example` (commit 085bd09) documents: the Prisma CLI
+  anchors env-indirected relative `file:` URLs at the `.env`/project root
+  (empirically: `file:../db/custom.db` created the schema OUTSIDE the
+  repo), and `@prisma/client`'s Next-server env loading RE-ANCHORS even
+  absolute `file:` URLs one directory too high (SQLite error 14,
+  `/api/health` degraded — probe-verified with a diagnostic route).
+  Fixes (TDD, suite 596/59 → **613/61**): **(F1/F2)** `src/lib/db-path.ts`
+  (`resolveDatabaseUrl` — relative `file:` → absolute against the repo's
+  `prisma/` dir; absolute/postgres/unset pass through; pinned by
+  `tests/db-path.test.ts`) + `db.ts` `datasourceUrl` (bypasses the
+  rewriting) + `scripts/with-db-url.mjs` wrapping `db:push`/`db:seed` —
+  `DATABASE_URL="file:../db/custom.db"` now lands in `<repo>/db/custom.db`
+  for CLI, build and dev server alike (acceptance-verified end to end);
+  `docs/DEPLOYMENT.md` created (§4 = the absolute-path production rule).
+  **(F3)** the dashboard mobile Sheet now CLOSES on navigation like the
+  live's unmounting dialog (open state DERIVED from the pathname —
+  effect-free, `react-hooks/set-state-in-effect`-safe). **(F4)** the
+  marketing toggle icons are the live's lucide-default `w-6 h-6` (24 px;
+  was h-5 w-5). **(F5-F7)** the announcement-bar emission orders are
+  live-verbatim (Claim Now tail `hover:opacity-80 transition-opacity`,
+  arrow `w-3.5 h-3.5`, dismiss without `transition-opacity`, X `w-4 h-4`).
+  **(F8)** the **Playwright e2e suite landed**: `playwright.config.ts` +
+  `e2e/{marketing,dashboard,pipeline}.spec.ts` (14 specs, chromium) booting
+  the STANDALONE build via `scripts/e2e-server.mjs` against a throwaway
+  `db/e2e.db` — the browser-level net for client-state behavior the SSR
+  suite cannot see (the F3 regression is pinned at both levels); CI gained
+  an e2e job. F11 ("CI trigger corrupted") RETRACTED — a terminal display
+  artifact (the literal `[main]` rendered as `ain]` after `[m` was eaten
+  as an ANSI escape); the workflow file was always correct.
 - **v1.21** `[SYN]` Round-22 first-run states, activity pagination &
   sub-page interaction parity audit (plan:
   `docs/plans/2026-09-19-round22-firstrun-activity-parity.md`; evidence
@@ -1481,7 +1516,15 @@ money columns are stored.
 ### 4.3 Persistence Strategy
 
 - **Client:** Prisma singleton via `globalThis` cache (`src/lib/db.ts`) —
-  one pool per process, query logging in dev only.
+  one pool per process, query logging in dev only. Since v1.22 the client
+  is constructed with `datasourceUrl: resolveDatabaseUrl()`
+  (`src/lib/db-path.ts`): a relative `file:` DATABASE_URL is resolved
+  schema-dir-relative (`file:../db/custom.db` → `<repo>/db/custom.db`)
+  because Prisma's native env-URL anchoring diverges per context (the CLI
+  anchors `.env`-relative; the Next-server runtime re-anchors even
+  absolute URLs — SQLite error 14, empirically isolated in R23).
+  `scripts/with-db-url.mjs` mirrors the rule for `db:push`/`db:seed`.
+  Production keeps the ABSOLUTE-path rule (docs/DEPLOYMENT.md §4).
 - **Schema sync:** push-based (`db:push`) — no migration history; the schema
   is young and single-writer, making push pragmatically safe. Moving to
   Postgres in production implies adopting `prisma migrate`.
@@ -1725,9 +1768,15 @@ speculatively.
 | SSR render (marketing parity) | 6 files | 43 | `tests/{social-proof,marketing-hero,marketing-benefits,marketing-pricing,marketing-process,marketing-compare-cta}.test.tsx` | Vitest (`renderToStaticMarkup`) |
 | Behavioural (collector + snippet in `node:vm`) | 2 | 9 | `tests/collector-script.test.ts`, `tests/snippet.test.ts` | Vitest |
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
-| E2E (browser) | manual + opt-in smoke | — | dev server flows; `PIXELCO_STANDALONE_SMOKE=1` boots the standalone server | browser pass |
+| E2E (browser) | 3 spec files | 14 specs | `e2e/{marketing,dashboard,pipeline}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
 
-The suite totals **596 tests across 59 files** (v1.21: +28 R22 pins in 3
+The suite totals **613 tests across 61 files** (v1.22: +17 — `tests/db-path.test.ts`
+(8, the DATABASE_URL seam contract) + `tests/mobile-nav-r23-parity.test.tsx`
+(9, the mobile toggle icons, the Sheet-close derivation, the
+announcement-bar emission orders), plus the **Playwright e2e suite** (14
+specs, chromium — the browser-level net for client-state behavior; run
+`npm run build:standalone && npm run test:e2e`; CI gained an e2e job);
+v1.21: +28 R22 pins in 3
 new files — `tests/activity-r22-parity.test.tsx` (the pagination footer,
 page-replacement fetches, the live's empty state, no-polling /
 no-load-older), `tests/dashboard-empty-r22-parity.test.tsx` (the
@@ -1844,7 +1893,7 @@ Vercel deploys work by removing `output: "standalone"`.
 
 | Name | Required | Description | Default |
 |------|----------|-------------|---------|
-| `DATABASE_URL` | yes | SQLite file path (absolute in standalone) or Postgres URL | `file:./db/pixelco.db` (relative resolves against `prisma/`) |
+| `DATABASE_URL` | yes | SQLite `file:` URL (relative in dev resolves against `prisma/` via `src/lib/db-path.ts` — `file:../db/custom.db` → `<repo>/db/custom.db`; ABSOLUTE in standalone/production) or Postgres URL | `file:../db/custom.db` |
 | `NEXTAUTH_SECRET` | yes | ≥32-char session signing secret | — (fail-fast without it) |
 | `NEXTAUTH_URL` | prod | Canonical origin used for auth callbacks | `http://localhost:3000` |
 
@@ -1885,7 +1934,8 @@ Minimal: Node ≥ 20 → `npm install` → `cp .env.example .env` (set
 | `npm run dev` | repo root | Dev server :3000 |
 | `npm run lint` / `typecheck` / `build` | repo root | Gate stages |
 | `npm run verify` | repo root | Full gate in order |
-| `npm run db:push` / `db:seed` | repo root | Schema sync / demo seed |
+| `npm run test:e2e` | repo root | Playwright e2e (needs a prior `npm run build:standalone`; boots it on :3100 against `db/e2e.db`) |
+| `npm run db:push` / `db:seed` | repo root | Schema sync / demo seed (both normalize DATABASE_URL via `scripts/with-db-url.mjs`) |
 | `curl -X POST /api/track …` | anywhere | Ingest probe (see README) |
 
 ### 10.3 Code Style Rules

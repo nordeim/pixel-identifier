@@ -23,21 +23,25 @@ export function AnnouncementBar() {
         <span className="font-medium">
           🚀 Launch Offer — Get 100 free visitor identifications when you sign up today
         </span>
+        {/* R23-F5/F6: the live's emission order — hover BEFORE transition,
+            the arrow icon w-before-h (lucide-arrow-right w-3.5 h-3.5). */}
         <Link
           href="/signup"
-          className="inline-flex items-center gap-1 font-semibold underline underline-offset-2 transition-opacity hover:opacity-80"
+          className="inline-flex items-center gap-1 font-semibold underline underline-offset-2 hover:opacity-80 transition-opacity"
         >
           Claim Now{' '}
-          <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+          <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
         </Link>
       </div>
+      {/* R23-F7: the live's dismiss carries no transition-opacity (the
+          focus-visible chain stays as D5-class a11y chrome); X is w-4 h-4. */}
       <button
         type="button"
         onClick={() => setVisible(false)}
         aria-label="Dismiss announcement"
-        className="absolute right-4 top-1/2 -translate-y-1/2 transition-opacity hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-foreground"
+        className="absolute right-4 top-1/2 -translate-y-1/2 hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-foreground"
       >
-        <X className="h-4 w-4" />
+        <X className="w-4 h-4" />
       </button>
     </div>
   )

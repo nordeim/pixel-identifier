@@ -12,9 +12,10 @@ Everything here is easy to get wrong without reading it first.
 | Lint | `npm run lint` |
 | Typecheck | `npm run typecheck` |
 | Tests | `npm run test` (Vitest; watch mode: `npm run test:watch`) |
+| E2E | `npm run build:standalone && npm run test:e2e` (Playwright; standalone build + throwaway `db/e2e.db`) |
 | Production build | `npm run build` |
 | Full gate (run before pushing) | `npm run verify` = lint → typecheck → test → build |
-| Create/refresh DB | `npm run db:push` |
+| Create/refresh DB | `npm run db:push` (wraps Prisma via `scripts/with-db-url.mjs`) |
 | Seed demo data | `npm run db:seed` (idempotent; refuses non-local DBs) |
 
 **Order matters:** lint → typecheck → test → build. Never weaken a failing gate to
@@ -22,9 +23,41 @@ make it pass — fix the code.
 
 **Env first:** copy `.env.example` to `.env` and set `NEXTAUTH_SECRET`
 (`openssl rand -base64 32`) before `npm run dev`; auth routes fail without it.
+The default `DATABASE_URL="file:../db/custom.db"` is schema-relative —
+it lands in `<repo>/db/custom.db` everywhere (see the R23 db-path fact
+below). A shell-exported `DATABASE_URL` overrides `.env` (standard dotenv
+precedence — true for the app, the wrapper, and the Prisma CLI alike).
 
 ## Non-obvious facts
 
+- **R23: the DATABASE_URL seam is normalized by `src/lib/db-path.ts`.** A
+  relative `file:` URL is schema-relative (`file:../db/custom.db` →
+  `<repo>/db/custom.db`) — the `.env.example` contract. This is NOT what
+  the Prisma CLI or `@prisma/client`'s Next-runtime env loading do
+  natively (empirically isolated in R23): the CLI anchors env-indirected
+  relative URLs at the `.env`/project root (schema landed OUTSIDE the
+  repo), and the client's server-runtime env loading re-anchors even
+  ABSOLUTE `file:` URLs one directory too high (SQLite error 14,
+  `/api/health` degraded). Two seams fix it: `db.ts` passes
+  `resolveDatabaseUrl()` as `datasourceUrl` (bypasses the rewriting —
+  probe-verified), and `db:push`/`db:seed` route through
+  `scripts/with-db-url.mjs` (the CLI mirror). Pinned by
+  `tests/db-path.test.ts`; production keeps the ABSOLUTE-path rule
+  (docs/DEPLOYMENT.md §4). Do NOT remove either seam or "simplify" the
+  `.env` value back to `file:./db/…`.
+- **R23: the mobile navigations close on navigation + the Playwright net.**
+  The dashboard mobile Sheet's open state DERIVES from the pathname
+  (`sheetPathname === pathname` in `topbar.tsx` — effect-free; the
+  `react-hooks/set-state-in-effect` rule rejects an effect) so any nav
+  closes it like the live's unmounting dialog; the marketing toggle icons
+  are the live's lucide-default `w-6 h-6` (24 px); the announcement-bar's
+  link/arrow/dismiss/X class orders are live-verbatim (R23-F4..F7,
+  `tests/mobile-nav-r23-parity.test.tsx`). Browser-level behavior —
+  dialog lifecycles, client state, the beacon → activity loop — is pinned
+  by the Playwright e2e suite (`e2e/*.spec.ts` via
+  `playwright.config.ts`, which boots the STANDALONE build against a
+  throwaway `db/e2e.db` through `scripts/e2e-server.mjs`; never the dev
+  DB). Run: `npm run build:standalone && npm run test:e2e`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle
@@ -460,8 +493,10 @@ make it pass — fix the code.
 - **Prisma + SQLite.** Schema in `prisma/schema.prisma`; after editing run
   `npm run db:push` (there is no migrations folder — this project uses
   push-based schema sync). `DATABASE_URL` relative paths resolve against
-  `prisma/`, not the repo root. In `output: "standalone"` runtime, use
-  absolute SQLite paths.
+  `prisma/` — enforced by the R23 seams (`src/lib/db-path.ts` for the
+  runtime, `scripts/with-db-url.mjs` for the CLI), NOT by Prisma natively.
+  In `output: "standalone"` runtime, use absolute SQLite paths
+  (docs/DEPLOYMENT.md §4).
 - **No `console.log`.** ESLint allows only `warn`/`error`/`info`.
 - **`any` is an ESLint error.** Use `unknown` and narrow.
 

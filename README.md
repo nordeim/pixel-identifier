@@ -12,8 +12,11 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 596 assertions) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 613 assertions) · Playwright e2e (chromium, standalone build) |
 | **Runtime** | Node.js ≥ 20 |
+
+> **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
+> production artifact against a throwaway `db/e2e.db` (R23).
 
 ## Overview
 
@@ -154,6 +157,9 @@ npm install            # or: bun install
 cp .env.example .env
 # Generate a real secret:
 #   openssl rand -base64 32   → NEXTAUTH_SECRET
+# The default DATABASE_URL="file:../db/custom.db" resolves against
+# prisma/schema.prisma → <repo>/db/custom.db for db:push, db:seed and the
+# dev server alike (src/lib/db-path.ts — see docs/DEPLOYMENT.md §3).
 
 # 3. Create the database and generate the Prisma client
 npm run db:push
@@ -215,7 +221,7 @@ match rate in practice.
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `DATABASE_URL` | yes | SQLite file path (`file:./db/pixelco.db`) or Postgres URL |
+| `DATABASE_URL` | yes | SQLite file path (`file:../db/custom.db` — schema-relative, lands in `<repo>/db/`; production uses an ABSOLUTE path) or a Postgres URL |
 | `NEXTAUTH_SECRET` | yes | ≥32-char secret (`openssl rand -base64 32`) |
 | `NEXTAUTH_URL` | yes in prod | Canonical origin, e.g. `https://pixelco.example.com` |
 
@@ -224,6 +230,10 @@ match rate in practice.
 ```bash
 npm run test         # Vitest — full suite (unit + SQLite-backed integration)
 npm run test:watch   # Watch mode
+
+# E2E (R23): boots the STANDALONE production build against a throwaway
+# db/e2e.db (pushed + seeded on every boot) — never the dev database.
+npm run build:standalone && npm run test:e2e
 ```
 
 The suite runs against a throwaway SQLite database (`db/test.db`, recreated
@@ -372,6 +382,28 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   `tests/{activity-r22,dashboard-empty-r22,marketing-r22}-parity.test.tsx`;
   fresh-signup first-run states, pagination end-to-end and no-polling all
   runtime-verified. Screenshots in `docs/screenshots/`.
+- **DB seam, mobile-nav parity & Playwright e2e (round-23)** — the 8th probe
+  generation re-verified the live (marketing mobile dropdown + dashboard
+  mobile Sheet at 375 px, computed styles + VLM) and root-caused the
+  DATABASE_URL seam the `.env.example` documents: the Prisma CLI anchors
+  env-indirected relative `file:` URLs at the `.env` root (schema landed
+  OUTSIDE the repo) and `@prisma/client`'s Next-runtime env loading
+  re-anchors even absolute URLs one directory too high (SQLite error 14,
+  `/api/health` degraded). `src/lib/db-path.ts` (+ `tests/db-path.test.ts`)
+  now normalizes every context onto the schema-dir anchor via
+  `datasourceUrl`, and `db:push`/`db:seed` route through
+  `scripts/with-db-url.mjs` — `DATABASE_URL="file:../db/custom.db"` lands in
+  `<repo>/db/custom.db` everywhere. Mobile-nav fixes: the dashboard mobile
+  Sheet now CLOSES on navigation (the live's dialog unmounts; derived from
+  the pathname, effect-free), the marketing toggle icons are the live's
+  `w-6 h-6` (24 px), and the announcement-bar emission orders are
+  live-verbatim (Claim Now tail, arrow/X icon order, dismiss without
+  `transition-opacity`). **The Playwright e2e suite landed** (chromium
+  against the standalone build + a throwaway `db/e2e.db`: marketing, mobile
+  menu lifecycle, the Sheet-close regression, login/KPIs, the
+  beacon → activity loop). +17 pins in `tests/{db-path,mobile-nav-r23-
+  parity}.test.tsx` + 14 e2e specs; CI gained an e2e job. Screenshots in
+  `docs/screenshots/`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the
@@ -420,6 +452,7 @@ npm run typecheck   # tsc --noEmit
 npm run test        # Vitest suite
 npm run build       # next build (36 routes; standalone output)
 npm run verify      # all four in order
+npm run test:e2e    # Playwright e2e (needs a prior `npm run build:standalone`)
 ```
 
 SEO surface: `/robots.txt` and `/sitemap.xml` are served by Route
@@ -440,6 +473,10 @@ Manual browser flows (sign-up → domain → beacon → dashboard → export)
 complement the automated suite.
 
 ## Deployment
+
+See **docs/DEPLOYMENT.md** — build outputs, the SQLite path contract
+(relative in dev via `src/lib/db-path.ts`, ABSOLUTE in production), the
+standalone self-hosting flow, Docker, and Postgres. Highlights:
 
 ### Standalone (recommended for self-hosting)
 
@@ -517,7 +554,7 @@ every push and pull request.
 | Identity resolution | ✅ Complete | Deterministic engine, atomic quota accounting, paid overage |
 | Dashboard | ✅ Complete | All 7 pages, pagination/search, live feed with history, CSV export |
 | Billing | 🟡 Simulated | Plan switching + overage counting without payment processing |
-| Tests | ✅ Complete | Vitest: unit + integration (see Testing) |
+| Tests | ✅ Complete | Vitest: unit + integration (see Testing) · Playwright e2e (standalone build) |
 
 ## License
 

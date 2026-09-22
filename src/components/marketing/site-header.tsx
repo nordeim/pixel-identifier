@@ -66,7 +66,9 @@ export function SiteHeader() {
           aria-controls="mobile-nav"
           aria-label={open ? 'Close menu' : 'Open menu'}
         >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {/* R23-F4: the live's toggle icons are lucide-default size
+              (lucide-menu w-6 h-6 / lucide-x w-6 h-6 — 24 px). */}
+          {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 

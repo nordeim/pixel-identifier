@@ -285,7 +285,10 @@ amber/teal approximations.
 Validate with Zod at the boundary; catch once; never throw across the action
 boundary. Revalidate the narrowest path after writes.
 
-**Prisma** — one client via `src/lib/db.ts`. Schema edits → `npm run db:push`.
+**Prisma** — one client via `src/lib/db.ts` (its `datasourceUrl` comes from
+`src/lib/db-path.ts` — the R23 seam that makes relative `file:` URLs
+schema-relative everywhere; see AGENTS.md R23 facts). Schema edits →
+`npm run db:push` (wrapped by `scripts/with-db-url.mjs`).
 Snake_case tables via `@@map`, camelCase TS fields. No list-typed primitives.
 
 ## Development Workflow
@@ -311,9 +314,10 @@ npm run dev
 | `npm run lint` | ESLint 9 flat config |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run test` | Vitest suite (watch: `npm run test:watch`); opt-in standalone smoke: `PIXELCO_STANDALONE_SMOKE=1` |
+| `npm run test:e2e` | Playwright e2e (chromium) — needs a prior `npm run build:standalone`; boots it against a throwaway `db/e2e.db` |
 | `npm run verify` | lint → typecheck → test → build (pre-push gate) |
-| `npm run db:push` | Sync Prisma schema to the database |
-| `npm run db:seed` | Idempotent demo seed |
+| `npm run db:push` | Sync Prisma schema to the database (DATABASE_URL normalized via `scripts/with-db-url.mjs`) |
+| `npm run db:seed` | Idempotent demo seed (same normalization) |
 
 ## Testing Strategy
 
@@ -354,14 +358,22 @@ Prove-It). `TZ` is pinned to UTC.
   catalogue (`src/data/blog-posts.ts` — unique URL-safe slugs, date
   ordering, required fields), and `robots.ts`/`sitemap.ts` (16-URL set,
   `/api/` disallowed, app routes excluded).
-- **E2E:** manual browser flows (sign-up → domain → beacon → dashboard →
-  export). No Playwright suite yet.
+- **E2E (Playwright, R23):** `e2e/*.spec.ts` drives the STANDALONE production
+  build via `scripts/e2e-server.mjs` (throwaway `db/e2e.db`, pushed +
+  seeded per boot) — the marketing chrome + mobile-menu lifecycle, the
+  dashboard login/KPIs + the mobile-Sheet close-on-navigation regression
+  (R23-F3), the auth redirect, `/api/health`, `/pixel.js`, the
+  anti-enumeration 204, and the beacon → Activity-Log loop. Manual browser
+  flows (sign-up → domain → beacon → dashboard → export) complement it.
 
 ### Test Commands
 
 ```bash
 npm run test         # Vitest run (also inside npm run verify)
 npm run test:watch   # watch mode
+
+# Playwright e2e — needs the standalone build first (boots it on :3100)
+npm run build:standalone && npm run test:e2e
 ```
 
 New behavior is test-first: reproduce the bug or specify the behavior in a

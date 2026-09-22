@@ -213,3 +213,78 @@ All verified. Final step — the workspace worklog:
 - **Gate GREEN** (lint · typecheck · 596/59 · build); key fingerprint matched R15–R21, operator key shredded (×3 overwrite + remove).
 
 **Suggested next:** Round-23 drift watch, then probe the live's visitors detail sheet (row-click flow) and settings save flows at runtime.
+
+---
+
+## Round 23 (continued by the agent) — DB seam, mobile-nav parity & Playwright e2e
+
+**Base:** main @ 8cb18bd (R22 ship 11cc95f + the user's session_20.md +
+`update env example` 085bd09). **Gate at base:** lint ✓ typecheck ✓
+596/59 ✓ (2 skipped) build ✓. The user's `.env.example` update documents a
+contract (`file:../db/custom.db` → `<repo>/db/custom.db`, implemented by
+`src/lib/db-path.ts`, pinned by `tests/db-path.test.ts`) — neither file
+existed. **Plan:**
+`docs/plans/2026-09-22-round23-db-seam-mobile-nav-playwright.md`.
+
+**Audit (8th probe generation — live re-verified with the probe account):**
+
+- **DB seam root-caused empirically.** The Prisma CLI anchors an
+  env-INDIRECTED relative `file:` URL at the `.env`/project root —
+  `file:../db/custom.db` created the schema at `<repo-parent>/db/custom.db`
+  (verified twice, incl. from a subdir with `--schema`). In the Next dev
+  server, `@prisma/client`'s env loading REWRITES the URL (relativize vs
+  the generate-time schema dir, re-anchor one base too high): even a
+  repo-ABSOLUTE `.env` URL surfaced as `file:/home/z/my-project/db/custom.db`
+  → SQLite error 14 → `/api/health` degraded, dashboard dead (diagnostic
+  route + clean restart). `datasourceUrl` with an absolute path bypasses
+  the rewriting (probe: ok:true in the same runtime).
+- **Mobile nav (375 px, both surfaces, clone vs live):** marketing dropdown
+  computed styles BYTE-EQUAL (flex/column, 16px 24px, gap 16, 5 links, CTA
+  327×40, height 217); 767/768 boundary correct; the built CSS's
+  `md\:hidden`/`flex` emission order correct (no TW4 ordering bug). Three
+  real findings: the dashboard mobile Sheet STAYED OPEN after a nav-link
+  click (the live's dialog unmounts — F3); the marketing toggle icon was
+  `h-5 w-5` (20 px) vs the live's `lucide-menu w-6 h-6` (24 px — F4); the
+  announcement-bar emission orders diverged (Claim Now tail, arrow/X icon
+  w-h order, dismiss `transition-opacity` — F5-F7). Desktop dashboard: VLM
+  STRUCTURAL MATCH. F11 ("CI trigger corrupted") RETRACTED — the literal
+  `[main]` rendered as `ain]` after `[m` was eaten as an ANSI escape; the
+  workflow was always correct.
+
+**Remediation (TDD, 596/59 → 613/61 + 14 e2e):**
+
+- F1/F2: `src/lib/db-path.ts` (schema-dir-anchored `resolveDatabaseUrl`,
+  RED-first via `tests/db-path.test.ts`, 8 pins) + `db.ts`
+  `datasourceUrl` + `scripts/with-db-url.mjs` wrapping `db:push`/`db:seed`
+  (npm scripts rerouted). Acceptance with `.env` =
+  `DATABASE_URL="file:../db/custom.db"`: push → `<repo>/db/custom.db`
+  (no stray parent-dir file), seed ✓, dev server `/api/health` ok.
+  `docs/DEPLOYMENT.md` created (§4 = the absolute-path production rule the
+  `.env.example` cites).
+- F3: the Sheet's open state now DERIVES from the pathname
+  (`sheetPathname === pathname` — effect-free; the
+  `react-hooks/set-state-in-effect` lint rule rejected the original
+  `useEffect` idea mid-round, so the fix is the derived pattern). Verified
+  on the dev server: link click → /dashboard/visitors → sheet GONE.
+- F4-F7: `w-6 h-6` toggle icons, live-verbatim announcement-bar orders
+  (`tests/mobile-nav-r23-parity.test.tsx`, 9 pins). VLM re-compare of the
+  open menu vs the live: **MATCH**.
+- F8: **Playwright landed** — `playwright.config.ts` (chromium,
+  `reuseExistingServer`) + `scripts/e2e-server.mjs` (pushes+seeds a
+  throwaway `db/e2e.db`, boots the STANDALONE build on :3100, health-gated
+  readiness) + `e2e/{marketing,dashboard,pipeline}.spec.ts` (14 specs:
+  landing chrome, mobile-menu lifecycle, login/KPIs, the Sheet-close
+  regression, auth redirect, health, pixel.js, anti-enumeration 204, the
+  beacon → Activity-Log loop). `test:e2e` script + a CI e2e job
+  (build:standalone → chromium → test:e2e).
+
+**Verification:** full gate GREEN (lint · typecheck · 613/61 · build);
+e2e 14/14; dev-server acceptance with the final `.env` value; zero console
+errors on the affected surfaces; 7 screenshots in `docs/screenshots/r23-*`
++ 2 VLM confirmations (mobile menu MATCH, dashboard STRUCTURAL MATCH).
+
+**Outcome:** R23 complete — main advanced, 613/61 tests + 14 e2e, PAD v1.22.
+
+**Next:** Round-24 drift watch; probe targets — the live's visitors detail
+sheet (row click), settings save flows at runtime, any live bundle hash
+change.
