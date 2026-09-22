@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getServerSession } from 'next-auth'
-import { ArrowUpRight, Eye, Globe, Mail, Users } from 'lucide-react'
+import { ArrowUpRight, Eye, Globe } from 'lucide-react'
+import { MailIcon, UsersIcon, TrendingUpIcon, TrendingDownIcon } from '@/components/dashboard/live-icons'
 import { authOptions } from '@/lib/auth'
 import {
   requireUser,
@@ -12,7 +13,7 @@ import {
 } from '@/lib/analytics'
 import { TrendChart } from '@/components/dashboard/trend-chart'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { initialsForEmail, relativeTime } from '@/lib/format'
+import { initialsForEmail, relativeTime, weekOverWeekChange } from '@/lib/format'
 
 export const metadata: Metadata = {
   title: 'Overview',
@@ -31,24 +32,35 @@ export default async function OverviewPage() {
     getRecentIdentifications(userId),
   ])
 
+  // R24 F6: the live's change badge math (decoded from its app bundle) —
+  // only the New This Week card carries a non-empty change; the badge is
+  // absent entirely when last week was 0. R24 F4: mail/users ship the
+  // live's legacy 0.462 icon generation (eye/globe are generation-stable).
+  const weekChange = weekOverWeekChange(stats.newThisWeek, stats.lastWeek)
   const kpis = [
     {
       label: 'Total Visitors',
       value: stats.totalVisitors.toLocaleString(),
       sub: 'All time',
+      change: '' as string,
+      up: true,
       icon: Eye,
     },
     {
       label: 'Emails Identified',
       value: stats.emailsIdentified.toLocaleString(),
       sub: `${stats.matchRate.toFixed(1)}% match rate`,
-      icon: Mail,
+      change: '',
+      up: true,
+      icon: MailIcon,
     },
     {
       label: 'New This Week',
       value: stats.newThisWeek.toLocaleString(),
       sub: `vs. ${stats.lastWeek} last week`,
-      icon: Users,
+      change: weekChange.change,
+      up: weekChange.up,
+      icon: UsersIcon,
     },
     {
       label: 'Active Domains',
@@ -56,6 +68,8 @@ export default async function OverviewPage() {
       // Live semantics: the value is the total domain count; the sub-line
       // reports verified domains ("1 verified" with a pending domain present).
       sub: `${stats.verifiedDomains} verified`,
+      change: '',
+      up: true,
       icon: Globe,
     },
   ]
@@ -78,6 +92,25 @@ export default async function OverviewPage() {
                 {kpi.value}
               </div>
               <div className="flex items-center gap-2 mt-1">
+                {/* R24 F6: the live's trend badge — ONLY on cards with a
+                    non-empty change (New This Week). neon-green +
+                    TrendingUp when >= 0, destructive + TrendingDown when
+                    negative; icon at h-3 w-3 mr-0.5, percent at 1 decimal
+                    with an explicit + at >= 0. */}
+                {kpi.change && (
+                  <span
+                    className={`inline-flex items-center text-xs font-semibold ${
+                      kpi.up ? 'text-neon-green' : 'text-destructive'
+                    }`}
+                  >
+                    {kpi.up ? (
+                      <TrendingUpIcon className="h-3 w-3 mr-0.5" />
+                    ) : (
+                      <TrendingDownIcon className="h-3 w-3 mr-0.5" />
+                    )}
+                    {kpi.change}
+                  </span>
+                )}
                 <span className="text-xs text-muted-foreground">{kpi.sub}</span>
               </div>
             </CardContent>
@@ -124,13 +157,15 @@ export default async function OverviewPage() {
                       </span>
                     </div>
                     {/* R6-H1: the live's big number is the identified count;
-                        total views rides along as the small label. */}
+                        total views rides along as the small label. R24 F3:
+                        the live NEVER singularizes — "1 views" is its
+                        rendered output (views.toLocaleString() + " views"). */}
                     <div className="text-right shrink-0 ml-3">
                       <div className="text-sm font-semibold">
                         {page.identified}
                       </div>
                       <div className="text-[10px] text-muted-foreground">
-                        {page.views === 1 ? '1 view' : `${page.views} views`}
+                        {page.views.toLocaleString()} views
                       </div>
                     </div>
                   </div>

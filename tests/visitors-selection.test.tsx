@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { Topbar } from '@/components/dashboard/topbar'
 import { publishSelectedVisitorIds } from '@/components/dashboard/chrome-store'
@@ -47,22 +48,28 @@ describe('topbar Export swap (R11 live parity)', () => {
     const html = renderTopbar()
     expect(html).toContain('Export All')
     expect(html).not.toContain('Export (')
-    // The live's sm-gradient chrome (checked piecewise — SSR interleaves
-    // the clone's responsive hidden/sm:inline-flex display utilities).
+    // The live's sm-gradient chrome — R24 F8 renders the full byte tail
+    // (variant-free recipe; no hidden/sm:inline-flex — visible on mobile).
     expect(html).toContain(
       'gradient-primary text-primary-foreground shadow-lg glow-primary',
     )
     expect(html).toContain('h-9 rounded-md px-3')
     expect(html).toContain('transition-all duration-300 font-semibold')
+    expect(html).not.toContain('sm:inline-flex')
   })
 
-  it('swaps to Export (N) with an ids-scoped href when rows are selected', () => {
+  it('swaps to Export (N) when rows are selected (R24 F8: a real button; the ids scope the click target)', () => {
     publishSelectedVisitorIds(['v1', 'v2'])
 
     const html = renderTopbar()
     expect(html).toContain('Export (2)')
     expect(html).not.toContain('Export All')
-    expect(html).toContain('/api/export?ids=v1,v2')
+    // R24 F8: the live's Export is a <button> whose click handler navigates
+    // — the ids scoping lives in the onClick closure, not a rendered href.
+    expect(html).toMatch(/<button[^>]*class="[^"]*gradient-primary/)
+    expect(html).not.toContain('<a href="/api/export')
+    const source = readFileSync('src/components/dashboard/topbar.tsx', 'utf-8')
+    expect(source).toContain('/api/export?ids=${selectedVisitorIds.join(\',\')}')
   })
 })
 

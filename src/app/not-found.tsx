@@ -5,9 +5,12 @@ import { NotFoundTitle } from '@/components/not-found-title'
  * Root not-found boundary (F-27), rebuilt to the live DOM verbatim (R11-F15):
  * a minimal centered block on bg-muted serving both app and marketing
  * misses — "404" / "Oops! Page not found" / a plain underlined home link.
- * The tab title swaps to the live's "Page Not Found | Pixelco" via the
- * NotFoundTitle client island (R14-F10 — the live performs the same swap
- * in its client router).
+ *
+ * R24 F12 correction: R14-F10 claimed the live swaps the 404 tab title to
+ * "Page Not Found | Pixelco" in its client router — disproven by settled-
+ * load probes (the live's title stays "Pixelco" forever). The NotFoundTitle
+ * island is therefore a KEPT VALUE-ADD in the R14-D3 category (per-page app
+ * titles), not live parity; behavior unchanged.
  */
 export default function NotFound() {
   return (

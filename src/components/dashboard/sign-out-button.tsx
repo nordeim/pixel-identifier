@@ -1,8 +1,8 @@
 'use client'
 
-import { LogOut } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { cn } from '@/lib/utils'
+import { LogOutIcon } from '@/components/dashboard/live-icons'
 
 /**
  * NextAuth v4 exposes signOut only as a client API, so the sidebar and the
@@ -21,7 +21,9 @@ export function SignOutButton({ className }: { className?: string }) {
         className,
       )}
     >
-      <LogOut className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+      {/* R24 F4/F10: the live's log-out ships the legacy 0.462 geometry at
+          h-3.5 w-3.5 with NO shrink-0 (verified DOM). */}
+      <LogOutIcon className="h-3.5 w-3.5" aria-hidden="true" />
       Sign out
     </button>
   )

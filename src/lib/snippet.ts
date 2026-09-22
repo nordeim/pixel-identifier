@@ -47,3 +47,49 @@ export function collectorUrlFromHeaders(host: string, proto?: string | null): st
   const safeHost = HOST_PATTERN.test(host) ? host : SAFE_FALLBACK_HOST
   return `${protocol}://${safeHost}/pixel.js`
 }
+
+/** R24 F2: platforms whose install tab ships a per-tab snippet pre. */
+export type PlatformId = 'wordpress' | 'shopify' | 'gtm'
+
+/**
+ * R24 F2: the live's per-platform snippet pre, decoded from its install
+ * page (all four tabs captured verbatim, R24 plan 9th probe generation).
+ * WordPress/Shopify prepend a two-line HTML comment header to the standard
+ * snippet; the GTM variant additionally inlines the site key as the
+ * setAttribute literal (its bundle's own quirk — `data-site` receives the
+ * raw key, not the `e` parameter). Key/URL validation mirrors buildSnippet
+ * (both are server-controlled, but defence in depth).
+ */
+const PLATFORM_HEADERS: Record<PlatformId, string> = {
+  wordpress:
+    `<!-- Add to your theme's header.php or use a plugin like "Insert Headers and Footers" -->\n` +
+    '<!-- Paste this before the closing </head> tag -->',
+  shopify:
+    '<!-- In Shopify Admin → Online Store → Themes → Edit Code -->\n' +
+    '<!-- Open theme.liquid and paste before </head> -->',
+  gtm: '<!-- In GTM, create a Custom HTML tag -->\n<!-- Trigger: All Pages -->',
+}
+
+export function buildPlatformSnippet(
+  platform: PlatformId,
+  siteKey: string,
+  collectorUrl: string,
+): string {
+  if (!/^px_[0-9a-f]{16}$/.test(siteKey)) {
+    throw new Error(`Invalid site key: ${siteKey.slice(0, 24)}`)
+  }
+  const header = `${PLATFORM_HEADERS[platform]}\n`
+  if (platform === 'gtm') {
+    // The GTM variant: the setAttribute argument is the LITERAL key.
+    const url = escapeJsString(collectorUrl)
+    const key = escapeJsString(siteKey)
+    return `${header}<script>
+  (function(p,i,x,e,l){p._pxq=p._pxq||[];
+  var s=i.createElement('script');s.async=1;
+  s.src='${url}';
+  s.setAttribute('data-site','${key}');
+  i.head.appendChild(s);})(window,document,'px','${key}');
+</script>`
+  }
+  return header + buildSnippet(siteKey, collectorUrl)
+}

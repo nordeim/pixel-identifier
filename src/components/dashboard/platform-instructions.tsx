@@ -1,95 +1,187 @@
 'use client'
 
-import { Code, Globe, PanelsTopLeft, ShoppingBag } from 'lucide-react'
+import { Globe, PanelsTopLeft } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CodeIcon, ShoppingBagIcon } from '@/components/dashboard/live-icons'
+import {
+  buildPlatformSnippet,
+  type PlatformId,
+} from '@/lib/snippet'
 
-const WORDPRESS_STEPS = [
-  {
-    title: 'Open your WordPress admin',
-    text: 'Log in to your WordPress dashboard (usually yoursite.com/wp-admin).',
-  },
-  {
-    title: 'Navigate to Appearance → Theme File Editor',
-    text: 'In the left sidebar, go to Appearance, then click Theme File Editor. Alternatively, use a plugin like "Insert Headers and Footers".',
-  },
-  {
-    title: 'Edit the header.php file',
-    text: 'In the Theme File Editor, find and click header.php in the right sidebar to open it for editing.',
-  },
-  {
-    title: 'Paste the snippet before </head>',
-    text: 'Paste the pixel code just before the closing </head> tag, then click Update File.',
-  },
-]
+/**
+ * R24 F2 rewrite. The prior round's WordPress/Shopify/GTM steps were
+ * invented (Theme File Editor etc.); the live ships the "Insert Headers
+ * and Footers" plugin path for WordPress, a different Shopify flow and a
+ * GTM flow — captured verbatim (R24 plan, 9th probe generation):
+ *
+ * - step literals render as <code> chips (text-xs bg-muted px-1.5 py-0.5
+ *   rounded font-mono — the same chip the Quick Start subtitle uses);
+ * - UI paths render as <span class="font-medium">;
+ * - WordPress/Shopify/GTM append a per-tab snippet pre (text-xs — NOT the
+ *   Quick Start pre's text-sm) in a `relative mt-3` wrapper; the HTML tab
+ *   has steps only;
+ * - the tab icons ship the live app bundle's legacy lucide generation
+ *   (R24 F4 — code / shopping-bag; globe is generation-stable).
+ */
 
-const SHOPIFY_STEPS = [
-  {
-    title: 'Open your Shopify admin',
-    text: 'Log in to your Shopify store admin panel.',
-  },
-  {
-    title: 'Go to Online Store → Themes',
-    text: 'Navigate to Online Store in the left sidebar, then click Themes.',
-  },
-  {
-    title: 'Click "Edit code"',
-    text: 'On your active theme, click the "…" menu and select Edit code.',
-  },
-  {
-    title: 'Paste into theme.liquid',
-    text: 'Open the theme.liquid file and paste the pixel code just before the closing </head> tag, then click Save.',
-  },
-]
+/** A step text is a run of segments: raw text, a literal code chip, or a UI-path emphasis. */
+type StepSegment = string | { code: string } | { strong: string }
 
-const GTM_STEPS = [
-  {
-    title: 'Open Google Tag Manager',
-    text: 'Log in to your Google Tag Manager workspace.',
-  },
-  {
-    title: 'Create a new tag',
-    text: 'Click Add a new tag, then choose Custom HTML as the tag type.',
-  },
-  {
-    title: 'Paste the snippet',
-    text: 'Paste the pixel code (including the <script> tags) into the HTML field.',
-  },
-  {
-    title: 'Trigger on All Pages',
-    text: 'Choose the "All Pages" trigger (Page View), name the tag "Pixelco", then publish your container.',
-  },
-]
+interface PlatformStep {
+  title: string
+  segments: StepSegment[]
+}
 
-// Live HTML guide carries four steps (incl. the deploy confirmation step).
-const HTML_STEPS = [
+const code = (value: string): StepSegment => ({ code: value })
+const strong = (value: string): StepSegment => ({ strong: value })
+
+const HTML_STEPS: PlatformStep[] = [
   {
     title: 'Open your HTML file',
-    text: 'Open the main HTML file of your website (usually index.html).',
+    segments: [
+      'Open the main HTML file of your website (usually ',
+      code('index.html'),
+      ').',
+    ],
   },
   {
     title: 'Find the <head> tag',
-    text: 'Locate the <head> section of your page.',
+    segments: ['Locate the ', code('<head>'), ' section of your page.'],
   },
   {
     title: 'Paste the snippet',
-    text: 'Paste the pixel code just before the closing </head> tag. It only needs to be in your main layout file — it will work on every page.',
+    segments: [
+      'Paste the pixel code just before the closing ',
+      code('</head>'),
+      ' tag. It only needs to be in your main layout file — it will work on every page.',
+    ],
   },
   {
     title: 'Deploy your site',
-    text: 'Save and deploy your changes. Visit your site, then check your Pixelco dashboard to confirm events are arriving.',
+    segments: [
+      'Save and deploy your changes. Visit your site, then check your Pixelco dashboard to confirm events are arriving.',
+    ],
   },
 ]
 
-const PLATFORMS = [
-  // Icon set mirrors the live app: code / globe / shopping-bag / code.
-  { id: 'html', label: 'HTML / Custom', icon: Code, steps: HTML_STEPS },
-  { id: 'wordpress', label: 'WordPress', icon: Globe, steps: WORDPRESS_STEPS },
-  { id: 'shopify', label: 'Shopify', icon: ShoppingBag, steps: SHOPIFY_STEPS },
-  { id: 'gtm', label: 'Google Tag Manager', icon: Code, steps: GTM_STEPS },
+const WORDPRESS_STEPS: PlatformStep[] = [
+  {
+    title: "Install 'Insert Headers and Footers' plugin",
+    segments: [
+      'Go to ',
+      strong('Plugins → Add New'),
+      ' and search for "Insert Headers and Footers" by WPCode. Install and activate it.',
+    ],
+  },
+  {
+    title: 'Add the snippet',
+    segments: [
+      'Go to ',
+      strong('Code Snippets → Header & Footer'),
+      '. Paste the pixel code in the ',
+      strong('"Header"'),
+      ' section.',
+    ],
+  },
+  {
+    title: 'Save',
+    segments: [
+      'Click Save. The pixel is now active on all pages of your WordPress site.',
+    ],
+  },
 ]
 
-export function PlatformInstructions() {
+const SHOPIFY_STEPS: PlatformStep[] = [
+  {
+    title: 'Open theme editor',
+    segments: ['Go to ', strong('Online Store → Themes → Actions → Edit Code'), '.'],
+  },
+  {
+    title: 'Edit theme.liquid',
+    segments: ['Open ', code('theme.liquid'), ' from the Layout section.'],
+  },
+  {
+    title: 'Paste before </head>',
+    segments: [
+      'Find the ',
+      code('</head>'),
+      ' tag and paste the pixel code just above it.',
+    ],
+  },
+  {
+    title: 'Save',
+    segments: ['Click Save. The pixel now runs on every page of your Shopify store.'],
+  },
+]
+
+const GTM_STEPS: PlatformStep[] = [
+  {
+    title: 'Create a new tag',
+    segments: ['In Google Tag Manager, go to ', strong('Tags → New → Custom HTML'), '.'],
+  },
+  {
+    title: 'Paste the code',
+    segments: ['Paste the pixel snippet into the HTML field.'],
+  },
+  {
+    title: 'Set the trigger',
+    segments: ['Set the trigger to ', strong('"All Pages"'), '.'],
+  },
+  {
+    title: 'Publish',
+    segments: ['Save the tag and publish your GTM container.'],
+  },
+]
+
+const PLATFORMS: {
+  id: 'html' | PlatformId
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+  steps: PlatformStep[]
+}[] = [
+  // Icon set mirrors the live app: code / globe / shopping-bag / code —
+  // with the R24 legacy geometries where the live's 0.462 build drifts.
+  { id: 'html', label: 'HTML / Custom', icon: CodeIcon, steps: HTML_STEPS },
+  { id: 'wordpress', label: 'WordPress', icon: Globe, steps: WORDPRESS_STEPS },
+  { id: 'shopify', label: 'Shopify', icon: ShoppingBagIcon, steps: SHOPIFY_STEPS },
+  { id: 'gtm', label: 'Google Tag Manager', icon: CodeIcon, steps: GTM_STEPS },
+]
+
+function StepSegments({ segments }: { segments: StepSegment[] }) {
+  return (
+    <p className="text-sm text-muted-foreground">
+      {segments.map((segment, index) =>
+        typeof segment === 'string' ? (
+          segment
+        ) : 'code' in segment ? (
+          <code
+            key={index}
+            className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono"
+          >
+            {segment.code}
+          </code>
+        ) : (
+          <span key={index} className="font-medium">
+            {segment.strong}
+          </span>
+        ),
+      )}
+    </p>
+  )
+}
+
+export function PlatformInstructions({
+  siteKey,
+  collectorUrl,
+  defaultValue = 'html',
+}: {
+  siteKey: string
+  collectorUrl: string
+  /** R24: SSR renders only the active Radix panel — tests pin each tab by
+   * rendering the component once per defaultValue. */
+  defaultValue?: 'html' | 'wordpress' | 'shopify' | 'gtm'
+}) {
   return (
     <Card>
       <CardHeader>
@@ -109,7 +201,7 @@ export function PlatformInstructions() {
         </div>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="html" className="w-full">
+        <Tabs defaultValue={defaultValue} className="w-full">
           <TabsList className="w-full justify-start mb-4">
             {PLATFORMS.map((platform) => (
               <TabsTrigger
@@ -134,11 +226,27 @@ export function PlatformInstructions() {
                     </div>
                     <div>
                       <p className="text-sm font-medium">{step.title}</p>
-                      <p className="text-sm text-muted-foreground">{step.text}</p>
+                      <StepSegments segments={step.segments} />
                     </div>
                   </div>
                 ))}
               </div>
+              {/* R24 F2: the per-tab snippet pre (WordPress/Shopify/GTM;
+                  the HTML tab has steps only). text-xs — NOT the Quick
+                  Start pre's text-sm. */}
+              {platform.id !== 'html' && (
+                <div className="relative mt-3">
+                  <pre className="bg-foreground/5 border border-border rounded-lg p-4 text-xs font-mono overflow-x-auto leading-relaxed">
+                    <code>
+                      {buildPlatformSnippet(
+                        platform.id,
+                        siteKey,
+                        collectorUrl,
+                      )}
+                    </code>
+                  </pre>
+                </div>
+              )}
             </TabsContent>
           ))}
         </Tabs>

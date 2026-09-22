@@ -9,8 +9,8 @@ import {
   CreditCard,
   Eye,
   Settings,
-  Users,
 } from 'lucide-react'
+import { UsersIcon } from '@/components/dashboard/live-icons'
 import { NAV_SECTIONS, type NavItem } from '@/lib/dashboard-nav'
 import { SignOutButton } from '@/components/dashboard/sign-out-button'
 import { Badge } from '@/components/ui/badge'
@@ -20,7 +20,9 @@ const ICONS: Record<NavItem['icon'], React.ComponentType<{ className?: string }>
   eye: Eye,
   activity: Activity,
   'code-xml': CodeXml,
-  users: Users,
+  // R24 F4: the live app bundle's users icon (Domains link) ships the
+  // legacy 0.462 generation (circle-second, 2-decimal arcs).
+  users: UsersIcon,
   'credit-card': CreditCard,
   settings: Settings,
 }

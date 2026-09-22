@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 613 assertions) · Playwright e2e (chromium, standalone build) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 662 assertions) · Playwright e2e (chromium, standalone build) |
 | **Runtime** | Node.js ≥ 20 |
 
 > **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
@@ -404,6 +404,39 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   beacon → activity loop). +17 pins in `tests/{db-path,mobile-nav-r23-
   parity}.test.tsx` + 14 e2e specs; CI gained an e2e job. Screenshots in
   `docs/screenshots/`.
+- **Live icon generation, platform instructions & text parity
+  (round-24)** — the 9th probe generation (drift watch on the R23
+  next-notes: settings save flow, visitors row click, bundle hashes,
+  Prisma CLI anchor — no live redeploy; all four ruled non-findings)
+  decoded the live app bundle's lucide-react pin (**v0.462.0**) and
+  closed the REAL pre-existing drift: ten dashboard icons ship the OLD
+  lucide generation (bell, log-out, mail, users, download, search,
+  code, shopping-bag, trending-up/down — geometry overrides in
+  `src/components/dashboard/live-icons.tsx`, app-context-scoped since
+  the live's MARKETING bundle ships the new generation), the bell
+  button's merged class order (`h-10 w-10 relative`), the
+  **New This Week trend badge** (`weekOverWeekChange` in
+  `src/lib/format.ts` — `+X%`/`X%` with neon-green/destructive +
+  TrendingUp/Down, absent when last week was 0), the Top Pages label
+  never singularizes ("1 views" — the live's own output), the Export
+  button is a real `<button>` visible on mobile (client-invoked
+  download; the R21 `/api/export` byte format stays the invisible
+  mechanism), the settings Save spinner renders ALONGSIDE the label
+  (`h-3.5 w-3.5 mr-1.5 animate-spin`), the sign-out icon drops its
+  `shrink-0`, and the install page's **platform instructions were
+  rewritten verbatim** (the WordPress path is the "Insert Headers and
+  Footers" plugin — not the invented Theme File Editor flow — with
+  `<code>` chip literals, `font-medium` UI paths, and per-tab snippet
+  `<pre>`s for WordPress/Shopify/GTM built by `buildPlatformSnippet`
+  in `src/lib/snippet.ts`; the GTM variant inlines the site key as the
+  setAttribute literal). Marketing text fixes: "company (if **B2B**)"
+  (the clone had shipped B2C since the initial commit) and the
+  capitalized kickers ("Perfect Fit"/"Our Process"). Docs correction:
+  R14-F10's live-parity evidence for the 404 title swap was disproven
+  (the live's title stays "Pixelco"); the `NotFoundTitle` island stays
+  as a documented R14-D3 value-add. +49 pins across
+  `tests/{live-icons-r24,dashboard-r24-parity,platform-instructions-r24,
+  marketing-r24-parity}.test.ts(x)`. Screenshots in `docs/screenshots/`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the

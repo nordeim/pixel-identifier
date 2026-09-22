@@ -58,6 +58,50 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   `playwright.config.ts`, which boots the STANDALONE build against a
   throwaway `db/e2e.db` through `scripts/e2e-server.mjs`; never the dev
   DB). Run: `npm run build:standalone && npm run test:e2e`.
+- **R24: the live APP bundle pins lucide-react 0.462.0 (old icon
+  generation); the MARKETING bundle ships the new one.** Ten dashboard
+  icons therefore render OLD-generation geometry on the live and are
+  overridden in `src/components/dashboard/live-icons.tsx` (extending the
+  R16 D4 pattern): bell, log-out, mail (rect-first), users
+  (circle-second), download, search (1-decimal `4.3` handle), code,
+  shopping-bag, trending-up, trending-down (polyline encodings). Never
+  use these components in marketing contexts; never "upgrade" the
+  geometries to 0.525's redesign — the drift is the LIVE's pin.
+  Generation-STABLE icons (eye, globe, user, panel-left, zap, copy,
+  circle-check, map-pin, chevron-down, circle-alert, chart-column,
+  activity, code-xml, credit-card, settings) keep their lucide-react
+  imports, and `LoaderCircle` needs no override (0.525's is
+  byte-identical). Pinned by `tests/live-icons-r24.test.tsx`.
+- **R24: dashboard chrome refinements (v1.23).** The bell button's class
+  order is the live's merged `h-10 w-10 relative` (its source is
+  `size="icon"` + `className="relative"`); the visitors topbar Export
+  is a real `<button>` (client-invoked download via
+  `window.location.assign` — the R21 `/api/export` byte format is the
+  invisible mechanism) with NO `hidden sm:inline-flex` (visible on
+  mobile) and the icon order `h-3.5 w-3.5 mr-1.5`; the New This Week
+  KPI alone carries the live's trend badge (`weekOverWeekChange` in
+  `src/lib/format.ts`: `((c-d)/d*100).toFixed(1)` with an explicit `+`
+  at ≥0, EMPTY when last week was 0; neon-green+TrendingUp vs
+  destructive+TrendingDown at `h-3 w-3 mr-0.5`); the Top Pages label
+  NEVER singularizes ("1 views" is the live's rendered output); the
+  settings Save spinner renders ALONGSIDE the label
+  (`h-3.5 w-3.5 mr-1.5 animate-spin` — never replaces it); the
+  sign-out icon carries no `shrink-0`. Pinned by
+  `tests/dashboard-r24-parity.test.tsx`.
+- **R24: the install platform instructions are live-verbatim (v1.23).**
+  The WordPress path is the "Insert Headers and Footers" PLUGIN (never
+  the Theme File Editor), Shopify rides `theme.liquid` via
+  Online Store → Themes → Actions → Edit Code, GTM is a Custom HTML tag
+  on All Pages. Step literals render as `<code>` chips (`text-xs
+  bg-muted px-1.5 py-0.5 rounded font-mono`), UI paths as
+  `<span class="font-medium">`, and WordPress/Shopify/GTM append a
+  per-tab snippet `<pre>` (`text-xs`, in a `relative mt-3` wrapper —
+  the HTML tab has steps only). `buildPlatformSnippet` in
+  `src/lib/snippet.ts` builds the pres — the GTM variant inlines the
+  site key as the setAttribute literal. The component takes
+  `siteKey`/`collectorUrl` (+ optional `defaultValue` for per-tab SSR
+  test pins — Radix renders only the active panel). Pinned by
+  `tests/platform-instructions-r24.test.tsx`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle
@@ -424,15 +468,18 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   metadata conventions cannot emit comments or trailing-zero priorities.
   The favicon is `public/favicon.ico` (the live's bytes, auto-discovered
   — there is no `app/icon.svg` and no injected link tag).
-- **The 404 tab title is a client-side swap (R14).** The live (CSR)
-  serves its shell title and swaps to "Page Not Found | Pixelco" in the
-  client router; the clone reproduces this via the `NotFoundTitle`
-  island in `not-found.tsx` — a MutationObserver re-asserts the title
-  because Next's client metadata controller re-applies the resolved
-  root `<title>` AFTER hydration (a plain `document.title` assignment in
-  an effect gets overwritten). Unmount disconnects the observer so
-  client navigation restores normal metadata. The HTTP status stays a
-  correct 404 (the live's 200 SPA fallback is not replicated).
+- **The 404 tab title swap is a KEPT VALUE-ADD, not live parity (R24-F12
+  corrected the R14-F10 evidence).** Settled-load probes show the live
+  (CSR) NEVER swaps its 404 tab title — it stays "Pixelco" forever;
+  R14-F10's "the live swaps to 'Page Not Found | Pixelco'" claim was
+  wrong. The clone's `NotFoundTitle` island in `not-found.tsx` STAYS as
+  an R14-D3-category value-add (per-page app titles): a MutationObserver
+  re-asserts the title because Next's client metadata controller
+  re-applies the resolved root `<title>` AFTER hydration (a plain
+  `document.title` assignment in an effect gets overwritten). Unmount
+  disconnects the observer so client navigation restores normal
+  metadata. The HTTP status stays a correct 404 (the live's 200 SPA
+  fallback is not replicated).
 - **Typography is live-parity (v1.4).** App body = **Inter**; **Space
   Grotesk** is the `font-display` utility (card titles, page H1s, KPI values,
   prices, sidebar wordmark); marketing = **DM Sans**; mono stays mono. Brand

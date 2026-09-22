@@ -3,7 +3,7 @@
 import { useActionState, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { signOut } from 'next-auth/react'
-import { Loader2 } from 'lucide-react'
+import { LoaderCircle } from 'lucide-react'
 import { updateProfileAction, deleteAccountAction } from '@/actions/settings'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
@@ -114,7 +114,12 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
 
             {/* R18-A1: the live's Save button sits DIRECTLY in the card
                 body's space-y-4 flow (no wrapper div). The form carries
-                space-y-4 so the group rhythm survives the D2 form wrapper. */}
+                space-y-4 so the group rhythm survives the D2 form wrapper.
+                R24 F9: the live's pending spinner renders ALONGSIDE the
+                label (isPending && <LoaderCircle h-3.5 w-3.5 mr-1.5
+                animate-spin/> followed by "Save Changes") — the label NEVER
+                disappears. LoaderCircle (0.525) is byte-identical to the
+                live's 0.462 LoaderCircle. */}
             <Button
               type="submit"
               disabled={pending}
@@ -122,11 +127,10 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
               size={null}
               className="gradient-primary text-primary-foreground shadow-lg glow-primary hover:opacity-90 transition-all duration-300 font-semibold h-9 rounded-md px-3"
             >
-              {pending ? (
-                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-              ) : (
-                'Save Changes'
+              {pending && (
+                <LoaderCircle className="h-3.5 w-3.5 mr-1.5 animate-spin" aria-hidden="true" />
               )}
+              Save Changes
             </Button>
             {state && state.ok && (
               <p role="status" className="text-sm font-medium text-teal-600">
@@ -196,11 +200,14 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
                       disabled={confirmText.trim().toLowerCase() !== email.toLowerCase() || deleting}
                       className="font-semibold"
                     >
-                      {deleting ? (
-                        <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                      ) : (
-                        'Delete Account'
+                      {/* The delete dialog is a clone value-add (the live's
+                          Delete button is dead — no handler); its spinner
+                          mirrors the Save button's R24 structure for
+                          consistency. */}
+                      {deleting && (
+                        <LoaderCircle className="h-3.5 w-3.5 mr-1.5 animate-spin" aria-hidden="true" />
                       )}
+                      Delete Account
                     </Button>
                   </form>
                 </AlertDialogFooter>

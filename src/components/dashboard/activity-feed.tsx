@@ -1,7 +1,8 @@
 'use client'
 
 import { useCallback, useState } from 'react'
-import { ArrowUpRight, ChevronLeft, ChevronRight, Eye, Globe, Loader2, Mail } from 'lucide-react'
+import { ArrowUpRight, ChevronLeft, ChevronRight, Eye, Globe, Loader2 } from 'lucide-react'
+import { MailIcon } from '@/components/dashboard/live-icons'
 import { LegacyBadge } from '@/components/dashboard/content-badges'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -104,7 +105,9 @@ export function ActivityFeed({ initialEvents, totalCount }: ActivityFeedProps) {
                       }
                     >
                       {event.name === 'identification' ? (
-                        <Mail className="h-3.5 w-3.5 text-primary-foreground" />
+                        /* R24 F4: the live's mail ships the legacy 0.462
+                            geometry (rect-first, 2-decimal flap). */
+                        <MailIcon className="h-3.5 w-3.5 text-primary-foreground" />
                       ) : (
                         <Eye className="h-3.5 w-3.5 text-muted-foreground" />
                       )}

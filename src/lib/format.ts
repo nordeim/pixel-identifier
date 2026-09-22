@@ -44,3 +44,21 @@ export function initialsForEmail(email: string): string {
    own export ships raw values (never replicate-vs-exceed the live), and in
    this clone the exported values come only from the deterministic
    resolver's catalogs — no user-supplied text reaches a CSV cell. */
+
+/**
+ * R24 F6: the live dashboard's New This Week change badge, decoded from
+ * its app bundle: `u = d>0 ? ((c-d)/d*100).toFixed(1) : "0"`,
+ * `change = d>0 ? (Number(u)>=0 ? "+" : "") + u + "%" : ""` and
+ * `up = Number(u) >= 0`. Empty change means NO badge (last week was 0);
+ * the explicit `+` prefix only applies at >= 0 (negatives carry their own
+ * minus). Pinned by tests/dashboard-r24-parity.test.tsx.
+ */
+export function weekOverWeekChange(
+  current: number,
+  lastWeek: number,
+): { change: string; up: boolean } {
+  if (lastWeek <= 0) return { change: '', up: true }
+  const pct = ((current - lastWeek) / lastWeek * 100).toFixed(1)
+  const up = Number(pct) >= 0
+  return { change: `${up ? '+' : ''}${pct}%`, up }
+}

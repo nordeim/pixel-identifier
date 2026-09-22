@@ -227,9 +227,11 @@ and stable per visitor.
   Handlers reproducing the live bytes (the Next conventions cannot emit
   comments or "1.0" priorities), the favicon is the live's
   `public/favicon.ico` with no link tag, and the 404 tab title is the
-  client-side `NotFoundTitle` swap (the MutationObserver is REQUIRED —
-  Next's metadata controller overwrites plain title assignments after
-  hydration) while the HTTP status stays a correct 404. Pinned by
+  client-side `NotFoundTitle` swap — a KEPT VALUE-ADD, not live parity
+  (R24-F12: settled-load probes show the live never swaps its 404 title;
+  the MutationObserver is still REQUIRED — Next's metadata controller
+  overwrites plain title assignments after hydration) while the HTTP
+  status stays a correct 404. Pinned by
   `tests/seo-parity.test.ts` + `tests/seo-routes.test.ts`.
 
 ## Implementation Standards
@@ -365,6 +367,18 @@ Prove-It). `TZ` is pinned to UTC.
   (R23-F3), the auth redirect, `/api/health`, `/pixel.js`, the
   anti-enumeration 204, and the beacon → Activity-Log loop. Manual browser
   flows (sign-up → domain → beacon → dashboard → export) complement it.
+- **Live-parity pins (rounds 11-24):** the live DOM's class strings,
+  emission orders and copy are pinned by SSR/source tests against
+  captured evidence — the R24 batch pins the live app bundle's
+  lucide-react 0.462 icon generation (ten geometry overrides in
+  `src/components/dashboard/live-icons.tsx`, app-scoped), the bell
+  button's `h-10 w-10 relative` order, the mobile-visible Export
+  `<button>`, the New This Week trend badge (`weekOverWeekChange`), the
+  never-singularized views label, the alongside-label Save spinner, the
+  live-verbatim platform instructions (+ `buildPlatformSnippet`'s
+  per-tab pres, GTM literal-key variant), and the B2B/kicker marketing
+  texts (`tests/{live-icons-r24,dashboard-r24-parity,platform-
+  instructions-r24,marketing-r24-parity}.test.ts(x)`).
 
 ### Test Commands
 

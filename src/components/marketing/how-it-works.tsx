@@ -45,7 +45,7 @@ const STEPS = [
   {
     icon: Mail,
     title: 'Get Real Emails',
-    text: 'See identified visitors in your dashboard with their email, company (if B2C), pages viewed, and confidence score.',
+    text: 'See identified visitors in your dashboard with their email, company (if B2B), pages viewed, and confidence score.',
   },
   {
     icon: FileText,
@@ -71,7 +71,9 @@ export function Audience() {
     <section aria-labelledby="audience-heading" className="py-20 border-t border-border">
       <div className="container mx-auto px-6">
         <div data-reveal="16" data-reveal-delay="0" className="text-center mb-14">
-          <span className="text-xs font-semibold text-primary uppercase tracking-widest">Perfect fit</span>
+          {/* R24 F1: the live's kickers carry capitalized words (invisible
+              through the uppercase utility, but source parity). */}
+          <span className="text-xs font-semibold text-primary uppercase tracking-widest">Perfect Fit</span>
           <h2 id="audience-heading" className="text-3xl sm:text-4xl font-bold mt-2 text-foreground">
             Who Is Pixelco For?
           </h2>
@@ -111,7 +113,7 @@ export function HowItWorks() {
     <section id="how-it-works" aria-labelledby="how-heading" className="py-20 bg-card border-y border-border">
       <div className="container mx-auto px-6">
         <div data-reveal="16" data-reveal-delay="0" className="text-center mb-14">
-          <span className="text-xs font-semibold text-primary uppercase tracking-widest">Our process</span>
+          <span className="text-xs font-semibold text-primary uppercase tracking-widest">Our Process</span>
           <h2 id="how-heading" className="text-3xl sm:text-4xl font-bold mt-2 text-foreground">
             How We Identify Your Visitors
             <br />

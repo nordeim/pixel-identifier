@@ -2,9 +2,10 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { Bell, Download, PanelLeft } from 'lucide-react'
+import { PanelLeft } from 'lucide-react'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
+import { BellIcon, DownloadIcon } from '@/components/dashboard/live-icons'
 import { SidebarNav, type UsageProps } from '@/components/dashboard/sidebar-nav'
 import { toggleSidebar, useChromeState } from '@/components/dashboard/chrome-store'
 import { PAGE_META, visitorsSubtitle } from '@/lib/dashboard-nav'
@@ -43,10 +44,13 @@ export function Topbar({
   const isVisitors = pathname === '/dashboard/visitors'
 
   // R11 + R21-F1: with rows selected, the live swaps the topbar Export
-  // button to "Export (N)" with an ids-scoped href (no separate bulk-action
-  // row). Unselected, the live's W() exports the CURRENT PAGE's rows —
-  // "Export All" means all-rows-on-this-page vs the selected subset, never
-  // the whole account; the href scopes to the page ids the table publishes.
+  // button to "Export (N)" with an ids-scoped download (no separate
+  // bulk-action row). Unselected, the live's W() exports the CURRENT
+  // PAGE's rows — "Export All" means all-rows-on-this-page vs the selected
+  // subset, never the whole account; the click scopes to the page ids the
+  // table publishes. R24 F8: the live's Export is a <button> (its W builds
+  // a client-side CSV Blob) — the clone triggers the same download via the
+  // R21 /api/export route (byte-identical CSV; the mechanism is invisible).
   const selectedCount = selectedVisitorIds.length
   const exportHref =
     isVisitors && selectedCount > 0
@@ -126,23 +130,31 @@ export function Topbar({
       <div className="flex items-center gap-2">
         {isVisitors && (
           /* R11: live Export = sm gradient button (h-9, glow, 300ms) that
-              swaps to "Export (N)" while rows are selected. */
+              swaps to "Export (N)" while rows are selected. R24 F8: a real
+              <button> like the live (client-invoked download), visible on
+              mobile too (no hidden/sm:inline-flex), icon classes
+              h-3.5 w-3.5 mr-1.5. The variant-free recipe (base + consumer
+              tail incl. h-9 rounded-md px-3) emits the live's byte order. */
           <Button
-            asChild
-            size="sm"
-            className="hidden gradient-primary text-primary-foreground shadow-lg glow-primary hover:opacity-90 transition-all duration-300 font-semibold sm:inline-flex"
+            variant={null}
+            size={null}
+            className="gradient-primary text-primary-foreground shadow-lg glow-primary hover:opacity-90 transition-all duration-300 font-semibold h-9 rounded-md px-3"
+            onClick={() => {
+              window.location.assign(exportHref)
+            }}
           >
-            <a href={exportHref} download>
-              <Download className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
-              {selectedCount > 0 ? `Export (${selectedCount})` : 'Export All'}
-            </a>
+            <DownloadIcon className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" />
+            {selectedCount > 0 ? `Export (${selectedCount})` : 'Export All'}
           </Button>
         )}
 
         {/* R15-F2: the live's bell — ghost base + relative h-10 w-10, no
-            labels; the unread dot is the bg-hot-pink utility. */}
-        <Button variant="ghost" size={null} className="relative h-10 w-10">
-          <Bell className="h-4 w-4" />
+            labels; the unread dot is the bg-hot-pink utility. R24 F5: the
+            live's merged class order is `h-10 w-10 relative` (its source is
+            size="icon" + className="relative"). R24 F4: the icon ships the
+            live app bundle's legacy 0.462 bell geometry. */}
+        <Button variant="ghost" size={null} className="h-10 w-10 relative">
+          <BellIcon className="h-4 w-4" />
           {unread && <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-hot-pink" />}
         </Button>
 

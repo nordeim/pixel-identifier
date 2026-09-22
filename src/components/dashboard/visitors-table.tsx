@@ -4,21 +4,18 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   ArrowUpDown,
-  Building2,
   ChevronLeft,
   ChevronRight,
-  Mail,
   MapPin,
-  Search,
   User,
 } from 'lucide-react'
+import { MailIcon, SearchIcon, Building2Icon } from '@/components/dashboard/live-icons'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
-import { Building2Icon } from '@/components/dashboard/live-icons'
 import { LegacyBadge, LEGACY_BADGE_SECONDARY, LEGACY_BADGE_DEFAULT } from '@/components/dashboard/content-badges'
 import {
   Select,
@@ -220,7 +217,9 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
       {/* Search + filters row — live: h-10 search with pl-9 icon, w-44 selects */}
       <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          {/* R24 F4: the live's search ships the legacy 0.462 geometry
+              (1-decimal handle 4.3). */}
+          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -495,7 +494,7 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                       className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10"
                       aria-hidden="true"
                     >
-                      <Building2 className="h-5 w-5 text-primary" />
+                      <Building2Icon className="h-5 w-5 text-primary" />
                     </span>
                   ) : (
                     <span
@@ -536,7 +535,7 @@ export function VisitorsTable({ visitors, total, page, pageCount, counts, filter
                 {selected.email && (
                   <Button asChild className="w-full font-semibold">
                     <a href={`mailto:${selected.email}`}>
-                      <Mail className="mr-1.5 h-4 w-4" aria-hidden="true" />
+                      <MailIcon className="mr-1.5 h-4 w-4" aria-hidden="true" />
                       Reach out
                     </a>
                   </Button>

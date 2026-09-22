@@ -167,7 +167,9 @@ export default async function InstallPage({ searchParams }: InstallPageProps) {
         </CardContent>
       </Card>
 
-      <PlatformInstructions />
+      {/* R24 F2: the live's platform tabs build their per-tab snippet
+          pres from the SAME site key + collector URL as the Quick Start. */}
+      <PlatformInstructions siteKey={site.siteKey} collectorUrl={collectorUrl} />
 
       {/* How It Works */}
       <Card>

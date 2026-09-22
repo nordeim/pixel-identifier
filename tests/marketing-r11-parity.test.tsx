@@ -28,8 +28,8 @@ const header = renderToStaticMarkup(<SiteHeader />)
 describe('kickers are inline spans (R11-F5)', () => {
   it('renders every section kicker as a <span>, not a block <p>', () => {
     for (const [name, html, text] of [
-      ['audience', audience, 'Perfect fit'],
-      ['process', process, 'Our process'],
+      ['audience', audience, 'Perfect Fit'],
+      ['process', process, 'Our Process'],
       ['pricing', pricing, 'Pricing'],
       ['features', features, 'Benefits'],
       ['faq', faq, 'FAQ'],

@@ -3,7 +3,7 @@ name: pixel-identifier
 description: "Pixelco clone — cookieless visitor-identification SaaS: Next.js 16.3 App Router + React 19.3 + Tailwind v4 CSS-first + Prisma 6/SQLite + NextAuth v4 — marketing site, dashboard, tracking pixel, and identity-resolution pipeline, built to byte-level visual/functional parity with pixelco.io"
 version: 1.0.0
 last_updated: 2026-09-22
-project_state: "R23 shipped: 613 vitest (61 files) + 14 e2e chromium green, DB seam fixed (file:../db/custom.db → <repo>/db/custom.db), mobile-nav parity verified vs live, PAD v1.22"
+project_state: "R24 shipped: 662 vitest (65 files) + 14 e2e chromium green, the live's exact lucide icon generation pinned (10 legacy overrides in live-icons.tsx — the live app bundle ships lucide-react 0.462.0), platform instructions live-verbatim, New This Week trend badge, PAD v1.23"
 audience: "engineers + AI agents extending, debugging, onboarding, or replicating the Pixelco clone"
 tags: [nextjs16, react19, tailwind-v4, prisma, sqlite, nextauth4, vitest, playwright, saas, visitor-identification, parity-clone]
 ---
@@ -50,7 +50,7 @@ tags: [nextjs16, react19, tailwind-v4, prisma, sqlite, nextauth4, vitest, playwr
 18. [§18 Z-Index Layer Map](#18-z-index-layer-map)
 19. [§19 Color Reference (Complete)](#19-color-reference-complete)
 20. [§20 The Complete TypeScript Interface Reference](#20-the-complete-typescript-interface-reference)
-- [Appendix A — Round History (R1–R23)](#appendix-a--round-history)
+- [Appendix A — Round History (R1–R24)](#appendix-a--round-history)
 - [Appendix B — The DATABASE_URL Seam (Deep Dive)](#appendix-b--the-database_url-seam-deep-dive)
 - [Appendix C — Live-Site Validation Methodology](#appendix-c--live-site-validation-methodology)
 - [Appendix D — Audit History](#appendix-d--audit-history)
@@ -67,7 +67,7 @@ where anonymous website visitors are resolved to real email addresses —
 consisting of a marketing site (landing + 8 sub-pages), an authenticated
 dashboard, a first-party tracking pixel, and an identity-resolution pipeline,
 specified in `Project_Architecture_Document.md v1.22` and iterated to parity
-with the live across 23 audited rounds (R1–R23).
+with the live across 24 audited rounds (R1–R24).
 
 **Design thesis — amber-on-white SaaS with a neon data accent.** The live is
 built on warm amber CTA gradients (`linear-gradient(135deg, rgb(255,170,0),
@@ -120,7 +120,7 @@ Locked versions from `package.json` / the installed tree (`node -e
 | Auth | `next-auth` | **4.24.11** | Credentials provider, JWT sessions; **v4 API** (`getServerSession`), not v5 |
 | Validation | `zod` | **4.6.5** | v4 — `z.string().email()` still works; no `.parse` deprecation issues observed |
 | Charts | `recharts` | 2.15.4 | Dashboard trend chart (`src/components/dashboard/trend-chart.tsx`) |
-| Icons | `lucide-react` | 0.525.0 | Size via the live's exact class order (`w-6 h-6`, §1 parity rule) |
+| Icons | `lucide-react` | 0.525.0 | **Generation trap (R24-F4): the live's APP bundle pins 0.462.0** (old-gen bell, log-out, mail, users, download, search, code, shopping-bag + TrendingUp/Down polyline encoding) **while its marketing bundle ships the new gen** — 10 geometry overrides in `src/components/dashboard/live-icons.tsx`, scoped to dashboard contexts only; size via the live's exact class order (`w-6 h-6`, §1 parity rule) |
 | Hashing | `bcryptjs` | ^3.0.2 | Password hashes in `prisma/seed.ts` and login |
 | Unit tests | `vitest` | **5.0.0** | v5 CLI: `--pool=forks --maxWorkers=N` (no `--poolOptions.*` flag) |
 | E2E | `@playwright/test` | **1.63.0** | chromium only; standalone-build webServer on :3100 |
@@ -283,7 +283,7 @@ src/components/dashboard/ 16 components — sidebar-shell, topbar, visitors-tabl
 src/components/auth/       4 components — auth-shell, login-form, signup-form, forgot-password-form
 src/lib/                   18 modules — ALL data access, domain logic, and shared utilities
 prisma/                    schema.prisma + seed.ts
-tests/                     62 vitest files (61 run + 1 skipped)
+tests/                     66 vitest files (65 run + 1 skipped)
 e2e/                       3 playwright specs (14 tests)
 scripts/                   with-db-url.mjs, e2e-server.mjs, build-standalone.mjs
 ```
@@ -426,7 +426,7 @@ first run — the R22 first-run parity requirement).
 ## 8. Accessibility Implementation
 
 The parity rule dominates: **the live ships its own a11y chrome, and the
-clone matches the live — no more, no less.** Concretely (R19–R23 audits):
+clone matches the live — no more, no less.** Concretely (R19–R24 audits):
 
 - **Focus rings**: the live's focus-visible chains are replicated; the
   announcement-bar dismiss button keeps its focus-visible ring even though
@@ -466,6 +466,15 @@ tests. The ID scheme (`RNN-FN` or `NN`) maps to
 | R23-F4 | MEDIUM | Mobile toggle icon 20 px (`h-5 w-5`) vs the live's 24 px (`w-6 h-6`) — 4 px short touch target | `w-6 h-6` on Menu + X; pinned in the R23 parity test |
 | R23-F5/F6/F7 | LOW (byte) | Class-order divergences vs the live (Claim Now link tail `hover:opacity-80 transition-opacity`, arrow `w-3.5 h-3.5`, dismiss-button stray `transition-opacity`, X `w-4 h-4`) | Byte-matched; pinned (§1 parity mandate) |
 | R23-F8 | HIGH (infra) | **No e2e suite** — client-state regressions (F3) invisible to the SSR-string vitest suite by construction | Playwright config + 3 specs + CI e2e job |
+| R24-F4 | HIGH | **Icon-generation drift**: the live's app bundle pins `lucide-react@0.462.0` (old-gen bell/log-out/mail/users/download/search/code/shopping-bag + TrendingUp polyline encoding) while its marketing bundle ships the new generation — a repo-wide icon upgrade silently breaks dashboard parity | 10 geometry-override components in `src/components/dashboard/live-icons.tsx` (R16-D4 pattern extended), scoped to dashboard surfaces only; pinned byte-level by `tests/live-icons-r24.test.tsx` |
+| R24-F2 | HIGH | Install platform instructions were invented copy (e.g. WordPress via Theme File Editor — the live uses the "Insert Headers and Footers" plugin); the live wraps step literals in `<code>` chips (`text-xs bg-muted px-1.5 py-0.5 rounded font-mono`) and renders a per-tab snippet `<pre>` for WP/Shopify/GTM (HTML tab: steps only, no pre) | `platform-instructions.tsx` rewritten live-verbatim (rich-text steps, `siteKey`/`collectorUrl` props, optional `defaultValue` for tab pinning) + `buildPlatformSnippet()` in `src/lib/snippet.ts` (GTM = literal-siteKey variant); pinned by `tests/platform-instructions-r24.test.tsx` |
+| R24-F6 | MEDIUM | "New This Week" card lacked the live's trend badge | `weekOverWeekChange()` in `src/lib/format.ts` (`((new−last)/last·100).toFixed(1)`, explicit `+` when ≥ 0, `""` when lastWeek=0 → no badge) + neon-green/destructive badge with legacy TrendingUp/Down `h-3 w-3 mr-0.5`; pinned |
+| R24-F8 | MEDIUM | Export rendered `<a href download>` + `hidden sm:inline-flex` — the live ships a mobile-visible `<button>` (client-side download; `hover:opacity-90 transition-all duration-300 font-semibold h-9 rounded-md px-3`, icon `h-3.5 w-3.5 mr-1.5`) | `<button>` + onClick `window.location` assignment (`/api/export` stays the byte-format mechanism); pinned |
+| R24-F3 | LOW (text) | Top Pages singularized "1 view" — the live never singularizes (`views.toLocaleString() + " views"`) | Plain `" views"` label; pinned in `tests/dashboard-r24-parity.test.tsx` |
+| R24-F9 | LOW (byte) | Save pending state replaced the label with `Loader2 h-4 w-4` — the live keeps "Save Changes" and appends `LoaderCircle h-3.5 w-3.5 mr-1.5 animate-spin` (0.525's `Loader2` ≡ 0.462's `LoaderCircle` byte-for-byte) | Spinner rendered alongside the label; pinned |
+| R24-F5 | LOW (byte) | Bell button class order `relative h-10 w-10` vs the live's `… h-10 w-10 relative` (its source is `size="icon"` + `className="relative"` → cva/twMerge displacement) | Byte-matched (R23 F5–F7 category) |
+| R24-F1 | LOW (text) | Marketing copy: "company (if B2C)" vs the live's **B2B** (since at least R18); kickers "Perfect fit"/"Our process" vs the live's capitalized "Perfect Fit"/"Our Process" (invisible via `uppercase`, still wrong in source) | Byte-matched; pinned by `tests/marketing-r24-parity.test.tsx` |
+| R24-F12 | DOCS | R14-F10's claim that the live swaps the 404 tab title was disproven (settled-load stays "Pixelco") — the clone's `NotFoundTitle` stays as an R14-D3-class value-add, but docs must not cite live parity for it | `src/app/not-found.tsx` comment + AGENTS.md R14-F10 note corrected |
 | TW4-1 | HIGH | `w-[--sidebar-width]`-style **bare-var brackets** in TW4 emit `width: var(--sidebar-width)` without `var()` wrapping / silently break | Use `w-(--sidebar-width)` (TW4 var shorthand) or a plain style attribute; historical landmine — the sidebar uses the sanctioned form |
 | TW4-2 | HIGH | **`space-y` between label and input** in forms — TW4's `space-y` uses `:where()` + margin-block, which can miss radix wrappers and visually collapse | Explicit `flex flex-col gap-*` on form fields (the auth forms follow this) |
 | TW4-3 | MEDIUM | **Variant emission order** — assumption that `md:hidden` loses to `.flex`. Verified CORRECT in the built CSS (variants sort after plain utilities); do not "fix" this by reordering classes — the failure would come from CSS extraction bugs, not order | If a responsive class seems dead: check the built CSS (`grep '.md\\:hidden' .next/static/css/*.css`), not the source order (§10) |
@@ -477,7 +486,14 @@ tests. The ID scheme (`RNN-FN` or `NN`) maps to
 correct; marketing dropdown computed styles byte-equal the live; desktop
 dashboard structure VLM-matches; announcement-bar gradient/height match;
 Sheet width 288 px/7 links match; 767/768 boundary is symmetric (audited
-R23 — re-verify against the live before touching).
+R23 — re-verify against the live before touching). R24 additions: the
+live's visitor rows are **inert** (no detail sheet — the clone's Sheet is
+a value-add); the live's settings save is **silent** (PATCH 204 + refetch,
+no toast — the clone's "Saved" line is a value-add); the live's Delete
+button is **dead** (no handler, no dialog — the clone's typed-confirm flow
+is a value-add); the live's Stripe metrics iframe and Notifications
+toaster are billing/infra artifacts, not UI to clone; the 404 **body** is
+byte-verbatim both sides; `/dashboard/billing` 404s on both sides.
 
 ---
 
@@ -554,7 +570,7 @@ Run in order — the exact gate the rounds ship under
 ```bash
 npm run lint          # 1. eslint 9 — zero warnings tolerated
 npm run typecheck     # 2. tsc --noEmit — includes e2e/ specs
-npm run test          # 3. vitest — expect 613 passed | 2 skipped (61 files)
+npm run test          # 3. vitest — expect 662 passed | 2 skipped (65 files)
 npm run build         # 4. next build — all routes compile, no type errors
 # 5. e2e (standalone build first):
 npm run build:standalone && npm run test:e2e   # expect 14/14 chromium
@@ -961,9 +977,9 @@ The hand-written surfaces (read each file for the authoritative fields):
 | `src/lib/identification.ts` | identity-resolution types (`source: 'direct' | 'network' | 'ip-lookup'`, confidence) | R21-F4 semantics |
 | `src/lib/analytics.ts` | stats/aggregate types for dashboard cards + trend chart | |
 | `src/lib/sites.ts` | site lookup/creation types | `status: 'pending' | 'verified'` |
-| `src/lib/snippet.ts` | the install-snippet builder | pinned by `tests/snippet.test.ts` |
+| `src/lib/snippet.ts` | the install-snippet builder + `buildPlatformSnippet()` (per-platform tab snippets, GTM literal-siteKey variant) | pinned by `tests/snippet.test.ts` + `tests/platform-instructions-r24.test.tsx` (R24-F2) |
 | `src/lib/validation.ts` | zod schemas (signup/login/domain forms) | zod-at-the-boundary |
-| `src/lib/format.ts` | formatting helpers | pinned by `tests/format.test.ts` |
+| `src/lib/format.ts` | formatting helpers incl. `weekOverWeekChange()` (trend-badge math) | pinned by `tests/format.test.ts` (R24-F6) |
 | `src/components/dashboard/chrome-store.ts` | `ChromeState` + `useChromeState()` | §6 |
 | Prisma-generated | `User`, `Site`, `Visitor`, `Event` (+ payload types) | derive; don't hand-mirror |
 
@@ -979,7 +995,7 @@ The hand-written surfaces (read each file for the authoritative fields):
 
 ## Appendix A — Round History
 
-The project iterates in audited "rounds" (R1–R23); each plan lives in
+The project iterates in audited "rounds" (R1–R24); each plan lives in
 `docs/plans/<date>-roundNN-*.md` with findings, rulings, and an execution
 log. Key milestones (see `docs/session_*.md` + `docs/worklog.md` for the
 full record):
@@ -994,6 +1010,7 @@ full record):
 | R21 | visitors table semantics (source enum, selects), export CSV, first dashboard overview |
 | R22 | first-run activity parity (seeded-looking demo state), activity pagination, docs page |
 | **R23** | **DB seam (`file:../db/custom.db` → repo `db/`), mobile-nav parity (F3/F4), announcement-bar byte fixes (F5–F7), Playwright e2e suite (F8), DEPLOYMENT.md + .env.example contract (F9/F10), this SKILL.md** |
+| **R24** | **Icon-generation pin (live app = lucide 0.462.0 → 10 legacy overrides in `live-icons.tsx`), platform instructions rewritten live-verbatim (`buildPlatformSnippet` per-tab pres), New This Week trend badge, Export `<button>` + mobile visibility, Save spinner beside label, "views" no-singular, B2B + kicker texts, R14-F10 evidence correction, no live redeploy (bundle hashes re-confirmed)** |
 
 ---
 
@@ -1037,7 +1054,7 @@ The single nastiest class of bugs in this repo. The empirical matrix
 
 ## Appendix C — Live-Site Validation Methodology
 
-The parity audit protocol (refined over R19–R23; use it for any new
+The parity audit protocol (refined over R19–R24; use it for any new
 surface):
 
 1. **Login once, capture the reference**: `app.pixelco.io` with the probe
@@ -1064,12 +1081,21 @@ surface):
 |---|---|---|
 | R19–R22 (sessions 16–20) | marketing sections, pricing, visitors, first-run | `docs/screenshots/r19-*` … `r22-*` (19 captures) |
 | R23 (2026-09-22) | mobile nav (marketing dropdown + dashboard Sheet), announcement bar, DB seam, TW4 emission order, desktop dashboard | `docs/screenshots/r23-*` (7 captures) + `docs/plans/2026-09-22-round23-db-seam-mobile-nav-playwright.md` |
+| R24 (2026-09-22) | drift watch (no redeploy — hashes re-confirmed) + icon-generation pin, platform instructions, trend badge, Export/Save buttons, dashboard texts, settings/visitors targets probed (no drift) | `docs/screenshots/r24-*` (8 captures) + `docs/plans/2026-09-22-round24-live-icon-generation-platform-instructions.md` |
 
 **R23 final gate:** lint ✓ typecheck ✓ **613 vitest / 61 files** (2
 skipped) ✓ build ✓ **14/14 e2e chromium** ✓ DB acceptance (the user's
 exact `.env` value: `db:push` → `<repo>/db/custom.db`, no stray
 parent-dir file; `/api/health` `db:"up"`) ✓ zero console errors ✓ VLM
 mobile-menu MATCH + desktop dashboard STRUCTURAL MATCH ✓
+
+**R24 final gate:** lint ✓ typecheck ✓ **662 vitest / 65 files** (2
+skipped) ✓ build ✓ **14/14 e2e chromium** (standalone, 17.8 s) ✓ bell /
+Export / Save byte-matched against the **settled** live DOM (an early
+missing-classes observation was a pre-hydration artifact) ✓ platform
+tabs verified verbatim ✓ mobile nav re-checked incl. same-page-click
+edge case (the live also keeps the Sheet open) ✓ zero console errors ✓
+8 VLM-verified screenshots ✓
 
 ---
 
@@ -1098,9 +1124,10 @@ Files you will touch most
   tests/*-parity.test.tsx              # the parity contract (read before editing UI)
   e2e/*.spec.ts                        # behavior regressions
   docs/plans/2026-09-22-round23-*.md   # the R23 record
+  docs/plans/2026-09-22-round24-*.md   # the R24 record
 
-Counts (R23, verified)
-  613 vitest (61 files) + 14 e2e chromium · 79 tsx · 19 pages · 5 API routes
+Counts (R24, verified)
+  662 vitest (65 files) + 14 e2e chromium · 79 tsx · 19 pages · 5 API routes
   4 Prisma models · 7 keyframes · 3 env vars · 1 custom hook
 ```
 

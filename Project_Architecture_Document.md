@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.22
+# Pixelco — Master Project Architecture Document (PAD) v1.23
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-22 (v1.22)
+**Last Updated:** 2026-09-22 (v1.23)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,43 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.23** `[SYN]` Round-24 drift watch: live icon generation, platform
+  instructions & text parity (plan:
+  `docs/plans/2026-09-22-round24-live-icon-generation-platform-instructions.md`;
+  evidence `docs/screenshots/r24-*` + the live DOM/bundle decodes cited in
+  the plan). The round opened on the R23 next-notes' targets — live
+  settings save flow (working, silent, byte-matching buttons; only the
+  pending spinner drifted), visitors row click (rows INERT on the live;
+  the clone's detail Sheet stays a value-add), bundle hashes (UNCHANGED —
+  `index-nhmKaUsm.js` matches R21, `C3AAh5Je.js` matches R20; R19's
+  `n3AAh5Je` record was stale) and the Prisma CLI anchor (6.19.3 both
+  sides, wrapper re-verified) — all four NON-FINDINGS. The full-surface
+  sweep (9th probe generation) then closed the REAL pre-existing drift
+  (TDD, suite 613/61 → **662/65**): **(F4)** the live app bundle pins
+  **lucide-react v0.462.0** — ten dashboard icons ship the OLD lucide
+  generation and are now geometry-overridden in `live-icons.tsx` (bell,
+  log-out, mail, users, download, search, code, shopping-bag,
+  trending-up/down; app-scoped — the live's MARKETING bundle ships the
+  new generation; LoaderCircle needs no override); **(F5)** the bell
+  button's merged order `h-10 w-10 relative`; **(F6)** the New This Week
+  trend badge (`weekOverWeekChange` in `src/lib/format.ts` — `+X%`/`X%`,
+  neon-green/destructive + TrendingUp/Down at `h-3 w-3 mr-0.5`, absent
+  when last week = 0); **(F3)** the Top Pages label never singularizes
+  ("1 views" is the live's output); **(F8)** the visitors Export is a
+  real `<button>` visible on mobile (client-invoked download; the R21
+  `/api/export` bytes stay the invisible mechanism); **(F9)** the
+  settings Save spinner renders ALONGSIDE the label; **(F10)** the
+  sign-out icon drops `shrink-0`; **(F1)** the marketing copy says
+  "company (if **B2B**)" (the clone had shipped B2C since the initial
+  commit) + capitalized kickers ("Perfect Fit"/"Our Process");
+  **(F2)** the install platform instructions REWRITTEN live-verbatim
+  (WordPress = the "Insert Headers and Footers" plugin path — the prior
+  Theme File Editor flow was invented; code-chip literals, font-medium
+  UI paths, per-tab snippet pres via `buildPlatformSnippet` — the GTM
+  variant inlines the site key as the setAttribute literal);
+  **(F12)** R14-F10's 404-title-swap "live parity" evidence DISPROVEN
+  (settled loads keep "Pixelco") — the `NotFoundTitle` island stays as
+  a documented R14-D3 value-add.
 - **v1.22** `[SYN]` Round-23 DB-seam, mobile-nav parity & Playwright e2e
   (plan: `docs/plans/2026-09-22-round23-db-seam-mobile-nav-playwright.md`;
   evidence `docs/screenshots/r23-*` + the probe transcripts in the plan).
@@ -462,9 +499,10 @@
   `src/lib/app-seo.ts` (`appSeoMetadata()`) on login/signup/forgot-
   password and the dashboard layout; `twitter:site @Lovable` (the live's
   build-platform artifact) is deliberately NOT replicated. **404 title
-  (R14-F10):** the live swaps its tab title to "Page Not Found | Pixelco"
-  client-side; the clone reproduces the swap via a `NotFoundTitle` client
-  island (a MutationObserver re-asserts past Next's post-hydration
+  (R14-F10, corrected R24-F12):** settled-load probes show the live NEVER
+  swaps its 404 tab title (it stays "Pixelco"); the clone's `NotFoundTitle`
+  client island is therefore a KEPT VALUE-ADD in the R14-D3 category, not
+  live parity (a MutationObserver re-asserts past Next's post-hydration
   metadata patch — a plain assignment gets overwritten) while keeping the
   correct HTTP 404 the live's 200-SPA-fallback cannot offer. **Crawl
   surface (R14-F11/F12):** `robots.txt` and `sitemap.xml` moved from the
@@ -1770,7 +1808,15 @@ speculatively.
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
 | E2E (browser) | 3 spec files | 14 specs | `e2e/{marketing,dashboard,pipeline}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
 
-The suite totals **613 tests across 61 files** (v1.22: +17 — `tests/db-path.test.ts`
+The suite totals **662 tests across 65 files** (v1.23: +49 in 4 files —
+`tests/live-icons-r24.test.tsx` (11, the ten legacy 0.462 icon geometry
+pins) + `tests/dashboard-r24-parity.test.tsx` (15, the bell order, the
+Export button, the trend badge math/markup, the views label, the
+Save-spinner structure, the icon swaps) +
+`tests/platform-instructions-r24.test.tsx` (14, the rewritten steps,
+code chips, per-tab pres, `buildPlatformSnippet`) +
+`tests/marketing-r24-parity.test.tsx` (3, the B2B sentence + kickers);
+v1.22: +17 — `tests/db-path.test.ts`
 (8, the DATABASE_URL seam contract) + `tests/mobile-nav-r23-parity.test.tsx`
 (9, the mobile toggle icons, the Sheet-close derivation, the
 announcement-bar emission orders), plus the **Playwright e2e suite** (14

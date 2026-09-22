@@ -1202,3 +1202,50 @@ Stage Summary:
   the live's settings save flows, the visitors detail sheet (row
   click), any live bundle hash change; watch Prisma 6.x CLI anchor
   behavior on minor bumps (the wrapper normalizes it today).
+
+---
+Round-24 ship record — 2026-09-22 (session: docs/session_22.md)
+
+Work Log:
+- Drift watch on the R23 next-notes: settings save flow (buttons
+  byte-match; only the pending spinner drifted — F9), visitors row
+  click (live rows INERT — the detail Sheet stays a value-add),
+  bundle hashes (UNCHANGED — nhmKaUsm/C3AAh5Je match the R21/R20
+  baselines; the opening alarm was a stale R19 record), Prisma CLI
+  anchor (6.19.3 both sides, wrapper in sync) — all non-findings.
+- 9th probe generation closed the real pre-existing drift: the live
+  app bundle pins lucide-react v0.462.0 → ten dashboard icons ship the
+  OLD generation (bell, log-out, mail, users, download, search, code,
+  shopping-bag, trending-up/down — geometry overrides in live-icons.tsx,
+  app-scoped; the marketing bundle ships the new generation); the bell
+  order `h-10 w-10 relative` (F5); the New This Week trend badge (F6,
+  weekOverWeekChange in format.ts); "1 views" never singularized (F3);
+  the Export <button> visible on mobile (F8); the Save spinner beside
+  the label (F9); sign-out without shrink-0 (F10); the marketing B2B
+  sentence + capitalized kickers (F1); the platform instructions
+  REWRITTEN live-verbatim incl. buildPlatformSnippet per-tab pres with
+  the GTM literal-key variant (F2); R14-F10's 404-title evidence
+  disproven — the island stays a documented value-add (F12).
+- TDD: RED 46/49 failing across 4 new files → GREEN 49/49 after
+  fixing 8 test-side artifacts (SSR entity encoding + one regex);
+  one legacy assertion updated to the button reality (R11 selection).
+- Gates: 662 vitest | 2 skipped (65 files) · lint 0 · typecheck 0 ·
+  build all routes · standalone e2e 14/14 chromium (17.8s).
+- Browser verification: bell/Export/Save byte-match the SETTLED live
+  DOM (an early missing-classes observation was a pre-hydration
+  artifact); platform tabs verified verbatim; mobile nav re-checked
+  incl. the same-page edge case (the live also keeps the Sheet open);
+  8 VLM-verified screenshots in docs/screenshots/r24-*; zero console
+  errors.
+- Docs: README (R24 bullet, 662), AGENTS (R24 fact blocks + F12
+  correction), CLAUDE (mirror), PAD v1.23, session_22.md, this entry,
+  the plan's execution log, pixel-identifier_SKILL.md.
+
+Stage Summary:
+- Round-24 SHIPPED: main advanced with the R24 changeset; suite at
+  662/65 + 14 e2e; the clone's dashboard now renders the live's exact
+  icon generation, platform instructions, trend badge and texts.
+- Next: Round-25 drift watch — re-probe the bundle hashes (a live
+  redeploy would re-run the full token-diff sweep), watch for
+  lucide-react version moves in a new app bundle, and re-check the
+  settings save flow for feedback UI (currently silent).

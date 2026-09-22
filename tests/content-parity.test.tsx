@@ -385,7 +385,7 @@ describe('R16 I — Universal sweeps', () => {
 
 describe('R16 H — Install page pieces', () => {
   it('renders the platform-instructions TabsList with the live consumer classes', () => {
-    const html = renderToStaticMarkup(<PlatformInstructions />)
+    const html = renderToStaticMarkup(<PlatformInstructions siteKey="px_0123456789abcdef" collectorUrl="https://cdn.example.com/pixel.js" />)
     expect(html).toContain(
       'inline-flex h-10 items-center rounded-md bg-muted p-1 text-muted-foreground w-full justify-start mb-4',
     )
@@ -561,7 +561,7 @@ describe('R17 F2 — Pricing contact-sales card (variant-free CTA, live orders)'
 
 describe('R17 F3 — Install chips (bare geometry-first divs)', () => {
   it('renders the platform chip as a div with the live order (no aria-hidden wrapper)', () => {
-    const html = renderToStaticMarkup(<PlatformInstructions />)
+    const html = renderToStaticMarkup(<PlatformInstructions siteKey="px_0123456789abcdef" collectorUrl="https://cdn.example.com/pixel.js" />)
     expect(html).toContain(
       '<div class="h-8 w-8 rounded-lg bg-muted flex items-center justify-center">',
     )
@@ -571,7 +571,7 @@ describe('R17 F3 — Install chips (bare geometry-first divs)', () => {
   })
 
   it('renders the step-number chips as divs with the live order', () => {
-    const html = renderToStaticMarkup(<PlatformInstructions />)
+    const html = renderToStaticMarkup(<PlatformInstructions siteKey="px_0123456789abcdef" collectorUrl="https://cdn.example.com/pixel.js" />)
     expect(html).toContain(
       '<div class="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary shrink-0 mt-0.5">',
     )
@@ -617,7 +617,7 @@ describe('R18 A1 — Settings Profile (form rhythm, opacity-60, no wrapper)', ()
 
 describe('R18 A3 — Install platform Card root (no clone-authored aria-labelledby)', () => {
   it('ships the bare Card root like the live', () => {
-    const html = renderToStaticMarkup(<PlatformInstructions />)
+    const html = renderToStaticMarkup(<PlatformInstructions siteKey="px_0123456789abcdef" collectorUrl="https://cdn.example.com/pixel.js" />)
     expect(html).not.toContain('aria-labelledby="platform-heading"')
   })
 })
