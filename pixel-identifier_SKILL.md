@@ -3,7 +3,7 @@ name: pixel-identifier
 description: "Pixelco clone — cookieless visitor-identification SaaS: Next.js 16.3 App Router + React 19.3 + Tailwind v4 CSS-first + Prisma 6/SQLite + NextAuth v4 — marketing site, dashboard, tracking pixel, and identity-resolution pipeline, built to byte-level visual/functional parity with pixelco.io"
 version: 1.0.0
 last_updated: 2026-09-22
-project_state: "R24 shipped: 662 vitest (65 files) + 14 e2e chromium green, the live's exact lucide icon generation pinned (10 legacy overrides in live-icons.tsx — the live app bundle ships lucide-react 0.462.0), platform instructions live-verbatim, New This Week trend badge, PAD v1.23"
+project_state: "R25 clean drift watch: no live redeploy (bundle hashes + lucide 0.462 pin unchanged), zero code changes; NTW badge negative branch live-verified; 662 vitest (65 files) + 14 e2e chromium green, PAD v1.24"
 audience: "engineers + AI agents extending, debugging, onboarding, or replicating the Pixelco clone"
 tags: [nextjs16, react19, tailwind-v4, prisma, sqlite, nextauth4, vitest, playwright, saas, visitor-identification, parity-clone]
 ---
@@ -50,7 +50,7 @@ tags: [nextjs16, react19, tailwind-v4, prisma, sqlite, nextauth4, vitest, playwr
 18. [§18 Z-Index Layer Map](#18-z-index-layer-map)
 19. [§19 Color Reference (Complete)](#19-color-reference-complete)
 20. [§20 The Complete TypeScript Interface Reference](#20-the-complete-typescript-interface-reference)
-- [Appendix A — Round History (R1–R24)](#appendix-a--round-history)
+- [Appendix A — Round History (R1–R25)](#appendix-a--round-history)
 - [Appendix B — The DATABASE_URL Seam (Deep Dive)](#appendix-b--the-database_url-seam-deep-dive)
 - [Appendix C — Live-Site Validation Methodology](#appendix-c--live-site-validation-methodology)
 - [Appendix D — Audit History](#appendix-d--audit-history)
@@ -66,8 +66,8 @@ reimplementation of `pixelco.io`** — a cookieless visitor-identification SaaS
 where anonymous website visitors are resolved to real email addresses —
 consisting of a marketing site (landing + 8 sub-pages), an authenticated
 dashboard, a first-party tracking pixel, and an identity-resolution pipeline,
-specified in `Project_Architecture_Document.md v1.22` and iterated to parity
-with the live across 24 audited rounds (R1–R24).
+specified in `Project_Architecture_Document.md v1.24` and iterated to parity
+with the live across 25 audited rounds (R1–R25).
 
 **Design thesis — amber-on-white SaaS with a neon data accent.** The live is
 built on warm amber CTA gradients (`linear-gradient(135deg, rgb(255,170,0),
@@ -995,7 +995,7 @@ The hand-written surfaces (read each file for the authoritative fields):
 
 ## Appendix A — Round History
 
-The project iterates in audited "rounds" (R1–R24); each plan lives in
+The project iterates in audited "rounds" (R1–R25); each plan lives in
 `docs/plans/<date>-roundNN-*.md` with findings, rulings, and an execution
 log. Key milestones (see `docs/session_*.md` + `docs/worklog.md` for the
 full record):
@@ -1011,6 +1011,7 @@ full record):
 | R22 | first-run activity parity (seeded-looking demo state), activity pagination, docs page |
 | **R23** | **DB seam (`file:../db/custom.db` → repo `db/`), mobile-nav parity (F3/F4), announcement-bar byte fixes (F5–F7), Playwright e2e suite (F8), DEPLOYMENT.md + .env.example contract (F9/F10), this SKILL.md** |
 | **R24** | **Icon-generation pin (live app = lucide 0.462.0 → 10 legacy overrides in `live-icons.tsx`), platform instructions rewritten live-verbatim (`buildPlatformSnippet` per-tab pres), New This Week trend badge, Export `<button>` + mobile visibility, Save spinner beside label, "views" no-singular, B2B + kicker texts, R14-F10 evidence correction, no live redeploy (bundle hashes re-confirmed)** |
+| **R25** | **CLEAN drift watch: no redeploy (all bundle hashes + the lucide pin unchanged), zero code changes; NTW badge negative branch live-verified (`-100.0%` destructive + legacy trending-down), mobile-menu close-on-link-click re-verified both sides (probe-artifact lesson: visibility-filter click targets), R23-F3 + R24-F2 regressions green** |
 
 ---
 
@@ -1082,6 +1083,7 @@ surface):
 | R19–R22 (sessions 16–20) | marketing sections, pricing, visitors, first-run | `docs/screenshots/r19-*` … `r22-*` (19 captures) |
 | R23 (2026-09-22) | mobile nav (marketing dropdown + dashboard Sheet), announcement bar, DB seam, TW4 emission order, desktop dashboard | `docs/screenshots/r23-*` (7 captures) + `docs/plans/2026-09-22-round23-db-seam-mobile-nav-playwright.md` |
 | R24 (2026-09-22) | drift watch (no redeploy — hashes re-confirmed) + icon-generation pin, platform instructions, trend badge, Export/Save buttons, dashboard texts, settings/visitors targets probed (no drift) | `docs/screenshots/r24-*` (8 captures) + `docs/plans/2026-09-22-round24-live-icon-generation-platform-instructions.md` |
+| R25 (2026-09-22) | clean drift watch — no redeploy, named targets re-verified (settings save, visitors rows, mobile nav both surfaces), NTW negative badge branch live-verified, regressions green | `docs/screenshots/r25-*` (6 captures) + `docs/plans/2026-09-22-round25-drift-watch.md` |
 
 **R23 final gate:** lint ✓ typecheck ✓ **613 vitest / 61 files** (2
 skipped) ✓ build ✓ **14/14 e2e chromium** ✓ DB acceptance (the user's
@@ -1096,6 +1098,11 @@ missing-classes observation was a pre-hydration artifact) ✓ platform
 tabs verified verbatim ✓ mobile nav re-checked incl. same-page-click
 edge case (the live also keeps the Sheet open) ✓ zero console errors ✓
 8 VLM-verified screenshots ✓
+
+**R25 final gate (clean watch):** verify EXIT=0 — lint ✓ typecheck ✓
+**662 vitest / 65 files** (2 skipped) ✓ build ✓ **14/14 e2e chromium**
+(standalone, 15.8 s) ✓ 6 VLM-verified screenshots ✓ zero code changes
+(tree identical to R24's `8fccf4a` for `src/` + `tests/`)
 
 ---
 

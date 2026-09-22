@@ -367,7 +367,7 @@ Prove-It). `TZ` is pinned to UTC.
   (R23-F3), the auth redirect, `/api/health`, `/pixel.js`, the
   anti-enumeration 204, and the beacon → Activity-Log loop. Manual browser
   flows (sign-up → domain → beacon → dashboard → export) complement it.
-- **Live-parity pins (rounds 11-24):** the live DOM's class strings,
+- **Live-parity pins (rounds 11-25):** the live DOM's class strings,
   emission orders and copy are pinned by SSR/source tests against
   captured evidence — the R24 batch pins the live app bundle's
   lucide-react 0.462 icon generation (ten geometry overrides in
@@ -378,7 +378,10 @@ Prove-It). `TZ` is pinned to UTC.
   live-verbatim platform instructions (+ `buildPlatformSnippet`'s
   per-tab pres, GTM literal-key variant), and the B2B/kicker marketing
   texts (`tests/{live-icons-r24,dashboard-r24-parity,platform-
-  instructions-r24,marketing-r24-parity}.test.ts(x)`).
+  instructions-r24,marketing-r24-parity}.test.ts(x)`). R25 was a CLEAN
+  drift watch: no redeploy (bundle hashes + lucide pin unchanged), no
+  findings — the badge's negative branch is now live-verified too
+  (plan: `docs/plans/2026-09-22-round25-drift-watch.md`).
 
 ### Test Commands
 

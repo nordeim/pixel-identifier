@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.23
+# Pixelco — Master Project Architecture Document (PAD) v1.24
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-22 (v1.23)
+**Last Updated:** 2026-09-22 (v1.24)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,27 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.24** `[SYN]` Round-25 drift watch: CLEAN (plan:
+  `docs/plans/2026-09-22-round25-drift-watch.md`; evidence
+  `docs/screenshots/r25-*` + the live captures cited in the plan). The
+  10th probe generation re-verified the R24 next-notes: **no redeploy**
+  (marketing `C3AAh5Je.js`/`bLMWzsGr.css` + app `index-nhmKaUsm.js`
+  unchanged; lucide-react still 0.462.0 in the app bundle), settings
+  save still silent (spinner + `disabled` re-captured — matches the
+  R24-F9 pin), visitors rows still inert, Export/Save/Danger-Zone
+  bytes match. **Zero code changes.** Newly live-verified evidence:
+  the New This Week badge's NEGATIVE branch (live data now 0-this-week
+  vs 2-last → `-100.0%` `text-destructive` + legacy `trending-down
+  h-3 w-3 mr-0.5` — byte-identical to the R24 implementation with data
+  masked; both badge branches are now runtime-verified), "1 views"
+  no-singular re-confirmed, and the marketing mobile menu's
+  close-on-link-click verified on BOTH sides (an apparent stays-open
+  was a probe artifact — hidden desktop/footer anchor clicked;
+  visibility-filter the target first). Regressions re-run green:
+  R23-F3 Sheet close-on-nav, R24-F2 platform instructions (WordPress
+  tab verbatim; only the active Radix panel carries content on both
+  sides). Gates re-verified: 662 vitest (65 files) + 14/14 e2e
+  chromium + lint/typecheck/build clean.
 - **v1.23** `[SYN]` Round-24 drift watch: live icon generation, platform
   instructions & text parity (plan:
   `docs/plans/2026-09-22-round24-live-icon-generation-platform-instructions.md`;

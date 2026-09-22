@@ -102,6 +102,25 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   `siteKey`/`collectorUrl` (+ optional `defaultValue` for per-tab SSR
   test pins — Radix renders only the active panel). Pinned by
   `tests/platform-instructions-r24.test.tsx`.
+- **R25: clean drift watch (v1.24).** The 10th probe generation found NO
+  redeploy (marketing `C3AAh5Je.js`/`bLMWzsGr.css` + app
+  `index-nhmKaUsm.js` unchanged, lucide still 0.462.0) and NO drift.
+  Newly live-verified evidence: the New This Week badge's NEGATIVE
+  branch (live data moved to 0-this-week vs 2-last → `-100.0%` in
+  `text-destructive` with the legacy `trending-down h-3 w-3 mr-0.5` —
+  byte-identical to the R24 implementation with data masked; both
+  branches are now runtime-verified, positive from R24's seeded state,
+  negative from R25's live capture). The marketing mobile menu's
+  close-on-link-click was re-verified on BOTH sides — an apparent
+  stays-open was a PROBE ARTIFACT (the click hit a hidden desktop/
+  footer anchor; always filter to visible elements before clicking).
+  Regressions re-run green: R23-F3 Sheet close-on-nav, R24-F2
+  platform instructions (WordPress tab verbatim; only the active
+  Radix panel carries content on both sides). Standing residuals
+  re-confirmed: D4 (lucide 0.525's default `aria-hidden="true"` —
+  the live's 0.462 never renders it), silent settings save, inert
+  visitor rows, dead live Delete button. Plan:
+  `docs/plans/2026-09-22-round25-drift-watch.md`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle

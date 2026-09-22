@@ -1249,3 +1249,55 @@ Stage Summary:
   redeploy would re-run the full token-diff sweep), watch for
   lucide-react version moves in a new app bundle, and re-check the
   settings save flow for feedback UI (currently silent).
+
+---
+Task ID: R25
+Agent: main (Super Z)
+Task: Round-25 drift watch — probe the live, verify parity, ship the
+evidence record.
+
+Work Log:
+- Workspace refreshed: git pull fast-forwarded 8fccf4a..82cabbb
+  (upstream added docs/session_23.md — the R24-completion narrative;
+  no code delta). Docs re-validated against the tree; R24 fixes
+  confirmed in place; dev server + db healthy.
+- 10th probe generation, all clean:
+  - No redeploy: marketing C3AAh5Je.js/bLMWzsGr.css + app
+    index-nhmKaUsm.js unchanged; lucide-react still 0.462.0.
+  - NTW badge NEGATIVE branch live-verified (live data 0-vs-2 →
+    -100.0% destructive + legacy trending-down h-3 w-3 mr-0.5);
+    clone structure byte-identical with data masked; both badge
+    branches now runtime-verified.
+  - "1 views" no-singular re-confirmed in live Top Pages.
+  - Settings save: spinner + disabled re-captured in full (matches
+    R24-F9); save stays silent; Delete stays dead; rows stay inert.
+  - Export button byte-identical both sides.
+  - Mobile nav: dropdown markup + toggle w-6 h-6 match; close-on-
+    link-click verified BOTH sides (first probe's stays-open was an
+    artifact — hidden desktop/footer anchor clicked; visibility-
+    filter lesson recorded); R23-F3 Sheet regression green.
+  - Install: WordPress tab verbatim both sides; active-panel-only
+    content mounting matches.
+  - D4 aria-hidden residual re-confirmed (documented, not drift).
+- Verdict: CLEAN — zero code changes; the plan documents the null
+  remediation: docs/plans/2026-09-22-round25-drift-watch.md.
+- Gates on the unchanged tree: verify EXIT=0 (662 vitest | 2 skipped,
+  lint 0, typecheck 0, build) + standalone e2e 14/14 chromium (15.8s).
+- 6 VLM-verified screenshots: docs/screenshots/r25-* (KPIs+badge,
+  visitors, settings, install WP tab w/ pre visible, landing mobile
+  menu, dashboard mobile Sheet).
+- .env.example re-verified (3 keys, consistent — no code changes
+  since R24).
+- Docs: README R25 bullet, AGENTS R25 fact, CLAUDE rounds 11-25
+  mirror, PAD v1.24, session_24.md, SKILL.md R25 rows + stale PAD
+  version reference fixed, this entry.
+- Committed to main; pushed via the SSH wrapper; remote ref verified.
+
+Stage Summary:
+- Round-25 CLEAN drift watch shipped: no redeploy, no drift, zero
+  code changes; both NTW badge branches now live-verified; mobile
+  nav verified on both surfaces and both sites; regressions green.
+- Next (R26): bundle hashes (the only signal that matters without a
+  live touch), the badge's no-branch if live data returns to
+  lastWeek=0, a settings-save toast watch, and a full desktop
+  token-diff if any hash moves.

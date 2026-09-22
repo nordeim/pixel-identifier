@@ -437,6 +437,26 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   as a documented R14-D3 value-add. +49 pins across
   `tests/{live-icons-r24,dashboard-r24-parity,platform-instructions-r24,
   marketing-r24-parity}.test.ts(x)`. Screenshots in `docs/screenshots/`.
+- **Clean drift watch (round-25)** — the 10th probe generation re-verified
+  the R24 next-notes against the live: **no redeploy** (marketing
+  `C3AAh5Je.js`/`bLMWzsGr.css` + app `index-nhmKaUsm.js` hashes
+  unchanged; lucide-react still 0.462.0 in the app bundle), the settings
+  save flow still silent (pending spinner + `disabled` re-captured in
+  full — matches the R24-F9 pin), visitors rows still inert, and
+  Export/Save/Danger-Zone bytes match. Newly live-verified state: the
+  **New This Week negative-badge branch** (live now shows 0 this week
+  vs 2 last → `-100.0%` in `text-destructive` with the legacy
+  `trending-down h-3 w-3 mr-0.5` — the clone's R24 implementation
+  renders a byte-identical structure with data masked), "1 views"
+  no-singular re-confirmed in the live's Top Pages, and the marketing
+  mobile menu's close-on-link-click verified on BOTH sides (an
+  apparent stays-open was a probe artifact — the first click hit a
+  hidden desktop/footer anchor; the clean re-probe with visibility
+  filtering closes on both sides, re-affirming the R23 note). R23-F3
+  mobile-Sheet + R24-F2 platform-instructions regressions re-run green
+  (WordPress tab verbatim both sides; only the active Radix panel
+  carries content). Zero code changes; gates 662 vitest + 14/14 e2e
+  chromium; 6 VLM-verified screenshots in `docs/screenshots/r25-*`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the
