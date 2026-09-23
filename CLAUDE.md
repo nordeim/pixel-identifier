@@ -367,7 +367,7 @@ Prove-It). `TZ` is pinned to UTC.
   (R23-F3), the auth redirect, `/api/health`, `/pixel.js`, the
   anti-enumeration 204, and the beacon → Activity-Log loop. Manual browser
   flows (sign-up → domain → beacon → dashboard → export) complement it.
-- **Live-parity pins (rounds 11-26):** the live DOM's class strings,
+- **Live-parity pins (rounds 11-27):** the live DOM's class strings,
   emission orders and copy are pinned by SSR/source tests against
   captured evidence — the R24 batch pins the live app bundle's
   lucide-react 0.462 icon generation (ten geometry overrides in
@@ -390,7 +390,16 @@ Prove-It). `TZ` is pinned to UTC.
   fixed in `plan-panel.tsx`, pinned by
   `tests/dashboard-r26-parity.test.tsx` + the replaced source pin + the
   NEW `e2e/pricing.spec.ts` (plan:
-  `docs/plans/2026-09-23-round26-pricing-popular-badge.md`).
+  `docs/plans/2026-09-23-round26-pricing-popular-badge.md`). R27 found
+  the same CLASS of miss on the mutation flows: the live fires SONNER
+  success toasts on settings save / domain add / domain delete (the
+  R24–R26 "silent save" evidence was a transient backend state — the
+  toast code was in the unchanged bundle all along). The clone's Radix
+  toast generation is fully retired; sonner is pinned **1.7.4 exact**
+  (fingerprinted from the live bundle); the wrapper, the toast class
+  family, the idle empty-section bytes, and the live's toast titles are
+  pinned by `tests/toast-r27-parity.test.tsx` + `e2e/toasts.spec.ts`
+  (plan: `docs/plans/2026-09-23-round27-sonner-toast-parity.md`).
 
 ### Test Commands
 

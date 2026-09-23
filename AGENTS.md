@@ -137,6 +137,29 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   `e2e/pricing.spec.ts` (badge bytes, header position, non-popular cards,
   both toggle states + the $249 → $199 annual price assertion). Plan:
   `docs/plans/2026-09-23-round26-pricing-popular-badge.md`.
+- **R27: the mutation feedback is SONNER toasts — sonner 1.7.4, exact.**
+  The live's app bundle fires sonner SUCCESS toasts on mutation success
+  (settings save → `Settings saved`, domain add → `Domain added
+  successfully`, domain delete → `Domain removed` — bottom-right,
+  Heroicons check-circle icon, title-only, 4 s auto-dismiss;
+  live-verified R27 after the R24–R26 "silent" evidence proved to be a
+  transient backend state — the bundle hash never changed). The toast
+  runtime is fingerprinted from the live bundle as **sonner 1.7.4** (the
+  CSS `:where()` wrapper + `translateY(-10px)` lift + 3× `data-lifted` +
+  the byte-identical success-icon path; v2.0.x diverges — no `:where()`,
+  `-8px`, a `data-react-aria-top-layer` attr the live does not render).
+  The wrapper `src/components/ui/sonner.tsx` carries the live's toast
+  class family and NO default overrides (bottom-right, light theme,
+  356 px width, 32/16 px offsets are all sonner defaults); the `<ol>`
+  renders ONLY while toasts exist — idle pages carry just the empty
+  `<section aria-label="Notifications alt+T">` (SSR-pinned). The Radix
+  toast generation (`ui/toast.tsx`, `ui/toaster.tsx`, `hooks/use-toast.ts`,
+  `@radix-ui/react-toast`) is RETIRED — do not reintroduce it, and do not
+  "upgrade" sonner past 1.7.x (the pin is the live's). Toasts fire from
+  effects keyed on action-state IDENTITY, never from onSubmit (the F-07
+  re-announce lesson). Pinned by `tests/toast-r27-parity.test.tsx` +
+  `e2e/toasts.spec.ts`. Plan:
+  `docs/plans/2026-09-23-round27-sonner-toast-parity.md`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle

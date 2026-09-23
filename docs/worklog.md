@@ -1351,3 +1351,50 @@ Stage Summary:
 - Next (R27): bundle hashes; the pricing page is now in the standing
   regression loop; settings-save toast watch; NTW no-badge branch if
   live data returns to lastWeek=0.
+
+---
+Task ID: R27
+Agent: main (Super Z)
+Task: Round-27 drift watch + remediation — sonner toast parity with pixelco.io
+
+Work Log:
+- Re-cloned at b300560 (R26-clean); docs reviewed (AGENTS/CLAUDE/README/
+  PAD v1.25/SKILL/session_26/27/R26-plan/TW4-report/worklog); scandihaven
+  cloned for reference; arrival gates green (lint 0, tsc 0, 667 vitest).
+- Environment: repo .env + root db/ per the user contract, db:push +
+  db:seed green, dev server healthy; stale session DATABASE_URL
+  unified via symlink (no repo change).
+- 12th probe generation: no redeploy (all bundle hashes unchanged);
+  mobile navs both sites/surfaces parity (scroll 7424/7404, Sheet
+  18rem/288px, close-on-nav); POPULAR badge byte-identical; NTW
+  negative branch; install copy swap; login failure silent on live;
+  19-route console sweep clean.
+- NEW probe surface — the live's MUTATION flows: R27-F1 found — sonner
+  SUCCESS toasts on settings save ("Settings saved"), domain add
+  ("Domain added successfully"), domain delete ("Domain removed");
+  bottom-right, check-circle icon, title-only, lazy-mounted ol, empty
+  section at idle.
+- sonner fingerprinted from the live bundle (:where() + -10px +
+  3x data-lifted + byte-identical icon path) → pinned 1.7.4 exact.
+- TDD: RED tests/toast-r27-parity.test.tsx (14 pins) → GREEN the
+  ui/sonner.tsx wrapper + root-layout swap + settings/domains
+  migrations + the Radix toast trio deleted + @radix-ui/react-toast
+  uninstalled; full suite 681 vitest / 67 files (2 skipped).
+- NEW e2e/toasts.spec.ts (2 specs; demo-account plan-limit + signup
+  label-collision artifacts fixed en route); full e2e 18/18 chromium.
+- Runtime byte-verify vs the live: idle section + ol attrs/vars + li
+  class family + icon path + title IDENTICAL.
+- 7 VLM-verified screenshots (docs/screenshots/r27-*); demo domain
+  verified status restored after the capture cycle.
+- .env.example re-verified (3 keys, consistent — no env surface added).
+- Docs: README R27 bullet, AGENTS R27 fact, CLAUDE 11–27 mirror,
+  PAD v1.26, SKILL.md R27 rows, plan execution log, session_28.md,
+  this entry.
+
+Stage Summary:
+- Round-27 SHIPPED: one drift family found and fixed (the sonner toast
+  system, 1.7.4 exact), pin net hardened (+14 vitest, +2 e2e), runtime
+  byte-verified against the live; everything else confirmed at parity.
+- Next (R28): bundle hashes (a change triggers the full token-diff
+  sweep); the toast system joins the standing regression loop; NTW
+  no-badge branch watch; consider delete-confirm e2e specs.

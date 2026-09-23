@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from 'react'
 import { CircleAlert, CircleCheckBig, Globe, Loader2, Plus } from 'lucide-react'
+import { toast } from 'sonner'
 import { Trash2Icon } from '@/components/dashboard/live-icons'
 import { addDomainAction, deleteDomainAction, type DomainDto } from '@/actions/domains'
 import type { ActionResult } from '@/lib/validation'
@@ -23,7 +24,6 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { formatDate } from '@/lib/format'
-import { useToast } from '@/hooks/use-toast'
 
 interface DomainsPanelProps {
   domains: DomainDto[]
@@ -32,7 +32,6 @@ interface DomainsPanelProps {
 export function DomainsPanel({ domains }: DomainsPanelProps) {
   const [state, formAction, pending] = useActionState(addDomainAction, null)
   const [deleteState, deleteFormAction] = useActionState(deleteDomainAction, null)
-  const { toast } = useToast()
   // R20-F2: the live's add-domain input is a controlled field — its
   // submit renders DISABLED while the input is empty (captured DOM:
   // type="submit" disabled="" + value=""), replacing the native
@@ -53,36 +52,38 @@ export function DomainsPanel({ domains }: DomainsPanelProps) {
   // Toasts fire from an effect keyed on state IDENTITY, never from onSubmit:
   // onSubmit runs before the action resolves and would re-announce the
   // previous submission's result (F-07). The toast is an external-system
-  // update (sonner) — state resets live above, in the render-phase block.
+  // update (sonner — R27-F1: the live's toast runtime, fingerprinted from
+  // its app bundle as sonner 1.7.4) — state resets live above, in the
+  // render-phase block.
   const lastAddResult = useRef<ActionResult<DomainDto> | null>(null)
   useEffect(() => {
     if (state === null || state === lastAddResult.current) return
     lastAddResult.current = state
     if (state.ok) {
-      toast({ title: 'Domain added successfully' })
+      // R27-F1: the live's add toast — title only, success icon
+      // (runtime-captured on the live 2026-09-23).
+      toast.success('Domain added successfully')
     } else {
-      toast({
-        title: 'Could not add domain',
+      toast.error('Could not add domain', {
         description: state.error.message,
-        variant: 'destructive',
       })
     }
-  }, [state, toast])
+  }, [state])
 
   const lastDeleteResult = useRef<ActionResult<{ deleted: true }> | null>(null)
   useEffect(() => {
     if (deleteState === null || deleteState === lastDeleteResult.current) return
     lastDeleteResult.current = deleteState
     if (deleteState.ok) {
-      toast({ title: 'Domain deleted', description: 'Its visitors and events were removed.' })
+      // R27-F1: the live's delete toast title (NOT "Domain deleted" —
+      // live-verbatim "Domain removed", title only, no description).
+      toast.success('Domain removed')
     } else {
-      toast({
-        title: 'Could not delete domain',
+      toast.error('Could not delete domain', {
         description: deleteState.error.message,
-        variant: 'destructive',
       })
     }
-  }, [deleteState, toast])
+  }, [deleteState])
 
   return (
     <div className="max-w-3xl space-y-6">

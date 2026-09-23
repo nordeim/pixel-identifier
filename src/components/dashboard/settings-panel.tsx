@@ -1,8 +1,9 @@
 'use client'
 
-import { useActionState, useState } from 'react'
+import { useActionState, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { signOut } from 'next-auth/react'
+import { toast } from 'sonner'
 import { LoaderCircle } from 'lucide-react'
 import { updateProfileAction, deleteAccountAction } from '@/actions/settings'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -32,6 +33,27 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
   const [confirmText, setConfirmText] = useState('')
   const [deleting, setDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
+
+  // R27-F1: the live's save feedback is a sonner SUCCESS toast
+  // ("Settings saved", bottom-right, check-circle icon — runtime-captured
+  // on the live 2026-09-23; the R24-R26 "silent save" evidence was a
+  // transient backend state, the toast code was in the bundle all along).
+  // The toast fires from an effect keyed on state IDENTITY, never from
+  // onSubmit (onSubmit runs before the action resolves and would
+  // re-announce the previous submission's result — the F-07 lesson).
+  const lastSaveResult = useRef<typeof state>(null)
+  useEffect(() => {
+    if (state === null || state === lastSaveResult.current) return
+    lastSaveResult.current = state
+    if (state.ok) {
+      toast.success('Settings saved')
+    } else {
+      // The live's error branch is unobservable (its backend resolves
+      // every save); the failure toast is the clone's working-behavior
+      // continuation of the same mechanism.
+      toast.error(state.error.message)
+    }
+  }, [state])
 
   async function handleDelete(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -132,16 +154,6 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
               )}
               Save Changes
             </Button>
-            {state && state.ok && (
-              <p role="status" className="text-sm font-medium text-teal-600">
-                Saved
-              </p>
-            )}
-            {state && !state.ok && (
-              <p role="alert" className="text-sm text-red-600">
-                {state.error.message}
-              </p>
-            )}
           </form>
         </CardContent>
       </Card>

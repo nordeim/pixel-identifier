@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.25
+# Pixelco — Master Project Architecture Document (PAD) v1.26
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-23 (v1.25)
+**Last Updated:** 2026-09-23 (v1.26)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,40 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.26** `[SYN]` Round-27 sonner toast parity (plan:
+  `docs/plans/2026-09-23-round27-sonner-toast-parity.md`; evidence
+  `docs/screenshots/r27-*` + the live captures cited in the plan). The
+  12th probe generation re-verified the standing surfaces (no redeploy
+  — all bundle hashes unchanged; mobile navs on both sites and
+  surfaces, the R26 POPULAR badge byte-identical on both sides, the NTW
+  negative branch, the install copy swap, a 19-route console-error
+  sweep — all clean) and — new this round — drove the live's MUTATION
+  flows. **ONE drift family found and fixed (R27-F1):** the live's app
+  bundle fires SONNER success toasts on mutation success — settings
+  save → `Settings saved`, domain add → `Domain added successfully`,
+  domain delete → `Domain removed` (bottom-right, Heroicons
+  check-circle icon, title-only, 4 s auto-dismiss). The R24–R26
+  "silent save" evidence was a transient backend state — the bundle
+  hash never changed, so the toast code was in the live's bundle all
+  along (the same class of miss as R26-F1: stale evidence, not stale
+  bundle). The toast runtime was fingerprinted from the live's app
+  bundle as **sonner 1.7.4** (the CSS `:where()` wrapper +
+  `translateY(-10px)` lift + 3× `data-lifted` + the byte-identical
+  success-icon path; v2.0.x diverges), pinned exact. Fix: the shadcn
+  sonner wrapper (`src/components/ui/sonner.tsx` — the live's toast
+  class family, NO default overrides) mounted at the root layout; the
+  settings page's inline `Saved` line retired in favor of
+  `toast.success('Settings saved')`; the domains delete title fixed to
+  the live's `Domain removed` (description dropped); the ENTIRE Radix
+  toast generation retired (`ui/toast.tsx`, `ui/toaster.tsx`,
+  `hooks/use-toast.ts`, `@radix-ui/react-toast`). Runtime
+  byte-verified: the clone's idle section, ol attributes, li class
+  family, icon path, and title are identical to the live captures.
+  Pin net: `tests/toast-r27-parity.test.tsx` (14 SSR/source pins,
+  incl. the idle empty-section bytes) + the NEW `e2e/toasts.spec.ts`
+  (toast structure, class family, auto-dismiss, add/delete flows —
+  closing the e2e gap). Gates: 681 vitest | 2 skipped · 18/18 e2e
+  chromium.
 - **v1.25** `[SYN]` Round-26 pricing POPULAR badge remediation (plan:
   `docs/plans/2026-09-23-round26-pricing-popular-badge.md`; evidence
   `docs/screenshots/r26-*` + the live captures cited in the plan). The
@@ -1852,9 +1886,17 @@ speculatively.
 | SSR render (marketing parity) | 6 files | 43 | `tests/{social-proof,marketing-hero,marketing-benefits,marketing-pricing,marketing-process,marketing-compare-cta}.test.tsx` | Vitest (`renderToStaticMarkup`) |
 | Behavioural (collector + snippet in `node:vm`) | 2 | 9 | `tests/collector-script.test.ts`, `tests/snippet.test.ts` | Vitest |
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
-| E2E (browser) | 3 spec files | 14 specs | `e2e/{marketing,dashboard,pipeline}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
+| E2E (browser) | 5 spec files | 18 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
 
-The suite totals **662 tests across 65 files** (v1.23: +49 in 4 files —
+The suite totals **681 tests across 67 files** (v1.26: +14 —
+`tests/toast-r27-parity.test.tsx` (the sonner wrapper class family, the
+idle empty-section SSR bytes, the settings/domains toast copy, the
+Radix retirement) + the NEW `e2e/toasts.spec.ts` (2 specs — the
+toast structure/auto-dismiss and the domain add/delete flows) and
+`e2e/pricing.spec.ts` from v1.25 now counted (2 specs); v1.25: +5 —
+`tests/dashboard-r26-parity.test.tsx` (the Growth card POPULAR badge
+SSR pins) + the replaced shell-parity source pin;
+v1.23: +49 in 4 files —
 `tests/live-icons-r24.test.tsx` (11, the ten legacy 0.462 icon geometry
 pins) + `tests/dashboard-r24-parity.test.tsx` (15, the bell order, the
 Export button, the trend badge math/markup, the views label, the

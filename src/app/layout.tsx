@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk, DM_Sans, Dancing_Script } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { siteUrl } from "@/lib/site-url";
 
 // Typography parity (R5-H1): the live app renders Inter for body copy and
@@ -84,6 +84,9 @@ export default function RootLayout({
         className={`${inter.variable} ${spaceGrotesk.variable} ${dmSans.variable} ${dancingScript.variable} font-sans antialiased bg-background text-foreground`}
       >
         {children}
+        {/* R27-F1: the live's toast runtime (sonner 1.7.4) — the <ol>
+            renders only while toasts exist, so idle pages (marketing
+            included) carry just the empty section, byte-matching the live. */}
         <Toaster />
       </body>
     </html>

@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 667 assertions) · Playwright e2e (chromium, standalone build) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 681 assertions) · Playwright e2e (chromium, standalone build) |
 | **Runtime** | Node.js ≥ 20 |
 
 > **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
@@ -477,6 +477,26 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   annual price check) closes the e2e coverage gap that let the drift
   survive. Gates: 667 vitest + 16/16 e2e chromium; 7 VLM-verified
   screenshots in `docs/screenshots/r26-*`.
+- **Sonner toast parity (round-27)** — the 12th probe generation found no
+  redeploy (all bundle hashes unchanged) and re-verified the standing
+  surfaces (mobile navs both sites, POPULAR badge byte-identical, NTW
+  negative branch, install copy swap, 19-route console sweep — all
+  clean), then drove the live's MUTATION flows and found the round's one
+  drift: the live's app bundle fires **sonner success toasts** on
+  settings save (`Settings saved`), domain add (`Domain added
+  successfully`), and domain delete (`Domain removed`) — bottom-right,
+  check-circle icon, title-only. The runtime was fingerprinted from the
+  live's bundle as **sonner 1.7.4** (pinned exact) and the clone's Radix
+  toast generation (`ui/toast.tsx` + `use-toast` + `ui/toaster.tsx`,
+  viewport anchored TOP on mobile) fully replaced: the shadcn sonner
+  wrapper carries the live's toast class family, the settings page's
+  inline `Saved` line retired in favor of the toast, and the domains
+  delete title fixed to the live's `Domain removed`. Pinned by
+  `tests/toast-r27-parity.test.tsx` (SSR + source pins, incl. the idle
+  empty-section bytes) + the NEW `e2e/toasts.spec.ts` (toast structure,
+  class family, auto-dismiss, add/delete flows). Gates: 681 vitest +
+  18/18 e2e chromium; 7 VLM-verified screenshots in
+  `docs/screenshots/r27-*`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the
