@@ -99,26 +99,28 @@ export function SettingsPanel({ email, company, website }: SettingsPanelProps) {
           <form action={formAction} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="company">Company Name</Label>
+              {/* R30-F2: the live's inputs are BARE — no autoComplete /
+                  maxLength clones (the live's DOM is the contract; zod
+                  validates server-side). id/name + the Label for= pair stay
+                  (the server action's form data + the D-class a11y). */}
               <Input
                 id="company"
                 name="company"
                 defaultValue={company ?? ''}
                 placeholder="Acme Inc."
-                autoComplete="organization"
-                maxLength={120}
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="website">Website</Label>
+              {/* R30-F2: the website input is a PLAIN text input too — the
+                  url type would add native browser validation the live
+                  does not have. */}
               <Input
                 id="website"
                 name="website"
-                type="url"
                 defaultValue={website ?? ''}
                 placeholder="https://yoursite.com"
-                autoComplete="url"
-                maxLength={253}
               />
             </div>
 

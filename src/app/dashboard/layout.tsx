@@ -37,18 +37,31 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <div className="min-h-screen flex w-full bg-muted/30">
-      {/* Desktop sidebar (collapsible to an icon rail) */}
-      <SidebarShell usage={usageProps} />
+    // R30-F1: the live's SidebarProvider WRAPPER — captured on the live's
+    // dashboard DOM at both viewports (15th probe generation; present in
+    // the unchanged bundle all along — the R15 pins captured the inner
+    // data-side tree but stopped one level short). No data-* attrs here
+    // (they stay on the inner SidebarShell element); the inline width
+    // vars cascade over the :root defaults inside the shell, exactly like
+    // the live. The :root vars stay — they feed the standalone
+    // w-[--sidebar-width] utilities outside this subtree.
+    <div
+      className="group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar"
+      style={{ '--sidebar-width': '16rem', '--sidebar-width-icon': '3rem' } as React.CSSProperties}
+    >
+      <div className="min-h-screen flex w-full bg-muted/30">
+        {/* Desktop sidebar (collapsible to an icon rail) */}
+        <SidebarShell usage={usageProps} />
 
-      <div className="flex-1 flex flex-col">
-        <Topbar
-          email={user.email}
-          usage={usageProps}
-          unread={unread}
-          initialVisitorsCounts={visitorsCounts}
-        />
-        <main className="flex-1 p-6 overflow-auto">{children}</main>
+        <div className="flex-1 flex flex-col">
+          <Topbar
+            email={user.email}
+            usage={usageProps}
+            unread={unread}
+            initialVisitorsCounts={visitorsCounts}
+          />
+          <main className="flex-1 p-6 overflow-auto">{children}</main>
+        </div>
       </div>
     </div>
   )

@@ -47,6 +47,38 @@ test.describe('dashboard (desktop)', () => {
     await page.goto('/dashboard')
     await expect(page).toHaveURL(/\/login$/)
   })
+
+  test('the SidebarProvider wrapper renders with the live class + inline vars (R30-F1)', async ({
+    page,
+  }) => {
+    await login(page)
+
+    // The live wraps the dashboard layout root in a SidebarProvider div —
+    // captured on the live's DOM (15th probe generation; both viewports,
+    // every dashboard page). No data-* attrs here (they stay on the
+    // inner Sidebar element); the inline vars cascade over :root inside
+    // the shell, exactly like the live.
+    const wrapper = page.locator('.group\\/sidebar-wrapper')
+    await expect(wrapper).toHaveCount(1)
+    await expect(wrapper).toHaveClass(
+      'group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar',
+    )
+    // The inline vars (custom properties): read via evaluate — the inline
+    // style attribute is the live's byte surface, the computed value is
+    // the cascade proof.
+    const vars = await wrapper.evaluate((el) => ({
+      inline: el.getAttribute('style'),
+      computed: getComputedStyle(el).getPropertyValue('--sidebar-width').trim(),
+    }))
+    expect(vars.inline).toBe('--sidebar-width: 16rem; --sidebar-width-icon: 3rem;')
+    expect(vars.computed).toBe('16rem')
+
+    // The layout root (min-h-screen flex w-full bg-muted/30) is INSIDE
+    // the wrapper — the wrapper is the outermost shell element.
+    const root = page.locator('div.min-h-screen.flex.w-full.bg-muted\\/30')
+    await expect(root).toHaveCount(1)
+    expect(await wrapper.locator('div.min-h-screen.flex.w-full.bg-muted\\/30').count()).toBe(1)
+  })
 })
 
 test.describe('dashboard mobile Sheet (375 px)', () => {

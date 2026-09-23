@@ -145,8 +145,10 @@ describe('domains badges (R11-F7)', () => {
 })
 
 describe('install banners (R11-F6)', () => {
+  // R30-F3: the site-dependent install panels (incl. the Quick Start
+  // banners) moved into the client island — repoint the source pin.
   const page = readFileSync(
-    join(process.cwd(), 'src/app/dashboard/install/page.tsx'),
+    join(process.cwd(), 'src/components/dashboard/install-panels.tsx'),
     'utf8',
   )
 
