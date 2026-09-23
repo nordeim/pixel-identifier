@@ -183,6 +183,25 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   clone's simulated `changePlanAction` stays the D-class divergence.
   Pinned by `tests/chart-r28-parity.test.tsx` + `e2e/chart.spec.ts`.
   Plan: `docs/plans/2026-09-23-round28-trend-chart-axis-parity.md`.
+- **R29: the SelectItem class order is the live's — `data-[disabled]:`
+  pair BEFORE `focus:` pair (v1.28).** The live's Radix Select portal
+  renders every `[role=option]` with the class attribute
+  `…outline-none data-[disabled]:pointer-events-none
+  data-[disabled]:opacity-50 focus:bg-accent
+  focus:text-accent-foreground` (runtime-captured on all THREE of the
+  live's Select surfaces — both visitors filters + the install
+  DomainSwitcher). The legacy focus-first order is the R11-era bundle;
+  the live flipped it in the R11→R16 window. Do NOT "fix" the order back
+  to canonical shadcn — the live's DOM is the contract (rendered CSS is
+  identical either way; the pin is pure DOM-byte parity). The trigger,
+  chevron, viewport, scroll buttons, and the indicator-LEFT layout
+  (`pl-8 pr-2`, `h-3.5 w-3.5` span, `lucide-check h-4 w-4`) are
+  byte-identical — do not touch them. The check-icon svg-level
+  `aria-hidden` difference is the documented D4 lucide residual (the
+  wrapper span renders on BOTH sides — only the svg attr differs).
+  Pinned by `tests/select-r29-parity.test.tsx` +
+  `e2e/select.spec.ts`. Plan:
+  `docs/plans/2026-09-23-round29-select-item-class-order.md`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle

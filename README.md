@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 693 assertions) · Playwright e2e (chromium, standalone build, 21 specs) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 700 assertions) · Playwright e2e (chromium, standalone build, 24 specs) |
 | **Runtime** | Node.js ≥ 20 |
 
 > **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
@@ -521,6 +521,31 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   (12 source pins) + the NEW `e2e/chart.spec.ts` (tick/axis lines,
   plot-origin geometry, tooltip chrome). Gates: 693 vitest + 21/21 e2e
   chromium; 4 VLM-verified screenshots in `docs/screenshots/r28-*`.
+- **Select item class-order parity (round-29)** — the 14th probe
+  generation found no redeploy (all bundle hashes unchanged) and
+  re-verified the standing surfaces (mobile navs both sites/surfaces —
+  one early clone false alarm traced to dev-compile latency, chart,
+  toast, POPULAR, NTW, install copy, topbar/visitors, the route console
+  sweep — all clean), plus the R28 tooltip candidate CONFIRMED stable
+  (label + `name : value` entry format byte-identical both sides) and
+  the activity pagination footer runtime-confirmed latent on the live
+  (7 events < the 50/page R22 pin). The round's NEW probe surface — the
+  Radix Select OPEN-state portal (trigger/chevron/viewport/items, never
+  diffed end-to-end before) — found the round's one drift family: the
+  live renders the `SelectItem` class attribute with the
+  `data-[disabled]:` pair BEFORE the `focus:` pair (its bundle flipped
+  the legacy order in the R11→R16 window); the clone shipped the R11-era
+  focus-first order. Same rendered CSS either way — pure DOM-byte
+  parity; the live's DOM is the contract. One-string fix in the single
+  `SelectItem` primitive (both filter consumers + the DomainSwitcher
+  pass no className override); trigger/chevron/viewport/indicator were
+  byte-identical pre-fix and stay untouched. The check-icon svg-level
+  `aria-hidden` stays the documented D4 lucide residual. Pinned by
+  `tests/select-r29-parity.test.tsx` (7 source + static-render pins) +
+  the NEW `e2e/select.spec.ts` (both filter surfaces' option classes
+  order-sensitive, selected-item indicator structure). Gates: 700
+  vitest + 24/24 e2e chromium; 4 VLM-verified screenshots in
+  `docs/screenshots/r29-*`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the

@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.27
+# Pixelco — Master Project Architecture Document (PAD) v1.28
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-23 (v1.27)
+**Last Updated:** 2026-09-23 (v1.28)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,47 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.28** `[SYN]` Round-29 Select item class-order parity (plan:
+  `docs/plans/2026-09-23-round29-select-item-class-order.md`; evidence
+  `docs/screenshots/r29-*` + the live captures cited in the plan). The
+  14th probe generation re-verified the standing surfaces (no redeploy —
+  all bundle hashes unchanged; mobile navs both sites/surfaces, the
+  R28 chart byte-identical, the toast system, the R26 POPULAR badge,
+  the NTW negative branch, the install copy swap, topbar/visitors
+  counts, the route console-error sweep — all clean) and — new this
+  round — confirmed the R28 tooltip candidate STABLE (label +
+  `name : value` entry format byte-identical on both sides) and the
+  activity pagination footer runtime-LATENT on the live (7 events
+  under the 50/page R22 pin — the footer structure stays
+  source-pinned). **ONE drift family found and fixed (R29-F1):** the
+  live's Radix Select OPEN-state portal (a runtime-only surface no
+  prior round diffed end-to-end — the R11 ground truth predates the
+  live's R16 bundle change) renders every `[role=option]` class
+  attribute with the `data-[disabled]:` pair BEFORE the `focus:` pair:
+  `…outline-none data-[disabled]:pointer-events-none
+  data-[disabled]:opacity-50 focus:bg-accent
+  focus:text-accent-foreground` — consistent on all THREE of the live's
+  Select surfaces (both visitors filters + the install DomainSwitcher).
+  The clone shipped the canonical legacy-shadcn (R11-era) focus-first
+  order. Rendered CSS is identical either way (Tailwind attribute order
+  carries no specificity) — pure DOM-byte parity; the live's DOM is the
+  contract. Fix: one-string reorder in the single `SelectItem`
+  primitive (`src/components/ui/select.tsx`) — both filter consumers
+  and the DomainSwitcher pass no className override, so one fix covers
+  every Select surface; the trigger, chevron, viewport, scroll buttons,
+  and the indicator-LEFT layout were byte-identical pre-fix and stay
+  untouched. Runtime byte-verified: all 4 confidence options' class
+  attributes identical to the live capture (order-sensitive), the
+  trigger class family (incl. the consumer `w-44`) and the viewport
+  classes identical. The check-icon svg-level `aria-hidden` stays the
+  documented D4 lucide residual (the aria wrapper span renders on BOTH
+  sides — only the svg attr differs). Pin net:
+  `tests/select-r29-parity.test.tsx` (7 source + static-render pins:
+  the live string, the legacy-order negative, the layout/structure
+  guards, the consumer no-override pins, the trigger SSR bytes) + the
+  NEW `e2e/select.spec.ts` (3 specs: both filter surfaces' option
+  classes order-sensitive, the selected-item indicator structure).
+  Gates: 700 vitest / 70 files | 2 skipped · 24/24 e2e chromium.
 - **v1.27** `[SYN]` Round-28 trend-chart axis-geometry parity (plan:
   `docs/plans/2026-09-23-round28-trend-chart-axis-parity.md`; evidence
   `docs/screenshots/r28-*` + the live captures cited in the plan). The
@@ -1925,9 +1966,14 @@ speculatively.
 | SSR render (marketing parity) | 6 files | 43 | `tests/{social-proof,marketing-hero,marketing-benefits,marketing-pricing,marketing-process,marketing-compare-cta}.test.tsx` | Vitest (`renderToStaticMarkup`) |
 | Behavioural (collector + snippet in `node:vm`) | 2 | 9 | `tests/collector-script.test.ts`, `tests/snippet.test.ts` | Vitest |
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
-| E2E (browser) | 6 spec files | 21 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
+| E2E (browser) | 7 spec files | 24 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
 
-The suite totals **693 tests across 69 files** (v1.27: +12 —
+The suite totals **700 tests across 70 files** (v1.28: +7 —
+`tests/select-r29-parity.test.tsx` (the SelectItem live class order,
+the legacy-order negative, the layout/structure guards, the consumer
+no-override pins, the trigger SSR bytes) + the NEW `e2e/select.spec.ts`
+(3 specs — both filter surfaces' option classes order-sensitive, the
+selected-item indicator structure); v1.27: +12 —
 `tests/chart-r28-parity.test.tsx` (the trend chart's live config: the
 5/5/5/5 margin, tick lines ON, both axis lines in the axis-level
 stroke, the inherited tick-text fill, comma-form HSL, the 8 px no-shadow

@@ -415,6 +415,19 @@ Prove-It). `TZ` is pinned to UTC.
   simulated plan switch stays the documented D-class divergence. Pinned
   by `tests/chart-r28-parity.test.tsx` + `e2e/chart.spec.ts` (plan:
   `docs/plans/2026-09-23-round28-trend-chart-axis-parity.md`).
+  R29 opened a fourth runtime-only surface — the Radix Select
+  OPEN-state portal (trigger/chevron/viewport/items, never diffed
+  end-to-end before) — and found the round's one drift: the live
+  renders the `SelectItem` class attribute with the `data-[disabled]:`
+  pair BEFORE the `focus:` pair (its bundle flipped the legacy order in
+  the R11→R16 window; the clone shipped the R11-era focus-first order —
+  same rendered CSS, pure DOM-byte parity). One-string fix in the single
+  `SelectItem` primitive; trigger/chevron/viewport/indicator were
+  byte-identical pre-fix and stay untouched; the R28 tooltip candidate
+  was confirmed stable and the activity pagination footer
+  runtime-confirmed latent (7 events < the 50/page R22 pin). Pinned by
+  `tests/select-r29-parity.test.tsx` + `e2e/select.spec.ts` (plan:
+  `docs/plans/2026-09-23-round29-select-item-class-order.md`).
 
 ### Test Commands
 

@@ -3,7 +3,7 @@ name: pixel-identifier
 description: "Pixelco clone — cookieless visitor-identification SaaS: Next.js 16.3 App Router + React 19.3 + Tailwind v4 CSS-first + Prisma 6/SQLite + NextAuth v4 — marketing site, dashboard, tracking pixel, and identity-resolution pipeline, built to byte-level visual/functional parity with pixelco.io"
 version: 1.0.0
 last_updated: 2026-09-23
-project_state: "R28 trend-chart axis-geometry parity: one drift family found + fixed (the chart's SVG internals — recharts default tick lines + both axis lines in hsl(220, 9%, 46%), margin {5,5,5,5}, comma-form HSL, 8px no-shadow tooltip; runtime byte-identical); no live redeploy; 693 vitest (69 files) + 21 e2e chromium green, PAD v1.27"
+project_state: "R29 Select item class-order parity: one drift family found + fixed (the Radix Select open-state portal — the live renders the data-[disabled]: pair BEFORE the focus: pair in the SelectItem class attribute; runtime byte-identical); no live redeploy; the R28 tooltip candidate confirmed stable + the activity footer latent; 700 vitest (70 files) + 24 e2e chromium green, PAD v1.28"
 audience: "engineers + AI agents extending, debugging, onboarding, or replicating the Pixelco clone"
 tags: [nextjs16, react19, tailwind-v4, prisma, sqlite, nextauth4, vitest, playwright, saas, visitor-identification, parity-clone]
 ---
@@ -570,10 +570,10 @@ Run in order — the exact gate the rounds ship under
 ```bash
 npm run lint          # 1. eslint 9 — zero warnings tolerated
 npm run typecheck     # 2. tsc --noEmit — includes e2e/ specs
-npm run test          # 3. vitest — expect 693 passed | 2 skipped (69 files)
+npm run test          # 3. vitest — expect 700 passed | 2 skipped (70 files)
 npm run build         # 4. next build — all routes compile, no type errors
 # 5. e2e (standalone build first):
-npm run build:standalone && npm run test:e2e   # expect 21/21 chromium
+npm run build:standalone && npm run test:e2e   # expect 24/24 chromium
 ```
 
 **DB seam acceptance (when touching anything near the database):**
@@ -1015,6 +1015,7 @@ full record):
 | **R26** | **Pricing POPULAR badge remediation: ONE real drift found + fixed — the live's dashboard Growth card header ships a POPULAR badge (new-gen Badge, default variant, gradient-first tail `gradient-primary … border-0 text-[10px] px-2 py-0.5`, both billing states + viewports); the R15 "no badge" pin had captured the rolling-deploy window's OLD build (bundle hash never changed — lesson: re-verify old evidence against the CURRENT DOM); pin net: dashboard-r26-parity SSR pins + replaced source pin + NEW e2e/pricing.spec.ts (closes the e2e coverage gap)** |
 | **R27** | **Sonner toast parity: ONE drift family found + fixed — the live's mutation feedback is SONNER success toasts (settings save `Settings saved`, domain add `Domain added successfully`, domain delete `Domain removed`; bottom-right, check icon, title-only); the R24–R26 "silent save" evidence was a transient backend state (toast code in the unchanged bundle all along); sonner fingerprinted from the live bundle + pinned 1.7.4 exact; the Radix toast generation fully retired; pin net: toast-r27-parity SSR/source pins + NEW e2e/toasts.spec.ts; runtime byte-identical (idle section, ol, li, icon, title)** |
 | **R28** | **Trend-chart axis-geometry parity: ONE drift family found + fixed — the live's chart SVG renders the recharts DEFAULT tick lines (6px) + an axis line on BOTH axes in the axis-level stroke `hsl(220, 9%, 46%)` (the tick text INHERITS it as its fill), the explicit margin `{5,5,5,5}` (plot origin x=65), comma-form HSL literals, and an 8px no-shadow tooltip; the clone's R8-era config had suppressed the tick lines + Y axis line and hacked the margin `left:-18` (23px plot shift flipping the label thinning); also documented the live's Stripe embedded-checkout plan-change flow (the clone's simulated billing stays the D-class divergence); pin net: chart-r28-parity source pins + NEW e2e/chart.spec.ts; runtime byte-identical (12 label positions, tick/axis geometry, the x=576.59375 last-label clamp)** |
+| **R29** | **Select item class-order parity: ONE drift family found + fixed — the live's Radix Select OPEN-state portal (a runtime-only surface no prior round diffed end-to-end) renders every `[role=option]` class attribute with the `data-[disabled]:` pair BEFORE the `focus:` pair (its bundle flipped the legacy order in the R11→R16 window; the clone shipped the R11-era focus-first order — same rendered CSS, pure DOM-byte parity); one-string fix in the single SelectItem primitive (both filter consumers + the DomainSwitcher pass no className override); trigger/chevron/viewport/indicator byte-identical pre-fix and untouched; the R28 tooltip candidate confirmed stable + the activity pagination footer runtime-confirmed latent (7 events < the 50/page R22 pin); pin net: select-r29-parity source/SSR pins + NEW e2e/select.spec.ts; runtime byte-identical (all option classes order-sensitive, trigger incl. the consumer w-44, viewport)** |
 
 ---
 
@@ -1090,6 +1091,7 @@ surface):
 | R26 (2026-09-23) | pricing POPULAR badge remediation — no redeploy, standing surfaces + TW4 checks + DB seam + 18-route console sweep all clean; ONE real drift fixed (Growth card header badge, live-verified both billing states + viewports, runtime byte-identical); e2e coverage gap closed | `docs/screenshots/r26-*` (7 captures) + `docs/plans/2026-09-23-round26-pricing-popular-badge.md` |
 | R27 (2026-09-23) | sonner toast parity — no redeploy; standing surfaces re-verified + the live's MUTATION flows driven for the first time; ONE drift family fixed (sonner 1.7.4 success toasts on settings/domains mutations, the Radix generation retired); runtime byte-identical; toast e2e coverage added | `docs/screenshots/r27-*` (7 captures) + `docs/plans/2026-09-23-round27-sonner-toast-parity.md` |
 | R28 (2026-09-23) | trend-chart axis-geometry parity — no redeploy; standing surfaces + mutation-loop regressions re-verified; NEW probe surface: the chart's SVG internals; ONE drift family fixed (recharts default tick lines + both axis lines in the live's axis stroke, margin {5,5,5,5}, comma-form HSL, 8px no-shadow tooltip); runtime byte-identical; chart e2e coverage added | `docs/screenshots/r28-*` (4 captures) + `docs/plans/2026-09-23-round28-trend-chart-axis-parity.md` |
+| R29 (2026-09-23) | Select item class-order parity — no redeploy; standing surfaces re-verified (one clone mobile-nav false alarm traced to dev-compile latency); R28 tooltip candidate confirmed stable + activity footer latent; NEW probe surface: the Radix Select open-state portal; ONE drift family fixed (the SelectItem class order — data-[disabled]: pair before focus: pair, the live's R16-era bundle order vs the clone's R11-era legacy); runtime byte-identical; select e2e coverage added | `docs/screenshots/r29-*` (4 captures) + `docs/plans/2026-09-23-round29-select-item-class-order.md` |
 
 **R23 final gate:** lint ✓ typecheck ✓ **613 vitest / 61 files** (2
 skipped) ✓ build ✓ **14/14 e2e chromium** ✓ DB acceptance (the user's
@@ -1131,6 +1133,15 @@ byte-diff vs the live (12 label positions, tick-line/axis-line geometry
 tooltip style bytes — identical) ✓ 4 VLM-verified screenshots ✓ zero
 console errors (20 routes)
 
+**R29 final gate:** lint ✓ typecheck ✓ **700 vitest / 70 files** (2
+skipped) ✓ build ✓ standalone ✓ **24/24 e2e chromium** (standalone,
+38.2 s — the new `e2e/select.spec.ts` included) ✓ Select runtime
+byte-diff vs the live (all 4 confidence option class attributes
+order-sensitive identical, the trigger class family incl. the consumer
+w-44, the viewport classes, the indicator + check structure —
+identical) ✓ 4 VLM-verified screenshots ✓ zero console errors (the
+standing sweep)
+
 ---
 
 ## Quick Reference Card
@@ -1140,7 +1151,7 @@ Commands
   npm run dev                    # dev server :3000 (needs db/ seeded)
   npm run verify                 # lint + typecheck + vitest + build  ← THE GATE
   npm run db:push / db:seed      # wrapper-routed Prisma CLI (repo-root db/)
-  npm run build:standalone && npm run test:e2e   # 21 e2e tests, :3100, db/e2e.db
+  npm run build:standalone && npm run test:e2e   # 24 e2e tests, :3100, db/e2e.db
   npx vitest run --pool=forks --maxWorkers=1 --no-file-parallelism   # low-RAM run
   curl localhost:3000/api/health # {"status":"ok","db":"up"}
 
@@ -1161,9 +1172,10 @@ Files you will touch most
   docs/plans/2026-09-22-round24-*.md   # the R24 record
   docs/plans/2026-09-23-round27-*.md   # the R27 record (sonner toasts)
   docs/plans/2026-09-23-round28-*.md   # the R28 record (chart axis chrome)
+  docs/plans/2026-09-23-round29-*.md   # the R29 record (Select item order)
 
-Counts (R28, verified)
-  693 vitest (69 files) + 21 e2e chromium · 79 tsx · 19 pages · 5 API routes
+Counts (R29, verified)
+  700 vitest (70 files) + 24 e2e chromium · 79 tsx · 19 pages · 5 API routes
   4 Prisma models · 7 keyframes · 3 env vars · 0 custom hooks (use-toast retired R27)
 ```
 

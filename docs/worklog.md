@@ -1450,3 +1450,69 @@ Stage Summary:
 - Next (R29): bundle hashes (a change triggers the full token-diff
   sweep); the chart joins the standing regression loop; toast/pricing/
   mobile-nav loops continue; tooltip label/entry pin candidates.
+---
+Task ID: R29
+Agent: main (Super Z)
+Task: Round-29 drift watch + remediation — Select item class-order parity with pixelco.io
+
+Work Log:
+- Workspace re-cloned fresh at f13abc1 (session reset; docs-only commits
+  after the R28 push — session_31.md, the operator's R28 transcript);
+  docs reviewed (AGENTS/CLAUDE/README/PAD v1.27/SKILL/session_30+31/
+  R28-plan/worklog); environment rebuilt (.env, db pushed + seeded,
+  the stale-shell DATABASE_URL quirk re-unified via symlink).
+- Arrival gates green (lint 0, tsc 0, 693 vitest — the R28 baseline).
+- Session continued across a context reset: the probe phase completed
+  in two halves with findings carried through the plan doc.
+- 14th probe generation: NO redeploy (all three bundle hashes
+  unchanged — fourth consecutive stable generation); mobile navs both
+  sites/surfaces parity (one clone false alarm traced to dev-compile
+  latency — the Sheet does close on nav); chart r28 byte-identical;
+  toast byte-identical (4s auto-dismiss both sides); POPULAR badge;
+  NTW negative branch; install copy swap; topbar/visitors parity;
+  route console sweep clean.
+- R28 candidates closed: tooltip CONTENT confirmed stable (label +
+  `name : value` entries byte-identical both sides); activity
+  pagination footer runtime-latent on the live (7 events < 50/page —
+  the R22 pin stands, source-pinned).
+- NEW probe surface (the Radix Select OPEN-state portal): R29-F1 found
+  — the live renders the SelectItem class attribute with the
+  data-[disabled]: pair BEFORE the focus: pair (its bundle flipped the
+  legacy order in the R11→R16 window; the R11 ground truth recorded
+  the OLD order), consistent across all three of the live's Select
+  surfaces; the clone shipped the R11-era focus-first order. Same
+  rendered CSS — pure DOM-byte parity. Trigger/chevron/viewport/
+  indicator byte-identical pre-fix; the check-icon svg aria-hidden
+  re-confirmed as the D4 lucide residual (the wrapper span renders on
+  BOTH sides).
+- TDD: RED tests/select-r29-parity.test.tsx (7 pins, 2 failing) +
+  NEW e2e/select.spec.ts (3 runtime specs, 2 failing pre-fix) → GREEN
+  one-string reorder in ui/select.tsx SelectItem; full suite 700
+  vitest / 70 files (2 skipped).
+- Static-render probe finding: renderToStaticMarkup does NOT render
+  Radix portal items — the item class order is only browser-observable
+  (the e2e spec carries the runtime pin).
+- Runtime byte-verify vs the live: all 4 confidence option class
+  attributes identical (order-sensitive), trigger (incl. w-44) +
+  viewport + indicator + check path identical; residuals = D4 + radix
+  ids only.
+- Full e2e 24/24 chromium (38.2 s); build + standalone green (one
+  transient worker-spawn failure, clean on retry).
+- 4 VLM-verified screenshots (docs/screenshots/r29-*).
+- .env.example re-verified (3 keys, consistent — no env surface added).
+- Docs: README R29 bullet, AGENTS R29 fact, CLAUDE 11–29 mirror,
+  PAD v1.28, SKILL.md R29 rows, plan execution log, session_32.md,
+  this entry.
+
+Stage Summary:
+- Round-29 SHIPPED: one drift family found and fixed (the Select
+  item class order — the live's R16-era bundle order vs the clone's
+  R11-era legacy), pin net hardened (+7 vitest, +3 e2e), runtime
+  byte-verified against the live; everything else confirmed at parity
+  (tooltip content now on the confirmed-stable list; the activity
+  footer latent).
+- Next (R30): bundle hashes (a change triggers the full token-diff
+  sweep); the Select open-state joins the standing regression loop
+  (r29 e2e); standing toast/pricing/mobile-nav/chart loops continue;
+  candidate surfaces — the DomainSwitcher open-state runtime byte-diff
+  (the third live Select surface) and the settings-tab panels.

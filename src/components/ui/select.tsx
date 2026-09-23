@@ -106,7 +106,10 @@ function SelectItem({
   return (
     <SelectPrimitive.Item
       className={cn(
-        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        // R29-F1: the live's item class order — the data-[disabled]: pair
+        // BEFORE the focus: pair (runtime-captured on the live's open
+        // portal; the legacy focus-first order was the R11-era bundle).
+        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 focus:bg-accent focus:text-accent-foreground",
         className,
       )}
       {...props}
