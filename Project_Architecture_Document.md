@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.28
+# Pixelco — Master Project Architecture Document (PAD) v1.29
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-23 (v1.28)
+**Last Updated:** 2026-09-24 (v1.29)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,35 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.29** `[SYN]` Round-30 sidebar-wrapper + install-switcher parity,
+  completed + verified in round-31 (plans:
+  `docs/plans/2026-09-23-round30-sidebar-wrapper-install-parity.md`,
+  `docs/plans/2026-09-24-round31-r30-completion-drift-watch.md`;
+  evidence `docs/screenshots/r31-*` + the live captures cited in the
+  plans). The 15th probe generation (no redeploy) found FOUR families:
+  the missing `SidebarProvider` wrapper div on every dashboard page
+  (class `group/sidebar-wrapper flex min-h-svh w-full
+  has-[[data-variant=inset]]:bg-sidebar` + inline `--sidebar-width:
+  16rem; --sidebar-width-icon: 3rem;`), the settings Profile inputs'
+  clone-authored attrs (`type="url"`/`autoComplete`/`maxLength` —
+  stripped; id/name/for stay), the URL-driven install selection
+  (`?site=` in the address bar — rebuilt as the `InstallPanels` client
+  island owning ONE `useState`, default = newest, `buildSnippet`
+  client-side, `src/lib/sites.ts` retired), and the install site list
+  being oldest-first (one-line `desc`). The R30 commit `40a7fa8`
+  shipped BROKEN — the island file, 6 repointed pins, and the
+  retirement were never staged (tsc/vitest/build red at HEAD) — R31
+  repaired main, made the 3 install e2e specs hermetic (direct
+  db/e2e.db probe-site fixture, cleaned beforeAll/afterAll; the
+  free-plan 1-domain cap blocks the UI add), and ran the 16th
+  generation: no redeploy (6th consecutive stable), mobile navs full
+  parity both surfaces both sites, the R30 fixes runtime byte-verified
+  against fresh live captures, the R28 chart byte-identical, the
+  19-route console sweep clean — no new drift. Pinned by
+  `tests/{sidebar-wrapper,settings,install}-r30-parity.test.tsx` (23
+  pins) + the NEW `e2e/install.spec.ts` (3 specs) + the dashboard
+  wrapper e2e spec. Gates: 719 vitest / 72 files | 2 skipped · 28/28
+  e2e chromium.
 - **v1.28** `[SYN]` Round-29 Select item class-order parity (plan:
   `docs/plans/2026-09-23-round29-select-item-class-order.md`; evidence
   `docs/screenshots/r29-*` + the live captures cited in the plan). The
@@ -1962,13 +1991,17 @@ speculatively.
 | Lint (static) | 80+ | — | repo-wide | ESLint 9 + typescript-eslint + React Compiler rules |
 | Types (static) | 80+ | — | repo-wide | `tsc --noEmit`, strict |
 | Build (integration) | 35 routes | — | `next build` | Next 16 (16 marketing URLs incl. 10 SSG blog posts + 15 dynamic/authed routes — `/forgot-password` added v1.5) |
-| Unit (pure libs + data modules) | 10 files | ~69 | `tests/{plans,format,snippet,sites,smoke,marketing-links,blog-posts,blog-slug,dashboard-chrome,marketing-theme}.test.ts` | Vitest |
+| Unit (pure libs + data modules) | 10 files | ~69 | `tests/{plans,format,snippet,smoke,marketing-links,blog-posts,blog-slug,dashboard-chrome,marketing-theme}.test.ts` | Vitest |
 | SSR render (marketing parity) | 6 files | 43 | `tests/{social-proof,marketing-hero,marketing-benefits,marketing-pricing,marketing-process,marketing-compare-cta}.test.tsx` | Vitest (`renderToStaticMarkup`) |
 | Behavioural (collector + snippet in `node:vm`) | 2 | 9 | `tests/collector-script.test.ts`, `tests/snippet.test.ts` | Vitest |
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
-| E2E (browser) | 7 spec files | 24 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
+| E2E (browser) | 8 spec files | 28 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select,install}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
 
-The suite totals **700 tests across 70 files** (v1.28: +7 —
+The suite totals **719 tests across 72 files** (v1.29: +19 net — the
+  R30 pins `tests/{sidebar-wrapper,settings,install}-r30-parity.test.tsx`
+  (23) + the NEW `e2e/install.spec.ts` (3 specs) + the dashboard wrapper
+  e2e spec, minus the retired `tests/sites.test.ts` (4, deleted with
+  `src/lib/sites.ts`); v1.28: +7 —
 `tests/select-r29-parity.test.tsx` (the SelectItem live class order,
 the legacy-order negative, the layout/structure guards, the consumer
 no-override pins, the trigger SSR bytes) + the NEW `e2e/select.spec.ts`

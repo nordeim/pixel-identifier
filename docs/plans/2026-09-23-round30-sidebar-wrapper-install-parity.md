@@ -177,4 +177,19 @@ first + oldest selected. Fix: `desc` on the install query (one line).
 
 ## Execution log
 
-*(filled during execution)*
+*(The R30 session was interrupted mid-execution — see
+`docs/session_34.md`. The findings, fixes, and pins for F1–F4 were
+committed in `40a7fa8`, but the commit shipped BROKEN: the new
+`install-panels.tsx` island, the 6 repointed pins (content-parity ×5,
+dashboard-empty-r22 ×1), and the `src/lib/sites.ts` +
+`tests/sites.test.ts` retirement were never staged — tsc/vitest/build
+were red at HEAD, and the 3 new install e2e specs were failing on the
+free-plan 1-domain cap. R31 completed the round: island reconstructed
+from its committed pins (verbatim JSX port + client-state selection),
+pins repointed, retirement landed (719 vitest | 2 skipped — the exact
+number the interrupted session reported), the e2e fixture made hermetic
+(direct db/e2e.db probe-site insert, cleaned beforeAll/afterAll),
+28/28 e2e chromium, 16th-generation drift watch clean, docs synced
+(PAD v1.29), screenshots `docs/screenshots/r31-*`. Full record:
+`docs/plans/2026-09-24-round31-r30-completion-drift-watch.md` +
+`docs/session_35.md`.)*

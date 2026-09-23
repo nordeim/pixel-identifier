@@ -393,13 +393,15 @@ describe('R16 H — Install page pieces', () => {
   })
 
   it('renders the code chip with the live classes (px-1.5, live order)', () => {
-    const page = src('src/app/dashboard/install/page.tsx')
+    // R30-F3: the install pieces moved into the client island — repointed.
+    const page = src('src/components/dashboard/install-panels.tsx')
     expect(page).toContain('text-xs bg-muted px-1.5 py-0.5 rounded font-mono')
     expect(page).not.toContain('rounded bg-muted px-1 py-0.5 font-mono text-xs')
   })
 
   it('renders the pre block with the live order (no text-foreground)', () => {
-    const page = src('src/app/dashboard/install/page.tsx')
+    // R30-F3: repointed to the island (see above).
+    const page = src('src/components/dashboard/install-panels.tsx')
     expect(page).toContain(
       'bg-foreground/5 border border-border rounded-lg p-4 text-sm font-mono overflow-x-auto leading-relaxed',
     )
@@ -407,12 +409,14 @@ describe('R16 H — Install page pieces', () => {
   })
 
   it('renders the notice box with the live tint (/5, /20)', () => {
-    const page = src('src/app/dashboard/install/page.tsx')
+    // R30-F3: repointed to the island (see above).
+    const page = src('src/components/dashboard/install-panels.tsx')
     expect(page).toContain('bg-neon-green/5 border-neon-green/20')
   })
 
   it('renders the Quick Start chip and heading order (div chip, live order)', () => {
-    const page = src('src/app/dashboard/install/page.tsx')
+    // R30-F3: repointed to the island (see above).
+    const page = src('src/components/dashboard/install-panels.tsx')
     expect(page).toContain(
       '<div className="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center text-sm font-bold text-primary-foreground">',
     )
@@ -579,7 +583,8 @@ describe('R17 F3 — Install chips (bare geometry-first divs)', () => {
   })
 
   it('renders the How It Works chip as a div with the live order (source pin)', () => {
-    const page = src('src/app/dashboard/install/page.tsx')
+    // R30-F3: repointed to the island (the card rides the selection state).
+    const page = src('src/components/dashboard/install-panels.tsx')
     expect(page).toContain(
       '<div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center">',
     )

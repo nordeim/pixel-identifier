@@ -202,6 +202,34 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   Pinned by `tests/select-r29-parity.test.tsx` +
   `e2e/select.spec.ts`. Plan:
   `docs/plans/2026-09-23-round29-select-item-class-order.md`.
+- **R30: the install selection is CLIENT STATE and the dashboard shell has a
+  wrapper level (v1.29).** The live's install page never puts the selected
+  site in the URL — the `InstallPanels` client island
+  (`src/components/dashboard/install-panels.tsx`) owns ONE `useState`
+  (default = the NEWEST site, `createdAt desc`) and every site-dependent
+  panel rides it; `buildSnippet` runs client-side. The retired
+  `?site=` model (`src/lib/sites.ts` + `pickSelectedSite`) must not come
+  back. The live also wraps every dashboard page in a `SidebarProvider`
+  wrapper div (`group/sidebar-wrapper flex min-h-svh w-full
+  has-[[data-variant=inset]]:bg-sidebar` + inline `--sidebar-width:
+  16rem; --sidebar-width-icon: 3rem;`) — pinned by
+  `tests/sidebar-wrapper-r30-parity.test.tsx` + an e2e spec. The live's
+  settings Profile inputs are BARE (no `type`/`autoComplete`/`maxLength`
+  attrs). Plan:
+  `docs/plans/2026-09-23-round30-sidebar-wrapper-install-parity.md`.
+- **R31: the install e2e fixture is hermetic — probe sites never leak.**
+  The e2e demo account is FREE (1-domain cap, used by the seed), so the
+  install specs cross the `sites.length > 1` gate via a DIRECT db/e2e.db
+  probe-site insert (`e2e/install.spec.ts` `seedProbeSite`) — cleaned in
+  BOTH `beforeAll`/`afterAll` because later specs (pipeline reads the
+  Install snippet's key; dashboard asserts the seeded domain visible)
+  and reused servers expect the demo account EXACTLY as seeded. The R30
+  commit `40a7fa8` was shipped BROKEN (the island file, 6 repointed
+  pins, and the sites.ts retirement were never staged — tsc/vitest/build
+  red at HEAD); R31 repaired main before any new work. Lesson: a GREEN
+  local tree is not a GREEN commit — the gate must run against the
+  STAGED tree. Plan:
+  `docs/plans/2026-09-24-round31-r30-completion-drift-watch.md`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle

@@ -132,7 +132,12 @@ describe('R22 F7 — install page zero-domain branch (the live interstitial)', (
   })
 
   it('renders the domain switcher only when multiple sites exist', () => {
-    expect(installPage).toMatch(/sites\.length > 1|domains={sites\.length > 1/)
+    // R30-F3: the switcher gate moved into the client island — repointed.
+    const island = readFileSync(
+      'src/components/dashboard/install-panels.tsx',
+      'utf-8',
+    )
+    expect(island).toMatch(/sites\.length > 1|domains={sites\.length > 1/)
   })
 })
 

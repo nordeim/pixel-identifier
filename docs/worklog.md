@@ -1516,3 +1516,88 @@ Stage Summary:
   (r29 e2e); standing toast/pricing/mobile-nav/chart loops continue;
   candidate surfaces — the DomainSwitcher open-state runtime byte-diff
   (the third live Select surface) and the settings-tab panels.
+
+---
+Task ID: R30
+Agent: main (Super Z)
+Task: Round-30 sidebar-wrapper + install-switcher parity (session interrupted mid-execution; completed by R31)
+
+Work Log:
+- 15th probe generation: NO redeploy (all three bundle hashes unchanged —
+  5th consecutive stable generation); standing surfaces clean (mobile navs
+  both sites/surfaces, chart, toast, POPULAR, NTW, copy swap, topbar/
+  visitors, console sweep); NEW probe surfaces — the shell's outer wrapper
+  layer, the settings-panel byte-diff, the DomainSwitcher open state
+  (PARITY — the R29 primitive covers the third surface), site ordering.
+- Four findings: F1 the live's SidebarProvider wrapper div missing from
+  every dashboard page (class + inline width vars); F2 clone-authored
+  settings input attrs (type="url"/autoComplete/maxLength); F3 the install
+  selection URL-driven (?site= leaked) vs the live's pure client state;
+  F4 install sites oldest-first vs the live's newest-first default.
+- TDD executed (23 new pins across three vitest files + e2e/install.spec.ts
+  + the dashboard wrapper e2e spec); fixes landed in layout.tsx,
+  settings-panel.tsx, domain-switcher.tsx (controlled), install/page.tsx
+  (slimmed), plus the InstallPanels client island.
+- The session DIED mid-e2e (the install specs' UI add hit the free-plan
+  1-domain cap) and the commit 40a7fa8 shipped BROKEN: the island file,
+  the 6 repointed pins, and the src/lib/sites.ts + tests/sites.test.ts
+  retirement were never staged (tsc/vitest/build red at HEAD).
+
+Stage Summary:
+- Round-30's code fixes + pins are correct but the round shipped
+  INCOMPLETE — R31 repaired main and closed the gates (see R31).
+- Lesson recorded: a GREEN local tree is not a GREEN commit — the gate
+  must run against the STAGED tree.
+---
+Task ID: R31
+Agent: main (Super Z)
+Task: Round-31 — R30 completion (install-island repair) + 16th-generation drift watch
+
+Work Log:
+- Fresh clone at 0448ae2; docs reviewed (the five root docs still at the
+  R29 state; session_34's transcript ends mid-e2e); environment rebuilt
+  (.env DATABASE_URL="file:../db/custom.db", db/ pushed + seeded at the
+  repo root — this sandbox now blocks symlinks, so the stale-shell
+  DATABASE_URL quirk is handled with a per-command env override).
+- Arrival gates: main BROKEN (tsc TS2307 install-panels; vitest 706 |
+  10 failed | 2 skipped; badge-consumers unrunnable) — root cause the
+  R30 staging gap, proven by the interrupted session's own 719|2 number.
+- Phase A repair (the committed RED pins were the spec): island
+  reconstructed verbatim from the pins + the pre-R30 page JSX +
+  useState(sites[0].siteKey) newest-default; 6 pins repointed verbatim
+  (content-parity ×5, dashboard-empty-r22 ×1); sites.ts + its 4-test
+  file retired. Gates: lint 0 · tsc 0 · 719 | 2 skipped (721 total) ·
+  build green.
+- Phase B e2e: seedProbeSite direct db/e2e.db insert replaces the
+  cap-blocked UI add; made HERMETIC (cleanProbeSites beforeAll +
+  afterAll) after the consecutive-run check caught leaking probes
+  breaking pipeline (snippet-key host-match) + dashboard (seeded-domain
+  visibility) on reused servers. Gates: 28/28 e2e chromium across two
+  consecutive runs (the reuse case clean).
+- Phase C 16th probe generation: NO redeploy (6th consecutive stable);
+  mobile navs FULL PARITY both surfaces both sites (dropdown + Sheet,
+  close-on-visible-link + close-on-nav, icon reset, live 7424 / clone
+  7404 = the D5 delta; the R25 visibility-filter lesson re-applied);
+  TW4 watch clean; R30 fixes runtime byte-verified vs fresh live
+  captures (wrapper byte-identical; live settings inputs bare; live
+  switcher pure client state, newest-first default); chart r28
+  byte-identical; console sweep 19/0. No new drift.
+- Phase D: 6 VLM-verified screenshots (docs/screenshots/r31-*; the
+  switcher shot's dev-DB probe site cleaned after capture); .env.example
+  re-verified; docs synced for BOTH rounds (README bullets + totals
+  719/28, AGENTS R30+R31 facts, CLAUDE 11–31 mirror, PAD v1.29, SKILL
+  frontmatter + Appendix A/D + final gates + Quick Reference, R30 plan
+  execution log, R31 plan, session_35.md, this log + the root mirror).
+- Committed to main; pushed via docs/ssh_git_wrapper_v3.py (--remote
+  git@github.com:nordeim/pixel-identifier.git — the DEFAULT_REMOTE is a
+  different repo); remote ref verified == local HEAD; operator key
+  shredded.
+
+Stage Summary:
+- Round-31 SHIPPED: main repaired to the R30 design (719 | 2 + 28/28,
+  the exact interrupted-session totals), the install e2e fixture is
+  hermetic, the 16th generation found zero drift, and both rounds' docs
+  are synced (PAD v1.29).
+- Next (R32): bundle hashes; the R30 surfaces join the standing loop;
+  candidate surfaces — marketing footer open-state links @375, blog SSG
+  DOM runtime-diff, activity pagination footer (latent < 50 events).

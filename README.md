@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 700 assertions) · Playwright e2e (chromium, standalone build, 24 specs) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 719 assertions) · Playwright e2e (chromium, standalone build, 28 specs) |
 | **Runtime** | Node.js ≥ 20 |
 
 > **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
@@ -546,6 +546,49 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   order-sensitive, selected-item indicator structure). Gates: 700
   vitest + 24/24 e2e chromium; 4 VLM-verified screenshots in
   `docs/screenshots/r29-*`.
+- **Sidebar wrapper + install switcher parity (round-30, completed in
+  round-31)** — the 15th probe generation found no redeploy and four
+  drift families: (F1) the live wraps every dashboard page in a
+  `SidebarProvider` wrapper div (`group/sidebar-wrapper flex min-h-svh
+  w-full has-[[data-variant=inset]]:bg-sidebar` + inline `--sidebar-width:
+  16rem; --sidebar-width-icon: 3rem;`) the clone lacked — a missing
+  element on every dashboard page (present in the unchanged bundle all
+  along; the R15 pins stopped one level short); (F2) the settings
+  Profile inputs shipped clone-authored attrs (`type="url"`,
+  `autoComplete` ×2, `maxLength` ×2) the live never renders — stripped
+  (the id/name/for pairs stay: the server action + the D-class a11y);
+  (F3) the install-page site selection was URL-driven (`?site=` leaked
+  into the address bar) while the live's is pure client state — rebuilt
+  as the `InstallPanels` client island owning one `useState` (header +
+  switcher, Quick Start, platform tabs, How It Works, Site Key all ride
+  the selection; `buildSnippet` runs client-side; the URL stays
+  `/dashboard/install` on every swap); (F4) the install page listed
+  sites oldest-first while two live add/remove cycles proved the live
+  sorts newest-first with the newest as the default selection — one
+  line `desc`. The R30 commit (`40a7fa8`) shipped the edits to existing
+  files but the interrupted session never staged the new island file,
+  the 6 repointed pins, or the retired `?site=` helper — round-31
+  repaired main (reconstructed the island from its committed pins,
+  repointed content-parity ×5 + dashboard-empty-r22 ×1, deleted
+  `src/lib/sites.ts` + its 4-test file) and fixed the round's last red
+  gate: the 3 install e2e specs now cross the free-plan 1-domain cap
+  via a hermetic direct-DB probe-site fixture (cleaned on both ends so
+  the shared `db/e2e.db` stays deterministic). Pinned by
+  `tests/{sidebar-wrapper,settings,install}-r30-parity.test.tsx` (23
+  pins) + `e2e/install.spec.ts` (3 specs) + the dashboard wrapper spec.
+  Gates: 719 vitest + 28/28 e2e chromium; 6 VLM-verified screenshots
+  in `docs/screenshots/r31-*`.
+- **R30 completion + 16th-generation drift watch (round-31)** — no
+  redeploy (6th consecutive stable bundle generation), mobile navs
+  FULL PARITY both surfaces both sites (dropdown container bytes +
+  close-on-visible-link-click + icon reset — live scroll 7424 /
+  clone 7404, the documented 20 px D5 delta; the dashboard Sheet's
+  inline `--sidebar-width: 18rem` → 288 px + 7 links + close-on-nav),
+  the R30 fixes runtime byte-verified against fresh live captures
+  (wrapper byte-identical; the live's settings inputs confirmed bare;
+  the live's switcher confirmed pure client state with newest-first
+  default), chart r28 byte-identical (17 ticks, same hidden-day label
+  set), and the 19-route console sweep clean. No new drift.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the

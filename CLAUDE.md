@@ -367,7 +367,7 @@ Prove-It). `TZ` is pinned to UTC.
   (R23-F3), the auth redirect, `/api/health`, `/pixel.js`, the
   anti-enumeration 204, and the beacon → Activity-Log loop. Manual browser
   flows (sign-up → domain → beacon → dashboard → export) complement it.
-- **Live-parity pins (rounds 11-28):** the live DOM's class strings,
+- **Live-parity pins (rounds 11-31):** the live DOM's class strings,
   emission orders and copy are pinned by SSR/source tests against
   captured evidence — the R24 batch pins the live app bundle's
   lucide-react 0.462 icon generation (ten geometry overrides in
@@ -427,7 +427,29 @@ Prove-It). `TZ` is pinned to UTC.
   was confirmed stable and the activity pagination footer
   runtime-confirmed latent (7 events < the 50/page R22 pin). Pinned by
   `tests/select-r29-parity.test.tsx` + `e2e/select.spec.ts` (plan:
-  `docs/plans/2026-09-23-round29-select-item-class-order.md`).
+  `docs/plans/2026-09-23-round29-select-item-class-order.md`). R30's
+  15th probe generation found FOUR families: the missing
+  `SidebarProvider` wrapper div on every dashboard page (class + inline
+  width vars — pinned by `tests/sidebar-wrapper-r30-parity.test.tsx` +
+  an e2e spec), the settings Profile inputs' clone-authored attrs
+  (`type="url"`/`autoComplete`/`maxLength` — stripped; id/name/for stay
+  as the D-class), the install selection being URL-driven (`?site=`
+  leaked into the address bar — rebuilt as the `InstallPanels` client
+  island owning ONE `useState`, default = newest, `buildSnippet`
+  client-side; `src/lib/sites.ts` retired), and the install site list
+  being oldest-first (one-line `desc`; the live's default selection is
+  the NEWEST). The R30 commit shipped broken (the island file, 6
+  repointed pins, and the retirement were never staged) — R31 repaired
+  main, made the 3 install e2e specs hermetic (direct db/e2e.db
+  probe-site insert, cleaned beforeAll/afterAll — the free-plan cap
+  blocks the UI add), and ran the 16th generation: no redeploy, mobile
+  navs full parity both surfaces both sites, R30 fixes runtime
+  byte-verified against fresh live captures, chart r28 byte-identical,
+  console sweep clean — no new drift. Pinned by
+  `tests/{sidebar-wrapper,settings,install}-r30-parity.test.tsx` +
+  `e2e/install.spec.ts` (plans:
+  `docs/plans/2026-09-23-round30-sidebar-wrapper-install-parity.md`,
+  `docs/plans/2026-09-24-round31-r30-completion-drift-watch.md`).
 
 ### Test Commands
 
