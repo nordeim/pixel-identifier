@@ -367,7 +367,7 @@ Prove-It). `TZ` is pinned to UTC.
   (R23-F3), the auth redirect, `/api/health`, `/pixel.js`, the
   anti-enumeration 204, and the beacon → Activity-Log loop. Manual browser
   flows (sign-up → domain → beacon → dashboard → export) complement it.
-- **Live-parity pins (rounds 11-27):** the live DOM's class strings,
+- **Live-parity pins (rounds 11-28):** the live DOM's class strings,
   emission orders and copy are pinned by SSR/source tests against
   captured evidence — the R24 batch pins the live app bundle's
   lucide-react 0.462 icon generation (ten geometry overrides in
@@ -400,6 +400,21 @@ Prove-It). `TZ` is pinned to UTC.
   family, the idle empty-section bytes, and the live's toast titles are
   pinned by `tests/toast-r27-parity.test.tsx` + `e2e/toasts.spec.ts`
   (plan: `docs/plans/2026-09-23-round27-sonner-toast-parity.md`).
+  R28 opened a NEW probe surface — the trend chart's SVG internals —
+  and found the same class of miss a third time: the live renders the
+  recharts DEFAULT tick lines + axis lines on BOTH axes in the
+  axis-level stroke `hsl(220, 9%, 46%)` (inherited by the tick text as
+  its fill), the explicit margin `{5,5,5,5}`, comma-form HSL literals,
+  and a tooltip at 8 px with no shadow — the clone shipped an R8-era
+  config suppressing all of it (tick lines + Y axis line off, a
+  `left:-18` margin hack shifting the plot 23 px and flipping the label
+  thinning, a 12 px + shadow tooltip). Post-fix the chart is
+  byte-identical to the live capture (12 label positions, tick/axis
+  geometry, the last-label clamp at x=576.59375). The live's plan-change
+  flow is a Stripe embedded-checkout modal (real billing) — the clone's
+  simulated plan switch stays the documented D-class divergence. Pinned
+  by `tests/chart-r28-parity.test.tsx` + `e2e/chart.spec.ts` (plan:
+  `docs/plans/2026-09-23-round28-trend-chart-axis-parity.md`).
 
 ### Test Commands
 

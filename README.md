@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 681 assertions) · Playwright e2e (chromium, standalone build) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 693 assertions) · Playwright e2e (chromium, standalone build, 21 specs) |
 | **Runtime** | Node.js ≥ 20 |
 
 > **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
@@ -497,6 +497,30 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   class family, auto-dismiss, add/delete flows). Gates: 681 vitest +
   18/18 e2e chromium; 7 VLM-verified screenshots in
   `docs/screenshots/r27-*`.
+- **Trend-chart axis-geometry parity (round-28)** — the 13th probe
+  generation found no redeploy (all bundle hashes unchanged) and
+  re-verified the standing surfaces (mobile navs both sites/surfaces,
+  toast system byte-identical, POPULAR badge, NTW negative branch,
+  install copy swap, topbar/visitors counts, 20-route console sweep — all
+  clean), then opened a NEW probe surface — the trend chart's SVG
+  internals — and found the round's one drift family: the live renders
+  the recharts DEFAULT tick lines (6 px) + an axis line on BOTH axes in
+  the axis-level stroke `hsl(220, 9%, 46%)` (which the tick text also
+  INHERITS as its fill), the explicit margin `{5,5,5,5}` (plot origin
+  x=65), comma-form HSL color literals, and a tooltip at 8 px radius with
+  NO shadow; the clone shipped an R8-era config that suppressed the tick
+  lines + Y axis line, hacked the margin `left:-18` (a 23 px plot shift
+  that flipped which date labels recharts thins), and styled the tooltip
+  at 12 px + a phantom shadow. Post-fix the clone's chart is
+  **byte-identical** to the live capture (all 12 label positions, the
+  tick-line/axis-line geometry + strokes, the tick-text fill attr, the
+  last-label clamp at x=576.59375, the tooltip style bytes). Also
+  documented: the live's plan-change flow is a Stripe embedded-checkout
+  modal (real billing) — the clone's simulated plan switch stays the
+  D-class divergence. Pinned by `tests/chart-r28-parity.test.tsx`
+  (12 source pins) + the NEW `e2e/chart.spec.ts` (tick/axis lines,
+  plot-origin geometry, tooltip chrome). Gates: 693 vitest + 21/21 e2e
+  chromium; 4 VLM-verified screenshots in `docs/screenshots/r28-*`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the

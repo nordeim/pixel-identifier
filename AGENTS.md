@@ -160,6 +160,29 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   re-announce lesson). Pinned by `tests/toast-r27-parity.test.tsx` +
   `e2e/toasts.spec.ts`. Plan:
   `docs/plans/2026-09-23-round27-sonner-toast-parity.md`.
+- **R28: the trend chart's axis chrome is the live's recharts DEFAULTS +
+  an axis-level stroke (v1.27).** The live's chart (inside the pinned
+  `h-[280px]` wrapper) renders the recharts DEFAULT tick lines (tickSize
+  6) + an axis line on BOTH axes, all in the axis-level stroke
+  `hsl(220, 9%, 46%)` — their Tailwind v3 gray-500 literal, which the
+  tick `<text>` also INHERITS as its fill (no `tick.fill` override; the
+  attr is the HSL string, not a hex). The chart margin is the explicit
+  `{top:5, right:5, bottom:5, left:5}` (plot origin x=65 at the 595 px
+  card; recharts' built-in default is all-zeros — the live passes it
+  explicitly). Color literals are COMMA-form HSL (`hsl(262, 83%, 58%)`,
+  `hsl(172, 66%, 50%)`, grid `hsl(220, 13%, 91%)` — same colors the
+  clone shipped in space/hex form; the byte discipline pins the live's
+  attr form), and the tooltip ships `borderRadius: '8px'` with NO
+  box-shadow. Do NOT re-add `tickLine={false}`/`axisLine={false}`, the
+  R8-era `margin={{top:8, right:8, left:-18, bottom:0}}` hack (a 23 px
+  plot shift that flips which date labels recharts thins — the live
+  hides Sep 20+22, 12 of 14 labels), or a tooltip shadow. The label
+  thinning rides `interval="preserveStartEnd"` (the recharts default is
+  preserveEnd — the live keeps the FIRST label). The live's plan-change
+  flow is a Stripe embedded-checkout modal (real billing, SEK) — the
+  clone's simulated `changePlanAction` stays the D-class divergence.
+  Pinned by `tests/chart-r28-parity.test.tsx` + `e2e/chart.spec.ts`.
+  Plan: `docs/plans/2026-09-23-round28-trend-chart-axis-parity.md`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle

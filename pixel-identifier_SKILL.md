@@ -3,7 +3,7 @@ name: pixel-identifier
 description: "Pixelco clone — cookieless visitor-identification SaaS: Next.js 16.3 App Router + React 19.3 + Tailwind v4 CSS-first + Prisma 6/SQLite + NextAuth v4 — marketing site, dashboard, tracking pixel, and identity-resolution pipeline, built to byte-level visual/functional parity with pixelco.io"
 version: 1.0.0
 last_updated: 2026-09-23
-project_state: "R27 sonner toast parity: one drift family found + fixed (mutation feedback = sonner 1.7.4 success toasts, runtime byte-identical); no live redeploy; 681 vitest (67 files) + 18 e2e chromium green, PAD v1.26"
+project_state: "R28 trend-chart axis-geometry parity: one drift family found + fixed (the chart's SVG internals — recharts default tick lines + both axis lines in hsl(220, 9%, 46%), margin {5,5,5,5}, comma-form HSL, 8px no-shadow tooltip; runtime byte-identical); no live redeploy; 693 vitest (69 files) + 21 e2e chromium green, PAD v1.27"
 audience: "engineers + AI agents extending, debugging, onboarding, or replicating the Pixelco clone"
 tags: [nextjs16, react19, tailwind-v4, prisma, sqlite, nextauth4, vitest, playwright, saas, visitor-identification, parity-clone]
 ---
@@ -570,10 +570,10 @@ Run in order — the exact gate the rounds ship under
 ```bash
 npm run lint          # 1. eslint 9 — zero warnings tolerated
 npm run typecheck     # 2. tsc --noEmit — includes e2e/ specs
-npm run test          # 3. vitest — expect 681 passed | 2 skipped (67 files)
+npm run test          # 3. vitest — expect 693 passed | 2 skipped (69 files)
 npm run build         # 4. next build — all routes compile, no type errors
 # 5. e2e (standalone build first):
-npm run build:standalone && npm run test:e2e   # expect 18/18 chromium
+npm run build:standalone && npm run test:e2e   # expect 21/21 chromium
 ```
 
 **DB seam acceptance (when touching anything near the database):**
@@ -1014,6 +1014,7 @@ full record):
 | **R25** | **CLEAN drift watch: no redeploy (all bundle hashes + the lucide pin unchanged), zero code changes; NTW badge negative branch live-verified (`-100.0%` destructive + legacy trending-down), mobile-menu close-on-link-click re-verified both sides (probe-artifact lesson: visibility-filter click targets), R23-F3 + R24-F2 regressions green** |
 | **R26** | **Pricing POPULAR badge remediation: ONE real drift found + fixed — the live's dashboard Growth card header ships a POPULAR badge (new-gen Badge, default variant, gradient-first tail `gradient-primary … border-0 text-[10px] px-2 py-0.5`, both billing states + viewports); the R15 "no badge" pin had captured the rolling-deploy window's OLD build (bundle hash never changed — lesson: re-verify old evidence against the CURRENT DOM); pin net: dashboard-r26-parity SSR pins + replaced source pin + NEW e2e/pricing.spec.ts (closes the e2e coverage gap)** |
 | **R27** | **Sonner toast parity: ONE drift family found + fixed — the live's mutation feedback is SONNER success toasts (settings save `Settings saved`, domain add `Domain added successfully`, domain delete `Domain removed`; bottom-right, check icon, title-only); the R24–R26 "silent save" evidence was a transient backend state (toast code in the unchanged bundle all along); sonner fingerprinted from the live bundle + pinned 1.7.4 exact; the Radix toast generation fully retired; pin net: toast-r27-parity SSR/source pins + NEW e2e/toasts.spec.ts; runtime byte-identical (idle section, ol, li, icon, title)** |
+| **R28** | **Trend-chart axis-geometry parity: ONE drift family found + fixed — the live's chart SVG renders the recharts DEFAULT tick lines (6px) + an axis line on BOTH axes in the axis-level stroke `hsl(220, 9%, 46%)` (the tick text INHERITS it as its fill), the explicit margin `{5,5,5,5}` (plot origin x=65), comma-form HSL literals, and an 8px no-shadow tooltip; the clone's R8-era config had suppressed the tick lines + Y axis line and hacked the margin `left:-18` (23px plot shift flipping the label thinning); also documented the live's Stripe embedded-checkout plan-change flow (the clone's simulated billing stays the D-class divergence); pin net: chart-r28-parity source pins + NEW e2e/chart.spec.ts; runtime byte-identical (12 label positions, tick/axis geometry, the x=576.59375 last-label clamp)** |
 
 ---
 
@@ -1088,6 +1089,7 @@ surface):
 | R25 (2026-09-22) | clean drift watch — no redeploy, named targets re-verified (settings save, visitors rows, mobile nav both surfaces), NTW negative badge branch live-verified, regressions green | `docs/screenshots/r25-*` (6 captures) + `docs/plans/2026-09-22-round25-drift-watch.md` |
 | R26 (2026-09-23) | pricing POPULAR badge remediation — no redeploy, standing surfaces + TW4 checks + DB seam + 18-route console sweep all clean; ONE real drift fixed (Growth card header badge, live-verified both billing states + viewports, runtime byte-identical); e2e coverage gap closed | `docs/screenshots/r26-*` (7 captures) + `docs/plans/2026-09-23-round26-pricing-popular-badge.md` |
 | R27 (2026-09-23) | sonner toast parity — no redeploy; standing surfaces re-verified + the live's MUTATION flows driven for the first time; ONE drift family fixed (sonner 1.7.4 success toasts on settings/domains mutations, the Radix generation retired); runtime byte-identical; toast e2e coverage added | `docs/screenshots/r27-*` (7 captures) + `docs/plans/2026-09-23-round27-sonner-toast-parity.md` |
+| R28 (2026-09-23) | trend-chart axis-geometry parity — no redeploy; standing surfaces + mutation-loop regressions re-verified; NEW probe surface: the chart's SVG internals; ONE drift family fixed (recharts default tick lines + both axis lines in the live's axis stroke, margin {5,5,5,5}, comma-form HSL, 8px no-shadow tooltip); runtime byte-identical; chart e2e coverage added | `docs/screenshots/r28-*` (4 captures) + `docs/plans/2026-09-23-round28-trend-chart-axis-parity.md` |
 
 **R23 final gate:** lint ✓ typecheck ✓ **613 vitest / 61 files** (2
 skipped) ✓ build ✓ **14/14 e2e chromium** ✓ DB acceptance (the user's
@@ -1121,6 +1123,14 @@ byte-diff vs the live (idle section bytes + ol attrs/CSS vars + li
 class family + icon path + title — identical) ✓ 7 VLM-verified
 screenshots ✓ zero console errors (19 routes)
 
+**R28 final gate:** lint ✓ typecheck ✓ **693 vitest / 69 files** (2
+skipped) ✓ build ✓ standalone ✓ **21/21 e2e chromium** (standalone,
+31.6 s — the new `e2e/chart.spec.ts` included) ✓ chart runtime
+byte-diff vs the live (12 label positions, tick-line/axis-line geometry
++ strokes, tick-text fill attr, the x=576.59375 last-label clamp,
+tooltip style bytes — identical) ✓ 4 VLM-verified screenshots ✓ zero
+console errors (20 routes)
+
 ---
 
 ## Quick Reference Card
@@ -1130,7 +1140,7 @@ Commands
   npm run dev                    # dev server :3000 (needs db/ seeded)
   npm run verify                 # lint + typecheck + vitest + build  ← THE GATE
   npm run db:push / db:seed      # wrapper-routed Prisma CLI (repo-root db/)
-  npm run build:standalone && npm run test:e2e   # 18 e2e tests, :3100, db/e2e.db
+  npm run build:standalone && npm run test:e2e   # 21 e2e tests, :3100, db/e2e.db
   npx vitest run --pool=forks --maxWorkers=1 --no-file-parallelism   # low-RAM run
   curl localhost:3000/api/health # {"status":"ok","db":"up"}
 
@@ -1150,9 +1160,10 @@ Files you will touch most
   docs/plans/2026-09-22-round23-*.md   # the R23 record
   docs/plans/2026-09-22-round24-*.md   # the R24 record
   docs/plans/2026-09-23-round27-*.md   # the R27 record (sonner toasts)
+  docs/plans/2026-09-23-round28-*.md   # the R28 record (chart axis chrome)
 
-Counts (R27, verified)
-  681 vitest (67 files) + 18 e2e chromium · 79 tsx · 19 pages · 5 API routes
+Counts (R28, verified)
+  693 vitest (69 files) + 21 e2e chromium · 79 tsx · 19 pages · 5 API routes
   4 Prisma models · 7 keyframes · 3 env vars · 0 custom hooks (use-toast retired R27)
 ```
 

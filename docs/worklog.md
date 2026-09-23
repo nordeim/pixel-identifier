@@ -1398,3 +1398,55 @@ Stage Summary:
 - Next (R28): bundle hashes (a change triggers the full token-diff
   sweep); the toast system joins the standing regression loop; NTW
   no-badge branch watch; consider delete-confirm e2e specs.
+
+---
+Task ID: R28
+Agent: main (Super Z)
+Task: Round-28 drift watch + remediation — trend chart axis-geometry parity with pixelco.io
+
+Work Log:
+- git pull 2abbc19 → f59c0cc (session_29.md only); docs reviewed
+  (AGENTS/CLAUDE/README/PAD v1.26/SKILL/session_28+29/R27-plan/
+  TW4-report/worklog); arrival gates green (lint 0, tsc 0, 681 vitest).
+- Environment: symlink quirk re-confirmed; demo visitors re-seeded
+  (the R27 capture cycle had cascade-wiped them); dev server healthy.
+- 13th probe generation: no redeploy (all bundle hashes unchanged);
+  mobile navs both sites/surfaces parity (scroll 7424/7404, Sheet
+  18rem/close-on-nav); toast system byte-identical both sides; POPULAR
+  badge byte-identical; NTW negative branch; install copy swap;
+  topbar/visitors parity; 20-route console sweep clean.
+- NEW mutation surface: the live's plan-change = Stripe
+  embedded-checkout modal (real billing, SEK) — the clone's simulated
+  switch stays the D-class divergence (documented, no action).
+- NEW probe surface (the chart's SVG internals): R28-F1 found — the
+  live renders recharts DEFAULT tick lines + both axis lines in the
+  axis-level stroke hsl(220, 9%, 46%) (tick text inherits it as fill),
+  margin {5,5,5,5} (plot origin x=65), comma-form HSL literals, and an
+  8px no-shadow tooltip; the clone's R8-era config suppressed the tick
+  lines + Y axis line, hacked the margin left:-18 (23px plot shift
+  flipping the label thinning: live 12/14 labels, clone 13), and
+  styled the tooltip 12px + shadow.
+- TDD: RED tests/chart-r28-parity.test.tsx (12 source pins, 9 failing)
+  + NEW e2e/chart.spec.ts (3 runtime specs) → GREEN trend-chart.tsx
+  restored to the live's config; full suite 693 vitest / 69 files
+  (2 skipped).
+- Runtime byte-verify vs the live: 12 label positions (48…558), 17
+  tick lines at the captured geometry, both axis lines, tick-text fill
+  attr, last-label clamp x=576.59375, tooltip style bytes — IDENTICAL.
+  Mobile 36px chart-width delta traced to data (NTW badge text) —
+  documented non-finding.
+- Full e2e 21/21 chromium (31.6 s); build + standalone green.
+- 4 VLM-verified screenshots (docs/screenshots/r28-*).
+- .env.example re-verified (3 keys, consistent — no env surface added).
+- Docs: README R28 bullet, AGENTS R28 fact, CLAUDE 11–28 mirror,
+  PAD v1.27, SKILL.md R28 rows, plan execution log, session_30.md,
+  this entry.
+
+Stage Summary:
+- Round-28 SHIPPED: one drift family found and fixed (the trend
+  chart's axis chrome + geometry), pin net hardened (+12 vitest,
+  +3 e2e), runtime byte-verified against the live; everything else
+  confirmed at parity.
+- Next (R29): bundle hashes (a change triggers the full token-diff
+  sweep); the chart joins the standing regression loop; toast/pricing/
+  mobile-nav loops continue; tooltip label/entry pin candidates.

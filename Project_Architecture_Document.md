@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.26
+# Pixelco — Master Project Architecture Document (PAD) v1.27
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-23 (v1.26)
+**Last Updated:** 2026-09-23 (v1.27)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,45 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.27** `[SYN]` Round-28 trend-chart axis-geometry parity (plan:
+  `docs/plans/2026-09-23-round28-trend-chart-axis-parity.md`; evidence
+  `docs/screenshots/r28-*` + the live captures cited in the plan). The
+  13th probe generation re-verified the standing surfaces (no redeploy —
+  all bundle hashes unchanged; mobile navs both sites/surfaces, the
+  toast system byte-identical on both sides, the R26 POPULAR badge, the
+  NTW negative branch, the install copy swap, topbar/visitors counts, a
+  20-route console-error sweep — all clean) and — new this round —
+  opened the trend chart's SVG INTERNALS as a probe surface (runtime-only
+  rendering no prior round diffed; the R16 pin covered only the wrapper's
+  `h-[280px]`). **ONE drift family found and fixed (R28-F1):** the live
+  renders the recharts DEFAULT tick lines (tickSize 6) + an axis line on
+  BOTH axes in the axis-level stroke `hsl(220, 9%, 46%)` (their Tailwind
+  v3 gray-500 literal — the tick text INHERITS it as its fill attr), the
+  explicit margin `{top:5,right:5,bottom:5,left:5}` (plot origin x=65 at
+  the 595 px card; recharts' built-in default is all-zeros), comma-form
+  HSL color literals everywhere (`hsl(262, 83%, 58%)`, `hsl(172, 66%,
+  50%)`, grid `hsl(220, 13%, 91%)`), and a tooltip at 8 px radius with NO
+  box-shadow. The clone had shipped an R8-era config that suppressed the
+  tick lines + the Y axis line entirely, styled the X axis line light
+  (`#E5E7EB`), hacked the margin to `{top:8,right:8,left:-18,bottom:0}`
+  (a 23 px plot-origin shift that flipped which date labels recharts
+  thins — the live hides Sep 20+22 of 14, the clone showed 13), set an
+  explicit hex tick fill, and styled the tooltip at 12 px + a phantom
+  shadow. Fix: `src/components/dashboard/trend-chart.tsx` restored to
+  the live's config; runtime byte-verified — all 12 label positions
+  (48…558), the tick-line/axis-line geometry + strokes, the tick-text
+  fill attr, the last-label clamp (x=576.59375), and the tooltip style
+  bytes are identical to the live capture. Also documented (no change):
+  the live's plan-change flow is a Stripe embedded-checkout modal (real
+  billing, SEK, `cs_live_…` sessions) — the clone's simulated
+  `changePlanAction` stays the D-class divergence per §11; and the
+  36 px mobile chart-width delta at 375 px is data-driven (the live's
+  NTW badge text vs the clone's empty-badge branch) on a surface both
+  sides ship identically (desktop-first horizontal overflow). Pin net:
+  `tests/chart-r28-parity.test.tsx` (12 source pins) + the NEW
+  `e2e/chart.spec.ts` (3 specs: tick/axis lines + strokes, plot-origin
+  geometry, tooltip chrome + grid bytes). Gates: 693 vitest / 69 files |
+  2 skipped · 21/21 e2e chromium.
 - **v1.26** `[SYN]` Round-27 sonner toast parity (plan:
   `docs/plans/2026-09-23-round27-sonner-toast-parity.md`; evidence
   `docs/screenshots/r27-*` + the live captures cited in the plan). The
@@ -1886,9 +1925,15 @@ speculatively.
 | SSR render (marketing parity) | 6 files | 43 | `tests/{social-proof,marketing-hero,marketing-benefits,marketing-pricing,marketing-process,marketing-compare-cta}.test.tsx` | Vitest (`renderToStaticMarkup`) |
 | Behavioural (collector + snippet in `node:vm`) | 2 | 9 | `tests/collector-script.test.ts`, `tests/snippet.test.ts` | Vitest |
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
-| E2E (browser) | 5 spec files | 18 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
+| E2E (browser) | 6 spec files | 21 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
 
-The suite totals **681 tests across 67 files** (v1.26: +14 —
+The suite totals **693 tests across 69 files** (v1.27: +12 —
+`tests/chart-r28-parity.test.tsx` (the trend chart's live config: the
+5/5/5/5 margin, tick lines ON, both axis lines in the axis-level
+stroke, the inherited tick-text fill, comma-form HSL, the 8 px no-shadow
+tooltip) + the NEW `e2e/chart.spec.ts` (3 specs — the rendered tick/axis
+lines + strokes, the plot-origin geometry, the tooltip chrome + grid
+bytes); v1.26: +14 —
 `tests/toast-r27-parity.test.tsx` (the sonner wrapper class family, the
 idle empty-section SSR bytes, the settings/domains toast copy, the
 Radix retirement) + the NEW `e2e/toasts.spec.ts` (2 specs — the
