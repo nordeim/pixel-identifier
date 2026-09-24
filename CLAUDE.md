@@ -468,6 +468,24 @@ Prove-It). `TZ` is pinned to UTC.
   2.15.4 reproduces the clone's output; sub-pixel accumulation in the
   live's embedded build). Plan:
   `docs/plans/2026-09-24-round32-blog-article-footer-parity.md`.
+  R33 (18th generation, no redeploy — 8th consecutive stable) verified
+  every standing surface (the R32 article footer joined the loop) +
+  the R32-queued candidates: the legal pages' content byte-count-
+  identical on all four pages, the activity footer still latent, and
+  TWO drift families on the never-diffed surfaces — (F1) the marketing
+  footer's column chrome: the live ships BARE `<div>` wrappers + `<h4>`
+  headings, the clone `<nav aria-label>` + `<h3>` (same classes, wrong
+  tags; fixed in `faq-footer.tsx`); (F2) the copy-state feedback: the
+  live's docs button swaps UNCONDITIONALLY (proven under a DENIED
+  clipboard) while its install button is AWAIT-GATED — the two buttons
+  genuinely differ. Fixed to match both (`docs-copy-button.tsx`
+  fire-and-forget + unconditional; `dashboard/copy-button.tsx` keeps
+  the live's gated shape, its silent catch a D-class improvement).
+  Pinned by `tests/{footer,copy-state}-r33-parity.test.tsx` (18 pins)
+  + the NEW `e2e/copy.spec.ts` (3 specs — the denied/granted clipboard
+  regimes; the install button is located by POSITION: its accessible
+  name flips on swap). Plan:
+  `docs/plans/2026-09-24-round33-footer-copy-parity.md`.
 
 ### Test Commands
 

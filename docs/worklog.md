@@ -1672,3 +1672,61 @@ Stage Summary:
   regression loop; remaining never-diffed surfaces — the legal pages'
   runtime DOM, the docs page's copy-button runtime states, the activity
   pagination footer (latent < 50).
+
+---
+
+Task ID: R33
+Agent: main (Super Z)
+Task: Round-33 — footer-heading + copy-state parity + 18th-generation drift watch
+
+Work Log:
+- Fresh clone at e79ebae (workspace reset); environment rebuilt per the
+  contract (.env file:../db/custom.db, db/ pushed+seeded, stale-shell
+  DATABASE_URL overridden per command). Arrival gates green: lint 0,
+  tsc 0, 724 vitest | 2 skipped, build green — exactly the R32 state.
+- 18th probe generation: NO redeploy (8th consecutive stable — all
+  three bundle hashes unchanged); mobile navs FULL PARITY both surfaces
+  both sites (the standing emphasis — dropdown close+icon-reset with
+  the 20px D5 scroll delta intact; Sheet 288px/7 links/closes-on-nav,
+  the clone's close animation needs a >=4s settle to assert unmount);
+  every standing surface verified clean INCLUDING the R32 article
+  footer (now in the loop) — wrapper, chart chrome, POPULAR, settings,
+  install switcher, toast (driven both sides), Select, 21-route
+  console sweep.
+- R32-queued candidates closed: legal pages' content byte-count-
+  identical on all four pages (chrome identical); activity pagination
+  still latent (6 events); TWO drift families found —
+  R33-F1: the marketing footer's column chrome (the live ships BARE
+  div wrappers + h4 headings; the clone nav/h3 since R7 — the R18 pins
+  covered only the wordmark);
+  R33-F2: the copy-state gating — re-based MID-ROUND on fresh live
+  evidence after the e2e challenged the initial ruling: the live's
+  DOCS button swaps UNCONDITIONALLY (proven under a DENIED clipboard;
+  the live leaves the rejection uncaught) while its INSTALL button is
+  AWAIT-GATED (no swap under denial; 3/3 swap under grant) — the two
+  buttons have OPPOSITE gating. The clone had both gated; now matches
+  both (docs fire-and-forget+unconditional, install keeps the gated
+  shape, silent catch D-class).
+- Fix (TDD): 9 SSR pins (tests/footer-r33-parity) + 9 source pins
+  (tests/copy-state-r33-parity) + NEW e2e/copy.spec.ts (3 specs — both
+  clipboard regimes; the install button located by POSITION, its
+  accessible name flips on swap; ~3s island settle gate); runtime
+  verified against the live under BOTH regimes on BOTH sites.
+- Gates: lint 0 · tsc 0 · 742 vitest | 2 skipped (75 files) · build +
+  standalone green · 33/33 e2e chromium TWICE consecutive; 5
+  VLM-verified screenshots (docs/screenshots/r33-*); .env.example
+  re-verified; docs synced (README/AGENTS/CLAUDE/PAD v1.31/SKILL/
+  session_39/worklogs + the R33 plan execution log).
+- Committed to main; pushed via docs/ssh_git_wrapper_v3.py (--remote
+  git@github.com:nordeim/pixel-identifier.git); remote ref verified ==
+  local HEAD; operator key shredded.
+
+Stage Summary:
+- Round-33 SHIPPED: the footer tags + both copy-state regimes at live
+  parity (18 pins + 3 e2e specs), the never-diffed legal/copy surfaces
+  now pinned, the 18th generation clean everywhere else.
+- Next (R34): bundle hashes; the footer + copy regimes join the
+  standing loop; candidates — intermediate-viewport marketing surfaces
+  (compare table mobile stacking, FAQ multi-open persistence), the
+  legal pages' in-page anchor navigation, activity pagination (latent
+  < 50).

@@ -18,10 +18,19 @@ export function DocsCopyButton() {
       className="absolute top-3 right-3 p-2 rounded-md bg-secondary/80 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
       onClick={() => {
         const snippet = document.getElementById('sample-snippet')?.textContent ?? ''
-        void navigator.clipboard?.writeText(snippet).then(() => {
-          setCopied(true)
-          window.setTimeout(() => setCopied(false), 2000)
-        })
+        // R33-F2: the live's docs button swaps on EVERY click — the copied
+        // state is UNCONDITIONAL (proven twice under a DENIED clipboard:
+        // the green check swaps while writeText rejects; the live leaves
+        // that rejection UNCAUGHT — a pageerror). The clone keeps the
+        // fire-and-forget write but swallows the rejection (D-class
+        // console hygiene; the e2e console sweeps demand zero page
+        // errors). NOTE: the dashboard install copy button is the
+        // OPPOSITE — await-gated like its live counterpart (see
+        // src/components/dashboard/copy-button.tsx). Pinned by
+        // tests/copy-state-r33-parity + e2e/copy.spec.ts.
+        navigator.clipboard?.writeText(snippet).catch(() => {})
+        setCopied(true)
+        window.setTimeout(() => setCopied(false), 2000)
       }}
     >
       {copied ? (

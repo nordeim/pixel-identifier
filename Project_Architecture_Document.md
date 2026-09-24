@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.30
+# Pixelco — Master Project Architecture Document (PAD) v1.31
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-24 (v1.30)
+**Last Updated:** 2026-09-24 (v1.31)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,44 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.31** `[SYN]` Round-33 footer-heading + copy-state parity +
+  18th-generation drift watch (plan:
+  `docs/plans/2026-09-24-round33-footer-copy-parity.md`; evidence
+  `docs/screenshots/r33-*` + the live captures cited in the plan). No
+  redeploy (8th consecutive stable bundle generation); every standing
+  surface re-verified clean (mobile navs full parity both surfaces both
+  sites, the R30 wrapper, chart r28 chrome, the r26 POPULAR badge, the
+  r30 settings inputs + install switcher, the r27 sonner toast — driven
+  on both sides, the r29 Select portal, the R32 article footer — now in
+  the standing loop, a 21-route console sweep) and the R32-queued
+  candidates closed: the legal pages' runtime DOM — content
+  byte-count-identical on all four pages (sections/h2/h3/paras/uls/lis
+  + text length; chrome classes identical) — and the activity footer
+  still runtime-latent. TWO drift families found + fixed: (**R33-F1**)
+  the marketing footer's column chrome — the live wraps every column
+  in a BARE `<div>` (no class, no aria-label, not a nav landmark) and
+  heads it with an `<h4>`; the clone shipped `<nav aria-label>` +
+  `<h3>` (same classes, wrong tags) since R7 — the R18-B8 pins covered
+  only the wordmark lockup; (**R33-F2**) the copy-state feedback —
+  proven under BOTH clipboard regimes on the live: the DOCS button
+  swaps to the green check UNCONDITIONALLY (the swap fires while
+  writeText rejects; the live leaves the rejection UNCAUGHT — a
+  pageerror) while the install Quick Start button is AWAIT-GATED (no
+  "Copied!" on rejection, swaps with a working clipboard) — the two
+  buttons GENUINELY DIFFER on the live; the clone had both gated.
+  Fixed: the footer tags swapped in `faq-footer.tsx`, the docs button
+  made fire-and-forget + unconditional (its `.catch(() => {})` stays
+  D-class console hygiene), and the install button re-based on the
+  fresh live evidence to KEEP the gated shape (its silent catch stays
+  a D-class improvement over the live's uncaught rejection). Pinned
+  by `tests/footer-r33-parity.test.tsx` (9 SSR pins) +
+  `tests/copy-state-r33-parity.test.tsx` (9 source pins) + the NEW
+  `e2e/copy.spec.ts` (3 specs — the docs swap under a DENIED
+  clipboard, the install swap under a GRANTED one, the install
+  no-swap under a DENIED one; the install button is located by
+  POSITION — its accessible name flips on swap — with a ~3 s island
+  settle gate). Gates: 742 vitest / 75 files | 2 skipped · 33/33 e2e
+  chromium (twice consecutive).
 - **v1.30** `[SYN]` Round-32 blog-article-footer parity + 17th-generation
   drift watch (plan:
   `docs/plans/2026-09-24-round32-blog-article-footer-parity.md`; evidence
@@ -2026,9 +2064,15 @@ speculatively.
 | SSR render (marketing parity) | 6 files | 43 | `tests/{social-proof,marketing-hero,marketing-benefits,marketing-pricing,marketing-process,marketing-compare-cta}.test.tsx` | Vitest (`renderToStaticMarkup`) |
 | Behavioural (collector + snippet in `node:vm`) | 2 | 9 | `tests/collector-script.test.ts`, `tests/snippet.test.ts` | Vitest |
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
-| E2E (browser) | 9 spec files | 30 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select,install,blog}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
+| E2E (browser) | 10 spec files | 33 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select,install,blog,copy}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
 
-The suite totals **724 tests across 73 files** (v1.30: +5 —
+The suite totals **742 tests across 75 files** (v1.31: +18 —
+  `tests/footer-r33-parity.test.tsx` (9 SSR pins — the footer
+  column h4 headings, bare-div wrappers, the nav/aria-label/h3
+  negatives) + `tests/copy-state-r33-parity.test.tsx` (9 source
+  pins — the docs button's unconditional fire-and-forget swap + the
+  install button's live-verbatim await gating) + the NEW
+  `e2e/copy.spec.ts` (3 specs); v1.30: +5 —
   `tests/blog-article-footer-r32-parity.test.tsx` (the article footer
   container/byline/bare-anchor/CTA pins + the all-ten-slugs loop) + the
   NEW `e2e/blog.spec.ts` (2 specs — the footer visibility/geometry +

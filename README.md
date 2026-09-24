@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 724 assertions) · Playwright e2e (chromium, standalone build, 30 specs) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 742 assertions) · Playwright e2e (chromium, standalone build, 33 specs) |
 | **Runtime** | Node.js ≥ 20 |
 
 > **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
@@ -614,6 +614,34 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   byte-identical; recharts 2.15.4 reproduces the clone's output).
   Gates: 724 vitest + 30/30 e2e chromium; 5 VLM-verified screenshots in
   `docs/screenshots/r32-*`.
+- **Footer-heading + copy-state parity (round-33)** — the 18th probe
+  generation found no redeploy (8th consecutive stable), verified every
+  standing surface (mobile navs full parity both surfaces both sites,
+  the R30 wrapper, chart r28 chrome, POPULAR badge, settings inputs,
+  install switcher, sonner toast — driven on both sides, the R29 Select
+  portal, the R32 article footer — now in the standing loop, a 21-route
+  console sweep) and CLOSED the R32-queued candidates: the legal pages'
+  content is byte-count-identical on all four pages, the activity
+  footer stays runtime-latent, and the two never-diffed surfaces
+  surfaced TWO drift families. **R33-F1**: the marketing footer's
+  column chrome — the live wraps every column in a BARE `<div>` and
+  heads it with an `<h4>`; the clone shipped `<nav aria-label>` +
+  `<h3>` (same classes, wrong tags — the R18 pins covered only the
+  wordmark). **R33-F2**: the copy-state feedback — the live's DOCS
+  button swaps to the green check UNCONDITIONALLY (proven under a
+  denied clipboard) while its install button is AWAIT-GATED (no swap
+  when writeText rejects — the two buttons genuinely differ); the
+  clone had both gated. Fixed: the footer tags swapped, the docs
+  button made unconditional (fire-and-forget write), the install
+  button re-based on fresh live evidence to KEEP the live's gating
+  (the silent catch stays a D-class improvement over the live's
+  uncaught rejection). Pinned by `tests/footer-r33-parity.test.tsx`
+  (9 SSR pins) + `tests/copy-state-r33-parity.test.tsx` (9 source
+  pins) + the NEW `e2e/copy.spec.ts` (3 specs — the docs swap under a
+  denied clipboard, the install swap under a granted one, the
+  install NO-swap under a denied one). Gates: 742 vitest + 33/33 e2e
+  chromium (twice consecutive); 5 VLM-verified screenshots in
+  `docs/screenshots/r33-*`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the

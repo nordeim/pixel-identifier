@@ -252,6 +252,37 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   divergence rides sub-pixel accumulation inside the live's embedded
   build. Plan:
   `docs/plans/2026-09-24-round32-blog-article-footer-parity.md`.
+- **R33: the marketing footer's columns are BARE divs with H4 headings,
+  and the two copy buttons have OPPOSITE clipboard gating.** The live's
+  footer wraps every column (Product/Company/Legal) in a bare `<div>`
+  (no class, no aria-label — NOT a nav landmark) and heads it with an
+  `<h4 class="text-sm font-semibold text-foreground mb-4 uppercase
+  tracking-wider">`; the clone shipped `<nav aria-label>` + `<h3>`
+  (same classes, wrong tags) since R7 — fixed in
+  `src/components/marketing/faq-footer.tsx`, pinned by
+  `tests/footer-r33-parity.test.tsx` (9 SSR pins). The live's DOCS
+  copy button swaps to the green check UNCONDITIONALLY (proven twice
+  under a DENIED clipboard — the swap fires while writeText rejects;
+  the live leaves that rejection UNCAUGHT, a pageerror) while its
+  install Quick Start button is AWAIT-GATED (no "Copied!" when
+  writeText rejects; swaps with a working clipboard) — the two buttons
+  GENUINELY DIFFER on the live. The clone now matches both:
+  `docs-copy-button.tsx` is fire-and-forget + unconditional (its
+  `.catch(() => {})` stays D-class console hygiene), and
+  `dashboard/copy-button.tsx` KEEPS the gated try/await shape (its
+  silent catch stays a D-class improvement over the live's uncaught
+  rejection — never replicate a live defect). Pinned by
+  `tests/copy-state-r33-parity.test.tsx` (9 source pins) +
+  `e2e/copy.spec.ts` (3 specs: docs swap under DENIED clipboard,
+  install swap under GRANTED, install no-swap under DENIED). E2E
+  locator lesson: the install button's accessible name FLIPS on swap
+  ('Copy snippet to clipboard' → 'Copied to clipboard') — locate it by
+  POSITION (the pre-wrapped affordance), never by role/name, and give
+  the InstallPanels island a ~3 s quiet settle before clicking (a
+  click inside the flight-data window fires the handler but the state
+  dies with the replaced tree; both the live and the clone behave
+  identically once settled). Plan:
+  `docs/plans/2026-09-24-round33-footer-copy-parity.md`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle

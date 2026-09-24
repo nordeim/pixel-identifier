@@ -183,10 +183,13 @@ export function SiteFooter() {
             </div>
 
             {FOOTER_COLUMNS.map((column) => (
-              <nav key={column.title} aria-label={column.title}>
-                <h3 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">
+              // R33-F1: the live wraps every footer column in a BARE div
+              // (no class, no aria-label — not a nav landmark) and heads
+              // it with an H4. Pinned by tests/footer-r33-parity.test.tsx.
+              <div key={column.title}>
+                <h4 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">
                   {column.title}
-                </h3>
+                </h4>
                 <ul className="space-y-2.5">
                   {column.links.map((link) => (
                     <li key={link.label}>
@@ -208,7 +211,7 @@ export function SiteFooter() {
                     </li>
                   ))}
                 </ul>
-              </nav>
+              </div>
             ))}
           </div>
         </div>
