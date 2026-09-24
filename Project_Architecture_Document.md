@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.29
+# Pixelco — Master Project Architecture Document (PAD) v1.30
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-24 (v1.29)
+**Last Updated:** 2026-09-24 (v1.30)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,37 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.30** `[SYN]` Round-32 blog-article-footer parity + 17th-generation
+  drift watch (plan:
+  `docs/plans/2026-09-24-round32-blog-article-footer-parity.md`; evidence
+  `docs/screenshots/r32-*` + the live captures cited in the plan). No
+  redeploy (7th consecutive stable bundle generation); every standing
+  surface re-verified clean (mobile navs full parity both surfaces both
+  sites, the R30 wrapper, the r26 POPULAR badge, the r30 settings inputs
+  + install switcher, the r27 sonner toast — driven on both sides, the
+  r29 Select portal, a 19-route console sweep) and the R31-queued
+  candidates closed: the marketing footer @375 FULL PARITY, the
+  activity footer still runtime-latent, and the blog SSG pages — never
+  runtime-diffed before — surfaced the round's ONE drift family
+  (**R32-F1**): the live renders an ARTICLE FOOTER after every prose
+  body (`border-t border-border mt-14 pt-8`) with the byline `Written
+  by <strong class="text-foreground">Pixelco Team</strong>` (author
+  constant across all ten articles) and a bare anchor wrapping the
+  default-variant Button `Start Identifying Visitors →` (text arrow
+  U+2192). The clone had shipped none of it — the R13 audit's capture
+  recorded only breadcrumb/meta/h1 (never-diffed ≠ absent; the bundle
+  never changed). Fixed on all 10 article pages, runtime byte-verified
+  against the live, pinned by
+  `tests/blog-article-footer-r32-parity.test.tsx` (5 SSR pins) + the
+  NEW `e2e/blog.spec.ts` (2 specs — closing the runtime coverage gap
+  that let the drift survive 19 rounds). Also documented as a
+  data-driven NON-finding: the trend chart's middle-label thinning
+  (the live's own hidden-label set changed since R31 with no bundle
+  change — its 14-day window rolled; fonts/widths/geometry
+  byte-identical and recharts 2.15.4's `getTicksStart` reproduces the
+  clone's exact output; the divergence rides sub-pixel accumulation
+  inside the live's embedded build). Gates: 724 vitest / 73 files |
+  2 skipped · 30/30 e2e chromium.
 - **v1.29** `[SYN]` Round-30 sidebar-wrapper + install-switcher parity,
   completed + verified in round-31 (plans:
   `docs/plans/2026-09-23-round30-sidebar-wrapper-install-parity.md`,
@@ -1995,9 +2026,13 @@ speculatively.
 | SSR render (marketing parity) | 6 files | 43 | `tests/{social-proof,marketing-hero,marketing-benefits,marketing-pricing,marketing-process,marketing-compare-cta}.test.tsx` | Vitest (`renderToStaticMarkup`) |
 | Behavioural (collector + snippet in `node:vm`) | 2 | 9 | `tests/collector-script.test.ts`, `tests/snippet.test.ts` | Vitest |
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
-| E2E (browser) | 8 spec files | 28 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select,install}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
+| E2E (browser) | 9 spec files | 30 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select,install,blog}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
 
-The suite totals **719 tests across 72 files** (v1.29: +19 net — the
+The suite totals **724 tests across 73 files** (v1.30: +5 —
+  `tests/blog-article-footer-r32-parity.test.tsx` (the article footer
+  container/byline/bare-anchor/CTA pins + the all-ten-slugs loop) + the
+  NEW `e2e/blog.spec.ts` (2 specs — the footer visibility/geometry +
+  the CTA class family and click-through to /signup); v1.29: +19 net — the
   R30 pins `tests/{sidebar-wrapper,settings,install}-r30-parity.test.tsx`
   (23) + the NEW `e2e/install.spec.ts` (3 specs) + the dashboard wrapper
   e2e spec, minus the retired `tests/sites.test.ts` (4, deleted with

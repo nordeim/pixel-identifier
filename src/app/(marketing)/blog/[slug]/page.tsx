@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { BLOG_POSTS, getPostBySlug } from '@/data/blog-posts'
 import { ArticleBody } from '@/components/marketing/article-body'
+import { Button } from '@/components/ui/button'
 import { formatDateLong } from '@/lib/format'
 import { marketingMetadata } from '@/lib/marketing-seo'
 
@@ -67,6 +68,22 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           {post.title}
         </h1>
         <ArticleBody content={post.content} variant="blog" />
+        {/* R32-F1: the live's article footer, runtime-captured — a
+            bordered block after the prose body with the byline (author
+            constant "Pixelco Team" on every live article) and the bare
+            anchor-wrapped default-variant CTA. The arrow is a TEXT
+            character (U+2192), the sub-page ← convention's forward twin;
+            the anchor maps the live's app.pixelco.io href to /signup per
+            the standing CTA mapping. Missed by the R13 audit (its capture
+            recorded only breadcrumb/meta/h1) — never-diffed ≠ absent. */}
+        <div className="border-t border-border mt-14 pt-8">
+          <p className="text-sm text-muted-foreground mb-4">
+            Written by <strong className="text-foreground">Pixelco Team</strong>
+          </p>
+          <Link href="/signup">
+            <Button>Start Identifying Visitors →</Button>
+          </Link>
+        </div>
       </div>
     </article>
   )

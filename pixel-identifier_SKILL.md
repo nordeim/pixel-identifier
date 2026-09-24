@@ -3,7 +3,7 @@ name: pixel-identifier
 description: "Pixelco clone — cookieless visitor-identification SaaS: Next.js 16.3 App Router + React 19.3 + Tailwind v4 CSS-first + Prisma 6/SQLite + NextAuth v4 — marketing site, dashboard, tracking pixel, and identity-resolution pipeline, built to byte-level visual/functional parity with pixelco.io"
 version: 1.0.0
 last_updated: 2026-09-24
-project_state: "R30+R31 sidebar-wrapper + install-switcher parity, completed: four drift families fixed in R30 (SidebarProvider wrapper div, bare settings inputs, client-state InstallPanels island, newest-first install list) but the R30 commit shipped BROKEN (island file + repoints + retirement never staged) — R31 repaired main, made the install e2e fixture hermetic, and ran the 16th clean drift watch (no redeploy, mobile navs full parity both surfaces both sites, R30 fixes runtime byte-verified); 719 vitest (72 files) + 28 e2e chromium green, PAD v1.29"
+project_state: "R32 blog-article-footer parity + 17th-generation drift watch: no redeploy (7th consecutive stable bundle), all standing surfaces verified clean (mobile navs full parity both surfaces both sites, wrapper, POPULAR, settings, install switcher, toast, Select, 19-route console sweep), the R31-queued candidates closed (footer @375 full parity, activity latent), and the never-diffed blog SSG pages surfaced ONE drift family — the live's article FOOTER (byline 'Written by Pixelco Team' + bare-anchor default-variant CTA 'Start Identifying Visitors →') missing on all 10 article pages since R13 — fixed, runtime byte-verified, pinned (5 SSR pins + NEW e2e/blog.spec.ts 2 specs); chart label-thinning ruled a data-driven non-finding; 724 vitest (73 files) + 30 e2e chromium green, PAD v1.30"
 audience: "engineers + AI agents extending, debugging, onboarding, or replicating the Pixelco clone"
 tags: [nextjs16, react19, tailwind-v4, prisma, sqlite, nextauth4, vitest, playwright, saas, visitor-identification, parity-clone]
 ---
@@ -570,10 +570,10 @@ Run in order — the exact gate the rounds ship under
 ```bash
 npm run lint          # 1. eslint 9 — zero warnings tolerated
 npm run typecheck     # 2. tsc --noEmit — includes e2e/ specs
-npm run test          # 3. vitest — expect 719 passed | 2 skipped (72 files)
+npm run test          # 3. vitest — expect 724 passed | 2 skipped (73 files)
 npm run build         # 4. next build — all routes compile, no type errors
 # 5. e2e (standalone build first):
-npm run build:standalone && npm run test:e2e   # expect 28/28 chromium
+npm run build:standalone && npm run test:e2e   # expect 30/30 chromium
 ```
 
 **DB seam acceptance (when touching anything near the database):**
@@ -1018,6 +1018,7 @@ full record):
 | **R29** | **Select item class-order parity: ONE drift family found + fixed — the live's Radix Select OPEN-state portal (a runtime-only surface no prior round diffed end-to-end) renders every `[role=option]` class attribute with the `data-[disabled]:` pair BEFORE the `focus:` pair (its bundle flipped the legacy order in the R11→R16 window; the clone shipped the R11-era focus-first order — same rendered CSS, pure DOM-byte parity); one-string fix in the single SelectItem primitive (both filter consumers + the DomainSwitcher pass no className override); trigger/chevron/viewport/indicator byte-identical pre-fix and untouched; the R28 tooltip candidate confirmed stable + the activity pagination footer runtime-confirmed latent (7 events < the 50/page R22 pin); pin net: select-r29-parity source/SSR pins + NEW e2e/select.spec.ts; runtime byte-identical (all option classes order-sensitive, trigger incl. the consumer w-44, viewport)** |
 | **R30** | **Sidebar-wrapper + install-switcher parity: FOUR drift families found + fixed — (F1) the live's `SidebarProvider` wrapper div (`group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar` + inline `--sidebar-width: 16rem; --sidebar-width-icon: 3rem;`) missing from every dashboard page; (F2) settings Profile inputs carried clone-authored attrs (`type="url"`/`autoComplete`/`maxLength`) the live never renders — stripped, id/name/for stay; (F3) the install selection was URL-driven (`?site=` leaked into the address bar) — rebuilt as the `InstallPanels` client island (ONE useState, default = newest, buildSnippet client-side, `src/lib/sites.ts` retired); (F4) install sites oldest-first vs the live's newest-first default — one-line `desc`; pin net: sidebar-wrapper/settings/install-r30-parity (23) + NEW e2e/install.spec.ts + the dashboard wrapper e2e spec; LESSON: the R30 commit shipped BROKEN — the new island file, 6 repointed pins, and the retirement were never staged (a GREEN local tree is not a GREEN commit; gate against the STAGED tree)** |
 | **R31** | **R30 completion + 16th-generation drift watch: main repaired (island reconstructed from its committed pins — verbatim JSX port of the pre-R30 page + client-state selection; content-parity ×5 + dashboard-empty-r22 ×1 pins repointed; `src/lib/sites.ts` + its 4-test file deleted); the 3 install e2e specs made HERMETIC (direct db/e2e.db probe-site insert cleaned beforeAll/afterAll — the free-plan 1-domain cap blocks the UI add, and leaking probe sites break pipeline's snippet-key read + dashboard's seeded-domain assert); 16th generation: no redeploy (6th consecutive stable), mobile navs FULL PARITY both surfaces both sites, R30 fixes runtime byte-verified against fresh live captures, chart r28 byte-identical, console sweep 19/0 — no new drift** |
+| **R32** | **Blog-article-footer parity + 17th-generation drift watch: no redeploy (7th consecutive stable); every standing surface verified clean (mobile navs full parity both surfaces both sites, the R30 wrapper, POPULAR badge, settings inputs, install switcher, the sonner toast driven on both sides, the R29 Select portal, 19-route console sweep); the R31-queued candidates closed (marketing footer @375 FULL PARITY, activity footer still runtime-latent); ONE drift family found + fixed (R32-F1): the live's blog ARTICLE pages render a footer after the prose body — `border-t border-border mt-14 pt-8` with the byline `Written by <strong class="text-foreground">Pixelco Team</strong>` (author constant across all articles) and a bare anchor wrapping the default-variant Button `Start Identifying Visitors →` (text arrow U+2192) — missed by the R13 audit (never-diffed ≠ absent); fixed on all 10 pages, runtime byte-verified, pinned by tests/blog-article-footer-r32-parity (5 SSR pins) + NEW e2e/blog.spec.ts (2 specs); ALSO ruled a data-driven non-finding: the chart's middle-label thinning (the live's own hidden set changed since R31 with no bundle change; fonts/widths/geometry byte-identical; recharts 2.15.4 reproduces the clone's output)** |
 
 ---
 
@@ -1095,6 +1096,7 @@ surface):
 | R28 (2026-09-23) | trend-chart axis-geometry parity — no redeploy; standing surfaces + mutation-loop regressions re-verified; NEW probe surface: the chart's SVG internals; ONE drift family fixed (recharts default tick lines + both axis lines in the live's axis stroke, margin {5,5,5,5}, comma-form HSL, 8px no-shadow tooltip); runtime byte-identical; chart e2e coverage added | `docs/screenshots/r28-*` (4 captures) + `docs/plans/2026-09-23-round28-trend-chart-axis-parity.md` |
 | R29 (2026-09-23) | Select item class-order parity — no redeploy; standing surfaces re-verified (one clone mobile-nav false alarm traced to dev-compile latency); R28 tooltip candidate confirmed stable + activity footer latent; NEW probe surface: the Radix Select open-state portal; ONE drift family fixed (the SelectItem class order — data-[disabled]: pair before focus: pair, the live's R16-era bundle order vs the clone's R11-era legacy); runtime byte-identical; select e2e coverage added | `docs/screenshots/r29-*` (4 captures) + `docs/plans/2026-09-23-round29-select-item-class-order.md` |
 | R30+R31 (2026-09-24) | sidebar-wrapper + install-switcher parity, completed across two sessions — R30 found 4 families (wrapper div, bare settings inputs, client-state install selection, newest-first order) but its commit shipped broken (unstaged island/repoints/retirement); R31 repaired main, made the install e2e fixture hermetic, and ran the 16th clean drift watch (mobile navs full parity both surfaces both sites, R30 fixes runtime byte-verified, chart byte-identical, console sweep clean) | `docs/screenshots/r31-*` (6 captures) + `docs/plans/2026-09-23-round30-sidebar-wrapper-install-parity.md` + `docs/plans/2026-09-24-round31-r30-completion-drift-watch.md` |
+| R32 (2026-09-24) | blog-article-footer parity + 17th drift watch — no redeploy (7th consecutive stable); standing surfaces all clean (mobile navs both surfaces both sites, wrapper, POPULAR, settings, install switcher, toast driven both sides, Select, console sweep 19/0); the R31-queued candidates closed (marketing footer @375 full parity, activity latent); ONE drift family fixed (the blog article footer — byline + CTA missing since the R13 audit never captured it); the chart label-thinning ruled a data-driven non-finding | `docs/screenshots/r32-*` (5 captures) + `docs/plans/2026-09-24-round32-blog-article-footer-parity.md` |
 
 **R23 final gate:** lint ✓ typecheck ✓ **613 vitest / 61 files** (2
 skipped) ✓ build ✓ **14/14 e2e chromium** ✓ DB acceptance (the user's
@@ -1157,6 +1159,18 @@ chart r28 byte-identical ✓ 6 VLM-verified screenshots ✓ zero console
 errors (19 routes) ✓ the R30 broken-commit repair is the round's
 central lesson (gate against the STAGED tree, not the working tree)
 
+**R32 final gate:** lint ✓ typecheck ✓ **724 vitest / 73 files** (2
+skipped — 726 total: +5 blog-article-footer pins) ✓ build ✓
+standalone ✓ **30/30 e2e chromium** (the new `e2e/blog.spec.ts`
+included, 49.6 s) ✓ the article footer runtime byte-diff vs the live
+(container + byline + bare-anchor CTA classes/bytes — identical; CTA
+click → /signup) ✓ mobile navs full parity both surfaces both sites ✓
+the marketing footer @375 + blog index full parity ✓ 5 VLM-verified
+screenshots ✓ zero console errors (19 routes) ✓ the chart label-
+thinning ruled a data-driven non-finding (the live's own hidden set
+changed since R31 with no bundle change; recharts 2.15.4 reproduces
+the clone's output)
+
 ---
 
 ## Quick Reference Card
@@ -1166,7 +1180,7 @@ Commands
   npm run dev                    # dev server :3000 (needs db/ seeded)
   npm run verify                 # lint + typecheck + vitest + build  ← THE GATE
   npm run db:push / db:seed      # wrapper-routed Prisma CLI (repo-root db/)
-  npm run build:standalone && npm run test:e2e   # 28 e2e tests, :3100, db/e2e.db
+  npm run build:standalone && npm run test:e2e   # 30 e2e tests, :3100, db/e2e.db
   npx vitest run --pool=forks --maxWorkers=1 --no-file-parallelism   # low-RAM run
   curl localhost:3000/api/health # {"status":"ok","db":"up"}
 
@@ -1190,9 +1204,10 @@ Files you will touch most
   docs/plans/2026-09-23-round29-*.md   # the R29 record (Select item order)
   docs/plans/2026-09-23-round30-*.md   # the R30 record (wrapper + install switcher)
   docs/plans/2026-09-24-round31-*.md   # the R31 record (R30 completion + drift watch)
+  docs/plans/2026-09-24-round32-*.md   # the R32 record (blog article footer)
 
-Counts (R31, verified)
-  719 vitest (72 files) + 28 e2e chromium · 79 tsx · 19 pages · 5 API routes
+Counts (R32, verified)
+  724 vitest (73 files) + 30 e2e chromium · 79 tsx · 19 pages · 5 API routes
   4 Prisma models · 7 keyframes · 3 env vars · 0 custom hooks (use-toast retired R27)
 ```
 

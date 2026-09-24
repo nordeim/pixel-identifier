@@ -367,7 +367,7 @@ Prove-It). `TZ` is pinned to UTC.
   (R23-F3), the auth redirect, `/api/health`, `/pixel.js`, the
   anti-enumeration 204, and the beacon → Activity-Log loop. Manual browser
   flows (sign-up → domain → beacon → dashboard → export) complement it.
-- **Live-parity pins (rounds 11-31):** the live DOM's class strings,
+- **Live-parity pins (rounds 11-32):** the live DOM's class strings,
   emission orders and copy are pinned by SSR/source tests against
   captured evidence — the R24 batch pins the live app bundle's
   lucide-react 0.462 icon generation (ten geometry overrides in
@@ -450,6 +450,24 @@ Prove-It). `TZ` is pinned to UTC.
   `e2e/install.spec.ts` (plans:
   `docs/plans/2026-09-23-round30-sidebar-wrapper-install-parity.md`,
   `docs/plans/2026-09-24-round31-r30-completion-drift-watch.md`).
+  R32 (17th generation, no redeploy — 7th consecutive stable) verified
+  every standing surface + the R31-queued candidates: the marketing
+  footer @375 full parity, the activity footer still runtime-latent,
+  and the blog SSG pages (never runtime-diffed) surfaced the round's
+  ONE drift family — the live's article FOOTER (`border-t border-border
+  mt-14 pt-8`: the byline "Written by **Pixelco Team**" + a bare anchor
+  wrapping the default-variant Button "Start Identifying Visitors →",
+  text arrow U+2192, constant across all articles) that the R13 audit's
+  capture never recorded. Fixed on all 10 article pages, runtime
+  byte-verified, pinned by `tests/blog-article-footer-r32-parity.test.tsx`
+  (5 SSR pins) + the NEW `e2e/blog.spec.ts` (2 specs — closing the
+  runtime coverage gap that let the drift survive). Also ruled a
+  data-driven NON-finding: the chart's middle-label thinning (the
+  live's own hidden set changed since R31 with no bundle change — its
+  14-day window rolled; fonts/widths/geometry byte-identical, recharts
+  2.15.4 reproduces the clone's output; sub-pixel accumulation in the
+  live's embedded build). Plan:
+  `docs/plans/2026-09-24-round32-blog-article-footer-parity.md`.
 
 ### Test Commands
 

@@ -48,3 +48,37 @@ Stage Summary:
 - Next (R32): bundle hashes; the R30 surfaces join the standing loop;
   candidate surfaces — marketing footer open-state links @375, blog
   SSG DOM runtime-diff, activity pagination footer (latent < 50).
+
+---
+
+Task ID: R32
+Agent: main (Super Z)
+Task: Round-32 — blog-article-footer parity + 17th-generation drift watch
+
+Work Log:
+- 17th probe generation: no redeploy (7th consecutive stable bundle);
+  mobile navs FULL PARITY both surfaces both sites; TW4 watch clean;
+  every standing surface verified (wrapper, POPULAR, settings, install
+  switcher, toast driven both sides, Select r29, console sweep 19/0).
+- R31-queued candidates: marketing footer @375 CLOSED (full parity);
+  activity pagination still latent; blog SSG pages — ONE drift family
+  (R32-F1): the live's article FOOTER (byline "Written by Pixelco
+  Team" + bare-anchor default-variant CTA "Start Identifying Visitors
+  →", text arrow) missing on all 10 clone article pages since the R13
+  audit never captured it.
+- Fix (TDD): 5 SSR pins (tests/blog-article-footer-r32-parity) + the
+  footer block in blog/[slug]/page.tsx + NEW e2e/blog.spec.ts (2
+  specs); runtime byte-verified vs the live; chart label-thinning ruled
+  a data-driven non-finding (documented).
+- Gates: lint 0 · tsc 0 · 724 vitest | 2 skipped (73 files) · build +
+  standalone green · 30/30 e2e chromium; 5 VLM-verified screenshots
+  (docs/screenshots/r32-*); .env.example re-verified; docs synced
+  (README/AGENTS/CLAUDE/PAD v1.30/SKILL/session_37/worklogs).
+- Committed to main; pushed via docs/ssh_git_wrapper_v3.py; remote ref
+  verified == local HEAD; operator key shredded.
+
+Stage Summary:
+- Round-32 SHIPPED: the blog article footer at byte parity, the SSG
+  surface pinned, the 17th generation clean everywhere else.
+- Next (R33): bundle hashes; the article footer joins the standing
+  loop; legal pages' runtime DOM + docs copy-button states queued.

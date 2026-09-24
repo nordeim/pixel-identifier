@@ -1601,3 +1601,74 @@ Stage Summary:
 - Next (R32): bundle hashes; the R30 surfaces join the standing loop;
   candidate surfaces — marketing footer open-state links @375, blog SSG
   DOM runtime-diff, activity pagination footer (latent < 50 events).
+
+---
+
+Task ID: R32
+Agent: main (Super Z)
+Task: Round-32 — blog-article-footer parity + 17th-generation drift watch
+
+Work Log:
+- Arrival: git pull to af865b6 (added only session_36.md, the prior
+  transcript); gates all green at the R31 ship state (lint 0 · tsc 0 ·
+  719 vitest | 2 skipped · build green); .env + db/ seam acceptance
+  clean (no stray parent-dir file); vitest/playwright configs verified
+  per the standing contract; scandihaven + skills catalogs re-reviewed.
+- 17th probe generation (dual live+clone agent-browser sessions): NO
+  redeploy (all three bundle hashes unchanged — 7th consecutive
+  stable). Mobile navs (standing user emphasis): FULL PARITY both
+  surfaces both sites — marketing dropdown @375 (toggle/container/link
+  bytes, close-on-VISIBLE-link click, icon reset, live 7424 / clone
+  7404 D5 delta) + dashboard Sheet @375 (18rem inline var → 288 px, 7
+  links, close-on-nav). TW4 watch clean.
+- Standing surfaces all clean: R30 wrapper (class byte-identical), POP
+  ULAR badge, settings inputs (live bare / clone D-class), install
+  switcher (live client-state newest-first, clean URL), sonner toast
+  (driven on BOTH sides — 'Settings saved' byte-identical), Select r29
+  portal (option class order), console sweep 19 routes / 0 errors.
+- R31-queued candidates: marketing footer @375 CLOSED (full parity incl
+  link navigation); activity pagination still runtime-latent (~6 live
+  events); blog SSG pages — index full parity, but the ARTICLE pages
+  surfaced the round's ONE drift family (R32-F1): the live renders an
+  article FOOTER (border-t border-border mt-14 pt-8) after the prose
+  body with the byline 'Written by <strong text-foreground>Pixelco
+  Team</strong>' + a bare anchor wrapping the default-variant Button
+  'Start Identifying Visitors →' (text arrow U+2192) — constant across
+  all articles probed; the clone shipped none of it (the R13 audit's
+  capture never recorded the footer; never-diffed ≠ absent).
+- Also ruled a data-driven NON-finding (documented in the plan): the
+  chart's middle-label thinning — the live's own hidden set changed
+  since R31 with no bundle change (its 14-day window rolled);
+  fonts/widths/geometry byte-identical; recharts 2.15.4's getTicksStart
+  reproduces the clone's exact output; the divergence rides sub-pixel
+  accumulation inside the live's embedded build.
+- R32-F1 fix (TDD): 5 SSR pins in tests/blog-article-footer-r32-
+  parity.test.tsx (RED 4 | 1 trivially-green) → the footer block
+  appended to src/app/(marketing)/blog/[slug]/page.tsx (Link bare +
+  Button default variant — the faq-footer house pattern) → 5/5 GREEN;
+  runtime byte-verified vs the live capture; CTA click → /signup.
+  NEW e2e/blog.spec.ts (2 specs) closes the runtime coverage gap (one
+  assertion fix: the bare anchor is attribute-ABSENT, null ≠ '').
+- Gates: lint 0 · tsc 0 · vitest 724 passed | 2 skipped (73 files, 726
+  total = 719 + 5) · build + standalone green · 30/30 e2e chromium
+  (28 + 2, 49.6 s).
+- Phase C: 5 screenshots docs/screenshots/r32-* (article footer desktop
+  + mobile, dropdown, dashboard overview, mobile Sheet) — VLM-verified;
+  .env.example re-verified (3 keys, unchanged); docs synced (README
+  bullet + totals 724/30, AGENTS R32 fact, CLAUDE 11–32 mirror, PAD
+  v1.30, SKILL frontmatter + Appendix A/D + final gate + Quick
+  Reference, the R32 plan's execution log, session_37.md, this log +
+  the root mirror).
+- Committed to main; pushed via docs/ssh_git_wrapper_v3.py (--remote
+  git@github.com:nordeim/pixel-identifier.git); remote ref verified ==
+  local HEAD; operator key shredded.
+
+Stage Summary:
+- Round-32 SHIPPED: the blog article footer landed on all 10 article
+  pages (runtime byte-identical to the live), the never-diffed blog SSG
+  surface is now pinned (5 SSR + 2 e2e), the 17th generation verified
+  every standing surface clean, and the footer@375 candidate closed.
+- Next (R33): bundle hashes; the article footer joins the standing
+  regression loop; remaining never-diffed surfaces — the legal pages'
+  runtime DOM, the docs page's copy-button runtime states, the activity
+  pagination footer (latent < 50).

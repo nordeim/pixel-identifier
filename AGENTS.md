@@ -230,6 +230,28 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   local tree is not a GREEN commit — the gate must run against the
   STAGED tree. Plan:
   `docs/plans/2026-09-24-round31-r30-completion-drift-watch.md`.
+- **R32: the blog ARTICLE pages carry a footer (byline + CTA).** Every
+  live article renders, after the prose body, a
+  `border-t border-border mt-14 pt-8` block with the byline
+  `Written by <strong class="text-foreground">Pixelco Team</strong>`
+  (author CONSTANT across all ten articles) and a BARE anchor
+  (`https://app.pixelco.io`, mapped to `/signup` here) wrapping the
+  default-variant Button `Start Identifying Visitors →` — the arrow is
+  a TEXT character (U+2192), the sub-page ← convention's forward twin.
+  The R13 audit never captured this block (its per-article JSON recorded
+  only breadcrumb/meta/h1), so the R13 rebuild omitted it — 19 rounds
+  passed before the R32 runtime diff caught it. Pinned by
+  `tests/blog-article-footer-r32-parity.test.tsx` + `e2e/blog.spec.ts`.
+  Do NOT confuse with the R13 "no trailing CTA" pin (that is about a
+  "Try Pixelco free" string the live never ships anywhere). Also ruled a
+  NON-finding this round (data-driven, do not "fix"): the trend chart's
+  middle-label thinning — the live's own hidden-label set changes as
+  its 14-day data window rolls (proven across R31→R32 with no bundle
+  change); fonts/widths/geometry are byte-identical and recharts
+  2.15.4's `getTicksStart` reproduces the clone's exact output; the
+  divergence rides sub-pixel accumulation inside the live's embedded
+  build. Plan:
+  `docs/plans/2026-09-24-round32-blog-article-footer-parity.md`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle

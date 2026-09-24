@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 719 assertions) · Playwright e2e (chromium, standalone build, 28 specs) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 724 assertions) · Playwright e2e (chromium, standalone build, 30 specs) |
 | **Runtime** | Node.js ≥ 20 |
 
 > **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
@@ -589,6 +589,31 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   the live's switcher confirmed pure client state with newest-first
   default), chart r28 byte-identical (17 ticks, same hidden-day label
   set), and the 19-route console sweep clean. No new drift.
+- **Blog-article-footer parity (round-32)** — the 17th probe generation
+  found no redeploy (7th consecutive stable), verified every standing
+  surface (mobile navs full parity both surfaces both sites, the R30
+  wrapper, POPULAR badge, settings inputs, install switcher, sonner
+  toast — driven on both sides, the R29 Select portal, a 19-route
+  console sweep) and CLOSED the R31-queued candidates: the marketing
+  footer @375 is full parity, the activity footer stays runtime-latent,
+  and the blog SSG pages — never runtime-diffed before — surfaced the
+  round's one drift family: the live renders an ARTICLE FOOTER after
+  the prose body (`border-t border-border mt-14 pt-8`) with the byline
+  "Written by **Pixelco Team**" and a bare anchor wrapping the
+  default-variant Button "Start Identifying Visitors →" (text arrow).
+  The clone had shipped none of it — the R13 audit's capture never
+  recorded the footer (never-diffed ≠ absent; the bundle never
+  changed). Fixed on all 10 article pages, runtime byte-verified
+  against the live, and pinned by
+  `tests/blog-article-footer-r32-parity.test.tsx` (5 SSR pins) + the
+  NEW `e2e/blog.spec.ts` (2 specs) — closing the runtime coverage gap
+  that let the drift survive 19 rounds. Also documented as a
+  non-finding: the chart's middle-label thinning differs at the current
+  data shape (the live's own hidden set changed since R31 with no
+  bundle change — its 14-day window rolled; fonts/widths/geometry
+  byte-identical; recharts 2.15.4 reproduces the clone's output).
+  Gates: 724 vitest + 30/30 e2e chromium; 5 VLM-verified screenshots in
+  `docs/screenshots/r32-*`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the
