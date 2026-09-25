@@ -227,11 +227,16 @@ and stable per visitor.
   Handlers reproducing the live bytes (the Next conventions cannot emit
   comments or "1.0" priorities), the favicon is the live's
   `public/favicon.ico` with no link tag, and the 404 tab title is the
-  client-side `NotFoundTitle` swap — a KEPT VALUE-ADD, not live parity
-  (R24-F12: settled-load probes show the live never swaps its 404 title;
-  the MutationObserver is still REQUIRED — Next's metadata controller
+  client-side `NotFoundTitle` swap — LIVE PARITY, re-based R34 (three
+  probes — direct loads settled 4 s + 8 s and a client-side navigation —
+  all read the live's title as "Page Not Found | Pixelco"; the R24-F12
+  "never swaps" ruling was a pre-settle probe artifact; the
+  MutationObserver is still REQUIRED — Next's metadata controller
   overwrites plain title assignments after hydration) while the HTTP
-  status stays a correct 404. Pinned by
+  status stays a correct 404. The live's marketing-chrome hash anchors
+  (bare `#benefits`, dead on sub-pages) are a recorded D-class
+  divergence (PAD §11) — the clone's `/#anchor` form works from any
+  page. Pinned by
   `tests/seo-parity.test.ts` + `tests/seo-routes.test.ts`.
 
 ## Implementation Standards
@@ -486,6 +491,23 @@ Prove-It). `TZ` is pinned to UTC.
   regimes; the install button is located by POSITION: its accessible
   name flips on swap). Plan:
   `docs/plans/2026-09-24-round33-footer-copy-parity.md`.
+  R34 (19th generation, no redeploy — 9th consecutive stable) verified
+  every standing surface (the R33 footer tags + both copy regimes
+  joined the loop) + the R33-queued candidates and five additional
+  never-diffed surfaces (visitors tabs, blog index, about, docs, 404 —
+  all parity) with ZERO code drift; the round's findings were
+  documentation + coverage: (F1) the live DOES swap its 404 tab title
+  (three probes — the R24-F12 "never swaps" ruling superseded; the
+  clone's behavior re-classified from value-add to live parity, docs
+  only); (F2) the live's marketing-chrome hash anchors are bare and
+  DEAD on sub-pages — the clone's working `/#anchor` form recorded in
+  PAD §11 as the D-class divergence; (F3) six new e2e regression pins
+  for never-runtime-pinned surfaces (`e2e/visitors-tabs.spec.ts` +
+  blog-index/FAQ-single-open/compare-@375 extensions — 39/39 twice).
+  Non-findings: the live's 6 px h-overflow at 375 (a live quirk, not
+  replicated), FAQ single-open parity, activity pagination still
+  latent. Plan:
+  `docs/plans/2026-09-26-round34-404-title-anchor-docs-e2e-pins.md`.
 
 ### Test Commands
 

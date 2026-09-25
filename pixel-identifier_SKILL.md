@@ -2,8 +2,8 @@
 name: pixel-identifier
 description: "Pixelco clone — cookieless visitor-identification SaaS: Next.js 16.3 App Router + React 19.3 + Tailwind v4 CSS-first + Prisma 6/SQLite + NextAuth v4 — marketing site, dashboard, tracking pixel, and identity-resolution pipeline, built to byte-level visual/functional parity with pixelco.io"
 version: 1.0.0
-last_updated: 2026-09-24
-project_state: "R33 footer-heading + copy-state parity + 18th-generation drift watch: no redeploy (8th consecutive stable bundle), all standing surfaces verified clean (mobile navs full parity both surfaces both sites, wrapper, chart chrome, POPULAR, settings, install switcher, toast, Select, the R32 article footer now standing, 21-route console sweep), the R32-queued candidates closed (legal pages' content byte-count-identical on all four pages, activity footer still latent), and TWO drift families fixed — (F1) the marketing footer's column chrome: the live ships BARE div wrappers + h4 headings, the clone nav/h3 since R7; (F2) the copy-state feedback: the live's docs button swaps UNCONDITIONALLY (proven under a denied clipboard) while its install button is AWAIT-GATED — the two genuinely differ; the clone now matches both (docs fire-and-forget, install keeps the gated shape + silent catch as D-class); pinned 9 SSR + 9 source + NEW e2e/copy.spec.ts (3 specs); 742 vitest (75 files) + 33 e2e chromium green (twice consecutive), PAD v1.31"
+last_updated: 2026-09-26
+project_state: "R34 19th-generation drift watch + 404-title re-classification + anchor-divergence docs + six e2e pins: no redeploy (9th consecutive stable bundle), all standing surfaces verified clean (mobile navs full parity both surfaces both sites — including the 768px md-boundary transitions; wrapper, chart chrome, POPULAR, settings, install switcher, toast, Select, the R32 article footer, the R33 footer tags + both copy regimes now standing; console sweep clean), the R33-queued candidates closed (compare @375 stacking parity, FAQ single-open parity, legal anchors resolved — the live has NO section ids and its chrome hash anchors are bare/dead on sub-pages, recorded as the PAD §11 D-class divergence; activity footer still latent), five additional never-diffed surfaces probed at parity (visitors tabs, blog index, about, docs, 404); ZERO code drift — the round's findings were documentation + coverage: (F1) the live DOES swap its 404 tab title (three probes; the R24-F12 ruling superseded — the clone's swap re-classified as live parity, docs only); (F2) the anchor divergence recorded in PAD §11 + AGENTS; (F3) six new e2e pins (visitors-tabs.spec.ts + blog-index/FAQ/compare extensions); 742 vitest (75 files) + 39 e2e chromium green (twice consecutive), PAD v1.32"
 audience: "engineers + AI agents extending, debugging, onboarding, or replicating the Pixelco clone"
 tags: [nextjs16, react19, tailwind-v4, prisma, sqlite, nextauth4, vitest, playwright, saas, visitor-identification, parity-clone]
 ---
@@ -573,7 +573,7 @@ npm run typecheck     # 2. tsc --noEmit — includes e2e/ specs
 npm run test          # 3. vitest — expect 742 passed | 2 skipped (75 files)
 npm run build         # 4. next build — all routes compile, no type errors
 # 5. e2e (standalone build first):
-npm run build:standalone && npm run test:e2e   # expect 33/33 chromium
+npm run build:standalone && npm run test:e2e   # expect 39/39 chromium
 ```
 
 **DB seam acceptance (when touching anything near the database):**
@@ -1020,6 +1020,7 @@ full record):
 | **R31** | **R30 completion + 16th-generation drift watch: main repaired (island reconstructed from its committed pins — verbatim JSX port of the pre-R30 page + client-state selection; content-parity ×5 + dashboard-empty-r22 ×1 pins repointed; `src/lib/sites.ts` + its 4-test file deleted); the 3 install e2e specs made HERMETIC (direct db/e2e.db probe-site insert cleaned beforeAll/afterAll — the free-plan 1-domain cap blocks the UI add, and leaking probe sites break pipeline's snippet-key read + dashboard's seeded-domain assert); 16th generation: no redeploy (6th consecutive stable), mobile navs FULL PARITY both surfaces both sites, R30 fixes runtime byte-verified against fresh live captures, chart r28 byte-identical, console sweep 19/0 — no new drift** |
 | **R32** | **Blog-article-footer parity + 17th-generation drift watch: no redeploy (7th consecutive stable); every standing surface verified clean (mobile navs full parity both surfaces both sites, the R30 wrapper, POPULAR badge, settings inputs, install switcher, the sonner toast driven on both sides, the R29 Select portal, 19-route console sweep); the R31-queued candidates closed (marketing footer @375 FULL PARITY, activity footer still runtime-latent); ONE drift family found + fixed (R32-F1): the live's blog ARTICLE pages render a footer after the prose body — `border-t border-border mt-14 pt-8` with the byline `Written by <strong class="text-foreground">Pixelco Team</strong>` (author constant across all articles) and a bare anchor wrapping the default-variant Button `Start Identifying Visitors →` (text arrow U+2192) — missed by the R13 audit (never-diffed ≠ absent); fixed on all 10 pages, runtime byte-verified, pinned by tests/blog-article-footer-r32-parity (5 SSR pins) + NEW e2e/blog.spec.ts (2 specs); ALSO ruled a data-driven non-finding: the chart's middle-label thinning (the live's own hidden set changed since R31 with no bundle change; fonts/widths/geometry byte-identical; recharts 2.15.4 reproduces the clone's output)** |
 | **R33** | **Footer-heading + copy-state parity + 18th-generation drift watch: no redeploy (8th consecutive stable); every standing surface verified clean (mobile navs full parity both surfaces both sites, the R30 wrapper, chart chrome, POPULAR badge, settings inputs, install switcher, the sonner toast driven on both sides, the R29 Select portal, the R32 article footer — now in the standing loop, 21-route console sweep); the R32-queued candidates closed (legal pages' content byte-count-identical on all four pages, activity footer still runtime-latent); TWO drift families found + fixed: (R33-F1) the marketing footer's column chrome — the live ships BARE `<div>` wrappers + `<h4>` headings, the clone `<nav aria-label>` + `<h3>` (same classes, wrong tags) since R7 (the R18-B8 pins covered only the wordmark); (R33-F2) the copy-state gating — the live's docs button swaps to the green check UNCONDITIONALLY (proven under a DENIED clipboard; the live leaves the rejection uncaught) while its install Quick Start button is AWAIT-GATED (no swap on rejection) — the two buttons genuinely differ; the clone now matches both (docs fire-and-forget + unconditional, install keeps the live's gated shape with the silent catch as D-class); pinned by tests/footer-r33-parity (9 SSR pins) + tests/copy-state-r33-parity (9 source pins) + NEW e2e/copy.spec.ts (3 specs — both clipboard regimes; the install button located by POSITION, its accessible name flips on swap)** |
+| **R34** | **19th-generation drift watch + 404-title re-classification + anchor-divergence docs + six e2e pins: no redeploy (9th consecutive stable); mobile navs FULL PARITY both surfaces both sites — including the 768 px md-boundary transitions (the rail appears, the mobile chrome unmounts, byte-identical classes); every standing surface clean (the R33 footer tags + both copy regimes joined the loop); the R33-queued candidates ALL closed (compare @375 stacking parity, FAQ single-open parity — both `type="single" collapsible`, the legal-anchor candidate resolved, activity still latent); five additional never-diffed surfaces probed at parity (visitors segment tabs, blog index, about, docs, 404); ZERO code drift — the round's findings: (R34-F1) the live DOES swap its 404 tab title (three probes — direct loads settled 4 s + 8 s + a client-side navigation all read "Page Not Found | Pixelco"; the R24-F12 "never swaps" ruling superseded as a pre-settle artifact; the clone's swap re-classified from value-add to LIVE PARITY — docs only, the MutationObserver + correct-404 status both stay); (R34-F2) the live's marketing-chrome hash anchors are bare and DEAD on sub-pages (click-verified: URL gains the hash, no scroll, no navigation) — the clone's working `/#anchor` form recorded in PAD §11 + AGENTS as the D-class divergence; (R34-F3) six new e2e regression pins for never-runtime-pinned surfaces (e2e/visitors-tabs.spec.ts — URL state + per-segment filtering; blog-index ×2; FAQ single-open; compare @375 stack + no-overflow) — 39/39 twice consecutive** |
 
 ---
 
@@ -1099,6 +1100,7 @@ surface):
 | R30+R31 (2026-09-24) | sidebar-wrapper + install-switcher parity, completed across two sessions — R30 found 4 families (wrapper div, bare settings inputs, client-state install selection, newest-first order) but its commit shipped broken (unstaged island/repoints/retirement); R31 repaired main, made the install e2e fixture hermetic, and ran the 16th clean drift watch (mobile navs full parity both surfaces both sites, R30 fixes runtime byte-verified, chart byte-identical, console sweep clean) | `docs/screenshots/r31-*` (6 captures) + `docs/plans/2026-09-23-round30-sidebar-wrapper-install-parity.md` + `docs/plans/2026-09-24-round31-r30-completion-drift-watch.md` |
 | R32 (2026-09-24) | blog-article-footer parity + 17th drift watch — no redeploy (7th consecutive stable); standing surfaces all clean (mobile navs both surfaces both sites, wrapper, POPULAR, settings, install switcher, toast driven both sides, Select, console sweep 19/0); the R31-queued candidates closed (marketing footer @375 full parity, activity latent); ONE drift family fixed (the blog article footer — byline + CTA missing since the R13 audit never captured it); the chart label-thinning ruled a data-driven non-finding | `docs/screenshots/r32-*` (5 captures) + `docs/plans/2026-09-24-round32-blog-article-footer-parity.md` |
 | R33 (2026-09-24) | footer-heading + copy-state parity + 18th drift watch — no redeploy (8th consecutive stable); standing surfaces all clean (the R32 article footer joined the loop; 21-route console sweep); the R32-queued candidates closed (legal content byte-count-identical ×4, activity latent); TWO drift families fixed — (F1) the footer's column chrome (bare div + h4 vs the clone's nav/h3 — never pinned since R7) and (F2) the copy-state gating (the live's docs button swaps UNCONDITIONALLY under a denied clipboard while its install button is AWAIT-GATED — opposite regimes, proven under both on the live; the clone now matches both, silent-catch D-class); the install e2e located by POSITION (accessible name flips on swap) with a ~3 s island settle | `docs/screenshots/r33-*` (5 captures) + `docs/plans/2026-09-24-round33-footer-copy-parity.md` |
+| R34 (2026-09-26) | 19th drift watch + docs re-classification + e2e coverage — no redeploy (9th consecutive stable); mobile navs full parity incl. the 768 px boundary; all standing surfaces clean (the R33 regimes joined the loop); the R33-queued candidates closed (compare/FAQ parity, legal anchors resolved, activity latent); five never-diffed surfaces at parity (visitors tabs, blog index, about, docs, 404); the live's 404-title swap re-proven (R24-F12 superseded — the clone re-classified as live parity); the live's dead bare-hash anchors recorded as the PAD §11 divergence; six new e2e pins (39/39 twice) | `docs/screenshots/r34-*` (5 captures) + `docs/plans/2026-09-26-round34-404-title-anchor-docs-e2e-pins.md` |
 
 **R23 final gate:** lint ✓ typecheck ✓ **613 vitest / 61 files** (2
 skipped) ✓ build ✓ **14/14 e2e chromium** ✓ DB acceptance (the user's
@@ -1173,18 +1175,18 @@ thinning ruled a data-driven non-finding (the live's own hidden set
 changed since R31 with no bundle change; recharts 2.15.4 reproduces
 the clone's output)
 
-**R33 final gate:** lint ✓ typecheck ✓ **742 vitest / 75 files** (2
-skipped — 744 total: +9 footer pins, +9 copy-state pins) ✓ build ✓
-standalone ✓ **33/33 e2e chromium, twice consecutive** (the new
-`e2e/copy.spec.ts` included — the docs swap under a DENIED clipboard,
-the install swap under a GRANTED one, the install no-swap under a
-DENIED one) ✓ the footer h4/bare-div structure runtime byte-diff vs
-the live (identical; the nav landmarks gone, headings H4 on both
-sides) ✓ the copy states runtime-verified under BOTH clipboard
-regimes on BOTH sites (the live's uncaught rejection documented, the
-clone's silent catch kept as D-class) ✓ mobile navs full parity both
-surfaces both sites ✓ 5 VLM-verified screenshots ✓ zero console
-errors (21 routes) ✓
+**R34 final gate:** lint ✓ typecheck ✓ **742 vitest / 75 files** (2
+skipped — unchanged; the round added NO vitest pins, its coverage
+lands in e2e) ✓ build ✓ standalone ✓ **39/39 e2e chromium, twice
+consecutive** (the six new pins included — the visitors-tabs URL
+state + per-segment filtering, the blog-index card chrome +
+navigation, the FAQ single-open persistence, the compare @375 stack
+with the no-overflow guard) ✓ the 404-title swap runtime-verified on
+BOTH sites (direct load + client-side navigation; the R24-F12 ruling
+superseded) ✓ the anchor divergence click-verified on the live
+(bare-hash dead on sub-pages) and recorded in PAD §11 ✓ mobile navs
+full parity both surfaces both sites incl. 768 px ✓ 5 verified
+screenshots ✓ zero console errors ✓
 
 ---
 
@@ -1221,9 +1223,10 @@ Files you will touch most
   docs/plans/2026-09-24-round31-*.md   # the R31 record (R30 completion + drift watch)
   docs/plans/2026-09-24-round32-*.md   # the R32 record (blog article footer)
   docs/plans/2026-09-24-round33-*.md   # the R33 record (footer tags + copy states)
+  docs/plans/2026-09-26-round34-*.md   # the R34 record (404 title + anchors + e2e pins)
 
-Counts (R33, verified)
-  742 vitest (75 files) + 33 e2e chromium · 79 tsx · 19 pages · 5 API routes
+Counts (R34, verified)
+  742 vitest (75 files) + 39 e2e chromium · 79 tsx · 19 pages · 5 API routes
   4 Prisma models · 7 keyframes · 3 env vars · 0 custom hooks (use-toast retired R27)
 ```
 

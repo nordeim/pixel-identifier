@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 742 assertions) · Playwright e2e (chromium, standalone build, 33 specs) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 742 assertions) · Playwright e2e (chromium, standalone build, 39 specs) |
 | **Runtime** | Node.js ≥ 20 |
 
 > **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
@@ -642,6 +642,28 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   install NO-swap under a denied one). Gates: 742 vitest + 33/33 e2e
   chromium (twice consecutive); 5 VLM-verified screenshots in
   `docs/screenshots/r33-*`.
+- **19th-generation drift watch + 404-title re-classification +
+  anchor-divergence docs + six e2e pins (round-34)** — no redeploy
+  (9th consecutive stable bundle); mobile navs FULL PARITY both
+  surfaces both sites including the 768 px md-boundary transitions;
+  all standing surfaces clean (the R33 footer tags + both copy-state
+  regimes joined the loop); the R33-queued candidates closed (compare
+  @375 stacking parity, FAQ single-open parity, the legal-anchor
+  candidate resolved — the live has NO section ids, and its chrome
+  hash anchors are BARE and dead on sub-pages: the clone's working
+  `/#anchor` form recorded in the PAD §11 divergence table); five
+  additional never-diffed surfaces probed at parity (visitors segment
+  tabs, blog index, about, docs, 404). **R34-F1:** three probes prove
+  the live DOES swap its 404 tab title to "Page Not Found | Pixelco"
+  (direct loads settled 4 s + 8 s + a client-side navigation) — the
+  R24-F12 "never swaps" ruling superseded; the clone's `NotFoundTitle`
+  island re-classified from value-add to live parity (docs only).
+  **R34-F3:** six new e2e regression pins for never-runtime-pinned
+  surfaces — `e2e/visitors-tabs.spec.ts` (URL state + per-segment
+  filtering), the blog-index card chrome + navigation, the FAQ
+  single-open persistence, the compare @375 stack with the
+  no-overflow guard. Gates: 742 vitest + **39/39 e2e chromium (twice
+  consecutive)**; screenshots in `docs/screenshots/r34-*`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the

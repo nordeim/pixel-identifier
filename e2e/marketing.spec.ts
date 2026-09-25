@@ -65,3 +65,72 @@ test.describe('marketing mobile menu (375 px)', () => {
     await expect(icon).toHaveCSS('width', '24px')
   })
 })
+
+test.describe('FAQ accordion persistence (R34-F3)', () => {
+  test('opening a second question closes the first (single-open, like the live)', async ({
+    page,
+  }) => {
+    await page.goto('/#faq')
+
+    // The live's accordion is type="single" collapsible — verified on both
+    // sites in the 19th probe generation: open Q1 → open Q2 leaves ONLY Q2
+    // open; re-opening Q1 closes Q2. A flip to multi-open (or a stuck
+    // first item) is the regression this pin guards.
+    const q1 = page.getByRole('button', {
+      name: 'How does Pixelco identify visitors by email?',
+    })
+    const q2 = page.getByRole('button', {
+      name: 'Does it really work for B2C (individual) visitors?',
+    })
+
+    await q1.click()
+    await expect(q1.locator('..')).toHaveAttribute('data-state', 'open')
+
+    await q2.click()
+    await expect(q2.locator('..')).toHaveAttribute('data-state', 'open')
+    await expect(q1.locator('..')).toHaveAttribute('data-state', 'closed')
+
+    // Re-opening Q1 closes Q2 (collapsible single: the active item can
+    // also be closed again).
+    await q1.click()
+    await expect(q1.locator('..')).toHaveAttribute('data-state', 'open')
+    await expect(q2.locator('..')).toHaveAttribute('data-state', 'closed')
+  })
+})
+
+test.describe('compare section at 375 px (R34-F3)', () => {
+  test.use({ viewport: { width: 375, height: 667 } })
+
+  test('the comparison grid stacks to one column with no horizontal overflow', async ({
+    page,
+  }) => {
+    await page.goto('/#pricing')
+
+    const heading = page.getByRole('heading', {
+      name: 'Why Teams Switch to Pixelco',
+    })
+    await expect(heading).toBeVisible()
+
+    // The live's grid: max-w-4xl, 2 cols at md — at 375 it stacks.
+    const grid = heading.locator('..').locator('..').locator('.grid').first()
+    await expect(grid).toHaveClass(/max-w-4xl mx-auto grid md:grid-cols-2 gap-6/)
+
+    const cards = grid.locator('> div')
+    await expect(cards).toHaveCount(2)
+    // Both cards render full-width in the stacked column…
+    const box1 = await cards.nth(0).boundingBox()
+    const box2 = await cards.nth(1).boundingBox()
+    expect(box1).not.toBeNull()
+    expect(box2).not.toBeNull()
+    expect(Math.abs(box1!.width - box2!.width)).toBeLessThan(2)
+    // …one above the other.
+    expect(box2!.y).toBeGreaterThan(box1!.y)
+
+    // The clone does NOT replicate the live's 6 px horizontal overflow at
+    // 375 (docW 381 > winW 375 — the documented R34 non-finding).
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    )
+    expect(overflow).toBeLessThanOrEqual(0)
+  })
+})

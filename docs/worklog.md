@@ -1730,3 +1730,69 @@ Stage Summary:
   (compare table mobile stacking, FAQ multi-open persistence), the
   legal pages' in-page anchor navigation, activity pagination (latent
   < 50).
+
+---
+
+Task ID: R34
+Agent: main (Super Z)
+Task: Round-34 — 19th-generation drift watch + 404-title re-classification + anchor-divergence docs + six e2e pins
+
+Work Log:
+- Fresh clone at 5eb7274 (workspace reset); environment rebuilt per the
+  contract (.env file:../db/custom.db, db/ pushed+seeded at the repo
+  root, stale-shell DATABASE_URL overridden per command, prisma
+  generate). Arrival gates green: lint 0, tsc 0, 742 vitest | 2
+  skipped, build green — exactly the R33 ship state.
+- 19th probe generation: NO redeploy (9th consecutive stable — all
+  three bundle hashes unchanged); mobile navs FULL PARITY both surfaces
+  both sites (the standing emphasis — dropdown close+icon-reset with
+  the 20px D5 scroll delta intact; Sheet 288px/7 links/closes-on-nav
+  with the >=4s settle) EXTENDED to the 768px md boundary (rail
+  appears, mobile chrome unmounts, byte-identical classes both sites);
+  TW4 watch clean; every standing surface verified clean INCLUDING the
+  R33 footer tags + both copy-state regimes (now in the loop); console
+  sweep clean (20 routes HTTP + browser console).
+- R33-queued candidates ALL closed: compare @375 stacking parity (+
+  the live's 6px h-overflow documented as a non-finding, not
+  replicated), FAQ single-open parity (both type="single"
+  collapsible), the legal-anchor candidate resolved (live has NO
+  section ids; its chrome hash anchors are bare and DEAD on sub-pages),
+  activity pagination still latent (6 events).
+- Five additional never-diffed surfaces probed at parity: visitors
+  segment tabs (URL-driven on the clone, client-state on the live —
+  functionally equivalent), blog index (byte-identical card chrome),
+  about (1968=1968), docs (2925=2925), 404.
+- Findings (documentation + coverage — ZERO code drift):
+  R34-F1: the live DOES swap its 404 tab title (three probes: direct
+  loads settled 4s + 8s + a client-side navigation — all "Page Not
+  Found | Pixelco"); the R24-F12 "never swaps" ruling superseded as a
+  pre-settle artifact; the clone's swap re-classified from value-add
+  to LIVE PARITY (docs only).
+  R34-F2: the live's bare hash anchors (dead on sub-pages,
+  click-verified) vs the clone's working /#anchor form recorded in
+  PAD §11 + AGENTS as the D-class divergence.
+  R34-F3: six new e2e pins (e2e/visitors-tabs.spec.ts — 2 specs;
+  blog-index ×2; FAQ single-open; compare @375 + no-overflow guard).
+  One spec iteration: the blog h2 pin initially pinned an
+  80-char-truncated live string; re-captured untruncated — identical
+  both sides (the spec was wrong, not the code).
+- Gates: lint 0 · tsc 0 · 742 vitest | 2 skipped (unchanged) · build +
+  standalone green · 39/39 e2e chromium TWICE consecutive; 5
+  VLM-verified screenshots (docs/screenshots/r34-*; the Companies-tab
+  capture re-taken with a TRUSTED click after a synthetic-click
+  artifact); .env.example re-verified; docs synced (README/AGENTS/
+  CLAUDE/PAD v1.32/SKILL/session_41/worklogs + the R34 plan execution
+  log).
+- Committed to main; pushed via docs/ssh_git_wrapper_v3.py (--remote
+  git@github.com:nordeim/pixel-identifier.git); remote ref verified ==
+  local HEAD; operator key shredded.
+
+Stage Summary:
+- Round-34 SHIPPED: the 19th generation clean (no code drift), the
+  404-title evidence corrected (R24-F12 superseded), the anchor
+  divergence documented in PAD §11, and six new e2e pins closing the
+  never-runtime-pinned coverage gaps (39/39 twice).
+- Next (R35): bundle hashes; the six pins + R34 surfaces join the
+  standing loop; candidates — the chart tooltip HOVER state, the
+  domains delete flow re-verification, the visitors search debounce,
+  activity pagination (latent < 50).

@@ -18,6 +18,10 @@ import { expect, test } from '@playwright/test'
  * RUNTIME coverage gap (footer visible on a real article page, CTA click
  * → /signup) so a future footer regression cannot slip through drift
  * watches like R13–R31 did.
+ *
+ * R34-F3: the BLOG INDEX joins the runtime net — the 19th probe generation
+ * verified it at byte parity (H1, the 10-card grid, the card classes, the
+ * no-images state) but nothing pinned it.
  */
 
 const ARTICLE = '/blog/identify-anonymous-website-visitors'
@@ -61,5 +65,51 @@ test.describe('blog article footer (R32-F1)', () => {
 
     await cta.click()
     await expect(page).toHaveURL(/\/signup$/)
+  })
+})
+
+test.describe('blog index (R34-F3)', () => {
+  test('renders the ten-card grid with the live card chrome and no images', async ({ page }) => {
+    await page.goto('/blog')
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('The Pixelco Blog')
+
+    // The live's grid: 10 cards, gap-8 → 2 cols at md → 3 cols at lg.
+    // (The clone appends the D5 reveal-machinery class — the regex pins
+    // the live's base string, matching either suffix.)
+    const grid = page.locator('main .grid').first()
+    await expect(grid).toHaveClass(
+      /grid gap-8 md:grid-cols-2 lg:grid-cols-3/,
+    )
+    const cards = grid.locator('a[href^="/blog/"]')
+    await expect(cards).toHaveCount(10)
+
+    // The card chrome (the R13 capture): one group link per article…
+    await expect(cards.first()).toHaveClass(
+      /^group block h-full rounded-xl border border-border bg-card p-6/,
+    )
+    // …titles are card h2s with the group-hover primary swap (the FULL
+    // live string — captured untruncated in the 19th generation)…
+    const heading = cards.first().locator('h2')
+    await expect(heading.first()).toHaveClass(
+      'text-lg font-semibold text-foreground group-hover:text-primary transition-colors mb-2 leading-snug',
+    )
+    // …and NO card ships an image (the live's index is text-only).
+    await expect(grid.first().locator('img')).toHaveCount(0)
+  })
+
+  test('a card navigates to its article page', async ({ page }) => {
+    await page.goto('/blog')
+    const firstCard = page.locator('a[href^="/blog/"]').first()
+    const href = await firstCard.getAttribute('href')
+    expect(href).toMatch(/^\/blog\/[a-z0-9-]+$/)
+
+    await firstCard.click()
+    await expect(page).toHaveURL(new RegExp(href!.replace(/\//g, '\\/') + '$'))
+    // The article renders its H1 (the post title) — not the index.
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1 })).not.toHaveText(
+      'The Pixelco Blog',
+    )
   })
 })

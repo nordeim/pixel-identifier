@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.31
+# Pixelco — Master Project Architecture Document (PAD) v1.32
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-24 (v1.31)
+**Last Updated:** 2026-09-26 (v1.32)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,36 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.32** `[SYN]` Round-34 19th-generation drift watch + 404-title
+  re-classification + anchor-divergence documentation + six e2e
+  regression pins (plan:
+  `docs/plans/2026-09-26-round34-404-title-anchor-docs-e2e-pins.md`;
+  evidence `docs/screenshots/r34-*` + the probe transcripts in the plan).
+  No redeploy (9th consecutive stable bundle generation — all three
+  tracked hashes unchanged); mobile navs FULL PARITY both surfaces both
+  sites (the standing emphasis) including the 768 px md-boundary
+  transitions; TW4 watch clean; every standing surface re-verified
+  (the R33 footer tags + both copy-state regimes joined the loop). All
+  four R33-queued candidates closed: compare @375 stacking parity, FAQ
+  single-open parity (both `type="single" collapsible`), the legal
+  in-page anchor candidate resolved (the live has NO section ids; its
+  chrome hash anchors are bare and dead on sub-pages — recorded as the
+  §11 divergence row), activity pagination still latent (6 events).
+  Five additional never-diffed surfaces probed at parity: visitors
+  segment tabs, blog index (byte-identical card chrome), about (body
+  text 1968 = 1968), docs (2925 = 2925), 404. **R34-F1 (evidence
+  correction):** three probes prove the live DOES swap its 404 tab
+  title to "Page Not Found | Pixelco" (direct loads settled 4 s + 8 s
+  + a client-side navigation) — superseding R24-F12's "never swaps"
+  ruling (a pre-settle artifact); the clone's `NotFoundTitle` island is
+  re-classified from value-add to LIVE PARITY (docs only — the
+  MutationObserver + correct-404 status both stay). **R34-F2:** the
+  live's bare hash anchors (dead on sub-pages) vs the clone's working
+  `/#anchor` form recorded in §11 + AGENTS. **R34-F3:** six new e2e
+  pins for never-runtime-pinned surfaces — `e2e/visitors-tabs.spec.ts`
+  (URL state + per-segment filtering) + blog-index/FAQ-single-open/
+  compare-@375 extensions; **39/39 e2e twice consecutive**. Non-findings:
+  the live's 6 px h-overflow at 375 (a live quirk, not replicated).
 - **v1.31** `[SYN]` Round-33 footer-heading + copy-state parity +
   18th-generation drift watch (plan:
   `docs/plans/2026-09-24-round33-footer-copy-parity.md`; evidence
@@ -306,7 +336,11 @@
   variant inlines the site key as the setAttribute literal);
   **(F12)** R14-F10's 404-title-swap "live parity" evidence DISPROVEN
   (settled loads keep "Pixelco") — the `NotFoundTitle` island stays as
-  a documented R14-D3 value-add.
+  a documented R14-D3 value-add. *(Superseded by v1.32/R34-F1: three
+  later probes — direct loads settled 4 s + 8 s and a client-side
+  navigation — show the live DOES swap to "Page Not Found | Pixelco";
+  the R24-F12 "never swaps" evidence was a pre-settle artifact. The
+  clone's swap is live parity; the island stays.)*
 - **v1.22** `[SYN]` Round-23 DB-seam, mobile-nav parity & Playwright e2e
   (plan: `docs/plans/2026-09-22-round23-db-seam-mobile-nav-playwright.md`;
   evidence `docs/screenshots/r23-*` + the probe transcripts in the plan).
@@ -757,11 +791,15 @@
   `src/lib/app-seo.ts` (`appSeoMetadata()`) on login/signup/forgot-
   password and the dashboard layout; `twitter:site @Lovable` (the live's
   build-platform artifact) is deliberately NOT replicated. **404 title
-  (R14-F10, corrected R24-F12):** settled-load probes show the live NEVER
-  swaps its 404 tab title (it stays "Pixelco"); the clone's `NotFoundTitle`
-  client island is therefore a KEPT VALUE-ADD in the R14-D3 category, not
-  live parity (a MutationObserver re-asserts past Next's post-hydration
-  metadata patch — a plain assignment gets overwritten) while keeping the
+  (R14-F10, corrected R24-F12, RE-BASED R34-F1):** three R34 probes
+  (direct loads settled 4 s + 8 s, plus a client-side navigation into a
+  bogus route) all read the live's `document.title` as
+  "Page Not Found | Pixelco" — the live DOES swap post-hydration (its
+  raw HTML ships the generic marketing title); the R24-F12 "never
+  swaps" evidence was a pre-settle artifact. The clone's
+  `NotFoundTitle` client island is therefore LIVE PARITY (re-classified
+  R34): a MutationObserver re-asserts past Next's post-hydration
+  metadata patch (a plain assignment gets overwritten) while keeping the
   correct HTTP 404 the live's 200-SPA-fallback cannot offer. **Crawl
   surface (R14-F11/F12):** `robots.txt` and `sitemap.xml` moved from the
   Next metadata conventions to Route Handlers
@@ -2064,9 +2102,12 @@ speculatively.
 | SSR render (marketing parity) | 6 files | 43 | `tests/{social-proof,marketing-hero,marketing-benefits,marketing-pricing,marketing-process,marketing-compare-cta}.test.tsx` | Vitest (`renderToStaticMarkup`) |
 | Behavioural (collector + snippet in `node:vm`) | 2 | 9 | `tests/collector-script.test.ts`, `tests/snippet.test.ts` | Vitest |
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
-| E2E (browser) | 10 spec files | 33 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select,install,blog,copy}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
+| E2E (browser) | 11 spec files | 39 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select,install,blog,copy,visitors-tabs}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
 
-The suite totals **742 tests across 75 files** (v1.31: +18 —
+The suite totals **742 tests across 75 files** (v1.32: e2e 33 → 39 —
+  the NEW `e2e/visitors-tabs.spec.ts` (2 specs: the URL-driven segment
+  switching + per-tab row filtering) + 2 blog-index specs + the
+  FAQ-single-open + compare-@375 specs; v1.31: +18 —
   `tests/footer-r33-parity.test.tsx` (9 SSR pins — the footer
   column h4 headings, bare-div wrappers, the nav/aria-label/h3
   negatives) + `tests/copy-state-r33-parity.test.tsx` (9 source
@@ -2308,6 +2349,7 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 | MEDIUM | The live's dashboard plan-switch opens a Stripe EmbeddedCheckout dialog (paid external dependency, `create-portal-session` for billing management) | The clone's Get Started applies the plan change directly via `changePlanAction` | Intentional divergence — "Honesty over simulation": faking a payment form would be deceptive (v1.20, D-class; the plans catalogue/prices/CTAs themselves match) |
 | MEDIUM | The live's signup gates every account behind email confirmation (Supabase 200-without-session + "Check your email" toast; login returns 400 "Email not confirmed" until clicked) | The clone auto-sessions on signup (`signUpAction` + client `signIn`) | Intentional divergence (v1.21/R22-F11, D-class) — no mail transport exists here; locking a self-hosted clone behind an email it cannot send would brick it (joins the forgot-password ruling) |
 | LOW | The live's docs "Contact Support" button is DEAD — a real `<button>` with no handler (click-verified: no navigation, no toast) | The clone ships the same Button tag with a working `mailto:support@pixelco.io` onClick | Intentional divergence — never replicate a dead affordance (v1.21/R22-F9; R17 contact-sales precedent) |
+| LOW | The live's marketing-chrome hash anchors are BARE (`#benefits`, `#pricing`, `#how-it-works` in the header nav + footer Product column) and DEAD on sub-pages (R34 click-verified on `/privacy`: the URL gains the hash, no scroll, no navigation) | The clone's `/#anchor` form works from any page (`src/lib/marketing-links.ts`) | Intentional divergence (v1.32/R34-F2, D-class) — the R22 Contact-Support precedent; pinned by `tests/marketing-links.test.ts` ("nav links work from any sub-page"); do not "normalize" the hrefs to the live's dead form |
 | LOW | The live's dashboard react-query defaults refetch on window focus and show in-card spinners (CSR data machinery) | The clone's RSC pages stream server-fetched data; the Activity Log refetches only on page navigation/footer click | Intentional divergence (v1.21, D-class architecture) — replicating focus-refetch across every RSC page would rebuild the live's whole CSR layer for invisible behavior |
 | LOW | Sessions are 30-day JWTs; no server-side revocation | Stolen cookies valid until expiry; deletion sign-out is client-side only | Accepted for this product shape |
 | LOW | Footer Careers link is dead | None functionally — the original pixelco.io links it to `#` too | Parity — flagged `dead: true` in the link map |

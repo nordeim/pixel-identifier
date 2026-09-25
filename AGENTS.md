@@ -283,6 +283,19 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   dies with the replaced tree; both the live and the clone behave
   identically once settled). Plan:
   `docs/plans/2026-09-24-round33-footer-copy-parity.md`.
+- **R34: the marketing-chrome hash anchors are a DIVERGENCE BY DESIGN
+  (v1.32).** The live's header nav AND footer Product column ship BARE
+  hash hrefs (`#benefits`, `#pricing`, `#how-it-works`) on EVERY page —
+  they scroll on `/` (the sections exist) but are DEAD on sub-pages
+  (click-verified on `/privacy`: the URL gains the hash, no scroll, no
+  navigation). The clone's `/#benefits` form works from any page — the
+  R22 Contact-Support precedent (match the chrome, keep the working
+  behavior, never replicate a live defect), documented in
+  `src/lib/marketing-links.ts` and pinned by
+  `tests/marketing-links.test.ts`. Recorded in PAD §11 — do NOT
+  "normalize" the hrefs to the live's bare form, and do not re-flag
+  the href strings as drift in future watches. Plan:
+  `docs/plans/2026-09-26-round34-404-title-anchor-docs-e2e-pins.md`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle
@@ -649,12 +662,14 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   metadata conventions cannot emit comments or trailing-zero priorities.
   The favicon is `public/favicon.ico` (the live's bytes, auto-discovered
   — there is no `app/icon.svg` and no injected link tag).
-- **The 404 tab title swap is a KEPT VALUE-ADD, not live parity (R24-F12
-  corrected the R14-F10 evidence).** Settled-load probes show the live
-  (CSR) NEVER swaps its 404 tab title — it stays "Pixelco" forever;
-  R14-F10's "the live swaps to 'Page Not Found | Pixelco'" claim was
-  wrong. The clone's `NotFoundTitle` island in `not-found.tsx` STAYS as
-  an R14-D3-category value-add (per-page app titles): a MutationObserver
+- **The 404 tab title swap is LIVE PARITY (re-based R34; the R24-F12
+  ruling is superseded).** Three R34 probes — direct loads settled 4 s and
+  8 s, plus a client-side navigation into a bogus route — all read the
+  live's `document.title` as "Page Not Found | Pixelco" (its raw HTML ships
+  the generic marketing title; the SPA router swaps post-hydration).
+  R24-F12's "the live never swaps its 404 title" does not reproduce (a
+  pre-settle probe artifact — the R25 dropdown lesson again). The clone's
+  `NotFoundTitle` island in `not-found.tsx` STAYS: a MutationObserver
   re-asserts the title because Next's client metadata controller
   re-applies the resolved root `<title>` AFTER hydration (a plain
   `document.title` assignment in an effect gets overwritten). Unmount
