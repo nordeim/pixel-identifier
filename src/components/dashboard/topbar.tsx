@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { PanelLeft } from 'lucide-react'
-import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
+import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { BellIcon, DownloadIcon } from '@/components/dashboard/live-icons'
 import { SidebarNav, type UsageProps } from '@/components/dashboard/sidebar-nav'
@@ -92,9 +92,15 @@ export function Topbar({
           <span className="sr-only">Toggle Sidebar</span>
         </Button>
 
-        {/* Mobile sheet (the same trigger opens it below md). R15-D8: the
-            live's SheetContent classes — w-[--sidebar-width] driven by the
-            inline 18rem override, slide-in-from-left, bg-sidebar p-0. */}
+        {/* Mobile sheet (the same trigger opens it below md). R37-F1a:
+            the live's SheetContent consumer tail — w-[--sidebar-width] via
+            the inline 18rem override, slide-in-from-left, bg-sidebar p-0,
+            PLUS text-sidebar-foreground and the [&>button]:hidden fragment
+            that CSS-hides the primitive's close X (the live's dialog
+            carries all of these; the clone showed the X before R37).
+            R37-F1e: no sheet title element — the live's dialog ships none.
+            R37-F1d: SidebarNav renders its LEAN mobile wrapper
+            (div.flex h-full w-full flex-col, no data-sidebar attrs). */}
         <Sheet
           open={mobileNavOpen}
           onOpenChange={(open) => {
@@ -103,13 +109,12 @@ export function Topbar({
         >
           <SheetContent
             side="left"
-            className="w-[--sidebar-width] bg-sidebar p-0"
+            className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
             style={{ '--sidebar-width': '18rem' } as React.CSSProperties}
             data-sidebar="sidebar"
             data-mobile="true"
           >
-            <SheetTitle className="sr-only">Dashboard navigation</SheetTitle>
-            <SidebarNav usage={usage} />
+            <SidebarNav usage={usage} mobile />
           </SheetContent>
         </Sheet>
 

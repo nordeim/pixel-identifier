@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 745 assertions) · Playwright e2e (chromium, standalone build, 46 specs) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 757 assertions) · Playwright e2e (chromium, standalone build, 48 specs) |
 | **Runtime** | Node.js ≥ 20 |
 
 > **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
@@ -716,6 +716,30 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   never-in-SSR rule). Gates: 745 vitest + **46/46 e2e chromium,
   twice consecutive** (each a fresh server boot + site key);
   screenshots in `docs/screenshots/r36-*`.
+- **Mobile-sheet legacy-generation parity (round-37)** — the 22nd probe
+  generation found no redeploy (12th consecutive stable bundle) and ONE
+  drift cluster, on the standing user-emphasis surface: the dashboard's
+  mobile Sheet. The clone's sheet primitive had shipped the NEW shadcn
+  generation while the live ships the LEGACY one (the same generation
+  discipline as every other UI primitive in this repo) — the overlay was
+  `bg-black/50` vs the live's visible `bg-black/80`, the content base
+  carried a live-absent `flex flex-col` + the wrong class order, the
+  close button rendered the new-gen fragments (`rounded-xs`,
+  `focus:outline-hidden`, `size-4`) AND WAS VISIBLE (the live hides it
+  via the SheetContent tail `[&>button]:hidden` — the clone showed an X
+  next to the logo), the inner wrapper duplicated the desktop rail's
+  full `data-sidebar=sidebar` root where the live mounts a LEAN
+  class-only `div.flex h-full w-full flex-col`, and the clone shipped an
+  sr-only H2 title the live's dialog does not carry. Fixed test-first:
+  `ui/sheet.tsx` rewritten to the legacy generation (overlay 80% black,
+  cva base, legacy close + `h-4 w-4` X, no data-slot attrs), the topbar
+  consumer tail extended (`text-sidebar-foreground [&>button]:hidden`,
+  no title), and `SidebarNav` gained a `mobile` prop selecting the lean
+  root (desktop wrapper byte-identical, re-verified). All four
+  R36-queued candidates closed as non-findings (bell inert, sort glyph
+  decorative, no compare surface, usage card at parity). Gates: 757
+  vitest + **48/48 e2e chromium, twice consecutive**; screenshots in
+  `docs/screenshots/r37-*`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the

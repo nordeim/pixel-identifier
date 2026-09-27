@@ -1911,3 +1911,54 @@ Stage Summary:
   candidates — the bell panel (if interactive), the visitors sort
   glyph, the compare table @375 runtime states, the usage-progress
   banner semantics.
+
+---
+
+Task ID: R37
+Agent: main (Super Z)
+Task: Round-37 — 22nd-generation drift watch + mobile-sheet legacy-generation parity fix
+
+Work Log:
+- Fresh clone at 2bb478f (prior env reset); env rebuilt (.env
+  file:../db/custom.db, db/ pushed+seeded at repo root — the stale-shell
+  DATABASE_URL quirk caught on the first push and handled with per-command
+  env -u overrides throughout); arrival gates green (lint 0, tsc 0, 745
+  vitest | 2 skipped, build green — the R36 ship state).
+- 22nd generation: no redeploy (12th consecutive stable); marketing
+  dropdown + 768px boundary FULL PARITY; the dashboard mobile Sheet —
+  the standing user-emphasis surface — found drifted in FIVE families
+  (R37-F1a..e): the clone's ui/sheet.tsx shipped the NEW shadcn
+  generation vs the live's LEGACY one (visible close X, 50% overlay,
+  flex flex-col base, new-gen close fragments, data-slot attrs), the
+  mobile inner duplicated the desktop rail's full data-sidebar=sidebar
+  wrapper vs the live's lean class-only div, and an sr-only H2 title
+  the live's dialog does not carry.
+- Fixed test-first (RED 9/12 → GREEN 12/12): ui/sheet.tsx rewritten to
+  the legacy generation; the topbar consumer tail extended
+  (text-sidebar-foreground [&>button]:hidden, no title); SidebarNav's
+  mobile prop selects the lean root. Post-fix runtime byte-verification:
+  dialog class, close button + svg, overlay class all byte-identical to
+  the live; VLM-verified screenshots.
+- All four R36-queued candidates closed as non-findings: bell inert
+  (no panel), sort glyph decorative (live does not sort), no compare
+  surface (404, zero tables), usage card at byte parity (D3 a11y +
+  builder-artifact notes). Probe side-effect restored: the live
+  operator account's demo-store.example.com domain re-added (Pending)
+  after the delete-flow re-verification removed it.
+- Gates: lint 0 · tsc 0 · 757 vitest | 2 skipped (76 files) · build +
+  standalone green · 48/48 e2e chromium TWICE consecutive (46 + 2 new
+  dashboard specs); 6 VLM-verified screenshots (r37-*); .env.example
+  re-verified; docs synced (README/AGENTS/CLAUDE/PAD v1.35/SKILL/
+  session_46/worklogs + the R37 plan execution log).
+- Committed to main; pushed via docs/ssh_git_wrapper_v3.py (--remote
+  git@github.com:nordeim/pixel-identifier.git); remote ref verified ==
+  local HEAD; operator key shredded after push.
+
+Stage Summary:
+- Round-37 SHIPPED: the first code drift since R33 found ON the
+  mobile-nav emphasis surface and fixed to byte parity; PAD v1.35;
+  757 vitest + 48/48 e2e × 2.
+- Next (R38): bundle hashes; the R37 pins join the standing loop; the
+  alert-dialog primitive ruled unmatched (the live renders no alert
+  dialog); candidates — the pricing plan-intent CTA flow, the
+  forgot-password runtime states, the blog card hover states @375.

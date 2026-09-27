@@ -52,15 +52,36 @@ export interface UsageProps {
  * `mr-2 h-4 w-4` treatment. The collapse geometry is driven by
  * group-data-[collapsible=icon] variants — this tree renders identically
  * in both states (evidence: research/round15-audit/live/shell-full.json).
+ *
+ * R37-F1d: the live's MOBILE Sheet wraps this tree in a LEAN root — a
+ * class-only `div.flex h-full w-full flex-col` with NO data-sidebar attr
+ * and NO bg-sidebar/group-data-[variant=floating] classes — while its
+ * desktop rail keeps the full wrapper (byte-identical both sides,
+ * re-verified R37). The `mobile` prop selects the lean root; the default
+ * keeps the desktop wrapper.
  */
-export function SidebarNav({ usage }: { usage: UsageProps }) {
+export function SidebarNav({
+  usage,
+  mobile = false,
+}: {
+  usage: UsageProps
+  /** Lean root for the mobile Sheet (the live's mobile-only wrapper). */
+  mobile?: boolean
+}) {
   const pathname = usePathname()
 
   const isActive = (item: NavItem) =>
     item.exact ? pathname === item.href : pathname.startsWith(item.href)
 
   return (
-    <div data-sidebar="sidebar" className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow">
+    <div
+      {...(mobile ? {} : { 'data-sidebar': 'sidebar' })}
+      className={
+        mobile
+          ? 'flex h-full w-full flex-col'
+          : 'flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow'
+      }
+    >
       {/* Live header: the PNG logo asset + font-display wordmark (no link). */}
       <div data-sidebar="header" className="flex flex-col gap-2 p-4">
         <div className="flex items-center gap-2">

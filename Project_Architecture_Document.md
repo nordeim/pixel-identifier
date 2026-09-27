@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.34
+# Pixelco — Master Project Architecture Document (PAD) v1.35
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-27 (v1.34)
+**Last Updated:** 2026-09-28 (v1.35)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,46 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.35** `[SYN]` Round-37 22nd-generation drift watch + mobile-sheet
+  legacy-generation parity (plan:
+  `docs/plans/2026-09-28-round37-mobile-sheet-legacy-parity.md`;
+  evidence `docs/screenshots/r37-*` + the probe transcripts in the plan).
+  No redeploy (12th consecutive stable bundle generation — all three
+  tracked hashes unchanged); the marketing dropdown and the 768 px
+  boundary at full parity; the dashboard's mobile Sheet — the standing
+  user-emphasis surface — found drifted in FIVE families (the first
+  code drift since R33): the clone's `ui/sheet.tsx` had shipped the NEW
+  shadcn generation where the live ships the LEGACY one (overlay
+  `bg-black/50` vs the live's VISIBLE `bg-black/80` darkness; content
+  base with a live-absent `flex flex-col` + different class order;
+  new-gen close fragments `rounded-xs`/`focus:outline-hidden`/`size-4`
+  vs the legacy `rounded-sm`/`focus:outline-none`/`h-4 w-4`; data-slot
+  attrs the live's dialog does not render); the close X button was
+  VISIBLE on the clone (the live hides it via the SheetContent tail
+  `[&>button]:hidden` — now on the clone's tail too); the mobile inner
+  wrapper duplicated the desktop rail's full `data-sidebar=sidebar`
+  root where the live mounts a LEAN class-only `div.flex h-full
+  w-full flex-col` (the desktop wrapper re-verified byte-identical both
+  sides); and the clone shipped an sr-only H2 sheet title the live's
+  dialog does not carry. Fixed test-first (the R23 behavior pins held
+  throughout): the primitive rewritten to the legacy generation, the
+  topbar consumer tail extended (`text-sidebar-foreground
+  [&>button]:hidden`, no title), and `SidebarNav`'s new `mobile` prop
+  selects the lean root. TW4 note: `bg-black/80` serializes as
+  `oklab(0 0 0 / 0.8)` vs the live's TW3 `rgba(0,0,0,0.8)` — the same
+  rendered color, pinned as the clone's computed value. All four
+  R36-queued candidates closed as NON-FINDINGS: the bell button is
+  inert (no panel exists), the visitors sort glyph is decorative (the
+  live's header click does not sort), there is no marketing compare
+  table (no /compare route, zero tables on the landing), and the
+  usage-progress display is the sidebar-footer card at byte parity
+  (the clone's `role="progressbar"` stays D3-class invisible a11y;
+  the live's trailing-semicolon inline style is a builder artifact).
+  Probe side-effect, restored: the delete-flow re-verification removed
+  a domain on the live operator account; it was re-added (now Pending
+  — the verified state requires the live's DNS flow). Gates: 757
+  vitest / 76 files | 2 skipped · **48/48 e2e chromium, twice
+  consecutive** (each a fresh server boot + site key).
 - **v1.34** `[SYN]` Round-36 21st-generation drift watch + export-download/
   pricing-table/spinner e2e pins (plan:
   `docs/plans/2026-09-27-round36-export-download-pricing-table-spinner-pins.md`;
@@ -2161,9 +2201,14 @@ speculatively.
 | SSR render (marketing parity) | 6 files | 43 | `tests/{social-proof,marketing-hero,marketing-benefits,marketing-pricing,marketing-process,marketing-compare-cta}.test.tsx` | Vitest (`renderToStaticMarkup`) |
 | Behavioural (collector + snippet in `node:vm`) | 2 | 9 | `tests/collector-script.test.ts`, `tests/snippet.test.ts` | Vitest |
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
-| E2E (browser) | 15 spec files | 46 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select,install,blog,copy,visitors-tabs,domains,visitors-search,activity,export-download}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
+| E2E (browser) | 15 spec files | 48 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select,install,blog,copy,visitors-tabs,domains,visitors-search,activity,export-download}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
 
-The suite totals **745 tests across 75 files** (v1.34: e2e 44 → 46 —
+The suite totals **757 tests across 76 files** (v1.35: vitest
+  745 → 757 — the NEW `tests/sheet-r37-parity.test.tsx` (12 pins: the
+  legacy sheet primitive bytes, the topbar consumer tail, the lean
+  mobile inner vs the full desktop wrapper); e2e 46 → 48 — 2 new
+  dashboard specs (the open Sheet's hidden close button + 80% overlay;
+  the lean inner wrapper + titleless dialog). (v1.34: e2e 44 → 46 —
   the NEW `e2e/export-download.spec.ts` (the download event, the
   filename, the byte contract, the ids-scoped `Export (1)` state) and
   the pricing full-table spec (all four cards × both toggle states);

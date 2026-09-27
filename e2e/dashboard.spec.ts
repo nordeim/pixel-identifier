@@ -112,4 +112,70 @@ test.describe('dashboard mobile Sheet (375 px)', () => {
     const rail = page.locator('.group.peer')
     await expect(rail).toBeHidden()
   })
+
+  // R37-F1a/F1c: the live's Sheet hides the primitive's close X via the
+  // SheetContent tail `[&>button]:hidden`, and its overlay is the legacy
+  // 80% black (the pre-R37 clone showed the X and a visibly lighter 50%
+  // overlay — probe-verified on the live 2026-09-28, 22nd generation).
+  test('the open Sheet hides its close button and darkens at 80% (R37-F1a/c)', async ({
+    page,
+  }) => {
+    await login(page)
+    await page.getByRole('button', { name: 'Toggle Sidebar' }).click()
+    const sheet = page.locator('[data-mobile="true"]')
+    await expect(sheet).toBeVisible()
+
+    // The close X (the content's trailing Close button) is display:none —
+    // hidden by the [&>button]:hidden fragment on the dialog itself.
+    // (Located by DOM text: a hidden button is not in the a11y tree, so
+    // getByRole cannot see it — which is itself the assertion.)
+    const close = sheet.locator('button', { hasText: 'Close' })
+    await expect(close).toHaveCount(1)
+    await expect(close).toBeHidden()
+    await expect(sheet.getByRole('button', { name: 'Close' })).toHaveCount(0)
+
+    // The dialog class carries the live consumer tail verbatim.
+    await expect(sheet).toHaveClass(/text-sidebar-foreground \[&>button\]:hidden/)
+
+    // The overlay is the legacy 80% black (computed). NOTE: Tailwind v4
+    // serializes bg-black/80 as oklab(0 0 0 / 0.8) — the live's TW3 emits
+    // rgba(0, 0, 0, 0.8); both render the identical 80% black (the R12
+    // pre-rounded-hex precedent class — a serialization note, not drift).
+    const overlayBg = await page.evaluate(() => {
+      const overlay = Array.from(document.querySelectorAll('div')).find((d) =>
+        d.className.includes('bg-black') && d.className.includes('fixed'),
+      )
+      return overlay ? getComputedStyle(overlay).backgroundColor : null
+    })
+    expect(overlayBg).toBe('oklab(0 0 0 / 0.8)')
+  })
+
+  // R37-F1d/F1e: the live's dialog tree is LEAN inside — the inner wrapper
+  // is a class-only div (no data-sidebar=sidebar, no bg-sidebar/group-data
+  // classes; the DESKTOP rail keeps those) and there is no title element.
+  test('the open Sheet mounts the lean inner wrapper and no title (R37-F1d/e)', async ({
+    page,
+  }) => {
+    await login(page)
+    await page.getByRole('button', { name: 'Toggle Sidebar' }).click()
+    const sheet = page.locator('[data-mobile="true"]')
+    await expect(sheet).toBeVisible()
+
+    // The dialog itself carries the live attrs; its inner wrapper is lean.
+    const tree = await sheet.evaluate((el) => {
+      const inner = el.querySelector(':scope > div')
+      return {
+        dialogSb: el.getAttribute('data-sidebar'),
+        innerClass: inner ? inner.getAttribute('class') : null,
+        innerSb: inner ? inner.getAttribute('data-sidebar') : undefined,
+        titleCount: el.querySelectorAll('h2, [data-slot="sheet-title"]').length,
+        linkCount: el.querySelectorAll('a[data-sidebar="menu-button"]').length,
+      }
+    })
+    expect(tree.dialogSb).toBe('sidebar')
+    expect(tree.innerClass).toBe('flex h-full w-full flex-col')
+    expect(tree.innerSb).toBe(null)
+    expect(tree.titleCount).toBe(0)
+    expect(tree.linkCount).toBe(7)
+  })
 })

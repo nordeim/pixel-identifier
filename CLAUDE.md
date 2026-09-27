@@ -553,6 +553,24 @@ Prove-It). `TZ` is pinned to UTC.
   spinner source pin (the R22 docstring-only gap closed). Gates: 745
   vitest + **46/46 e2e chromium, twice consecutive**. Plan:
   `docs/plans/2026-09-27-round36-export-download-pricing-table-spinner-pins.md`.
+- **R37 (2026-09-28): mobile-sheet legacy-generation parity —
+  22nd-generation drift watch, ONE drift cluster fixed test-first.** No
+  redeploy (12th consecutive stable); the marketing dropdown + the
+  768 px boundary at full parity; the dashboard's mobile Sheet drifted
+  in five families: the sheet primitive was the NEW shadcn generation
+  (overlay `bg-black/50` vs the live's visible `bg-black/80`, content
+  base with a live-absent `flex flex-col`, new-gen close fragments,
+  data-slot attrs) — the close X was VISIBLE on the clone (the live
+  hides it via the `[&>button]:hidden` tail), the mobile inner wrapper
+  duplicated the desktop rail's full root (the live mounts a LEAN
+  class-only div), and the clone shipped an sr-only H2 title the live
+  lacks. Fixed: `ui/sheet.tsx` rewritten to the legacy generation, the
+  topbar consumer tail extended, `SidebarNav`'s `mobile` prop selects
+  the lean root (desktop byte-identical). All four R36-queued
+  candidates closed as non-findings (bell inert, sort glyph
+  decorative, no compare surface, usage card at parity). Gates: 757
+  vitest + **48/48 e2e chromium, twice consecutive**. Plan:
+  `docs/plans/2026-09-28-round37-mobile-sheet-legacy-parity.md`.
 
 ### Test Commands
 

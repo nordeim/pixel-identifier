@@ -346,6 +346,36 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   source-pinned in `tests/activity-r22-parity.test.tsx` — too flaky
   to e2e-pin; the SSR never renders it (loading starts false). Plan:
   `docs/plans/2026-09-27-round36-export-download-pricing-table-spinner-pins.md`.
+- **R37: the sheet primitive is the LEGACY shadcn generation, and the
+  mobile Sheet's inner wrapper is LEAN (v1.35).** The live's mobile
+  dashboard Sheet (probed 2026-09-28, 22nd generation, `[role=dialog]`
+  children dumps both sides) ships the legacy sheet: overlay
+  `fixed inset-0 z-50 bg-black/80 …` (NOT the 50% black), content base
+  WITHOUT `flex flex-col` (bg-background/p-6 displaced by consumer
+  classes through tailwind-merge), close `absolute right-4 top-4
+  rounded-sm … focus:outline-none` + `h-4 w-4` X, and NO data-slot
+  attrs. The topbar's SheetContent tail is `w-[--sidebar-width]
+  bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden` — the last
+  fragment CSS-hides the close X (never remove it), and the dialog
+  carries `data-sidebar="sidebar"` + `data-mobile="true"` with NO title
+  element (the live's aria-labelledby dangles — a React-18-Radix
+  artifact, D-class). Inside, the mobile root is the LEAN
+  `div.flex h-full w-full flex-col` (class-only) — `SidebarNav`'s
+  `mobile` prop selects it; the DESKTOP rail keeps the full
+  `div[data-sidebar=sidebar]` wrapper (byte-identical both sides).
+  Do NOT regenerate `ui/sheet.tsx` with the shadcn CLI. Pinned by
+  `tests/sheet-r37-parity.test.tsx` + 2 specs in `e2e/dashboard.spec.ts`
+  (close hidden + overlay oklab(0 0 0 / 0.8) — TW4 serializes 80% black
+  as oklab, the live's TW3 as rgba; same rendered color). The visitors
+  row-detail sheet keeps working on the legacy primitive (D-class
+  value-add). The R36-queued candidates are all NON-FINDINGS: the bell
+  is inert (no panel exists), the visitors sort glyph is decorative
+  (the live's header click does not sort), there is no marketing
+  compare table (no /compare route, no table on the landing), and the
+  usage display is the sidebar-footer card at byte parity (the clone's
+  role="progressbar" is D3-class a11y; the live's trailing-semicolon
+  style is a builder artifact). Plan:
+  `docs/plans/2026-09-28-round37-mobile-sheet-legacy-parity.md`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle
