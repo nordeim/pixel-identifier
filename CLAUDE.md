@@ -534,6 +534,25 @@ Prove-It). `TZ` is pinned to UTC.
   later count-pinned spec red). Gates: 742 vitest + **44/44 e2e
   chromium, THREE consecutive runs** (each a fresh boot + site key).
   Plan: `docs/plans/2026-09-27-round35-tooltip-search-activity-e2e-pins.md`.
+- **R36 (2026-09-27): export-download / pricing-table / spinner
+  coverage — 21st-generation drift watch, zero code drift.** No
+  redeploy (11th consecutive stable); mobile navs FULL PARITY both
+  surfaces both sites both breakpoints; every standing surface clean
+  (wrapper, chart chrome, POPULAR, settings inputs, toast driven both
+  sites, console sweep); every R35-queued candidate closed: the export
+  CSV's download payload captured at runtime ON THE LIVE for the first
+  time (a `URL.createObjectURL` override — every R21 byte pin verified
+  on the live itself; the clone byte-identical), the domains Verified
+  badge ruled a NON-FINDING (static div, no untoggle flow), the pricing
+  toggle's full runtime table at parity both states both sites, and the
+  activity mid-swap spinner runtime-verified on the clone (~33 ms
+  window, latent on the live). The round's deliverable is COVERAGE: the
+  e2e export-download spec (the download event, filename, byte
+  contract, the ids-scoped `Export (1)` state), the pricing full-table
+  spec (four cards × both toggle states + `data-state`), and the
+  spinner source pin (the R22 docstring-only gap closed). Gates: 745
+  vitest + **46/46 e2e chromium, twice consecutive**. Plan:
+  `docs/plans/2026-09-27-round36-export-download-pricing-table-spinner-pins.md`.
 
 ### Test Commands
 

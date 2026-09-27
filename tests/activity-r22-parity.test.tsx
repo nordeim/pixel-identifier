@@ -167,3 +167,38 @@ describe('R22 F6 — route signature', () => {
     expect(route).not.toContain('cursor')
   })
 })
+
+describe('R36 G3 — the mid-swap spinner (the docstring-only pin, closed)', () => {
+  // The R22 round documented the live's fetch state ("a py-24 centered
+  // spinner replaces the list") in this file's docstring but never pinned
+  // it. R36 runtime-verified the window on the dev clone (a RAF sampler
+  // caught ~2 frames of `py-24` + Loader2 while the page-2 fetch was in
+  // flight — the 33 ms window is too flaky to e2e-pin, so the SOURCE is
+  // the contract, with the SSR never rendering it before hydration).
+  const ssr = renderToStaticMarkup(
+    <ActivityFeed initialEvents={events} totalCount={137} />,
+  )
+
+  it('renders the live spinner classes while loading (py-24 + h-5 w-5)', () => {
+    expect(feed).toContain('flex items-center justify-center py-24')
+    expect(feed).toContain('h-5 w-5 animate-spin text-muted-foreground')
+  })
+
+  it('the spinner REPLACES the list (the loading ternary guards the branches)', () => {
+    // loading ? spinner : empty ? empty-p : list — the spinner branch
+    // must come FIRST (the live replaces the whole list mid-swap).
+    const spinnerAt = feed.indexOf('flex items-center justify-center py-24')
+    const emptyAt = feed.indexOf('No activity yet. Install your pixel')
+    const listAt = feed.indexOf('divide-y')
+    expect(spinnerAt).toBeGreaterThan(-1)
+    expect(spinnerAt).toBeLessThan(emptyAt)
+    expect(emptyAt).toBeLessThan(listAt)
+  })
+
+  it('never renders the spinner in SSR (loading starts false)', () => {
+    // The static render ships the LIST, not the spinner — the window only
+    // materializes between a footer click and its fetch resolve.
+    expect(ssr).not.toContain('py-24')
+    expect(ssr).toContain('divide-y')
+  })
+})

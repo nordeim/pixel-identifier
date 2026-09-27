@@ -1859,3 +1859,55 @@ Stage Summary:
   candidates — the export CSV download bytes at runtime, the domains
   verified-untoggle flow, the pricing toggle's dashboard runtime
   states, the activity mid-swap spinner.
+
+---
+
+Task ID: R36
+Agent: main (Super Z)
+Task: Round-36 — 21st-generation drift watch + export-download/pricing-table/spinner e2e pins
+
+Work Log:
+- git pull → 44f5a6e (the only delta: docs/session_44.md); the five
+  root docs + session_43/44 + the R35 plan + both worklogs reviewed;
+  understanding validated against the tree (skills/ excluded).
+- Arrival gates green (lint 0, tsc 0, 742 vitest | 2 skipped,
+  build:standalone green) + e2e 44/44 TWICE at arrival (each a fresh
+  boot + site key) — the R35 ship state confirmed.
+- 21st generation: no redeploy (11th consecutive stable — all three
+  tracked hashes unchanged); mobile navs FULL PARITY both surfaces
+  both sites both breakpoints (375 + 768); zero TW4 anomalies; standing
+  surfaces all clean (wrapper, chart chrome, POPULAR, settings inputs,
+  toast driven BOTH sites, console sweep 19 routes + browser clean);
+  the five R35 pins joined the loop.
+- R35-queued candidates closed at zero code drift: the export CSV's
+  download payload RUNTIME-CAPTURED ON THE LIVE for the first time
+  (URL.createObjectURL override — 384 bytes, NO BOM, LF-only, no
+  trailing newline, unquoted commas, table-order rows; the clone
+  byte-identical); the domains Verified badge ruled a NON-FINDING
+  (static div both sides — no untoggle flow); the pricing toggle's
+  full runtime table at parity both states both sites ($0/$79/$249/$799
+  ↔ $0/$65/$199/$639); the activity mid-swap spinner runtime-verified
+  on the clone (~33 ms RAF-sampled window; latent on the live).
+- Coverage: the NEW e2e/export-download.spec.ts (the download event,
+  filename, byte contract, the ids-scoped Export (1) state), the
+  pricing full-table spec (four cards × both toggle states +
+  data-state), and the spinner source pin (3 assertions — the R22
+  docstring-only gap closed).
+- Gates: lint 0 · tsc 0 · 745 vitest | 2 skipped · build + standalone
+  green · 46/46 e2e chromium TWICE consecutive; 6 VLM-verified
+  screenshots (r36-*); .env.example re-verified; docs synced
+  (README/AGENTS/CLAUDE/PAD v1.34/SKILL/session_45/worklogs + the R36
+  plan execution log).
+- Committed to main; pushed via docs/ssh_git_wrapper_v3.py (--remote
+  git@github.com:nordeim/pixel-identifier.git); remote ref verified ==
+  local HEAD; operator key shredded after push.
+
+Stage Summary:
+- Round-36 SHIPPED: the 21st generation clean (zero code drift), every
+  R35-queued candidate closed, the live's export CSV runtime-captured
+  for the first time, 2 new e2e specs + 1 e2e extension + 3 source
+  pins (46/46 × 2 consecutive), PAD v1.34.
+- Next (R37): bundle hashes; the new pins join the standing loop;
+  candidates — the bell panel (if interactive), the visitors sort
+  glyph, the compare table @375 runtime states, the usage-progress
+  banner semantics.

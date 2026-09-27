@@ -155,3 +155,37 @@ Stage Summary:
 - Next (R36): bundle hashes; the new pins join the standing loop;
   candidates — export CSV download bytes, domains verified-untoggle,
   pricing toggle runtime states, the activity mid-swap spinner.
+
+---
+
+Task ID: R36
+Agent: main (Super Z)
+Task: Round-36 — 21st-generation drift watch + export-download/pricing-table/spinner e2e pins
+
+Work Log:
+- git pull → 44f5a6e; env intact (.env file:../db/custom.db, db/ seeded
+  at repo root); arrival gates green (lint 0, tsc 0, 742 vitest |
+  2 skipped, build:standalone green) + e2e 44/44 twice.
+- 21st generation: no redeploy (11th consecutive stable); mobile navs
+  FULL PARITY both surfaces both sites both breakpoints; zero TW4
+  anomalies; standing surfaces all clean; every R35-queued candidate
+  closed at zero code drift — the export CSV RUNTIME-CAPTURED on the
+  live for the first time (byte-identical with the clone), the Verified
+  badge ruled a NON-FINDING (no untoggle flow exists), the pricing full
+  table at parity both states both sites, the mid-swap spinner
+  runtime-verified on the clone (~33 ms RAF window).
+- Coverage: NEW e2e/export-download.spec.ts (download event, filename,
+  byte contract, Export (1) ids-scoping), the pricing full-table spec
+  (both toggle states), the spinner source pin (3 assertions).
+- Gates: lint 0 · tsc 0 · 745 vitest | 2 skipped · build + standalone
+  green · 46/46 e2e TWICE consecutive; 6 VLM-verified screenshots
+  (r36-*); .env.example re-verified; docs synced (README/AGENTS/CLAUDE/
+  PAD v1.34/SKILL/session_45/worklogs/plan log).
+- Committed to main; pushed via docs/ssh_git_wrapper_v3.py; remote ref
+  verified == local HEAD; operator key shredded.
+
+Stage Summary:
+- Round-36 SHIPPED: zero code drift, 4 candidate investigations closed
+  (1 non-finding), PAD v1.34, 46/46 × 2 consecutive.
+- Next (R37): bundle hashes; candidates — the bell panel, the visitors
+  sort glyph, the compare @375 states, the usage-progress banner.

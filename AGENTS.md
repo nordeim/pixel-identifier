@@ -323,6 +323,29 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   pipeline inherits the resolver's per-boot randomness — clean the probe
   rows, never rely on luck. Plan:
   `docs/plans/2026-09-27-round35-tooltip-search-activity-e2e-pins.md`.
+- **R36: the export CSV is RUNTIME-pinned end-to-end; the domains
+  Verified badge has NO toggle; the pricing table + spinner are
+  pinned (v1.34).** The live's download payload was captured at runtime
+  via a `URL.createObjectURL` override (384 bytes, NO BOM, LF-only,
+  NO trailing newline, unquoted commas — every R21 pin verified on the
+  live itself; the row order follows the table's display order, which
+  differs between the sites only because the data does).
+  `e2e/export-download.spec.ts` pins the browser flow: the Playwright
+  download event off the `Export All` click, the
+  `pixelco-visitors-YYYY-MM-DD.csv` filename, the byte contract, and
+  the ids-scoped `Export (1)` state (a selected row downloads ONLY its
+  own row). The domains Verified badge is a STATIC div both sides
+  (byte-identical, non-interactive — there is NO verified-untoggle flow
+  to mirror; documented so future rounds don't re-investigate). The
+  dashboard pricing toggle's full table is pinned in BOTH states
+  (monthly $0/$79/$249/$799 → annual $0/$65/$199/$639 +
+  `data-state` unchecked/checked; the cards carry quota text, NOT the
+  marketing bundle's "billed" sub-lines). The activity mid-swap
+  spinner (a ~33 ms `py-24` + Loader2 `h-5 w-5 animate-spin` window
+  the round caught with a RAF sampler; latent on the live) is
+  source-pinned in `tests/activity-r22-parity.test.tsx` — too flaky
+  to e2e-pin; the SSR never renders it (loading starts false). Plan:
+  `docs/plans/2026-09-27-round36-export-download-pricing-table-spinner-pins.md`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle

@@ -68,4 +68,41 @@ test.describe('pricing & plan page', () => {
     await expect(badge).toBeVisible()
     await expect(growthPrice).toHaveText('$199')
   })
+
+  test('the full four-card price table flips with the toggle (R36 G2)', async ({ page }) => {
+    await login(page)
+    await page.goto('/dashboard/pricing')
+
+    // The price extractor: each plan card's h3 → the header row → the
+    // CardHeader (the price block's parent) → its span.font-display price.
+    // (The same two-level climb the R26 growthPrice locator uses.)
+    const priceOf = (name: string) =>
+      page.locator('h3', { hasText: name }).locator('..').locator('..').locator('span.font-display')
+
+    // MONTHLY (the unchecked default) — the live's runtime-verified table
+    // (R36 dual-site probe): Free $0 / Starter $79 / Growth $249 / Scale $799.
+    const toggle = page.getByRole('switch')
+    await expect(toggle).toHaveAttribute('data-state', 'unchecked')
+    for (const [name, price] of [
+      ['Free', '$0'],
+      ['Starter', '$79'],
+      ['Growth', '$249'],
+      ['Scale', '$799'],
+    ] as const) {
+      await expect(priceOf(name)).toHaveText(price)
+    }
+
+    // ANNUAL (checked) — the live's hardcoded dashboard annual table
+    // ($65/$199/$639, plans.ts annualMonthlyPrice; Free stays $0).
+    await toggle.click()
+    await expect(toggle).toHaveAttribute('data-state', 'checked')
+    for (const [name, price] of [
+      ['Free', '$0'],
+      ['Starter', '$65'],
+      ['Growth', '$199'],
+      ['Scale', '$639'],
+    ] as const) {
+      await expect(priceOf(name)).toHaveText(price)
+    }
+  })
 })

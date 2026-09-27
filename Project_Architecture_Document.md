@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.33
+# Pixelco — Master Project Architecture Document (PAD) v1.34
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-27 (v1.33)
+**Last Updated:** 2026-09-27 (v1.34)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,34 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.34** `[SYN]` Round-36 21st-generation drift watch + export-download/
+  pricing-table/spinner e2e pins (plan:
+  `docs/plans/2026-09-27-round36-export-download-pricing-table-spinner-pins.md`;
+  evidence `docs/screenshots/r36-*` + the probe transcripts in the plan).
+  No redeploy (11th consecutive stable bundle generation — all three
+  tracked hashes unchanged); mobile navs FULL PARITY both surfaces both
+  sites both breakpoints; TW4 watch clean; every standing surface clean
+  (the R35 pins joined the loop). All four R35-queued candidates closed:
+  the export CSV's download payload captured at runtime ON THE LIVE for
+  the first time (a `URL.createObjectURL` override — every R21 byte pin
+  re-verified on the live itself: NO BOM, LF-only, NO trailing newline,
+  unquoted commas, the row order following the table's display order);
+  the domains Verified badge ruled a NON-FINDING (a static div both
+  sides — no verified-untoggle flow exists); the pricing toggle's full
+  runtime table at parity (monthly $0/$79/$249/$799 → annual
+  $0/$65/$199/$639 both states both sites, quota text NOT "billed"
+  sub-lines); the activity mid-swap spinner runtime-verified on the
+  clone (a ~33 ms RAF-sampled `py-24` + Loader2 window — latent on the
+  live, 6 events). The round's deliverable is COVERAGE: the NEW
+  `e2e/export-download.spec.ts` (the Playwright download event off the
+  `Export All` click, the `pixelco-visitors-YYYY-MM-DD.csv` filename,
+  the byte contract, the ids-scoped `Export (1)` state), the pricing
+  full-table spec (all four cards × both toggle states + the
+  `data-state` flip), and the spinner source pin (the R22
+  docstring-only gap closed — `py-24` + `h-5 w-5 animate-spin`, the
+  ternary guard order, the never-in-SSR rule). Gates: 745 vitest / 75
+  files | 2 skipped · **46/46 e2e chromium, twice consecutive** (each a
+  fresh server boot + site key).
 - **v1.33** `[SYN]` Round-35 20th-generation drift watch + tooltip/
   delete-flow/search-debounce/activity-pagination e2e pins (plan:
   `docs/plans/2026-09-27-round35-tooltip-search-activity-e2e-pins.md`;
@@ -2133,9 +2161,13 @@ speculatively.
 | SSR render (marketing parity) | 6 files | 43 | `tests/{social-proof,marketing-hero,marketing-benefits,marketing-pricing,marketing-process,marketing-compare-cta}.test.tsx` | Vitest (`renderToStaticMarkup`) |
 | Behavioural (collector + snippet in `node:vm`) | 2 | 9 | `tests/collector-script.test.ts`, `tests/snippet.test.ts` | Vitest |
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
-| E2E (browser) | 14 spec files | 44 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select,install,blog,copy,visitors-tabs,domains,visitors-search,activity}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
+| E2E (browser) | 15 spec files | 46 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select,install,blog,copy,visitors-tabs,domains,visitors-search,activity,export-download}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
 
-The suite totals **742 tests across 75 files** (v1.33: e2e 39 → 44 —
+The suite totals **745 tests across 75 files** (v1.34: e2e 44 → 46 —
+  the NEW `e2e/export-download.spec.ts` (the download event, the
+  filename, the byte contract, the ids-scoped `Export (1)` state) and
+  the pricing full-table spec (all four cards × both toggle states);
+  vitest 742 → 745 — the spinner source pin). (v1.33: e2e 39 → 44 —
   the NEW `e2e/domains.spec.ts` (2 specs: the AlertDialog cancel/confirm
   delete flow + the `Domain removed` toast; the enforced free-plan
   1-domain cap with its error toast), the NEW

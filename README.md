@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 742 assertions) · Playwright e2e (chromium, standalone build, 44 specs) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 745 assertions) · Playwright e2e (chromium, standalone build, 46 specs) |
 | **Runtime** | Node.js ≥ 20 |
 
 > **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
@@ -691,6 +691,31 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   spec flaky on a boot-lucky basis. Gates: 742 vitest + **44/44 e2e
   chromium, THREE consecutive runs** (each a fresh server boot + site
   key); screenshots in `docs/screenshots/r35-*`.
+- **Export-download, pricing-table & spinner pins (round-36)** — the
+  21st probe generation found no redeploy (11th consecutive stable
+  bundle) and ZERO code drift; every R35-queued candidate closed: the
+  export CSV's download payload **captured at runtime on the live for
+  the first time** (a `URL.createObjectURL` override — 384 bytes, NO
+  BOM, LF-only, no trailing newline, unquoted commas throughout, the
+  row order following the table's display order — every R21 pin
+  re-verified on the live itself; the clone byte-identical on its
+  seeded data); the domains Verified badge ruled a NON-FINDING (a
+  static div, byte-identical both sides — no untoggle flow exists);
+  the pricing toggle's full runtime table verified at parity (monthly
+  $0/$79/$249/$799 → annual $0/$65/$199/$639, both states both
+  sites); and the activity pagination's mid-swap spinner
+  runtime-verified on the clone (a RAF sampler caught the ~33 ms
+  `py-24` + Loader2 window — latent on the live, 6 events). The
+  round's deliverable is COVERAGE: the **e2e export-download spec**
+  (clicks `Export All` → asserts the Playwright download event, the
+  suggested filename, the byte contract, and the ids-scoped
+  `Export (1)` state), the **pricing full-table spec** (all four
+  cards × both toggle states + the `data-state` flip), and the
+  **spinner source pin** (the R22 docstring-only gap closed —
+  `py-24` + `h-5 w-5 animate-spin`, the ternary guard order, the
+  never-in-SSR rule). Gates: 745 vitest + **46/46 e2e chromium,
+  twice consecutive** (each a fresh server boot + site key);
+  screenshots in `docs/screenshots/r36-*`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the
