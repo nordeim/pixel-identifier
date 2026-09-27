@@ -508,6 +508,32 @@ Prove-It). `TZ` is pinned to UTC.
   replicated), FAQ single-open parity, activity pagination still
   latent. Plan:
   `docs/plans/2026-09-26-round34-404-title-anchor-docs-e2e-pins.md`.
+  R35 (20th generation, no redeploy — 10th consecutive stable) verified
+  every standing surface (mobile navs full parity both surfaces both
+  sites both breakpoints — the standing emphasis; wrapper, chart chrome,
+  POPULAR, settings, toast driven on the live) and closed every
+  R34-queued candidate with ZERO code drift: the chart tooltip HOVER
+  state probed byte-identical (wrapper family, `transform 400ms`, the
+  `Pageviews : N`/`Identified : N` content format, the full inner
+  style), the live's domains delete re-verified IMMEDIATE (no confirm —
+  the clone's AlertDialog stays D-class), the live's search fires a
+  fetch PER KEYSTROKE with NO debounce (a performance defect — the
+  clone's 350 ms URL-driven debounce stays D-class), and the activity
+  footer stays runtime-latent on the live (6 events). Newly documented
+  live defects: the FREE plan's advertised "1 domain" cap is not
+  enforced in its UI (a 3rd domain add was accepted on a free account)
+  — the clone's typed-FORBIDDEN enforcement stays. The round's
+  deliverable is COVERAGE: 5 new e2e pins (the tooltip contract, the
+  AlertDialog delete flow + free-plan cap block — both hermetic, the
+  search debounce → `?q=`, and the activity pagination footer
+  runtime-pinned for the first time via a hermetic 60-event direct-DB
+  fixture), plus a suite-level flake fix — the pipeline spec's beacon
+  visitor now cleans up (its identification outcome varies per boot
+  because the seed mints a fresh site key and the resolver's decision is
+  sha256(siteKey + anonymousId); a lucky-identified beacon had made every
+  later count-pinned spec red). Gates: 742 vitest + **44/44 e2e
+  chromium, THREE consecutive runs** (each a fresh boot + site key).
+  Plan: `docs/plans/2026-09-27-round35-tooltip-search-activity-e2e-pins.md`.
 
 ### Test Commands
 

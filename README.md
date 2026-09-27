@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 742 assertions) · Playwright e2e (chromium, standalone build, 39 specs) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 742 assertions) · Playwright e2e (chromium, standalone build, 44 specs) |
 | **Runtime** | Node.js ≥ 20 |
 
 > **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
@@ -664,6 +664,33 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   single-open persistence, the compare @375 stack with the
   no-overflow guard. Gates: 742 vitest + **39/39 e2e chromium (twice
   consecutive)**; screenshots in `docs/screenshots/r34-*`.
+- **Tooltip hover, delete-flow, search-debounce & activity-pagination e2e
+  pins (round-35)** — the 20th probe generation found no redeploy (10th
+  consecutive stable bundle) and ZERO code drift; every R34-queued
+  candidate closed: the trend chart's tooltip HOVER state probed
+  byte-identical (wrapper class family, `transform 400ms` transition, the
+  `Sep 19Pageviews : 0Identified : 0` content format, the full inner
+  inline style — now pinned by a 4th chart spec), the live's domains
+  delete re-verified IMMEDIATE (no confirm dialog; the clone's AlertDialog
+  + enforced free-plan caps stay the documented D-class divergences — the
+  live's FREE account accepted a THIRD domain, its advertised "1 domain"
+  notwithstanding), the live's search fires a fetch PER KEYSTROKE with NO
+  debounce (a performance defect; the clone's 350 ms URL-driven debounce
+  stays D-class), and the activity footer stays runtime-latent on the live
+  (6 events). The round's deliverable is COVERAGE: 5 new e2e pins — the
+  tooltip contract spec, the AlertDialog delete flow (cancel + confirm +
+  `Domain removed` toast) + the free-plan cap block (both with hermetic
+  probe fixtures), the search debounce → `?q=` URL state, and the
+  **activity pagination footer** (runtime-pinned for the first time via a
+  hermetic 60-event direct-DB fixture — "1–50 of 72", ghost chevron
+  bounds, the page-2 offset swap). Plus a suite-level fix: the pipeline
+  spec's beacon visitor now cleans up after itself (the R31 hermetic
+  lesson) — its identification outcome varies per boot (the seed mints a
+  fresh site key, and the resolver's decision is
+  sha256(siteKey + anonymousId)), which had made every later count-pinned
+  spec flaky on a boot-lucky basis. Gates: 742 vitest + **44/44 e2e
+  chromium, THREE consecutive runs** (each a fresh server boot + site
+  key); screenshots in `docs/screenshots/r35-*`.
 - **UI primitives + app theme (round-11)** — the live app ships the
   LEGACY shadcn generation and a cool-neutral palette: the primitive
   class strings (button/badge/card/tabs/select/input/checkbox), the

@@ -1796,3 +1796,66 @@ Stage Summary:
   standing loop; candidates — the chart tooltip HOVER state, the
   domains delete flow re-verification, the visitors search debounce,
   activity pagination (latent < 50).
+
+---
+
+Task ID: R35
+Agent: main (Super Z)
+Task: Round-35 — 20th-generation drift watch + tooltip/delete-flow/search-debounce/activity-pagination e2e pins
+
+Work Log:
+- Fresh clone at 731ede0; env rebuilt (.env file:../db/custom.db, db/
+  pushed+seeded at repo root); arrival gates green (lint 0, tsc 0,
+  742 vitest | 2 skipped, build green — the R34 ship state). One
+  operator error re-learned en route: the first e2e attempt failed
+  28/39 on native-GET logins because the standalone tree came from a
+  plain `next build` (no static-asset copy — the exact failure
+  scripts/build-standalone.mjs prevents); after build:standalone the
+  suite passed 39/39 twice.
+- 20th generation: no redeploy (10th consecutive stable); mobile navs
+  FULL PARITY both surfaces both sites BOTH breakpoints (375 + 768) —
+  the standing emphasis, zero TW4 anomalies; standing surfaces all
+  clean (wrapper, chart chrome, POPULAR, settings inputs, toast driven
+  on BOTH sites); console sweep clean (19 routes).
+- R34-queued candidates ALL closed at zero code drift: tooltip HOVER
+  byte-parity (wrapper family, transform 400ms, Pageviews : N /
+  Identified : N content, inner style); the live's domains delete
+  re-verified IMMEDIATE (non-destructive probe; the clone's
+  AlertDialog + enforced caps stay D-class); the live's search has NO
+  debounce (per-keystroke RPCs — the clone's 350ms URL-driven debounce
+  stays D-class); activity footer still latent (6 live events).
+- New live-defect divergences recorded (PAD §11): the live's FREE
+  plan advertises "1 domain" but accepted a THIRD domain add
+  (probe-verified); the undebounced per-keystroke search.
+- Coverage (the round's deliverable): 5 new e2e pins — the tooltip
+  contract (chart.spec.ts 4th spec), the AlertDialog delete flow +
+  free-plan cap block (NEW e2e/domains.spec.ts, hermetic probe
+  fixture), the search debounce into ?q= (NEW
+  e2e/visitors-search.spec.ts), and the activity pagination footer
+  RUNTIME-pinned for the first time (NEW e2e/activity.spec.ts, a
+  hermetic 60-event direct-DB fixture — the R31 precedent).
+- Suite flake fix: the first full-suite run failed 3 count-pinned specs
+  because the pipeline spec's beacon visitor had been IDENTIFIED that
+  boot (the seed mints a fresh site key per boot; the resolver's
+  decision is sha256(siteKey + anonymousId)) — a pre-existing
+  boot-lucky flake. e2e/pipeline.spec.ts now deletes its
+  e2e-visitor-* probe family on both ends (events cascade with the
+  visitor).
+- Gates: lint 0 · tsc 0 · 742 vitest | 2 skipped (75 files —
+  unchanged) · build + standalone green · 44/44 e2e chromium THREE
+  consecutive runs (each a fresh server boot + site key); 6
+  VLM-verified screenshots (docs/screenshots/r35-*); .env.example
+  re-verified; docs synced (README/AGENTS/CLAUDE/PAD v1.33/SKILL/
+  session_43/worklogs + the R35 plan execution log).
+- Committed to main; pushed via docs/ssh_git_wrapper_v3.py (--remote
+  git@github.com:nordeim/pixel-identifier.git); remote ref verified ==
+  local HEAD; operator key shredded.
+
+Stage Summary:
+- Round-35 SHIPPED: the 20th generation clean (zero code drift), every
+  R34-queued candidate closed, two live-defect divergences documented,
+  5 new e2e pins + the pipeline-flake fix (44/44 × 3 consecutive).
+- Next (R36): bundle hashes; the new pins join the standing loop;
+  candidates — the export CSV download bytes at runtime, the domains
+  verified-untoggle flow, the pricing toggle's dashboard runtime
+  states, the activity mid-swap spinner.

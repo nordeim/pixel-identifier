@@ -296,6 +296,33 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   "normalize" the hrefs to the live's bare form, and do not re-flag
   the href strings as drift in future watches. Plan:
   `docs/plans/2026-09-26-round34-404-title-anchor-docs-e2e-pins.md`.
+- **R35: the live's search has NO debounce and its free-plan domain cap
+  is NOT enforced — both clone divergences stay D-class (v1.33).** The
+  live's visitors search fires a fetch PER KEYSTROKE (3 RPCs for "acm",
+  client state, clean URL); the clone's 350 ms debounce into the
+  URL-driven server search (`?q=`) is a deliberate performance divergence
+  (pinned by `e2e/visitors-search.spec.ts`). The live's FREE pricing card
+  advertises "1 domain" yet its UI accepted a THIRD domain on a free
+  account (probe-verified R35); the clone's typed-FORBIDDEN cap
+  enforcement (`src/actions/domains.ts`) stays (pinned by
+  `e2e/domains.spec.ts`). Same class as R20's arbitrary-domain-strings
+  ruling — never replicate a live defect. The chart tooltip's HOVER state
+  was probed byte-identical this round (wrapper family, `transform
+  400ms`, `Pageviews : N`/`Identified : N` content, the full inner
+  style — pinned by the 4th spec in `e2e/chart.spec.ts`), and the
+  activity pagination footer is RUNTIME-pinned via a hermetic 60-event
+  direct-DB fixture (`e2e/activity.spec.ts`).
+- **R35: e2e probe fixtures must clean up their VISITORS too.** The
+  pipeline spec's beacon visitor (`e2e-visitor-*`) leaked until R35:
+  the seed mints a FRESH site key per boot and the resolver's decision is
+  sha256(siteKey + anonymousId), so whether the beacon visitor gets
+  identified varies per boot — when it did, every later count-pinned
+  spec (visitors-tabs, visitors-search) went red on a boot-lucky basis.
+  The spec now deletes the probe family on both ends (events cascade
+  with the visitor). Lesson: any e2e write through the app's own
+  pipeline inherits the resolver's per-boot randomness — clean the probe
+  rows, never rely on luck. Plan:
+  `docs/plans/2026-09-27-round35-tooltip-search-activity-e2e-pins.md`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle

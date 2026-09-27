@@ -1,9 +1,42 @@
 import { expect, test } from '@playwright/test'
+import { PrismaClient } from '@prisma/client'
+import { join } from 'node:path'
 
 /**
  * Tracking-pipeline e2e (R23-F8) — the public surface (collector script,
  * health) and the beacon → dashboard loop against the e2e database.
+ *
+ * Hermetic hygiene (R35, the R31 lesson): the beacon spec's probe visitor
+ * (`e2e-visitor-*`) is deleted on BOTH ends. The identity resolver's
+ * decision derives from sha256(siteKey + anonymousId) and the e2e seed
+ * mints a FRESH site key on every boot — so whether the probe beacon's
+ * visitor gets identified (~20% match rate) varies per boot. When it does,
+ * the identified-visitors table shows a 4th row and every later
+ * count-pinned spec (visitors-tabs R34, visitors-search R35) goes red on a
+ * boot-lucky basis — exactly the "later specs expect the demo account
+ * EXACTLY as seeded" failure the R31 probe-site fixture fixed. The
+ * events cascade with the visitor (FK onDelete: Cascade), so the activity
+ * feed returns to its seeded set too.
  */
+const DEMO_EMAIL = 'demo@pixelco.local'
+const PROBE_VISITOR_FAMILY = 'e2e-visitor-'
+
+// Playwright runs its workers from the config dir (the repo root), and the
+// e2e-server uses the same <repo>/db/e2e.db — resolve against process.cwd().
+const repoRoot = process.cwd()
+const e2eDatabaseUrl = `file:${join(repoRoot, 'db', 'e2e.db')}`
+
+async function cleanProbeVisitors() {
+  const db = new PrismaClient({ datasourceUrl: e2eDatabaseUrl })
+  try {
+    await db.visitor.deleteMany({
+      where: { anonymousId: { startsWith: PROBE_VISITOR_FAMILY } },
+    })
+  } finally {
+    await db.$disconnect()
+  }
+}
+
 test.describe('public pipeline surface', () => {
   test('/api/health reports ok with the db up', async ({ request }) => {
     const response = await request.get('/api/health')
@@ -35,10 +68,15 @@ test.describe('public pipeline surface', () => {
 })
 
 test.describe('beacon → dashboard loop', () => {
+  // Hermetic on both ends (see the fixture note above): the probe visitor
+  // never leaks past this spec, whatever the resolver decided this boot.
+  test.beforeAll(cleanProbeVisitors)
+  test.afterAll(cleanProbeVisitors)
+
   test('a hostname-matched beacon lands in the Activity Log', async ({ page, request }) => {
     // Login once, read the demo site key out of the Install snippet.
     await page.goto('/login')
-    await page.getByLabel('Email').fill('demo@pixelco.local')
+    await page.getByLabel('Email').fill(DEMO_EMAIL)
     await page.getByLabel('Password').fill('Demo123456!')
     await page.getByRole('button', { name: 'Sign In' }).click()
     await expect(page).toHaveURL(/\/dashboard$/)

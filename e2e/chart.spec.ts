@@ -107,4 +107,54 @@ test.describe('trend chart axis chrome (R28-F1)', () => {
     expect(style).toContain('border-radius: 8px')
     expect(style).not.toContain('box-shadow')
   })
+
+  // R35-G1: the tooltip's FULL runtime contract — probed live at the same
+  // SVG coordinates in the 20th generation (evidence:
+  // docs/plans/2026-09-27-round35-tooltip-search-activity-e2e-pins.md): the
+  // wrapper class family, the 400ms transform transition, the content format
+  // (date label + "name : value" entries — the R28-confirmed candidate), and
+  // the byte-identical inner inline style. The radius-only spec above cannot
+  // see any of this.
+  test('tooltip hover state: wrapper family, transition, content format, inner style (R35-G1)', async ({ page }) => {
+    await login(page)
+
+    const svg = page.locator('svg.recharts-surface').first()
+    await expect(svg).toBeVisible()
+
+    const chartBox = await svg.boundingBox()
+    expect(chartBox).not.toBeNull()
+    await page.mouse.move(chartBox!.x + chartBox!.width / 2, chartBox!.y + 100)
+
+    // Wrapper: the live's exact class family (right+bottom placement) and
+    // the 400ms transform transition recharts ships from the live's config.
+    const wrapper = page.locator('.recharts-tooltip-wrapper').first()
+    await expect(wrapper).toBeVisible({ timeout: 5000 })
+    await expect(wrapper).toHaveClass(
+      'recharts-tooltip-wrapper recharts-tooltip-wrapper-right recharts-tooltip-wrapper-bottom',
+    )
+    const wrapperStyle = await wrapper.getAttribute('style')
+    expect(wrapperStyle).toContain('visibility: visible')
+    expect(wrapperStyle).toContain('transition: transform 400ms')
+
+    // Content: the live's format — the date label, then one
+    // "name : value" entry per series (recharts' default ` : ` join).
+    const content = await wrapper.textContent()
+    expect(content).toMatch(/^Sep \d{1,2}/)
+    expect(content).toContain('Pageviews : ')
+    expect(content).toContain('Identified : ')
+
+    // Inner: the live's full recharts-default-tooltip inline style, probed
+    // byte-identical both sides (10px padding, white bg, the rgb(229, 231,
+    // 235) border, nowrap, 8px radius, 12px font — and no shadow).
+    const inner = wrapper.locator('.recharts-default-tooltip').first()
+    const innerStyle = await inner.getAttribute('style')
+    expect(innerStyle).toContain('margin: 0px')
+    expect(innerStyle).toContain('padding: 10px')
+    expect(innerStyle).toContain('background-color: rgb(255, 255, 255)')
+    expect(innerStyle).toContain('border: 1px solid rgb(229, 231, 235)')
+    expect(innerStyle).toContain('white-space: nowrap')
+    expect(innerStyle).toContain('border-radius: 8px')
+    expect(innerStyle).toContain('font-size: 12px')
+    expect(innerStyle).not.toContain('box-shadow')
+  })
 })

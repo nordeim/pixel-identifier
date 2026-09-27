@@ -111,3 +111,47 @@ Work Log:
 Stage Summary:
 - Round-34 SHIPPED clean; R35 candidates queued (chart tooltip hover,
   domains delete flow, visitors search debounce, activity pagination).
+
+---
+
+Task ID: R35
+Agent: main (Super Z)
+Task: Round-35 — 20th-generation drift watch + tooltip/delete-flow/search-debounce/activity-pagination e2e pins
+
+Work Log:
+- Fresh clone at 731ede0; env rebuilt (.env file:../db/custom.db, db/
+  pushed+seeded at repo root); arrival gates green (lint 0, tsc 0,
+  742 vitest | 2 skipped, build green — the R34 ship state). Operator
+  lesson re-learned: e2e requires build:standalone (a plain next build
+  leaves the standalone tree without static assets — logins fall back
+  to native GET; 28/39 red) — after the proper build, 39/39 twice.
+- 20th generation: no redeploy (10th consecutive stable); mobile navs
+  FULL PARITY both surfaces both sites both breakpoints (375 + 768);
+  zero TW4 anomalies; standing surfaces all clean (wrapper, chart
+  chrome, POPULAR, settings inputs, toast driven on BOTH sites).
+- R34-queued candidates closed at zero code drift: tooltip HOVER
+  byte-parity; the live's immediate delete re-verified (the clone's
+  AlertDialog stays D-class); the live's search has NO debounce (the
+  clone's 350ms URL-driven debounce stays D-class); activity footer
+  still latent. New live-defect divergences recorded in PAD §11: the
+  unenforced free-plan "1 domain" cap (a 3rd add accepted) + the
+  undebounced per-keystroke search.
+- Coverage: 5 new e2e pins (tooltip contract; AlertDialog delete +
+  cap block; search debounce; activity pagination footer via a
+  hermetic 60-event direct-DB fixture) + the pipeline-flake fix (the
+  beacon visitor's boot-random identification had made count-pinned
+  specs flaky — the probe family now cleans up on both ends).
+- Gates: lint 0 · tsc 0 · 742 vitest | 2 skipped · build + standalone
+  green · 44/44 e2e × 3 consecutive runs (each a fresh boot + site
+  key); 6 VLM-verified screenshots (r35-*); .env.example re-verified;
+  docs synced (README/AGENTS/CLAUDE/PAD v1.33/SKILL/session_43/
+  worklogs/plan log).
+- Committed to main; pushed via docs/ssh_git_wrapper_v3.py; remote ref
+  verified == local HEAD; operator key shredded.
+
+Stage Summary:
+- Round-35 SHIPPED: the 20th generation clean, every R34 candidate
+  closed, 5 new pins + the flake fix, PAD v1.33.
+- Next (R36): bundle hashes; the new pins join the standing loop;
+  candidates — export CSV download bytes, domains verified-untoggle,
+  pricing toggle runtime states, the activity mid-swap spinner.

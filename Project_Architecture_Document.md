@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.32
+# Pixelco — Master Project Architecture Document (PAD) v1.33
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-26 (v1.32)
+**Last Updated:** 2026-09-27 (v1.33)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,37 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.33** `[SYN]` Round-35 20th-generation drift watch + tooltip/
+  delete-flow/search-debounce/activity-pagination e2e pins (plan:
+  `docs/plans/2026-09-27-round35-tooltip-search-activity-e2e-pins.md`;
+  evidence `docs/screenshots/r35-*` + the probe transcripts in the plan).
+  No redeploy (10th consecutive stable bundle generation); mobile navs
+  FULL PARITY both surfaces both sites both breakpoints (the standing
+  emphasis — 375 + 768 px); every standing surface verified clean; every
+  R34-queued candidate closed with ZERO code drift: the trend chart's
+  tooltip HOVER state probed byte-identical (wrapper family, `transform
+  400ms` transition, the `Pageviews : N`/`Identified : N` content format,
+  the full inner inline style — now pinned by the 4th chart spec), the
+  live's domains delete re-verified IMMEDIATE (no confirm dialog; the
+  clone's AlertDialog + enforced caps stay D-class), the live's search
+  fires a fetch PER KEYSTROKE with NO debounce (a live performance
+  defect; the clone's 350 ms URL-driven debounce stays D-class), and the
+  activity footer stays runtime-latent on the live (6 events). TWO new
+  live-defect divergences recorded in §11: the FREE plan's advertised
+  "1 domain" cap is NOT enforced in its UI (a 3rd domain add accepted on
+  a free account, probe-verified), and the undebounced per-keystroke
+  search. The round's deliverable is COVERAGE: 5 new e2e pins (the
+  tooltip contract; the AlertDialog delete flow + the free-plan cap
+  block — both hermetic probe fixtures; the search debounce → `?q=`; and
+  the activity pagination footer, RUNTIME-pinned for the first time via
+  a hermetic 60-event direct-DB fixture) + a suite-level flake fix (the
+  pipeline spec's beacon visitor now cleans up on both ends — its
+  identification outcome varies per boot because the seed mints a fresh
+  site key and the resolver's decision is sha256(siteKey +
+  anonymousId); a lucky-identified beacon had made every later
+  count-pinned spec red). Gates: 742 vitest / 75 files | 2 skipped ·
+  **44/44 e2e chromium, THREE consecutive runs** (each a fresh server
+  boot + site key).
 - **v1.32** `[SYN]` Round-34 19th-generation drift watch + 404-title
   re-classification + anchor-divergence documentation + six e2e
   regression pins (plan:
@@ -2102,9 +2133,21 @@ speculatively.
 | SSR render (marketing parity) | 6 files | 43 | `tests/{social-proof,marketing-hero,marketing-benefits,marketing-pricing,marketing-process,marketing-compare-cta}.test.tsx` | Vitest (`renderToStaticMarkup`) |
 | Behavioural (collector + snippet in `node:vm`) | 2 | 9 | `tests/collector-script.test.ts`, `tests/snippet.test.ts` | Vitest |
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
-| E2E (browser) | 11 spec files | 39 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select,install,blog,copy,visitors-tabs}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
+| E2E (browser) | 14 spec files | 44 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select,install,blog,copy,visitors-tabs,domains,visitors-search,activity}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
 
-The suite totals **742 tests across 75 files** (v1.32: e2e 33 → 39 —
+The suite totals **742 tests across 75 files** (v1.33: e2e 39 → 44 —
+  the NEW `e2e/domains.spec.ts` (2 specs: the AlertDialog cancel/confirm
+  delete flow + the `Domain removed` toast; the enforced free-plan
+  1-domain cap with its error toast), the NEW
+  `e2e/visitors-search.spec.ts` (the 350 ms debounce into `?q=` + the
+  filtered/cleared row states), the NEW `e2e/activity.spec.ts` (the
+  pagination footer, runtime-pinned for the first time via a hermetic
+  60-event direct-DB fixture — the R31 probe-site precedent), and the
+  4th chart spec (the tooltip's full hover contract: wrapper family,
+  `transform 400ms`, the `Pageviews : N`/`Identified : N` content format,
+  the inner inline style); plus the pipeline spec's beacon visitor now
+  cleans up on both ends (a boot-lucky identification had made every
+  later count-pinned spec flaky). v1.32: e2e 33 → 39 —
   the NEW `e2e/visitors-tabs.spec.ts` (2 specs: the URL-driven segment
   switching + per-tab row filtering) + 2 blog-index specs + the
   FAQ-single-open + compare-@375 specs; v1.31: +18 —
@@ -2350,6 +2393,8 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 | MEDIUM | The live's signup gates every account behind email confirmation (Supabase 200-without-session + "Check your email" toast; login returns 400 "Email not confirmed" until clicked) | The clone auto-sessions on signup (`signUpAction` + client `signIn`) | Intentional divergence (v1.21/R22-F11, D-class) — no mail transport exists here; locking a self-hosted clone behind an email it cannot send would brick it (joins the forgot-password ruling) |
 | LOW | The live's docs "Contact Support" button is DEAD — a real `<button>` with no handler (click-verified: no navigation, no toast) | The clone ships the same Button tag with a working `mailto:support@pixelco.io` onClick | Intentional divergence — never replicate a dead affordance (v1.21/R22-F9; R17 contact-sales precedent) |
 | LOW | The live's marketing-chrome hash anchors are BARE (`#benefits`, `#pricing`, `#how-it-works` in the header nav + footer Product column) and DEAD on sub-pages (R34 click-verified on `/privacy`: the URL gains the hash, no scroll, no navigation) | The clone's `/#anchor` form works from any page (`src/lib/marketing-links.ts`) | Intentional divergence (v1.32/R34-F2, D-class) — the R22 Contact-Support precedent; pinned by `tests/marketing-links.test.ts` ("nav links work from any sub-page"); do not "normalize" the hrefs to the live's dead form |
+| LOW | The live's FREE pricing card advertises "1 domain" but its UI does NOT enforce the cap (R35 probe: a THIRD domain add was accepted on a free account) | The clone enforces its advertised caps with a typed FORBIDDEN action result (`src/actions/domains.ts`) | Intentional divergence (v1.33/R35, D-class) — never replicate a live defect (the R20 arbitrary-strings ruling); pinned by `e2e/domains.spec.ts` |
+| LOW | The live's visitors search fires a fetch PER KEYSTROKE with NO debounce (R35 probe: 3 RPCs for "acm", client state, clean URL) | The clone debounces 350 ms into the URL-driven server search (`?q=` — the documented AGENTS design) | Intentional divergence (v1.33/R35, D-class) — per-keystroke RPCs are a live performance defect; pinned by `e2e/visitors-search.spec.ts` |
 | LOW | The live's dashboard react-query defaults refetch on window focus and show in-card spinners (CSR data machinery) | The clone's RSC pages stream server-fetched data; the Activity Log refetches only on page navigation/footer click | Intentional divergence (v1.21, D-class architecture) — replicating focus-refetch across every RSC page would rebuild the live's whole CSR layer for invisible behavior |
 | LOW | Sessions are 30-day JWTs; no server-side revocation | Stolen cookies valid until expiry; deletion sign-out is client-side only | Accepted for this product shape |
 | LOW | Footer Careers link is dead | None functionally — the original pixelco.io links it to `#` too | Parity — flagged `dead: true` in the link map |
