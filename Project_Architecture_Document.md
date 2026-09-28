@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.36
+# Pixelco — Master Project Architecture Document (PAD) v1.37
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-28 (v1.36)
+**Last Updated:** 2026-09-28 (v1.37)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,52 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.37** `[SYN]` Round-39 24th-generation drift watch + Tailwind v4
+  hover-variant parity (plan:
+  `docs/plans/2026-09-28-round39-tw4-hover-variant-parity.md`;
+  evidence `docs/screenshots/r39-*` + the probe transcripts in the plan).
+  No redeploy (14th consecutive stable bundle generation — all four
+  tracked hashes unchanged); mobile navs FULL PARITY both surfaces both
+  sites (dropdown + Sheet + the 768 boundary byte-identical; one apparent
+  clone slow-close was cold-route dev-compile latency — the R29 lesson).
+  The round's ONE drift family (R39-F1): **Tailwind v4 compiles every
+  hover-family utility inside a `@media (hover:hover)` capability guard
+  while the live's TW3 stylesheets ship plain `:hover` selectors (0
+  guards vs the clone's 5 pre-fix blocks)** — identical class strings,
+  different CSS resolution (the R19 `.gradient-hero` class of miss): in
+  any environment that does not report a hover-capable primary pointer
+  (headless chromium — agent-browser AND Playwright; real touch-primary
+  devices) the live's hovers applied while the clone's were dead. Fixed
+  by redefining the built-ins in `globals.css` to the live's unguarded
+  semantics (`@custom-variant hover (&:hover);` + `@custom-variant
+  group-hover (&:is(:where(.group):hover *));`) — the compiled CSS now
+  ships 0 guards with 51 hover selectors, matching the live's
+  resolution everywhere. The companion discovery (R39-F2): **TW4's
+  automatic source detection was scanning the whole repo — the committed
+  `skills/` folder (and docs prose) fed the compiler junk utilities**
+  (`hover:scale-105`, `hover:text-purple-600`, `hover:bg-slate-800`…
+  none exist in `src/`), bloating the shipped chunk to 181,580 bytes vs
+  the live's ~70 KB per bundle and violating the operator's standing
+  exclusion contract. Fixed by anchoring detection on the app tree
+  (`@import "tailwindcss" source("../")` — base = `src/`); the chunk
+  is now 82,038 bytes (a 55 % cut) with every junk family gone. The R38
+  "blog card hover states @375 at byte parity" inference is
+  re-classified: identical classes ⇒ identical rendering was FALSE
+  under the guard — the hovers are now behaviorally pinned
+  (`e2e/hover.spec.ts`, 3 specs: the footer social anchor flips to the
+  live's probed rgb(23, 26, 38) + the amber 40 % border, the blog card
+  group-hover flips the h2 to rgb(255, 191, 0), the sidebar menu button
+  flips from transparent — ran RED pre-fix, GREEN post-fix). All three
+  R38-queued candidates closed: the login `?registered=1` state (the
+  live ignores the param; the clone's "Account created" banner
+  re-classified as the documented D-class value-add — PAD §11 row +
+  `tests/login-registered-r39.test.ts`; the VLM cross-check caught the
+  round's first mis-probe, which had asserted innerText for the wrong
+  strings), the settings password-change flow (the live has NO password
+  UI — Profile + Danger Zone only; the clone matches), and the footer
+  social-icon hover states (the R39-F1 entry surface). Gates: vitest
+  **765 | 2 skipped (78 files)** (757 + 5 hover/source pins + 3 login
+  pins) · **e2e 56/56 chromium, twice consecutive** (53 + 3).
 - **v1.36** `[SYN]` Round-38 23rd-generation drift watch + auth-flow e2e
   pins (plan: `docs/plans/2026-09-28-round38-auth-flow-e2e-pins.md`;
   evidence `docs/screenshots/r38-*` + the probe transcripts in the plan).
@@ -2119,6 +2165,23 @@ hover transitions ≤200ms. All motion collapses under
 No JS animation library — Framer Motion was deliberately not added for two
 animations.
 
+**Hover variants compile UNGUARDED (R39-F1, v1.37):** Tailwind v4's
+built-in `hover`/`group-hover` variants wrap every rule in a
+`@media (hover:hover)` capability guard; the live's TW3 stylesheets ship
+plain `:hover` selectors (0 guards in either bundle). `globals.css`
+therefore redefines both built-ins to the live's semantics —
+`@custom-variant hover (&:hover);` and
+`@custom-variant group-hover (&:is(:where(.group):hover *));` — so the
+compiled CSS applies hover styles in EVERY environment (headless
+automation included), exactly like the live. Do NOT remove the
+overrides: without them every hover utility dies wherever
+`matchMedia('(hover: hover)')` is false, and 38 rounds of
+"class-string byte parity" claims silently stop meaning rendered parity.
+Related (R39-F2): the `@import "tailwindcss" source("../")` line anchors
+automatic source detection on `src/` — TW4 otherwise scans the whole
+repo and the committed `skills/` folder feeds the compiler junk
+utilities (the shipped chunk was 181,580 bytes pre-fix vs 82,038 post).
+
 **Feed phase machinery (R19-F2 + R20-F4):** the widget's motion is state,
 not a library — each row runs the live's phase machine
 (enter→scan→reveal→done at delay+600/1600/3200 ms; 10 s roster cycle).
@@ -2379,8 +2442,10 @@ Next server context (`next/cache`, `next/navigation`, `next/headers`,
 None enforced numerically yet. The high-value targets named in v1.0
 (resolver determinism, `normalizeDomain`, `identTypeFor`, plan math,
 `/api/track` integration, the live's export byte format) are all covered.
-Remaining gaps worth adding: resolver distribution property tests over
-larger samples, and a Playwright E2E smoke of the critical funnel.
+The Playwright E2E suite landed in R23 (56 chromium specs against the
+standalone build — the browser-level net for client-state behavior the
+SSR-string suite cannot see) and grows every round. Remaining gap worth
+adding: resolver distribution property tests over larger samples.
 
 ### 8.4 Pre-PR / Pre-Deploy Checklist
 
@@ -2498,6 +2563,7 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 | LOW | OAuth buttons are disabled placeholders | Users must use email sign-in | By design — no providers configured |
 | LOW | The live's add-domain flow accepts ARBITRARY input (R20 probe created "not_a_valid domain!!" as a real row on the live) | The clone validates hostnames via zod instead | Intentional divergence — never replicate a live defect (v1.19/F3) |
 | LOW | The live deletes domains IMMEDIATELY — no confirm dialog (observed R20) | Misclicks destroy domains + visitors + events with no undo | Intentional divergence — the clone keeps its AlertDialog confirm (v1.19/F3) |
+| MEDIUM | The live's login page IGNORES `?registered=1` (no query-param handler in its bundle; runtime render identical), and its signup can never produce the state (its Supabase flow gates every account behind email confirmation — no redirect) | The clone renders an "Account created — sign in to continue to your dashboard." banner under `/login?registered=1`, reached ONLY through its auto-signin-failure edge (`signup-form.tsx`: account created, client signIn rejected) — a state the live's flow cannot reach | Intentional divergence (v1.37/R39, D-class) — the R22 ContactSupportButton / forgot-password-ack family: keep the working behavior, never strand the edge on a bare login; pinned by `tests/login-registered-r39.test.ts` |
 | MEDIUM | The live's marketing pricing CTAs carry NO plan intent — all 4 card CTAs link to plain `https://app.pixelco.io` in BOTH toggle states, and the live app bundle's only signup reference is a bare `/signup` (R38 probe: no `plan=`/`cycle=` tokens anywhere in `index-nhmKaUsm.js`) | The clone's paid-card CTAs carry `?plan=<id>&cycle=<cycle>` into `/signup` (F-28: the hidden inputs + `signUpAction` re-validation, the cycle follows the toggle) | Intentional divergence (v1.36/R38, D-class) — the single-deployment CTA mapping (R13-D3) plus the "Honesty over simulation" Stripe-replacement family (the live's paid flow lands in Stripe EmbeddedCheckout); pinned by `e2e/auth-flows.spec.ts` |
 | MEDIUM | The live's dashboard plan-switch opens a Stripe EmbeddedCheckout dialog (paid external dependency, `create-portal-session` for billing management) | The clone's Get Started applies the plan change directly via `changePlanAction` | Intentional divergence — "Honesty over simulation": faking a payment form would be deceptive (v1.20, D-class; the plans catalogue/prices/CTAs themselves match) |
 | MEDIUM | The live's signup gates every account behind email confirmation (Supabase 200-without-session + "Check your email" toast; login returns 400 "Email not confirmed" until clicked) | The clone auto-sessions on signup (`signUpAction` + client `signIn`) | Intentional divergence (v1.21/R22-F11, D-class) — no mail transport exists here; locking a self-hosted clone behind an email it cannot send would brick it (joins the forgot-password ruling) |
@@ -2510,7 +2576,7 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 | LOW | Footer Careers link is dead | None functionally — the original pixelco.io links it to `#` too | Parity — flagged `dead: true` in the link map |
 | LOW | No Dockerfile / CI workflow | Self-hosting requires manual steps | **Fixed in v1.3** — multi-stage Dockerfile + GitHub Actions CI |
 | LOW | Relative SQLite paths resolve against `prisma/` | Confusing first-run behavior | Documented (README, §9.2) |
-| LOW | E2E is a manual browser pass (no Playwright) | Critical funnel regressions caught late | Open — §8.3 |
+| LOW | E2E is a manual browser pass (no Playwright) | Critical funnel regressions caught late | **Fixed in v1.14/R23** — the Playwright suite (56 chromium specs, standalone build + throwaway `db/e2e.db`) |
 | LOW | `deepmerge-ts` advisory (GHSA-ggr8-5vv4-36mx) pinned away via `overrides` | Override must be revisited when Prisma ships a fixed `@prisma/config` | Managed — `bun audit` clean; verified against db:push/db:seed/tests |
 
 **Restored in v1.7 (round-8):** the web-upload re-creation of the repo

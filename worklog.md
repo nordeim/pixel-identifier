@@ -290,3 +290,39 @@ Stage Summary:
   alert-dialog ruling stands; candidates — the login ?registered=1
   post-signup state, the settings password-change flow, the marketing
   footer social-icon hover states.
+---
+Task ID: R39
+Agent: main (Super Z)
+Task: Round-39 — 24th-generation drift watch + Tailwind v4 hover-variant/source-scan parity (test-first)
+
+Work Log:
+- 24th probe generation: no redeploy (14th consecutive stable); mobile
+  navs FULL PARITY both surfaces both sites (one apparent clone
+  slow-close was cold-route dev-compile latency); R38 candidates closed:
+  login ?registered=1 (live ignores; clone banner = documented D-class,
+  PAD §11 + pins — the VLM cross-check caught the first mis-probe),
+  settings password (live has none — non-finding), footer social hovers
+  (THE drift).
+- R39-F1: TW4's hover-variant @media (hover:hover) guard vs the live's
+  unguarded TW3 selectors — identical classes, dead hovers in headless +
+  touch-primary environments. Fixed via the two @custom-variant
+  overrides in globals.css; the compiled CSS ships 0 guards / 51 hover
+  selectors. R39-F2: the TW4 source scan fed from skills/ (junk
+  utilities, 181,580-byte chunk) — source("../") anchors on src/
+  (82,038 bytes, −55 %).
+- TDD: e2e/hover.spec.ts (3 specs, live-computed values) RED pre-fix →
+  GREEN; tests/hover-variant-r39-parity.test.ts (5 pins) +
+  tests/login-registered-r39.test.ts (3 pins). Spec lessons: hover a
+  NON-active sidebar item; sample after the 150 ms transition settle;
+  self-calibrate the oklab border serialization (R37 precedent).
+- Gates: lint 0 · tsc 0 · 765 vitest | 2 skipped (78 files) · build +
+  standalone green · 56/56 e2e × 2 consecutive. 6 VLM-verified
+  screenshots r39-*. Docs synced (PAD v1.37, README, AGENTS, CLAUDE,
+  SKILL, plan log, session_50, both worklogs). Pushed via the SSH
+  wrapper; remote verified; key shredded.
+
+Stage Summary:
+- R39 SHIPPED: the TW4 hover-variant guard fixed test-first, the skills/
+  compilation exclusion restored, C1 documented, 765 + 56/56 × 2.
+- Next (R40): bundle hashes; the R39 pins join the standing loop; the
+  oklab-serialization watch; Claim Now + bell/trigger hover candidates.

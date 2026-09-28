@@ -396,6 +396,33 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   (the overlay class re-captured UN-truncated — the clone was
   byte-identical all along; zero code drift in the generation). Plan:
   `docs/plans/2026-09-28-round38-auth-flow-e2e-pins.md`.
+- **R39: the hover variants compile UNGUARDED, and the TW4 source scan is
+  anchored on src/ (v1.37).** Tailwind v4's built-in `hover`/`group-hover`
+  variants wrap every rule in a `@media (hover:hover)` capability guard;
+  the live's TW3 stylesheets ship plain `:hover` selectors (0 guards in
+  either bundle — 24th-generation brace-matched survey). Identical class
+  strings therefore rendered DIFFERENTLY wherever
+  `matchMedia('(hover: hover)')` is false: headless chromium
+  (agent-browser AND Playwright) and real touch-primary devices — the
+  live's hovers applied, the clone's were dead. `globals.css` redefines
+  both built-ins (`@custom-variant hover (&:hover);` +
+  `@custom-variant group-hover (&:is(:where(.group):hover *));`) — do
+  NOT remove them, and do NOT "restore" the guards for TW4 purity; the
+  clone's compiled CSS must ship 0 hover guards like the live.
+  Companion: `@import "tailwindcss" source("../")` anchors automatic
+  source detection on `src/` — without it TW4 scans the whole repo and
+  the committed `skills/` folder (and docs prose) generates junk
+  utilities into the shipped chunk (181,580 bytes pre-fix → 82,038
+  post; the operator's standing contract keeps skills/ outside
+  compilation). Both pinned by `tests/hover-variant-r39-parity.test.ts`
+  + `e2e/hover.spec.ts` (3 specs, live-computed values). Also this
+  round: the login `?registered=1` banner documented as the D-class
+  value-add (PAD §11 — the live ignores the param; the clone's banner
+  serves its auto-signin-failure edge, unreachable on the live's
+  email-gated signup; `tests/login-registered-r39.test.ts`), and the
+  settings password-change ruled a non-finding (the live has NO password
+  UI — Profile + Danger Zone only). Plan:
+  `docs/plans/2026-09-28-round39-tw4-hover-variant-parity.md`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle

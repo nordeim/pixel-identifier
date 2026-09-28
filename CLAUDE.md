@@ -591,6 +591,34 @@ Prove-It). `TZ` is pinned to UTC.
   forgot-password ack for unknown AND known emails). Gates: 757
   vitest (unchanged) + **53/53 e2e chromium, twice consecutive**.
   Plan: `docs/plans/2026-09-28-round38-auth-flow-e2e-pins.md`.
+- **R39 (2026-09-28): Tailwind v4 hover-variant + source-scan parity —
+  24th-generation drift watch, ONE drift family fixed test-first.** No
+  redeploy (14th consecutive stable); mobile navs FULL PARITY both
+  surfaces both sites (one apparent clone slow-close was cold-route
+  dev-compile latency — the R29 lesson re-learned). The round's drift:
+  **TW4's hover variants compile inside `@media (hover:hover)` guards
+  while the live's TW3 CSS is unguarded** — identical class strings,
+  different resolution in every non-hover-capable environment (headless
+  chromium, touch-primary devices). Fixed by redefining the built-ins
+  in `globals.css` (`@custom-variant hover (&:hover);` +
+  `@custom-variant group-hover (&:is(:where(.group):hover *));`), pinned
+  by `tests/hover-variant-r39-parity.test.ts` + the NEW
+  `e2e/hover.spec.ts` (3 specs with the live's probed computed values —
+  RED pre-fix, GREEN post-fix; two spec iterations: sample after the
+  150 ms transition settle, self-calibrate the oklab border
+  serialization). Companion: **the TW4 automatic source scan fed from
+  the committed `skills/` folder** (junk utilities, 181,580-byte chunk
+  vs the live's ~70 KB per bundle — the operator's exclusion contract);
+  `@import "tailwindcss" source("../")` anchors detection on `src/`
+  (82,038 bytes post, −55 %, zero junk families, zero guards). The
+  R38-queued candidates closed: the login `?registered=1` banner
+  documented as the D-class value-add (PAD §11 row +
+  `tests/login-registered-r39.test.ts`; the VLM capture cross-check
+  caught the round's first mis-probe — never assert state by guessing
+  copy), and the settings password-change flow a non-finding (the live
+  has no password UI). Gates: 765 vitest + **56/56 e2e chromium, twice
+  consecutive**. Plan:
+  `docs/plans/2026-09-28-round39-tw4-hover-variant-parity.md`.
 
 ### Test Commands
 

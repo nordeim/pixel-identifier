@@ -2012,3 +2012,79 @@ Stage Summary:
   alert-dialog ruling stands; candidates — the login ?registered=1
   post-signup state, the settings password-change flow, the marketing
   footer social-icon hover states.
+---
+Task ID: R39
+Agent: main (Super Z)
+Task: Round-39 — 24th-generation drift watch + Tailwind v4 hover-variant/source-scan parity (test-first)
+
+Work Log:
+- git pull to 3dc79c3 (session_49 log); five root docs + session_48 +
+  worklog + the R38 plan + session_49 reviewed; understanding validated
+  against the tree (skills/ excluded). Env intact (file:../db/custom.db,
+  db/ at repo root, seeded demo); stale-shell DATABASE_URL handled with
+  per-command env -u DATABASE_URL. Arrival gates green: lint 0 · tsc 0 ·
+  vitest 757 | 2 skipped (76 files) · build green — the R38 ship state.
+- 24th probe generation (dual live+clone): no redeploy (14th consecutive
+  stable — all four hashes unchanged); mobile navs FULL PARITY both
+  surfaces both sites (dropdown + Sheet + the 768 boundary byte-identical;
+  close-on-click/nav verified; one apparent clone slow-close was cold-route
+  dev-compile latency — warm re-probe instant; the live's #benefits scroll
+  moved 80 px with no bundle change — its feed widget's runtime variance).
+- R38-queued candidates: C1 login ?registered=1 — the live ignores the
+  param; the clone's "Account created" banner re-classified as the
+  documented D-class value-add (PAD §11 row + tests/login-registered-r39
+  .test.ts — the VLM cross-check caught the first mis-probe, which had
+  asserted innerText for the wrong strings); C2 settings password —
+  NON-FINDING (the live has NO password UI; Profile + Danger Zone only);
+  C3 footer social hovers — THE DRIFT.
+- R39-F1 root cause: TW4 compiles hover-family utilities inside
+  @media (hover:hover) guards (5 pre-fix blocks) while the live's TW3 CSS
+  is unguarded (0 guards, 51+47 selectors) — identical class strings,
+  different resolution in headless chromium (verified matchMedia false in
+  both agent-browser sessions) and on touch-primary devices. Fixed by
+  redefining the built-ins in globals.css: @custom-variant hover (&:hover)
+  + @custom-variant group-hover (&:is(:where(.group):hover *)) — the
+  compiled CSS now ships 0 guards / 51 hover selectors.
+- R39-F2: the TW4 automatic source scan fed from the committed skills/
+  folder (junk utilities — hover:scale-105, hover:text-purple-600,
+  hover:bg-slate-800… none in src/ — 181,580-byte chunk vs the live's
+  ~70 KB per bundle; the operator's exclusion contract). Fixed:
+  @import "tailwindcss" source("../") anchors detection on src/ — the
+  chunk is now 82,038 bytes (−55 %), zero junk families.
+- TDD: e2e/hover.spec.ts (3 specs — the footer social anchor flips to the
+  live's probed rgb(23,26,38) + the amber 40 % border, the blog card
+  group-hover flips the h2 to rgb(255,191,0), the sidebar menu button
+  flips from transparent) ran RED on the pre-fix standalone build, GREEN
+  post-fix. Spec iterations (lessons): the first sidebar locator hit the
+  ACTIVE item's non-transparent baseline; a bare hover→evaluate sampled
+  transition-colors mid-interpolation (received rgb(68,71,87) = ~65 % of
+  the way — wait for the settle); the 40 % border serializes oklab under
+  TW4 vs the live's TW3 rgba (R37 precedent — the expectation
+  self-calibrates via the browser's own color-mix). NEW
+  tests/hover-variant-r39-parity.test.ts (5 pins — the two overrides, the
+  CSS-first placement, the source base, the junk-family guard) + NEW
+  tests/login-registered-r39.test.ts (3 pins).
+- Gates: lint 0 · tsc 0 · vitest 765 | 2 skipped (78 files) · build +
+  standalone green · e2e 56/56 × 2 consecutive (53 + 3). Compiled-CSS
+  grep gate: 0 hover guards, 0 junk families, 82,038 bytes.
+- 6 VLM-verified screenshots docs/screenshots/r39-* (footer social
+  hovered/resting — md5-different, VLM-confirmed amber border; blog card
+  group-hover; sidebar menu hovered; settings; login ?registered=1
+  showing the D-class banner). .env.example re-verified (3 keys).
+- Docs: PAD v1.37 (revision block + §5.4 hover ruling + §11
+  registered-banner row + the stale §8.3/§11 e2e rows fixed), README (R39
+  bullet + totals 765/56), AGENTS (R39 fact block), CLAUDE (rounds
+  mirror), SKILL.md (§9 TW4-5/TW4-6 + frontmatter + Appendix A/D +
+  final-gate + counts), the plan execution log, session_50, both
+  worklogs.
+
+Stage Summary:
+- Round-39 SHIPPED: one real drift family fixed test-first (the TW4
+  hover-variant guard — 38 rounds of class-byte parity had silently
+  meant less than rendered parity in non-hover-capable environments),
+  the skills/ source-scan exclusion restored (CSS −55 %), the C1 banner
+  documented D-class, 765 vitest + 56/56 e2e × 2.
+- Next (R40): bundle hashes; the R39 pins join the standing loop; the
+  TW4 oklab-serialization watch; candidates — the announcement-bar Claim
+  Now hover, the topbar bell/trigger hovers, a possible 4th hover spec
+  for the sidebar open-state pair.

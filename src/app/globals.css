@@ -1,7 +1,34 @@
-@import "tailwindcss";
+/*
+ * R39-F2: automatic source detection anchors on src/ — from this file,
+ * `../` is the src/ tree (every rendered class lives there: components,
+ * src/data content, the snippet/collector builders). Pre-fix, TW4 scanned
+ * the whole repo and the committed skills/ folder (and docs prose) fed
+ * the compiler junk utilities (scale/purple/slate/indigo/gray families
+ * that exist nowhere in src/), bloating the shipped chunk to 175 KB vs
+ * the live's ~70 KB per bundle — and violating the operator's standing
+ * contract that skills/ stays outside compilation. Pinned by the R39
+ * junk-family guard in tests/hover-variant-r39-parity.test.ts.
+ */
+@import "tailwindcss" source("../");
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+/*
+ * R39-F1: the live's TW3 stylesheets ship hover utilities as PLAIN
+ * `:hover` selectors — zero `@media (hover:hover)` guards in either
+ * bundle (marketing index-bLMWzsGr.css, app index-MN2Yr0JK.css). TW4's
+ * built-ins wrap every hover-family rule in the capability guard, so in
+ * any environment that does not report a hover-capable primary pointer
+ * (headless chromium, touch-primary/hybrid devices) the live's hovers
+ * apply while ours were dead with byte-identical class strings — the R19
+ * lesson: class-string equality is NOT resolution equality. The
+ * overrides restore the live's unguarded semantics (composed variants —
+ * data-[state=open]:hover:*, [&_a]:hover:*, lg:hover:* — ride the
+ * redefined hover core). Pinned by tests/hover-variant-r39-parity.test.ts
+ * + e2e/hover.spec.ts.
+ */
+@custom-variant hover (&:hover);
+@custom-variant group-hover (&:is(:where(.group):hover *));
 
 @theme inline {
   --color-background: var(--background);

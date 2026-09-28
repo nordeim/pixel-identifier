@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 757 assertions) · Playwright e2e (chromium, standalone build, 53 specs) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 765 assertions) · Playwright e2e (chromium, standalone build, 56 specs) |
 | **Runtime** | Node.js ≥ 20 |
 
 > **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
@@ -716,6 +716,34 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   never-in-SSR rule). Gates: 745 vitest + **46/46 e2e chromium,
   twice consecutive** (each a fresh server boot + site key);
   screenshots in `docs/screenshots/r36-*`.
+- **Tailwind v4 hover-variant + source-scan parity (round-39)** — the
+  24th probe generation found no redeploy (14th consecutive stable
+  bundle) and kept the mobile navs at FULL PARITY both surfaces both
+  sites, then the footer social-icon hover candidate (an R38 queue)
+  surfaced the round's ONE drift family: **Tailwind v4 compiles every
+  hover-family utility inside a `@media (hover:hover)` capability guard
+  while the live's TW3 stylesheets ship plain `:hover` selectors** — in
+  headless automation (and on real touch-primary devices) the live's
+  hovers applied while the clone's were dead with byte-identical class
+  strings. Fixed in `globals.css` by redefining the built-ins to the
+  live's unguarded semantics (`@custom-variant hover (&:hover);` +
+  `@custom-variant group-hover (&:is(:where(.group):hover *));`) —
+  pinned by `tests/hover-variant-r39-parity.test.ts` + the NEW
+  `e2e/hover.spec.ts` (3 specs: the footer social anchor flips to the
+  live's probed rgb(23, 26, 38) + amber 40 % border, the blog card
+  group-hover flips the h2, the sidebar menu button flips from
+  transparent — RED pre-fix, GREEN post-fix). The companion fix:
+  **TW4's automatic source detection was scanning the whole repo** —
+  the committed `skills/` folder fed the compiler junk utilities
+  (181,580-byte chunk vs the live's ~70 KB per bundle); anchoring on
+  `src/` (`@import "tailwindcss" source("../")`) cut the shipped CSS
+  55 % (82,038 bytes, zero junk families, zero hover guards). The R38
+  login/settings candidates closed: the live ignores `?registered=1`
+  (the clone's "Account created" banner documented as the D-class
+  value-add — PAD §11 + `tests/login-registered-r39.test.ts`), and the
+  live's settings has NO password UI (Profile + Danger Zone only; the
+  clone matches). Gates: 765 vitest + **56/56 e2e chromium, twice
+  consecutive**; screenshots in `docs/screenshots/r39-*`.
 - **Auth-flow e2e pins (round-38)** — the 23rd probe generation found
   no redeploy (13th consecutive stable bundle) and ZERO code drift: the
   mobile navs FULL PARITY both surfaces both sites (the R37 sheet fix
