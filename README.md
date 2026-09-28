@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 757 assertions) · Playwright e2e (chromium, standalone build, 48 specs) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 757 assertions) · Playwright e2e (chromium, standalone build, 53 specs) |
 | **Runtime** | Node.js ≥ 20 |
 
 > **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
@@ -716,6 +716,24 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   never-in-SSR rule). Gates: 745 vitest + **46/46 e2e chromium,
   twice consecutive** (each a fresh server boot + site key);
   screenshots in `docs/screenshots/r36-*`.
+- **Auth-flow e2e pins (round-38)** — the 23rd probe generation found
+  no redeploy (13th consecutive stable bundle) and ZERO code drift: the
+  mobile navs FULL PARITY both surfaces both sites (the R37 sheet fix
+  verified holding byte-for-byte — the overlay class re-captured
+  un-truncated, the clone was byte-identical all along), all three
+  R37-queued candidates closed (the live's pricing CTAs carry NO plan
+  params anywhere — the clone's `?plan=…&cycle=…` intent flow is the
+  documented "Honesty over simulation" D-class family, now an explicit
+  PAD §11 row; the live's forgot-password renders a runtime 404 where
+  its login links — the clone's anti-enumeration ack re-verified; the
+  blog card hover states @375 at byte parity). The round's deliverable
+  is COVERAGE: the NEW **`e2e/auth-flows.spec.ts`** (5 specs — the
+  pricing CTA href matrix in both toggle states + the Growth
+  click-through, the signup plan-intent flow end-to-end (hidden inputs
+  → unique-email signup → `/dashboard` → the sidebar badge `GROWTH`),
+  and the forgot-password anti-enumeration ack for unknown AND known
+  emails). Gates: 757 vitest (unchanged) + **53/53 e2e chromium, twice
+  consecutive**; screenshots in `docs/screenshots/r38-*`.
 - **Mobile-sheet legacy-generation parity (round-37)** — the 22nd probe
   generation found no redeploy (12th consecutive stable bundle) and ONE
   drift cluster, on the standing user-emphasis surface: the dashboard's

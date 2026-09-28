@@ -571,6 +571,26 @@ Prove-It). `TZ` is pinned to UTC.
   decorative, no compare surface, usage card at parity). Gates: 757
   vitest + **48/48 e2e chromium, twice consecutive**. Plan:
   `docs/plans/2026-09-28-round37-mobile-sheet-legacy-parity.md`.
+- **R38 (2026-09-28): auth-flow e2e pins — 23rd-generation drift watch,
+  ZERO code drift, two documented divergences pinned.** No redeploy
+  (13th consecutive stable); the mobile navs FULL PARITY both surfaces
+  both sites — the R37 sheet fix verified holding byte-for-byte (the
+  overlay class re-captured UN-truncated; the clone was byte-identical
+  all along). All three R37-queued candidates closed: the live's
+  pricing CTAs carry NO plan params (all 4 CTAs plain
+  `https://app.pixelco.io` both toggle states; the app bundle's only
+  signup reference is a bare `/signup`) — the clone's F-28 intent flow
+  is the D-class Stripe-replacement family, now an explicit PAD §11
+  row; the live's forgot-password renders a RUNTIME 404 where its
+  login links (the R6-H4 live defect) — the clone's anti-enumeration
+  ack re-verified; the blog card hover states @375 at byte parity
+  (anchor + both group-hover consumers). The round's deliverable is
+  COVERAGE: the NEW `e2e/auth-flows.spec.ts` (5 specs — the pricing
+  CTA href matrix both toggle states + click-through, the signup
+  plan-intent flow end-to-end to the sidebar badge `GROWTH`, the
+  forgot-password ack for unknown AND known emails). Gates: 757
+  vitest (unchanged) + **53/53 e2e chromium, twice consecutive**.
+  Plan: `docs/plans/2026-09-28-round38-auth-flow-e2e-pins.md`.
 
 ### Test Commands
 

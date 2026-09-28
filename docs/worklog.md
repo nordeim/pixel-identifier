@@ -1962,3 +1962,53 @@ Stage Summary:
   alert-dialog primitive ruled unmatched (the live renders no alert
   dialog); candidates — the pricing plan-intent CTA flow, the
   forgot-password runtime states, the blog card hover states @375.
+
+---
+Task ID: R38
+Agent: main (Super Z)
+Task: Round-38 — 23rd-generation drift watch + auth-flow e2e pins (plan-intent + forgot-password)
+
+Work Log:
+- Fresh clone at 4c28dce (prior env reset); env rebuilt (.env
+  file:../db/custom.db, db/ pushed+seeded at repo root); arrival gates
+  green (lint 0, tsc 0, 757 vitest | 2 skipped, build green — the R37
+  ship state); vitest + playwright configs present and green — no
+  config modification required.
+- 23rd generation: no redeploy (13th consecutive stable); mobile navs
+  FULL PARITY both surfaces both sites — the R37 sheet fix verified
+  holding byte-for-byte (the overlay class re-captured UN-truncated:
+  the clone was byte-identical all along, the R37 probe's 120-char
+  slice had hidden the fade tail); ZERO code drift.
+- All three R37-queued candidates closed: the live's pricing CTAs
+  carry NO plan params (all 4 CTAs plain app.pixelco.io both toggle
+  states; the app bundle's only signup reference is a bare /signup) —
+  the clone's ?plan=…&cycle=… intent flow re-classified as the
+  explicit PAD §11 D-class row (Stripe-replacement family),
+  runtime-verified end-to-end; the live's forgot-password renders a
+  RUNTIME 404 (the R6-H4 live defect) — the clone's anti-enumeration
+  ack re-verified at runtime; the blog card hover states @375 at byte
+  parity (anchor + both group-hover consumers) — non-finding.
+- Coverage: NEW e2e/auth-flows.spec.ts (5 specs — the pricing CTA
+  href matrix both toggle states + the Growth click-through; the
+  signup plan-intent flow end-to-end to the sidebar badge GROWTH; the
+  forgot-password ack ×2 unknown/known). Dev-server smoke caught 2
+  locator issues (Password exact-match, the data-sidebar=footer badge
+  scope) — fixed before the formal runs; the smoke accounts cleaned
+  from the dev db.
+- Gates: lint 0 · tsc 0 · 757 vitest | 2 skipped (unchanged) · build +
+  standalone green · 53/53 e2e chromium TWICE consecutive (48 + 5);
+  6 VLM-verified screenshots (r38-*); .env.example re-verified; docs
+  synced (README/AGENTS/CLAUDE/PAD v1.36/SKILL/session_48/worklogs +
+  the R38 plan execution log).
+- Committed to main; pushed via docs/ssh_git_wrapper_v3.py (--remote
+  git@github.com:nordeim/pixel-identifier.git); remote ref verified ==
+  local HEAD; operator key shredded after push.
+
+Stage Summary:
+- Round-38 SHIPPED: zero code drift, three candidates closed (two
+  documented divergences pinned + one parity non-finding), PAD v1.36
+  with the explicit marketing-CTA D-class row, 53/53 e2e × 2.
+- Next (R39): bundle hashes; the R38 pins join the standing loop; the
+  alert-dialog ruling stands; candidates — the login ?registered=1
+  post-signup state, the settings password-change flow, the marketing
+  footer social-icon hover states.

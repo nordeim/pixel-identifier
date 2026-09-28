@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.35
+# Pixelco — Master Project Architecture Document (PAD) v1.36
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-28 (v1.35)
+**Last Updated:** 2026-09-28 (v1.36)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,32 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.36** `[SYN]` Round-38 23rd-generation drift watch + auth-flow e2e
+  pins (plan: `docs/plans/2026-09-28-round38-auth-flow-e2e-pins.md`;
+  evidence `docs/screenshots/r38-*` + the probe transcripts in the plan).
+  No redeploy (13th consecutive stable bundle generation — all three
+  tracked hashes unchanged); mobile navs FULL PARITY both surfaces both
+  sites (the R37 sheet fix verified holding byte-for-byte; the overlay
+  class re-captured UN-truncated — the R37 probe's 120-char slice had
+  hidden the `fade-out-0 data-[state=open]:fade-in-0` tail, the clone
+  was byte-identical all along); ZERO code drift in the generation.
+  All three R37-queued candidates closed: the pricing plan-intent CTA
+  flow (the live carries NO plan params anywhere — all 4 CTAs plain
+  `https://app.pixelco.io` in both toggle states, the app bundle's only
+  signup reference is a bare `/signup`; the clone's `?plan=…&cycle=…`
+  intent flow re-classified as the explicit D-class row in §11 — the
+  "Honesty over simulation" Stripe-replacement family), the
+  forgot-password runtime states (the live renders a runtime 404 where
+  the login page links — the R6-H4 live defect; the clone's
+  anti-enumeration ack re-verified at runtime), and the blog card hover
+  states @375 (byte parity on the anchor + both group-hover consumers —
+  non-finding). Coverage: the NEW `e2e/auth-flows.spec.ts` (5 specs: the
+  pricing CTA href matrix in both toggle states + Growth click-through,
+  the signup plan-intent flow end-to-end — hidden inputs → unique-email
+  signup → `/dashboard` → sidebar badge `GROWTH` — and the
+  forgot-password anti-enumeration ack for unknown AND known emails).
+  Gates: vitest 757 | 2 skipped (unchanged) · **e2e 53/53 chromium,
+  twice consecutive** (48 → 53).
 - **v1.35** `[SYN]` Round-37 22nd-generation drift watch + mobile-sheet
   legacy-generation parity (plan:
   `docs/plans/2026-09-28-round37-mobile-sheet-legacy-parity.md`;
@@ -2201,9 +2227,15 @@ speculatively.
 | SSR render (marketing parity) | 6 files | 43 | `tests/{social-proof,marketing-hero,marketing-benefits,marketing-pricing,marketing-process,marketing-compare-cta}.test.tsx` | Vitest (`renderToStaticMarkup`) |
 | Behavioural (collector + snippet in `node:vm`) | 2 | 9 | `tests/collector-script.test.ts`, `tests/snippet.test.ts` | Vitest |
 | Integration (DB-backed + routes + SEO) | 14 files | ~100 | `tests/*.test.ts` + `db/test.db` | Vitest |
-| E2E (browser) | 15 spec files | 48 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select,install,blog,copy,visitors-tabs,domains,visitors-search,activity,export-download}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
+| E2E (browser) | 16 spec files | 53 specs | `e2e/{marketing,dashboard,pipeline,pricing,toasts,chart,select,install,blog,copy,visitors-tabs,domains,visitors-search,activity,export-download,auth-flows}.spec.ts` — Playwright chromium vs the STANDALONE build (`scripts/e2e-server.mjs`, throwaway `db/e2e.db`) + manual flows + opt-in smoke (`PIXELCO_STANDALONE_SMOKE=1`) | Playwright |
 
-The suite totals **757 tests across 76 files** (v1.35: vitest
+The suite totals **757 tests across 76 files** (v1.36: e2e 48 → 53 —
+  the NEW `e2e/auth-flows.spec.ts` (5 specs: the pricing CTA href
+  matrix both toggle states + click-through, the signup plan-intent
+  flow end-to-end to the GROWTH sidebar badge, the forgot-password
+  anti-enumeration ack ×2); vitest unchanged at 757 | 2 skipped — a
+  pure browser-level coverage round, no production code changes).
+  (v1.35: vitest
   745 → 757 — the NEW `tests/sheet-r37-parity.test.tsx` (12 pins: the
   legacy sheet primitive bytes, the topbar consumer tail, the lean
   mobile inner vs the full desktop wrapper); e2e 46 → 48 — 2 new
@@ -2466,6 +2498,7 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 | LOW | OAuth buttons are disabled placeholders | Users must use email sign-in | By design — no providers configured |
 | LOW | The live's add-domain flow accepts ARBITRARY input (R20 probe created "not_a_valid domain!!" as a real row on the live) | The clone validates hostnames via zod instead | Intentional divergence — never replicate a live defect (v1.19/F3) |
 | LOW | The live deletes domains IMMEDIATELY — no confirm dialog (observed R20) | Misclicks destroy domains + visitors + events with no undo | Intentional divergence — the clone keeps its AlertDialog confirm (v1.19/F3) |
+| MEDIUM | The live's marketing pricing CTAs carry NO plan intent — all 4 card CTAs link to plain `https://app.pixelco.io` in BOTH toggle states, and the live app bundle's only signup reference is a bare `/signup` (R38 probe: no `plan=`/`cycle=` tokens anywhere in `index-nhmKaUsm.js`) | The clone's paid-card CTAs carry `?plan=<id>&cycle=<cycle>` into `/signup` (F-28: the hidden inputs + `signUpAction` re-validation, the cycle follows the toggle) | Intentional divergence (v1.36/R38, D-class) — the single-deployment CTA mapping (R13-D3) plus the "Honesty over simulation" Stripe-replacement family (the live's paid flow lands in Stripe EmbeddedCheckout); pinned by `e2e/auth-flows.spec.ts` |
 | MEDIUM | The live's dashboard plan-switch opens a Stripe EmbeddedCheckout dialog (paid external dependency, `create-portal-session` for billing management) | The clone's Get Started applies the plan change directly via `changePlanAction` | Intentional divergence — "Honesty over simulation": faking a payment form would be deceptive (v1.20, D-class; the plans catalogue/prices/CTAs themselves match) |
 | MEDIUM | The live's signup gates every account behind email confirmation (Supabase 200-without-session + "Check your email" toast; login returns 400 "Email not confirmed" until clicked) | The clone auto-sessions on signup (`signUpAction` + client `signIn`) | Intentional divergence (v1.21/R22-F11, D-class) — no mail transport exists here; locking a self-hosted clone behind an email it cannot send would brick it (joins the forgot-password ruling) |
 | LOW | The live's docs "Contact Support" button is DEAD — a real `<button>` with no handler (click-verified: no navigation, no toast) | The clone ships the same Button tag with a working `mailto:support@pixelco.io` onClick | Intentional divergence — never replicate a dead affordance (v1.21/R22-F9; R17 contact-sales precedent) |

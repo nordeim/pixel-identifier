@@ -376,6 +376,26 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   role="progressbar" is D3-class a11y; the live's trailing-semicolon
   style is a builder artifact). Plan:
   `docs/plans/2026-09-28-round37-mobile-sheet-legacy-parity.md`.
+- **R38: the live carries NO plan-intent params in its pricing CTAs; the
+  clone's intent flow is the pinned D-class value-add (v1.36).** The
+  23rd probe generation (2026-09-28) verified: the live's 4 marketing
+  pricing CTAs all link to plain `https://app.pixelco.io` in BOTH
+  toggle states, and the live app bundle's only signup reference is a
+  bare `/signup` — no `plan=`/`cycle=` tokens anywhere. The clone's
+  flow (Free → plain `/signup`; paid → `/signup?plan=<id>&cycle=<cycle>`,
+  default annual, the cycle follows the toggle, hidden inputs +
+  `signUpAction` re-validation, the sidebar badge renders the landed
+  plan) is the single-deployment CTA mapping + the Stripe-replacement
+  "Honesty over simulation" family — PAD §11 carries the explicit row;
+  pinned by `e2e/auth-flows.spec.ts` (5 specs). The same round
+  re-verified the live's forgot-password RUNTIME 404 (the login page
+  links to a 404 — the R6-H4 live defect; the clone's
+  anti-enumeration ack stays, now e2e-pinned for unknown AND known
+  emails) and closed the blog card hover states @375 as byte parity.
+  The mobile navs and the R37 sheet fix verified holding byte-for-byte
+  (the overlay class re-captured UN-truncated — the clone was
+  byte-identical all along; zero code drift in the generation). Plan:
+  `docs/plans/2026-09-28-round38-auth-flow-e2e-pins.md`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle
