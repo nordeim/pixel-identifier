@@ -200,4 +200,11 @@ R40 fact block), CLAUDE (rounds mirror R40), SKILL.md (Appendix A R40
 row + Appendix D + Pre-Ship 61/61 + the R40 final-gate block), this
 execution log, `docs/session_52.md`, both worklogs.
 
-**Phase D — ship.** *(to be filled during execution)*
+**Phase D — ship.** Full verify gate green on the working tree (lint 0 ·
+tsc 0 · 765 vitest | 2 skipped · build + standalone green · 61/61 e2e
+chromium — a THIRD consecutive pass on the staged state); the change set
+staged and gated before commit (the R31 discipline); committed to main
+(`192c81c`); pushed via `docs/ssh_git_wrapper_v3.py --key-stdin --remote
+git@github.com:nordeim/pixel-identifier.git` (dry-run first, then the real
+push `cf36778..192c81c`); remote ref verified == local HEAD; operator key
+shredded after push.
