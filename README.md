@@ -12,7 +12,7 @@ and B2B companies) — no forms, no popups, no cookies.
 | **Stack** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui |
 | **Data** | Prisma ORM · SQLite (Postgres-ready schema) |
 | **Auth** | NextAuth v4 (credentials, JWT sessions, bcrypt) |
-| **Tests** | Vitest (unit + SQLite-backed integration, 765 assertions) · Playwright e2e (chromium, standalone build, 56 specs) |
+| **Tests** | Vitest (unit + SQLite-backed integration, 765 assertions) · Playwright e2e (chromium, standalone build, 61 specs) |
 | **Runtime** | Node.js ≥ 20 |
 
 > **E2E:** `npm run build:standalone && npm run test:e2e` boots the standalone
@@ -744,6 +744,32 @@ from the schema on every run) with `TZ=UTC` pinned. Coverage highlights:
   live's settings has NO password UI (Profile + Danger Zone only; the
   clone matches). Gates: 765 vitest + **56/56 e2e chromium, twice
   consecutive**; screenshots in `docs/screenshots/r39-*`.
+- **Hover-net e2e extension + the Playwright hover-capability discovery
+  (round-40)** — the 25th probe generation found no redeploy (15th
+  consecutive stable bundle) and ZERO code drift: the Claim Now hover
+  (`hover:opacity-80`, 1 → 0.8) and its dismiss X (`hover:opacity-70`,
+  1 → 0.7), the topbar bell/trigger hovers (ghost `hover:bg-accent`,
+  transparent → the teal rgb(43, 212, 189)), the sign-out
+  (`hover:text-foreground`) and the Export gradient (`hover:opacity-90`,
+  1 → 0.9) all verified at runtime parity on BOTH sites — the R39 fix
+  holds across every hover family probed; the `data-[state=open]:hover:*`
+  family ruled structurally latent (no submenu exists on either side;
+  `data-state` is null on all 7 menu buttons). The round's deliverable is
+  COVERAGE: 5 new specs in `e2e/hover.spec.ts` (the four families above
+  + **the CSS-byte guard contract** — fetch the shipped stylesheets and
+  assert ZERO `@media (hover:hover)` blocks with plain `:hover`
+  selectors). The guard spec exists because of the round's key
+  discovery: **Playwright 1.63's chromium is a HOVER-CAPABLE engine**
+  (`matchMedia('(hover: hover)') === true` — verified via a capability
+  probe), so behavioral hover specs cannot detect the TW4 guard (a
+  deliberately re-guarded build passed all 7 behavioral specs while
+  agent-browser's non-hover-capable engine showed the utilities dead);
+  the CSS-byte spec ran RED against the re-guarded build ("Expected 0,
+  Received 4") and GREEN on the ship build — environment-independent.
+  Also documented: TW 4.3.3's built-in hover variant IS guarded
+  (dist/lib.mjs), so both `@custom-variant` overrides are operative.
+  Gates: 765 vitest (unchanged) + **61/61 e2e chromium, twice
+  consecutive**; screenshots in `docs/screenshots/r40-*`.
 - **Auth-flow e2e pins (round-38)** — the 23rd probe generation found
   no redeploy (13th consecutive stable bundle) and ZERO code drift: the
   mobile navs FULL PARITY both surfaces both sites (the R37 sheet fix

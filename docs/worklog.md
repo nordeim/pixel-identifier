@@ -2088,3 +2088,64 @@ Stage Summary:
   TW4 oklab-serialization watch; candidates — the announcement-bar Claim
   Now hover, the topbar bell/trigger hovers, a possible 4th hover spec
   for the sidebar open-state pair.
+
+---
+Task ID: R40
+Agent: main (Super Z)
+Task: Round-40 — 25th-generation drift watch + hover-net e2e extension (plan: docs/plans/2026-09-28-round40-hover-net-e2e-pins.md)
+
+Work Log:
+- git pull → cf36778; env intact (.env file:../db/custom.db, db/ seeded
+  at repo root); arrival gates green (lint 0, tsc 0, 765 vitest | 2
+  skipped, build green, CSS 82,038 bytes / 0 guards — the R39 ship
+  state); vitest + playwright configs present and green — no config
+  modification required.
+- 25th generation: no redeploy (15th consecutive stable); mobile navs
+  FULL PARITY both surfaces both sites (dropdown + Sheet + 768 boundary;
+  console sweep clean — the Radix titleless-Sheet warnings emit on BOTH
+  sides, the R37 artifact); ZERO code drift.
+- R39 candidates closed at runtime parity: Claim Now hover:opacity-80
+  (1 → 0.8) + dismiss hover:opacity-70 (1 → 0.7), bell/trigger ghost
+  hover:bg-accent (→ teal rgb(43, 212, 189)); data-[state=open]:hover:*
+  ruled STRUCTURALLY LATENT (no submenu; data-state null on all 7 menu
+  buttons both sides; the composed rules compile unguarded); extended
+  sweep at parity (sign-out hover:text-foreground → navy; Export
+  gradient hover:opacity-90 1 → 0.9).
+- Coverage (the deliverable): 5 new specs in e2e/hover.spec.ts — the 4
+  families above + THE CSS-BYTE GUARD CONTRACT (fetch the served
+  stylesheets; assert ZERO @media (hover:hover) blocks + plain :hover
+  selector forms). KEY DISCOVERY: Playwright 1.63's chromium is
+  HOVER-CAPABLE (matchMedia '(hover: hover)' === true — capability-probe
+  verified), so behavioral hover specs CANNOT detect the TW4 guard (a
+  deliberately re-guarded build passed all 7; agent-browser's engine
+  shows the same build's utilities dead); the R39 "RED pre-fix" e2e
+  evidence was driven by the unanchored source scan's utility corruption
+  (the pre-fix footer anchor rendered default link blue rgb(0, 0, 238) —
+  text-muted-foreground lost), not the guard. TDD: the CSS-byte spec RED
+  against the re-guarded build ("Expected 0, Received 4") → GREEN on
+  ship. TW 4.3.3's default hover variant IS guarded (dist/lib.mjs) —
+  both @custom-variant overrides operative. Ops lesson: kill port 3100
+  before e2e runs (a leftover server + reuseExistingServer served a
+  stale mixed build once).
+- Gates: lint 0 · tsc 0 · 765 vitest | 2 skipped (unchanged) · build +
+  standalone green · CSS 82,038 / 0 guards / 51 hover selectors · 61/61
+  e2e chromium TWICE consecutive (56 + 5). 6 captures docs/screenshots/
+  r40-* (bell + sign-out + mobile-dropdown VLM-verified; Claim Now +
+  Export opacity hovers verified by computed-state-at-capture +
+  pixel-diff — below the VLM's perception floor, honestly recorded).
+  .env.example re-verified (3 keys). Docs synced (PAD v1.38, README,
+  AGENTS, CLAUDE, SKILL.md Appendix A/D + Pre-Ship + final-gate, plan
+  log, session_52, both worklogs).
+- Committed to main; pushed via docs/ssh_git_wrapper_v3.py (--remote
+  git@github.com:nordeim/pixel-identifier.git); remote ref verified ==
+  local HEAD; operator key shredded after push.
+
+Stage Summary:
+- Round-40 SHIPPED: zero code drift, every R39 candidate closed at
+  parity, the hover net extended to 8 specs across 4 families × both
+  bundles + the environment-independent CSS-byte guard contract, PAD
+  v1.38 with the Playwright hover-capability discovery documented.
+- Next (R41): bundle hashes; the R40 pins join the standing loop;
+  candidates — the docs copy-button hover family, the pricing card CTA
+  hovers, the auth-page OAuth button hover states (runtime-verify before
+  pinning); the activity footer stays runtime-latent.

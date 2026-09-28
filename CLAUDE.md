@@ -619,6 +619,33 @@ Prove-It). `TZ` is pinned to UTC.
   has no password UI). Gates: 765 vitest + **56/56 e2e chromium, twice
   consecutive**. Plan:
   `docs/plans/2026-09-28-round39-tw4-hover-variant-parity.md`.
+- **R39.5/R40 — hover-net e2e extension + the Playwright
+  hover-capability discovery:** the 25th probe generation (no redeploy,
+  15th consecutive stable; mobile navs full parity both surfaces both
+  sites) found ZERO code drift — the Claim Now hover
+  (`hover:opacity-80`, 1 → 0.8), the dismiss X (`hover:opacity-70`,
+  1 → 0.7), the bell/trigger ghost hovers (transparent → the teal
+  rgb(43, 212, 189)), the sign-out (`hover:text-foreground` → the navy
+  rgb(19, 21, 32)) and the Export gradient (`hover:opacity-90`,
+  1 → 0.9) all verified at runtime parity on BOTH sites; the
+  `data-[state=open]:hover:*` family ruled structurally latent (no
+  submenu exists either side). Coverage: 5 new specs in
+  `e2e/hover.spec.ts` — the four families above + **the CSS-byte guard
+  contract** (fetch the served stylesheets, assert ZERO
+  `@media (hover:hover)` blocks + plain `:hover` selector forms). The
+  guard spec is the round's key discovery made visible: **Playwright
+  1.63's chromium reports `matchMedia('(hover: hover)') === true`** —
+  behavioral hover specs CANNOT detect the TW4 guard (a deliberately
+  re-guarded build passed all 7 behavioral specs while agent-browser's
+  non-hover-capable engine showed the utilities dead; the R39
+  "RED pre-fix" e2e evidence was driven by the unanchored source scan's
+  utility corruption — the footer anchor rendered default link blue).
+  The CSS-byte spec ran RED against the re-guarded build ("Expected 0,
+  Received 4") and GREEN on the ship build. TW 4.3.3's built-in hover
+  variant IS guarded (dist/lib.mjs) — both `@custom-variant` overrides
+  are operative. Gates: 765 vitest (unchanged) + **61/61 e2e chromium,
+  twice consecutive**. Plan:
+  `docs/plans/2026-09-28-round40-hover-net-e2e-pins.md`.
 
 ### Test Commands
 

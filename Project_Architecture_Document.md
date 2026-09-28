@@ -1,9 +1,9 @@
-# Pixelco — Master Project Architecture Document (PAD) v1.37
+# Pixelco — Master Project Architecture Document (PAD) v1.38
 
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** README.md (user-facing setup) · AGENTS.md (agent quick-start) · CLAUDE.md (working agreements)
-**Last Updated:** 2026-09-28 (v1.37)
+**Last Updated:** 2026-09-28 (v1.38)
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
            Nothing is here "because it's popular."
@@ -12,6 +12,44 @@
 
 #### Revision Block (Tracked Changes)
 
+- **v1.38** `[SYN]` Round-40 25th-generation drift watch + hover-net
+  e2e extension (plan:
+  `docs/plans/2026-09-28-round40-hover-net-e2e-pins.md`;
+  evidence `docs/screenshots/r40-*` + the probe transcripts in the
+  plan). No redeploy (15th consecutive stable bundle generation — all
+  four tracked hashes unchanged); mobile navs FULL PARITY both surfaces
+  both sites (dropdown + Sheet + the 768 boundary; console sweep clean —
+  the two Radix titleless-Sheet a11y warnings emit on BOTH sides, the
+  documented R37 artifact). ZERO code drift: every R39-queued candidate
+  closed — the Claim Now hover (`hover:opacity-80`, 1 → 0.8 both sides;
+  the dismiss X `hover:opacity-70`, 1 → 0.7) and the topbar bell/trigger
+  hovers (ghost `hover:bg-accent`, transparent → the teal
+  rgb(43, 212, 189) both sides) verified at runtime parity, the
+  `data-[state=open]:hover:*` family ruled STRUCTURALLY LATENT (no
+  submenu exists — `data-state` is null on all 7 menu buttons both
+  sides; the composed rules compile unguarded). The round's deliverable
+  is COVERAGE (the R34/R35/R36/R38 pattern): 5 new specs in
+  `e2e/hover.spec.ts` pinning the newly-verified families (Claim Now
+  opacity, bell accent, Export gradient opacity, sign-out text color)
+  plus **the CSS-byte guard contract** — fetch the shipped stylesheets,
+  assert ZERO `@media (hover:hover)` blocks and plain `:hover`
+  selectors. That last spec is the round's KEY DISCOVERY made visible:
+  **Playwright 1.63's chromium reports `matchMedia('(hover: hover)') ===
+  TRUE`** (a hover-capable engine — verified via a capability probe), so
+  the BEHAVIORAL hover specs CANNOT detect the TW4 capability guard (a
+  deliberately re-guarded build passed all 7 behavioral specs while
+  agent-browser's non-hover-capable engine showed the utilities dead;
+  the R39 "RED pre-fix" e2e evidence was in fact driven by the
+  unanchored source scan's utility corruption — the pre-fix footer
+  anchor rendered default link blue, `text-muted-foreground` lost — not
+  by the guard in the Playwright engine). The guard contract is now
+  pinned environment-independently: the CSS-byte spec ran RED against
+  the re-guarded build ("Expected 0, Received 4") and GREEN on the ship
+  build. Also documented: TW 4.3.3's built-in hover variant IS guarded
+  (`@media (hover: hover) { &:hover }` — dist/lib.mjs), so both
+  `@custom-variant` overrides in globals.css are operative. Gates:
+  vitest **765 | 2 skipped (78 files)** (unchanged) · **e2e 61/61
+  chromium, twice consecutive** (56 + 5).
 - **v1.37** `[SYN]` Round-39 24th-generation drift watch + Tailwind v4
   hover-variant parity (plan:
   `docs/plans/2026-09-28-round39-tw4-hover-variant-parity.md`;
@@ -2442,7 +2480,7 @@ Next server context (`next/cache`, `next/navigation`, `next/headers`,
 None enforced numerically yet. The high-value targets named in v1.0
 (resolver determinism, `normalizeDomain`, `identTypeFor`, plan math,
 `/api/track` integration, the live's export byte format) are all covered.
-The Playwright E2E suite landed in R23 (56 chromium specs against the
+The Playwright E2E suite landed in R23 (61 chromium specs against the
 standalone build — the browser-level net for client-state behavior the
 SSR-string suite cannot see) and grows every round. Remaining gap worth
 adding: resolver distribution property tests over larger samples.
@@ -2576,7 +2614,7 @@ Pushes via the SSH wrapper (§9.4), never with ambient credentials.
 | LOW | Footer Careers link is dead | None functionally — the original pixelco.io links it to `#` too | Parity — flagged `dead: true` in the link map |
 | LOW | No Dockerfile / CI workflow | Self-hosting requires manual steps | **Fixed in v1.3** — multi-stage Dockerfile + GitHub Actions CI |
 | LOW | Relative SQLite paths resolve against `prisma/` | Confusing first-run behavior | Documented (README, §9.2) |
-| LOW | E2E is a manual browser pass (no Playwright) | Critical funnel regressions caught late | **Fixed in v1.14/R23** — the Playwright suite (56 chromium specs, standalone build + throwaway `db/e2e.db`) |
+| LOW | E2E is a manual browser pass (no Playwright) | Critical funnel regressions caught late | **Fixed in v1.14/R23** — the Playwright suite (61 chromium specs, standalone build + throwaway `db/e2e.db`) |
 | LOW | `deepmerge-ts` advisory (GHSA-ggr8-5vv4-36mx) pinned away via `overrides` | Override must be revisited when Prisma ships a fixed `@prisma/config` | Managed — `bun audit` clean; verified against db:push/db:seed/tests |
 
 **Restored in v1.7 (round-8):** the web-upload re-creation of the repo

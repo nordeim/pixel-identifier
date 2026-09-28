@@ -123,3 +123,177 @@ test.describe('hover states (R39-F1 — TW4 hover-variant parity)', () => {
     expect(after).not.toBe(before)
   })
 })
+
+/**
+ * Hover-net extension (R40) — four more live-verified families, pinned with
+ * the 25th-generation probe values (agent-browser, the same headless
+ * engine, BOTH sites at parity):
+ *
+ *   - the announcement-bar Claim Now anchor (`hover:opacity-80
+ *     transition-opacity` — the marketing OPACITY family, R23-F5's
+ *     class-string pin now runtime-pinned),
+ *   - the topbar bell button (the Button ghost variant's `hover:bg-accent`
+ *     — the APP accent family; the live flips to the teal data accent
+ *     rgb(43, 212, 189) = --accent hsl(172 66% 50%)),
+ *   - the visitors topbar Export All button (the GRADIENT family's
+ *     `hover:opacity-90 transition-all duration-300` — R24-F8's button now
+ *     runtime-pinned),
+ *   - the sidebar-footer sign-out button (`hover:text-foreground
+ *     transition-colors` — the APP text-color family).
+ *
+ * All four ran RED in the R40 TDD validation pass (the two @custom-variant
+ * overrides temporarily removed from globals.css → the guarded CSS never
+ * applies the utilities in headless) and GREEN with the fix restored.
+ */
+test.describe('hover states (R40 — hover-net extension: live-verified families)', () => {
+  test('announcement-bar Claim Now: hover flips opacity to 80 % (live value)', async ({
+    page,
+  }) => {
+    await page.goto('/')
+    // The bar renders on the landing only (R13) — the anchor carries the
+    // Claim Now copy + the arrow glyph.
+    const link = page.locator('a', { hasText: 'Claim Now' })
+    await expect(link).toBeVisible()
+
+    const before = await link.evaluate((el) => getComputedStyle(el).opacity)
+    expect(before).toBe('1') // resting state
+
+    await link.hover()
+    // `transition-opacity` runs 150 ms — sample after the settle.
+    await page.waitForTimeout(300)
+    const after = await link.evaluate((el) => getComputedStyle(el).opacity)
+    expect(after).toBe('0.8') // hover:opacity-80 — the live's computed value
+    expect(after).not.toBe(before)
+  })
+
+  test('topbar bell: hover flips the background to the teal accent (live value)', async ({
+    page,
+  }) => {
+    await page.goto('/login')
+    await page.getByLabel('Email').fill('demo@pixelco.local')
+    await page.getByLabel('Password', { exact: true }).fill('Demo123456!')
+    await page.getByRole('button', { name: 'Sign In' }).click()
+    await expect(page).toHaveURL(/\/dashboard$/)
+
+    const bell = page.locator('header button:has(svg.lucide-bell)')
+    await expect(bell).toBeVisible()
+
+    // Baseline: the ghost variant's transparent resting state.
+    const before = await bell.evaluate((el) => getComputedStyle(el).backgroundColor)
+    expect(before).toBe('rgba(0, 0, 0, 0)')
+
+    await bell.hover()
+    // The primitive's transition-colors runs 150 ms — sample after settle.
+    await page.waitForTimeout(300)
+    const after = await bell.evaluate((el) => getComputedStyle(el).backgroundColor)
+    // The live's computed hover value (25th-generation probe): the teal
+    // --accent hsl(172 66% 50%) = #2bd4bd = rgb(43, 212, 189). A plain
+    // var() reference — no color-mix, so the serialization is stable rgb()
+    // on both sides (the R39 oklab watch applies only to /alpha mixes).
+    expect(after).toBe('rgb(43, 212, 189)')
+    expect(after).not.toBe(before)
+  })
+
+  test('visitors Export All: hover flips the gradient opacity to 90 % (live value)', async ({
+    page,
+  }) => {
+    await page.goto('/login')
+    await page.getByLabel('Email').fill('demo@pixelco.local')
+    await page.getByLabel('Password', { exact: true }).fill('Demo123456!')
+    await page.getByRole('button', { name: 'Sign In' }).click()
+    await expect(page).toHaveURL(/\/dashboard$/)
+    await page.goto('/dashboard/visitors')
+
+    const exportBtn = page.locator('header button', { hasText: 'Export All' })
+    await expect(exportBtn).toBeVisible()
+
+    const before = await exportBtn.evaluate((el) => getComputedStyle(el).opacity)
+    expect(before).toBe('1') // resting state
+
+    await exportBtn.hover()
+    // `transition-all duration-300` — wait past the full 300 ms run.
+    await page.waitForTimeout(450)
+    const after = await exportBtn.evaluate((el) => getComputedStyle(el).opacity)
+    expect(after).toBe('0.9') // hover:opacity-90 — the live's computed value
+    expect(after).not.toBe(before)
+  })
+
+  test('sidebar sign-out: hover flips the text color to the foreground (live value)', async ({
+    page,
+  }) => {
+    await page.goto('/login')
+    await page.getByLabel('Email').fill('demo@pixelco.local')
+    await page.getByLabel('Password', { exact: true }).fill('Demo123456!')
+    await page.getByRole('button', { name: 'Sign In' }).click()
+    await expect(page).toHaveURL(/\/dashboard$/)
+
+    const signOut = page.locator('button:has(svg.lucide-log-out)')
+    await expect(signOut).toBeVisible()
+
+    // Baseline: the muted-foreground resting state (--muted-foreground
+    // hsl(220 9% 46%) = #6b7280 = rgb(107, 114, 128)).
+    const before = await signOut.evaluate((el) => getComputedStyle(el).color)
+    expect(before).toBe('rgb(107, 114, 128)')
+
+    await signOut.hover()
+    // `transition-colors` runs 150 ms — sample after the settle.
+    await page.waitForTimeout(300)
+    const after = await signOut.evaluate((el) => getComputedStyle(el).color)
+    // The live's computed hover value (25th-generation probe):
+    // hover:text-foreground — the app navy #131520.
+    expect(after).toBe('rgb(19, 21, 32)')
+    expect(after).not.toBe(before)
+  })
+
+  test('the shipped stylesheet carries ZERO hover-capability guards (the CSS-byte contract)', async ({
+    page,
+  }) => {
+    // R40 discovery: this suite's chromium reports `matchMedia('(hover:
+    // hover)') === TRUE` (Playwright 1.63's Desktop Chrome is a
+    // hover-capable engine), so the BEHAVIORAL specs above cannot detect
+    // the TW4 capability guard — a guarded build passes them exactly like
+    // an unguarded one (verified against a deliberately re-guarded build:
+    // all 7 behavioral specs green while agent-browser's non-hover-capable
+    // engine showed the utilities dead). The guard contract is therefore
+    // pinned at the CSS-BYTE level — environment-independent: the live's
+    // TW3 stylesheets ship plain `:hover` selectors with ZERO
+    // `@media (hover:hover)` guards (the R39 survey), and the fix
+    // (`@custom-variant hover/group-hover` overrides in globals.css) must
+    // keep the compiled output that way (TW 4.3.3's built-in default IS
+    // guarded: `@media (hover: hover) { &:hover }` — tailwindcss
+    // dist/lib.mjs).
+    await page.goto('/')
+    const cssHrefs = await page.$$eval('link[rel="stylesheet"]', (links) =>
+      links.map((l) => (l as HTMLLinkElement).href),
+    )
+    expect(cssHrefs.length).toBeGreaterThan(0)
+
+    let css = ''
+    for (const href of cssHrefs) {
+      const res = await page.request.get(href)
+      expect(res.ok()).toBeTruthy()
+      css += await res.text()
+    }
+
+    // ZERO capability guards anywhere in the shipped stylesheets — the
+    // live's TW3 resolution (R39: 0 guards in index-bLMWzsGr.css /
+    // index-MN2Yr0JK.css; the pre-fix clone shipped 5 blocks / 109 guarded
+    // hover rules).
+    const guards = css.match(/@media\s*\(hover:\s*hover\)/g) ?? []
+    expect(guards).toHaveLength(0)
+
+    // And the hover utilities resolve as PLAIN `:hover` selectors — spot
+    // checks across every family pinned above (marketing opacity, app
+    // accent, gradient opacity, text color, sidebar accent, group-hover).
+    for (const plain of [
+      '.hover\\:opacity-80:hover',
+      '.hover\\:opacity-90:hover',
+      '.hover\\:bg-accent:hover',
+      '.hover\\:text-foreground:hover',
+      '.hover\\:bg-sidebar-accent\\/50:hover',
+      '.group-hover\\:text-primary:is(:where(.group):hover *)',
+    ]) {
+      expect(css).toContain(plain)
+    }
+  })
+})

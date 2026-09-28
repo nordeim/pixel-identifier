@@ -423,6 +423,36 @@ precedence — true for the app, the wrapper, and the Prisma CLI alike).
   settings password-change ruled a non-finding (the live has NO password
   UI — Profile + Danger Zone only). Plan:
   `docs/plans/2026-09-28-round39-tw4-hover-variant-parity.md`.
+- **R40: Playwright's chromium is HOVER-CAPABLE — the guard contract is
+  pinned at the CSS-BYTE level, not behaviorally (v1.38).** Playwright
+  1.63's Desktop Chrome reports `matchMedia('(hover: hover)') === true`
+  (verified via a capability probe this round), so the behavioral hover
+  specs — R39's 3 and R40's 4 — CANNOT detect the TW4 capability guard:
+  a deliberately re-guarded build (the two `@custom-variant` overrides
+  temporarily removed) passed ALL behavioral hover specs while
+  agent-browser's non-hover-capable engine showed the utilities dead.
+  The R39 "RED pre-fix" e2e evidence was driven by the unanchored source
+  scan's utility corruption (the pre-fix footer anchor rendered default
+  link blue — `text-muted-foreground` lost), not by the guard in the
+  Playwright engine. The environment-independent pin is the CSS-byte
+  spec (the 8th in `e2e/hover.spec.ts`): fetch the served stylesheets,
+  assert ZERO `@media (hover:hover)` blocks + the plain `:hover`/`:is
+  (:where(.group):hover *)` selector forms — it runs RED against a
+  re-guarded build ("Expected 0, Received 4") and GREEN on the ship
+  build. Also documented: TW 4.3.3's built-in hover variant IS guarded
+  (`@media (hover: hover) { &:hover }` — tailwindcss dist/lib.mjs), so
+  BOTH `@custom-variant` overrides in globals.css are operative — never
+  remove either. R40 also pinned four live-verified hover families
+  (Claim Now `hover:opacity-80` 1 → 0.8 + dismiss `hover:opacity-70`
+  1 → 0.7, bell/trigger ghost `hover:bg-accent` → the teal
+  rgb(43, 212, 189), Export gradient `hover:opacity-90` 1 → 0.9,
+  sign-out `hover:text-foreground` → the navy rgb(19, 21, 32)) and
+  ruled the `data-[state=open]:hover:*` family STRUCTURALLY LATENT (no
+  submenu exists — `data-state` null on all 7 menu buttons both sides;
+  the composed rules compile unguarded). e2e lesson: a leftover server
+  on :3100 + `reuseExistingServer` serves a STALE mixed build — kill
+  port 3100 before diagnosing "mysterious" full-suite failures. Plan:
+  `docs/plans/2026-09-28-round40-hover-net-e2e-pins.md`.
 - **Tailwind 4 is CSS-first.** There is no `tailwind.config.js` and there must
   never be one — tokens live in the `@theme inline` block in
   `src/app/globals.css`. The **live ships TWO palettes**: the app bundle

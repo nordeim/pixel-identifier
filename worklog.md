@@ -326,3 +326,43 @@ Stage Summary:
   compilation exclusion restored, C1 documented, 765 + 56/56 × 2.
 - Next (R40): bundle hashes; the R39 pins join the standing loop; the
   oklab-serialization watch; Claim Now + bell/trigger hover candidates.
+
+---
+Task ID: R40
+Agent: main (Super Z)
+Task: Round-40 — 25th-generation drift watch + hover-net e2e extension
+
+Work Log:
+- 25th probe generation: no redeploy (15th consecutive stable); mobile
+  navs FULL PARITY both surfaces both sites (dropdown + Sheet + 768
+  boundary; console sweep clean — the Radix titleless-Sheet warnings
+  emit on BOTH sides); ZERO code drift.
+- R39 candidates closed at runtime parity: Claim Now (1 → 0.8) + dismiss
+  (1 → 0.7), bell/trigger (→ teal rgb(43, 212, 189)), sign-out (→
+  navy), Export gradient (1 → 0.9); data-[state=open]:hover ruled
+  structurally latent (no submenus either side).
+- Coverage: 5 new specs in e2e/hover.spec.ts (the 4 families + the
+  CSS-byte guard contract). KEY DISCOVERY: Playwright 1.63's chromium is
+  HOVER-CAPABLE (matchMedia '(hover: hover)' === true) — behavioral
+  hover specs cannot detect the TW4 guard (a re-guarded build passed all
+  7; agent-browser shows the same build dead); the R39 "RED pre-fix" was
+  driven by the source-scan utility corruption (the footer anchor
+  rendered default link blue), not the guard. TDD: the CSS-byte spec RED
+  against the re-guarded build ("Expected 0, Received 4") → GREEN on
+  ship. TW 4.3.3's default hover variant IS guarded (dist/lib.mjs) —
+  both @custom-variant overrides operative.
+- Gates: lint 0 · tsc 0 · 765 vitest | 2 skipped · build + standalone
+  green · CSS 82,038 / 0 guards / 51 hover selectors · 61/61 e2e
+  chromium TWICE consecutive (56 + 5). 6 captures r40-* (3 VLM-verified;
+  the 2 opacity hovers verified by computed-state + pixel-diff — below
+  the VLM floor). .env.example re-verified. Docs synced (PAD v1.38,
+  README, AGENTS, CLAUDE, SKILL, plan log, session_52, both worklogs).
+- Committed to main; pushed via docs/ssh_git_wrapper_v3.py; remote ref
+  verified == local HEAD; operator key shredded.
+
+Stage Summary:
+- R40 SHIPPED: zero drift, the hover net at 8 specs + the
+  environment-independent guard contract, PAD v1.38.
+- Next (R41): bundle hashes; the R40 pins join the standing loop;
+  candidates — docs copy-button + pricing CTA + OAuth button hover
+  families (verify before pinning); activity footer still latent.
